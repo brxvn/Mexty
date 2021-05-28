@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Mexty.MVVM.View.AdminView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Mexty.MVVM.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <Grid Background="Transparent">
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <Button Content="Consulta"
+                    Margin="30"
+                    HorizontalAlignment="Center"
+                    FontSize="30"
+                    VerticalAlignment="Center"></Button>
+            <Button Content="Alta"
+                    Margin="30"
+                    HorizontalAlignment="Center"
+                    FontSize="30"
+                    VerticalAlignment="Center"></Button>
+            <Button Content="Baja"
+                    Margin="30"
+                    HorizontalAlignment="Center"
+                    FontSize="30"
+                    VerticalAlignment="Center"></Button>
+            <Button Content="Editar"
+                    Margin="30"
+                    HorizontalAlignment="Center"
+                    FontSize="30"
+                    VerticalAlignment="Center"></Button>
+        </StackPanel>
+            
+    </Grid>
+</UserControl>

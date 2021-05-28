@@ -1,0 +1,22 @@
+﻿<Application x:Class="Mexty.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Mexty"
+             xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
+             xmlns:View="clr-namespace:Mexty.MVVM.View"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme\ButtonTheme.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Meziantou.WpfFontAwesome;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type ViewModel:AdminViewModel}">
+            <View:AdminView/>
+            </DataTemplate>
+        
+        </ResourceDictionary>
+      
+    </Application.Resources>
+</Application>

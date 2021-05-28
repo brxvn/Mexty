@@ -1,0 +1,115 @@
+﻿<Window x:Class="Mexty.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Mexty"
+        xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
+        xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowState="Maximized"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        Height="1080" Width="1920">
+
+    <Window.DataContext>
+        <ViewModel:MainViewModel/>
+    </Window.DataContext>
+    
+    <Border Background="#731525">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="120"></RowDefinition>
+                <RowDefinition Height="840*"></RowDefinition>
+                <RowDefinition Height="120" ></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Border x:Name="Logo"
+                    Grid.Column="0"
+                    Grid.Row="0" 
+                    Background="#450C16"/>
+
+            <TextBlock Text="M E X T Y" 
+                       VerticalAlignment="Center"
+                       Margin="44,0,140,0"
+                       FontSize="40"
+                       Foreground="AntiqueWhite" Height="54" Width="167"/>
+            <Image Source="/Resource/logo.png" HorizontalAlignment="Left" Margin="237,16,0,16" Width="50" ></Image>
+            <Separator
+                VerticalAlignment="Bottom"
+                Width="300"
+                Background="AntiqueWhite"/>
+
+            <StackPanel Grid.Row="1" Background="#450C16">
+
+                <RadioButton x:Name="Admn"
+                             Content="Administración"
+                             Height="70"
+                             Foreground="AntiqueWhite"
+                             FontSize="30"
+                             Margin="0,50,0,0"
+                             Style="{StaticResource ButtonTheme}">
+                </RadioButton>
+
+
+                <RadioButton Content="Inventario"
+                             Height="70"
+                             Foreground="AntiqueWhite"
+                             FontSize="30"
+                             Margin="0,50,0,0"
+                             Style="{StaticResource ButtonTheme}"/>
+
+                <RadioButton Content="Reportes"
+                             Height="70"
+                             Foreground="AntiqueWhite"
+                             FontSize="30"
+                             Margin="0,50,0,0"
+                             Style="{StaticResource ButtonTheme}"/>
+
+                <RadioButton Content="Ventas"
+                             Height="70"
+                             Foreground="AntiqueWhite"
+                             FontSize="30"
+                             Margin="0,50,0,0"
+                             Style="{StaticResource ButtonTheme}"/>
+            </StackPanel>
+
+            <Border Grid.Column="0"
+                    Grid.Row="2"
+                    Background="#450C16">
+                
+                <StackPanel Grid.Row="2" Orientation="Horizontal"  HorizontalAlignment="Center">
+
+                    <fa:FontAwesomeIcon RegularIcon="User"
+                                    FontSize="30"
+                                    Foreground="AntiqueWhite"
+                                    Margin="20"
+                                    VerticalAlignment="Center"
+                                    />
+                    <TextBlock x:Name="userActive" Text="activeUser"
+                           FontSize="30"
+                           Foreground="AntiqueWhite" Height="42" Width="197"/>
+                </StackPanel>
+
+            </Border>
+
+            <Separator
+                Grid.Row="2"
+                VerticalAlignment="Top"
+                Width="300"
+                Background="AntiqueWhite"/>
+
+            <ContentControl
+                Grid.Row="0"
+                Grid.Column="1"
+                Margin="10"
+                Content="{Binding CurrentView}"/>
+        </Grid>
+    </Border>
+</Window>
