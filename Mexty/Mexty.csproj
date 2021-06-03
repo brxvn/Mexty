@@ -8,14 +8,21 @@
 
   <ItemGroup>
     <None Remove="logo.png" />
+    <None Remove="Resource\brand.png" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
+    <PackageReference Include="MySql.Data" Version="8.0.25" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resource\logo.png" />
+    <Resource Include="Resource\brand.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

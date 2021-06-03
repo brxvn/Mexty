@@ -92,7 +92,7 @@
                                     Margin="20"
                                     VerticalAlignment="Center"
                                     />
-                    <TextBlock x:Name="userActive" Text="activeUser"
+                    <TextBlock x:Name="activeUser"
                            FontSize="30"
                            Foreground="AntiqueWhite" Height="42" Width="197"/>
                 </StackPanel>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,9 +19,14 @@ namespace Mexty {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow() {
+        public MainWindow(string User) {
             InitializeComponent();
+
+            activeUser.Text = User;
+
         }
+
+
 
     }
 }
