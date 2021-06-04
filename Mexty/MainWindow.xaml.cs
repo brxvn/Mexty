@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Mexty {
     /// <summary>
@@ -20,13 +21,22 @@ namespace Mexty {
     /// </summary>
     public partial class MainWindow : Window {
         public MainWindow(string User) {
+            
             InitializeComponent();
+            // Mostramos el usuario activo
+            activeUser.Text = "Administrador";
 
-            activeUser.Text = User;
+            //Para mostrar la hora actual del sistema
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Start();
 
         }
 
-
-
+        // Mostramos la hora actual del sistema
+        private void UpdateTimerTick(object sender, EventArgs e) {
+            time.Content = DateTime.Now.ToString("G");
+        }
     }
 }

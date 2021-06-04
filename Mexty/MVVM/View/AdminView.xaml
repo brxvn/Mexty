@@ -8,28 +8,7 @@
              d:DesignHeight="1080" d:DesignWidth="1920">
     <Grid Background="Transparent">
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <Button Content="Consulta"
-                    Margin="30"
-                    HorizontalAlignment="Center"
-                    FontSize="30"
-                    VerticalAlignment="Center"></Button>
-            <Button Content="Alta"
-                    Margin="30"
-                    HorizontalAlignment="Center"
-                    FontSize="30"
-                    VerticalAlignment="Center"></Button>
-            <Button Content="Baja"
-                    Margin="30"
-                    HorizontalAlignment="Center"
-                    FontSize="30"
-                    VerticalAlignment="Center"></Button>
-            <Button Content="Editar"
-                    Margin="30"
-                    HorizontalAlignment="Center"
-                    FontSize="30"
-                    VerticalAlignment="Center"></Button>
-        </StackPanel>
-            
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch"/>
+
     </Grid>
 </UserControl>

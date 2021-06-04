@@ -29,6 +29,12 @@ namespace Mexty {
             timer.Start();
         }
 
+        
+        /// <summary>
+        /// Creamos la connexion con la base de datos para validad si el usuario introducido es un usuario activo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void pswrdKeyDown(object sender, RoutedEventArgs e) {
             MySqlConnection conn = new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root; ");
 
@@ -40,7 +46,6 @@ namespace Mexty {
             login.CommandText = ("select usuario, contrasenia from usuario where usuario = '"+txtUsuario.Text+"' and contrasenia = '"+pswrdUsuario.Password.ToString()+"' ");
 
             MySqlDataReader rd = login.ExecuteReader();
-            Console.WriteLine(rd);
 
             if (rd.Read()) {
                 MainWindow win = new MainWindow(txtUsuario.Text);
