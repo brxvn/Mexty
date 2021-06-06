@@ -6,9 +6,35 @@
              xmlns:local="clr-namespace:Mexty.MVVM.View"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920">
-    <Grid Background="Transparent">
+    <Grid Background="#710a24">
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="75"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <RadioButton Content="Usuarios"
+                    Foreground="AntiqueWhite"
+                    FontSize="30"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource ButtonThemeActive}"
+                    />
+            <RadioButton Content="Productos"
+                    Foreground="AntiqueWhite"
+                    FontSize="30"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource ButtonThemeActive}"/>
+            <RadioButton Content="Clientes"
+                    Foreground="AntiqueWhite"
+                    FontSize="30"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource ButtonThemeActive}"/>
+            
+        </StackPanel>
+        
+        <Label Grid.Row="1" Content="Hola" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="AntiqueWhite" FontSize="50"/>
+        <RadioButton Content=" HOla" FontSize="100" Grid.Row="1"></RadioButton>
 
     </Grid>
 </UserControl>

@@ -20,6 +20,7 @@ namespace Mexty {
     /// Interaction logic for Login.xaml
     /// </summary>
     public partial class Login : Window {
+
         public Login() {
             InitializeComponent();
 
@@ -48,9 +49,17 @@ namespace Mexty {
             MySqlDataReader rd = login.ExecuteReader();
 
             if (rd.Read()) {
-                MainWindow win = new MainWindow(txtUsuario.Text);
-                win.Show();
-                this.Close();
+
+                if (txtUsuario.Text=="admin") {
+                    MainWindow win = new MainWindow(txtUsuario.Text);
+                    win.Show();
+                    this.Close();
+                }
+                else {
+                    UserWindow usr = new UserWindow();
+                    usr.Show();
+                    this.Close();
+                } 
             }
 
             else

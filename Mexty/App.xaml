@@ -9,14 +9,15 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Theme\ButtonTheme.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\ButtonThemeActive.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Meziantou.WpfFontAwesome;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type ViewModel:AdminViewModel}">
-            <View:AdminView/>
+                <View:AdminView/>
             </DataTemplate>
-        
+
         </ResourceDictionary>
-      
+
     </Application.Resources>
 </Application>

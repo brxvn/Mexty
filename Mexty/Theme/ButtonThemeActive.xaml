@@ -3,7 +3,7 @@
     
     <Style BasedOn="{StaticResource {x:Type ToggleButton}}"
            TargetType="{x:Type RadioButton}"
-           x:Key="ButtonTheme">
+           x:Key="ButtonThemeActive">
 
         <Style.Setters>
             <Setter Property="Template">
@@ -13,7 +13,7 @@
                               HorizontalAlignment="Stretch"
                               Background="{TemplateBinding Background}">
 
-                            <TextBlock Text="{TemplateBinding Property=Content }"
+                            <TextBlock Text="{TemplateBinding Property=Content}"
                                        VerticalAlignment="Center"
                                        Margin="15,0,15,0"
                                        ></TextBlock>
@@ -24,13 +24,14 @@
             </Setter>
 
             <Setter Property="Background" Value="Transparent"></Setter>
-            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="BorderThickness" Value="5,5,5,5"></Setter>
         </Style.Setters>
 
         <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#812C3A"></Setter>
+                <Setter Property="Background" Value="#812C3A"/>
             </Trigger>
         </Style.Triggers>
     </Style>
+
 </ResourceDictionary>

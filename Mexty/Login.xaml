@@ -9,8 +9,9 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
         Background="#710a24"
+        
         Title="Login" Height="500" Width="350">
-    <Grid Margin="30" >
+    <Grid Margin="30"  >
         <StackPanel>
             <Image Margin="0,40,0,0" Source="/Resource/brand.png"></Image>
 

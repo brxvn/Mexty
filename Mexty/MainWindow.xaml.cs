@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using Mexty.MVVM.ViewModel;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace Mexty {
         public MainWindow(string User) {
             
             InitializeComponent();
+
+            DataContext = new MainViewModel();
             // Mostramos el usuario activo
             activeUser.Text = "Administrador";
 
@@ -31,12 +34,11 @@ namespace Mexty {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
-
         }
 
-        // Mostramos la hora actual del sistema
-        private void UpdateTimerTick(object sender, EventArgs e) {
+        public void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
+
     }
 }

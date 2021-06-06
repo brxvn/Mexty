@@ -5,6 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Mexty.MVVM.ViewModel {
-    class AdminViewModel {
+    public class AdminViewModel : BaseViewModel {
     }
 }
