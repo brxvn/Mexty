@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Mexty.MVVM.Model;
 
 namespace Mexty {
     /// <summary>
@@ -30,26 +31,15 @@ namespace Mexty {
             timer.Start();
         }
 
-        
         /// <summary>
         /// Creamos la connexion con la base de datos para validad si el usuario introducido es un usuario activo
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void pswrdKeyDown(object sender, RoutedEventArgs e) {
-            MySqlConnection conn = new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root; ");
+            var dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
 
-            conn.Open();
-
-            MySqlCommand login = new MySqlCommand();
-            login.Connection = conn;
-
-            login.CommandText = ("select usuario, contrasenia from usuario where usuario = '"+txtUsuario.Text+"' and contrasenia = '"+pswrdUsuario.Password.ToString()+"' ");
-
-            MySqlDataReader rd = login.ExecuteReader();
-
-            if (rd.Read()) {
-
+            if (dbConnection.IsConnected()) {
                 if (txtUsuario.Text=="admin") {
                     MainWindow win = new MainWindow(txtUsuario.Text);
                     win.Show();
@@ -65,7 +55,7 @@ namespace Mexty {
             else
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
 
-            conn.Close();
+            dbConnection.CloseConnection(); //TODO: no cerrar conección y pasar el objeto
         }
 
         private void UpdateTimerTick(object sender, EventArgs e) {
