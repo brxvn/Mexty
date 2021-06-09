@@ -16,13 +16,15 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
 
-namespace Mexty {
+namespace Mexty 
+{
     /// <summary>
-    /// Interaction logic for Login.xaml
+    /// Lógica para <c>Login.xaml</c>.
     /// </summary>
-    public partial class Login : Window {
-
-        public Login() {
+    public partial class Login : Window 
+    {
+        public Login() 
+        {
             InitializeComponent();
 
             DispatcherTimer timer = new DispatcherTimer();
@@ -32,33 +34,36 @@ namespace Mexty {
         }
 
         /// <summary>
-        /// Creamos la connexion con la base de datos para validad si el usuario introducido es un usuario activo
+        /// Lógica de el botón de Log-in.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void pswrdKeyDown(object sender, RoutedEventArgs e) {
+        private void PasswordKeyDown(object sender, RoutedEventArgs e) 
+        {
             var dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
 
-            if (dbConnection.IsConnected()) {
-                if (txtUsuario.Text=="admin") {
+            if (dbConnection.IsConnected()) 
+            {
+                if (txtUsuario.Text=="admin") 
+                {
                     MainWindow win = new MainWindow(txtUsuario.Text);
                     win.Show();
                     this.Close();
                 }
-                else {
+                else 
+                {
                     UserWindow usr = new UserWindow();
                     usr.Show();
                     this.Close();
                 } 
             }
-
             else
+            {
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
-
+            }
             dbConnection.CloseConnection(); //TODO: no cerrar conección y pasar el objeto
         }
 
-        private void UpdateTimerTick(object sender, EventArgs e) {
+        private void UpdateTimerTick(object sender, EventArgs e) 
+        {
             time.Content = DateTime.Now.ToString("G");
         }
     }
