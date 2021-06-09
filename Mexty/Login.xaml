@@ -77,11 +77,10 @@
                 </PasswordBox.Style>
             </PasswordBox>
 
-            <Button Width="70" Height="25" Margin="0,50,20,0" HorizontalAlignment="Right" Content="Ingresar" FontSize="15" Click="pswrdKeyDown"/>
+            <Button Width="70" Height="25" Margin="0,50,20,0" HorizontalAlignment="Right" Content="Ingresar" FontSize="15" Click="PasswordKeyDown"/>
             
             <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="50" HorizontalContentAlignment="Center"></Label>
-
-
+            
         </StackPanel>
 
     </Grid>
