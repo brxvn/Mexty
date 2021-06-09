@@ -45,6 +45,7 @@
 
 
                 <RadioButton Content="Inventario"
+                             x:Name="Invent"
                              Height="70"
                              Foreground="AntiqueWhite"
                              FontSize="20"

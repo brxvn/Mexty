@@ -1,4 +1,5 @@
-﻿using Mexty.MVVM.ViewModel;
+﻿using Mexty.MVVM.Model;
+using Mexty.MVVM.ViewModel;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -21,19 +22,26 @@ namespace Mexty {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow(string User) {
+        public MainWindow(Database usuario, string rol) {
             
             InitializeComponent();
 
             DataContext = new MainViewModel();
             // Mostramos el usuario activo
-            activeUser.Text = "Administrador";
+
+            switch (rol) {
+                case "2":
+                    Invent.Visibility = Visibility.Collapsed;
+                    break;
+            }
+            activeUser.Text = usuario.GetNombreUsuario();
 
             //Para mostrar la hora actual del sistema
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+ 
         }
 
         public void UpdateTimerTick(object sender, EventArgs e) {

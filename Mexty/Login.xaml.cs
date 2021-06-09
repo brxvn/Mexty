@@ -37,19 +37,13 @@ namespace Mexty {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void pswrdKeyDown(object sender, RoutedEventArgs e) {
-            var dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
+            Database dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
 
             if (dbConnection.IsConnected()) {
-                if (txtUsuario.Text=="admin") {
-                    MainWindow win = new MainWindow(txtUsuario.Text);
-                    win.Show();
-                    this.Close();
-                }
-                else {
-                    UserWindow usr = new UserWindow();
-                    usr.Show();
-                    this.Close();
-                } 
+                var rol = dbConnection.GetRol();
+                MainWindow win = new MainWindow(dbConnection, rol);
+                win.Show();
+                this.Close();                
             }
 
             else

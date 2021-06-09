@@ -6,5 +6,6 @@ using System.Threading.Tasks;
 
 namespace Mexty.MVVM.ViewModel {
     public class AdminViewModel : BaseViewModel {
+
     }
 }

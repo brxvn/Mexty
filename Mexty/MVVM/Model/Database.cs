@@ -7,14 +7,14 @@ using MySql.Data.MySqlClient;
 
 namespace Mexty.MVVM.Model
 {
-    class Database
+    public class Database
     {
         private MySqlDataReader _isConnected;
         private MySqlConnection _sqlSession;
         public Database(string username, string password)
         {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -22,13 +22,16 @@ namespace Mexty.MVVM.Model
            var login = new MySqlCommand
            {
                Connection = connObj,
-               CommandText = "select usuario, contrasenia from usuario where USUARIO=@user and CONTRASENIA=@pass"
-           };           
+               CommandText = "select nombre_usuario, usuario, contrasenia, id_rol from usuario where USUARIO=@user and CONTRASENIA=@pass"
+           };  
+            
            login.Parameters.AddWithValue("@user", username);
            login.Parameters.AddWithValue("@pass", password);
            
+           
            var connectionSuccess = login.ExecuteReader();
            _isConnected = connectionSuccess;
+            
         }
 
         public bool IsConnected()
@@ -39,6 +42,13 @@ namespace Mexty.MVVM.Model
         public void CloseConnection()
         {
             _sqlSession.Close();
+        }
+        public string GetRol() {
+            return _isConnected.GetString("id_rol");
+        }
+
+        public string GetNombreUsuario() {
+            return _isConnected.GetString("nombre_usuario");
         }
 
 
