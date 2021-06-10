@@ -20,90 +20,71 @@
                 <ColumnDefinition Width="300"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition ></RowDefinition>
-                <RowDefinition Height="70"></RowDefinition>
-            </Grid.RowDefinitions>
 
             <StackPanel Margin="0 5" Grid.Column="0" Grid.Row="0">
 
                 <Image Source="/Resource/brand.png" HorizontalAlignment="Center" Height="70" Margin="0 0" ></Image>
                 <Separator
                 VerticalAlignment="Top"
-                Background="AntiqueWhite" Height="1" Margin="20 0" Grid.Row="1"/>
+                Background="AntiqueWhite" Height="2" Margin="10 0" Grid.Row="1"/>
 
                 <RadioButton x:Name="Admn"
                              Content="Administración"
-                             Height="70"
-                             Foreground="AntiqueWhite"
-                             FontSize="30"
-                             
-                             Margin="0,50,0,0"
                              Style="{StaticResource ButtonTheme}"
                              Command="{Binding UpdateViewCommand}"
-                             CommandParameter="Admin">
+                             CommandParameter="Admin"/>
 
-                </RadioButton>
+                <RadioButton
+                             Content="Ventas"
+                             Style="{StaticResource ButtonTheme}"
+                             Command="{Binding UpdateViewCommand}"
+                             CommandParameter="Ventas"/>
 
+                <RadioButton 
+                             Content="Inventario"
+                             Style="{StaticResource ButtonTheme}"
+                             Command="{Binding UpdateViewCommand}"
+                             CommandParameter="Inventario"/>
 
-                <RadioButton Content="Inventario"
-                             x:Name="Invent"
-                             Height="70"
-                             Foreground="AntiqueWhite"
-                             FontSize="20"
-                             Margin="0,50,0,0"
-                             Style="{StaticResource ButtonTheme}"/>
-
-                <RadioButton Content="Reportes"
-                             Height="70"
-                             Foreground="AntiqueWhite"
-                             FontSize="20"
-                             Margin="0,50,0,0"
-                             Style="{StaticResource ButtonTheme}"/>
-
-                <RadioButton Content="Ventas"
-                             Height="70"
-                             Foreground="AntiqueWhite"
-                             FontSize="20"
-                             Margin="0,50,0,0"
-                             Style="{StaticResource ButtonTheme}"/>
-              
+                <RadioButton
+                             Content="Reportes"
+                             Style="{StaticResource ButtonTheme}"
+                             Command="{Binding UpdateViewCommand}"
+                             CommandParameter="Reportes"/>
             </StackPanel>
 
-            <Separator Grid.Row="0"
-            VerticalAlignment="Bottom"
-            Background="AntiqueWhite" Height="1" Margin="20 0"/>
-            
-            <StackPanel Grid.Row="1" Orientation="Horizontal"  HorizontalAlignment="Stretch" Margin="50,0,50,0">
+            <Grid VerticalAlignment="Bottom" Height="70">
+                <Separator VerticalAlignment="Top"
+                Background="AntiqueWhite" Height="2" Margin="10 0"/>
 
-                <fa:FontAwesomeIcon RegularIcon="User"
+                <StackPanel Grid.Row="1" Orientation="Horizontal"  HorizontalAlignment="Stretch" Margin="50 0">
+
+                    <fa:FontAwesomeIcon RegularIcon="User"
                             FontSize="20"
                             Foreground="AntiqueWhite"
                             VerticalAlignment="Center"
                             HorizontalAlignment="Left"
                             HorizontalContentAlignment="Center"
                             />
-                <TextBlock x:Name="activeUser"
+                    <TextBlock x:Name="activeUser"
                     FontSize="20"
                     Margin="15"
                     Foreground="AntiqueWhite"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"/>
-            </StackPanel>
-
-           
+                </StackPanel>
+            </Grid>
             <Label Grid.Column="1"
-                   Grid.Row="1"
                    Name="time" 
                    Foreground="AntiqueWhite" 
                    FontSize="20" 
                    HorizontalContentAlignment="Center" 
                    VerticalContentAlignment="Center"
                    HorizontalAlignment="Right"
-                   Margin="0,0,50,0"
-                   
+                   VerticalAlignment="Bottom"
+                   Margin="50 15"
                    ></Label>
-
+            
             <ContentControl Content="{Binding SelectedViewModel}"
                             Grid.Column="1"
                             />

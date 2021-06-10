@@ -4,26 +4,33 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mexty.MVVM.View"
+             xmlns:models="clr-namespace:Mexty.MVVM.ViewModel"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920"
              RenderOptions.EdgeMode="Aliased">
 
-    <Grid Background="#710a24">
+    <Grid>
 
         <ContentControl Content="{Binding SelectedViewModel}" />
 
-        <TabControl  Background="#710a24" BorderThickness="0" Padding="0,0,0,0">
-            <TabItem Header="Usuarios" FontSize="30" Background="#710a24" BorderBrush="Transparent">
-                <TabItem.Content>
+        <TabControl BorderThickness="0" Padding="0">
+            <TabItem Header="Usuario" Background="#710a24" BorderBrush="Transparent"
+                     Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content >
                     <local:AdminViewUser/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Productos" FontSize="30" Background="#710a24"  BorderBrush="Transparent">
+            <TabItem Header="Productos" Background="#710a24"  BorderBrush="Transparent"
+                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <local:AdminViewProducts/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Usuarios" FontSize="30" Background="#710a24"  BorderBrush="Transparent"/>
+            <TabItem Header="Clientes" Background="#710a24"  BorderBrush="Transparent"
+                      Style="{StaticResource ButtonThemeActive}">
+                
+            </TabItem>
+
         </TabControl>
       
 

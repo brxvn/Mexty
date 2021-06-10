@@ -22,7 +22,7 @@ namespace Mexty.Commands {
 
         public void Execute(object parameter) {
             if (parameter.ToString() == "Admin") {
-                viewModel.SelectedViewModel = new AdminViewModel(viewModel);
+                viewModel.SelectedViewModel = new AdminViewModel();
             }
 
             else if(parameter.ToString() == "Product") {
