@@ -48,8 +48,7 @@ namespace Mexty
                 this.Close();                
             }
 
-            else
-            {
+            else {
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
             }
             dbConnection.CloseConnection(); //TODO: no cerrar conección y pasar el objeto

@@ -23,7 +23,6 @@ namespace Mexty.MVVM.ViewModel {
 
         public MainViewModel() {
             UpdateViewCommand = new UpdateViewCommand(this);
-
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Mexty.MVVM.Model
         public Database(string username, string password)
         {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -30,7 +30,7 @@ namespace Mexty.MVVM.Model
            var login = new MySqlCommand
            {
                Connection = connObj,
-               CommandText = "select usuario, contrasenia from usuario where USUARIO=@user and CONTRASENIA=@pass"
+               CommandText = "select nombre_usuario, usuario, contrasenia, id_rol from usuario where USUARIO=@user and CONTRASENIA=@pass"
            };           
            login.Parameters.AddWithValue("@user", username);
            login.Parameters.AddWithValue("@pass", password);
@@ -40,9 +40,7 @@ namespace Mexty.MVVM.Model
            _isConnected = connectionSuccess; 
         }
 
-        /// <summary>
-        /// Método para saber si la conección con la base de datos fue exitosa.
-        /// </summary>
+        /// <summary> Método para saber si la conección con la base de datos fue exitosa. </summary>
         /// <returns>
         /// <c>true</c> si la conección fue exitosa, <c>false</c> si no.
         /// </returns>
@@ -58,10 +56,20 @@ namespace Mexty.MVVM.Model
         {
             _sqlSession.Close();
         }
+
+        /// <summary>
+        /// Método que obtiene el rol del usuario
+        /// <returns>
+        /// <string>ID</string> del rol
+        /// </returns>
+        /// </summary>
         public string GetRol() {
             return _isConnected.GetString("id_rol");
         }
 
+        /// <summary>
+        /// Método que obtiene el nombre del usuario.
+        /// </summary>
         public string GetNombreUsuario() {
             return _isConnected.GetString("nombre_usuario");
         }

@@ -10,31 +10,42 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="75"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition/>
         </Grid.RowDefinitions>
+
+        <ContentControl Content="{Binding SelectedViewModel}" Grid.Row="1"/>
 
         <StackPanel Orientation="Horizontal">
             <RadioButton Content="Usuarios"
+                     x:Name="rdbtnUsuarios"
                     Foreground="AntiqueWhite"
-                    FontSize="30"
-                    Margin="10,0,0,0"
+                    FontSize="30" 
+                    IsChecked="True"
                     Style="{StaticResource ButtonThemeActive}"
-                    />
+                    Command="{Binding UpdateViewCommand}"
+                    CommandParameter="User"/>
+            
             <RadioButton Content="Productos"
                     Foreground="AntiqueWhite"
                     FontSize="30"
-                    Margin="10,0,0,0"
-                    Style="{StaticResource ButtonThemeActive}"/>
+                    Style="{StaticResource ButtonThemeActive}"
+                    Command="{Binding UpdateViewCommand}"
+                    CommandParameter="Product"/>
+            
             <RadioButton Content="Clientes"
                     Foreground="AntiqueWhite"
-                    FontSize="30"
-                    Margin="10,0,0,0"
+                    FontSize="30"                  
                     Style="{StaticResource ButtonThemeActive}"/>
-            
+            <RadioButton Content="Establecimiento"
+                    Foreground="AntiqueWhite"
+                    FontSize="30"                  
+                    Style="{StaticResource ButtonThemeActive}"/>
+            <RadioButton Content="Base de datos"
+                    Foreground="AntiqueWhite"
+                    FontSize="30"                  
+                    Style="{StaticResource ButtonThemeActive}"/>
         </StackPanel>
-        
-        <Label Grid.Row="1" Content="Hola" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="AntiqueWhite" FontSize="50"/>
-        <RadioButton Content=" HOla" FontSize="100" Grid.Row="1"></RadioButton>
+      
 
     </Grid>
 </UserControl>

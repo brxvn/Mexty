@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace Mexty.Commands {
     public class UpdateViewCommand : ICommand {
-        private MainViewModel viewModel;
+        public MainViewModel viewModel;
 
         public UpdateViewCommand(MainViewModel viewModel) {
             this.viewModel = viewModel;
@@ -22,7 +22,11 @@ namespace Mexty.Commands {
 
         public void Execute(object parameter) {
             if (parameter.ToString() == "Admin") {
-                viewModel.SelectedViewModel = new AdminViewModel();
+                viewModel.SelectedViewModel = new AdminViewModel(viewModel);
+            }
+
+            else if(parameter.ToString() == "Product") {
+                viewModel.SelectedViewModel = new AdminViewUserModel();
             }
         }
     }

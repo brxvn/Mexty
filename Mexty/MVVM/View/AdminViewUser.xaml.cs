@@ -1,5 +1,4 @@
-﻿using Mexty.MVVM.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,15 +15,11 @@ using System.Windows.Shapes;
 
 namespace Mexty.MVVM.View {
     /// <summary>
-    /// Interaction logic for AdminView.xaml
+    /// Interaction logic for AdminViewUser.xaml
     /// </summary>
-    public partial class AdminView : UserControl {
-        
-        public AdminView() {
+    public partial class AdminViewUser : UserControl {
+        public AdminViewUser() {
             InitializeComponent();
-
-            DataContext = new MainViewModel();
-            
         }
     }
 }

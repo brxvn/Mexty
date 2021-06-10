@@ -11,25 +11,26 @@
         WindowState="Maximized"
         Background="Transparent"
         ResizeMode="CanResize"
-        Height="1080" Width="1920">
+        Height="1080" Width="1920"
+        RenderOptions.EdgeMode="Aliased">
 
     <Border Background="#710a24">
-        <Grid Margin="10">
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="300"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition ></RowDefinition>
-                <RowDefinition Height="75"></RowDefinition>
+                <RowDefinition Height="70"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="0" Grid.Row="0">
+            <StackPanel Margin="0 5" Grid.Column="0" Grid.Row="0">
 
-                <Image Source="/Resource/brand.png" HorizontalAlignment="Center" Height="75"></Image>
+                <Image Source="/Resource/brand.png" HorizontalAlignment="Center" Height="70" Margin="0 0" ></Image>
                 <Separator
                 VerticalAlignment="Top"
-                Background="AntiqueWhite" Height="1" Margin="0,1,0,0" Grid.Row="1"/>
+                Background="AntiqueWhite" Height="1" Margin="20 0" Grid.Row="1"/>
 
                 <RadioButton x:Name="Admn"
                              Content="Administración"
@@ -68,9 +69,9 @@
               
             </StackPanel>
 
-            <Separator Grid.Row="1"
-            VerticalAlignment="Top"
-            Background="AntiqueWhite" Height="1" Margin="0,2,0,0"/>
+            <Separator Grid.Row="0"
+            VerticalAlignment="Bottom"
+            Background="AntiqueWhite" Height="1" Margin="20 0"/>
             
             <StackPanel Grid.Row="1" Orientation="Horizontal"  HorizontalAlignment="Stretch" Margin="50,0,50,0">
 

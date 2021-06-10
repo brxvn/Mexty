@@ -17,6 +17,11 @@
                 <View:AdminView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type ViewModel:AdminViewUserModel}">
+                <View:AdminViewUser/>
+            </DataTemplate>
+
+
         </ResourceDictionary>
 
     </Application.Resources>
