@@ -16,17 +16,13 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
 
-namespace Mexty 
-{
+namespace Mexty {
     /// <summary>
     /// Lógica para <c>Login.xaml</c>.
     /// </summary>
-    public partial class Login : Window 
-    {
-        public Login() 
-        {
+    public partial class Login : Window {
+        public Login() {
             InitializeComponent();
-
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -36,8 +32,6 @@ namespace Mexty
         /// <summary>
         /// Lógica de el botón de Log-in.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PasswordKeyDown(object sender, RoutedEventArgs e) {
             Database dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
 
@@ -45,17 +39,16 @@ namespace Mexty
                 var rol = dbConnection.GetRol();
                 MainWindow win = new MainWindow(dbConnection, rol);
                 win.Show();
-                this.Close();                
+                this.Close();
             }
-
-            else {
+            else { 
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
             }
             dbConnection.CloseConnection(); //TODO: no cerrar conección y pasar el objeto
         }
 
-        private void UpdateTimerTick(object sender, EventArgs e) 
-        {
+        // TODO: documentar
+        private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
     }
