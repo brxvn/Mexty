@@ -37,6 +37,7 @@
                              Height="70"
                              Foreground="AntiqueWhite"
                              FontSize="30"
+                             
                              Margin="0,50,0,0"
                              Style="{StaticResource ButtonTheme}"
                              Command="{Binding UpdateViewCommand}"
