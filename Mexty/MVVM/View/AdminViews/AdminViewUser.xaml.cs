@@ -17,8 +17,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
+using Mexty.Theme;
 using MySql.Data.MySqlClient;
-using Org.BouncyCastle.Cms;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -26,6 +26,7 @@ namespace Mexty.MVVM.View.AdminViews {
     /// </summary>
     public partial class AdminViewUser : UserControl {
 
+        private ListCollectionView _collectionView;
         public AdminViewUser() {
             InitializeComponent();
             
@@ -47,7 +48,9 @@ namespace Mexty.MVVM.View.AdminViews {
             var connObj = new Database();
             var query = connObj.GetTablesFromUsuarios();
             DataUsuarios.ItemsSource = query;
-            
+            // TODO: Armar una lista de objetos con las sucursales y usarlas como source para el combobox de las sucursales.
+            ListCollectionView collectionView = new ListCollectionView(query);
+            _collectionView = collectionView;
         }
 
         /// <summary>
@@ -58,7 +61,7 @@ namespace Mexty.MVVM.View.AdminViews {
         public void ItemSelected(object sender, EventArgs e) {
             ClearFields();
             Usuarios usuario = (Usuarios) DataUsuarios.SelectedItem;
-            nombreUsuario.Text = usuario.Usuario;
+            nombreUsuario.Text = usuario.Username;
             apPaternoUsuario.Text = usuario.ApPaterno;
             apMaternoUsuario.Text = usuario.ApMaterno;
             switch (usuario.IdTienda) {
@@ -96,16 +99,34 @@ namespace Mexty.MVVM.View.AdminViews {
             activo.IsChecked = false;
         }
         
-        //private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) {
-
-        //    var tbx = sender as TextBox;
-        //    string empty = "";
-        //    if (tbx.Text != "") {
-        //        var newtext = tbx.Text;
-        //        labelText.Content = newtext;
-        //        labelText.Visibility = Visibility.Visible;
-        //    }
-        //    else labelText.Content = empty;
-        //}
+        /// <summary>
+        /// Lógica para el boton de busqueda.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+            var tbx = sender as TextBox;
+            string empty = "";
+            if (tbx.Text != "") {
+                var newtext = tbx.Text;
+                _collectionView.Filter = (e) => {
+                    Usuarios emp = e as Usuarios;// TODO: Armar mejor lógica para filtrado
+                    if (emp.Id.ToString() == newtext) {
+                        return true;
+                    }
+                    if (emp.Nombre == newtext) {
+                        return true;
+                    }
+                    if (emp.Username == newtext) {
+                        return true;
+                    }
+                    return false;
+                };
+                DataUsuarios.ItemsSource = _collectionView;
+            }
+            else {
+                _collectionView.Filter = null;
+            }
+        }
     }
 }

@@ -100,10 +100,10 @@ namespace Mexty.MVVM.Model {
                 while (reader.Read()) {
                     var usuario = new Usuarios();
                     usuario.Id = reader.GetInt32(0);
-                    usuario.Username = reader.GetString(1);
+                    usuario.Nombre = reader.GetString(1);
                     usuario.ApPaterno = reader.GetString(2);
                     usuario.ApMaterno = reader.GetString(3);
-                    usuario.Usuario = reader.GetString(4);
+                    usuario.Username = reader.GetString(4);
                     usuario.Contraseña = reader.GetString(5);
                     usuario.Domicilio = reader.GetString(6);
                     usuario.Telefono = reader.GetInt32(7);

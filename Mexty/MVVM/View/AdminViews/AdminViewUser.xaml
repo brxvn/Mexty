@@ -24,7 +24,7 @@
                Foreground="AntiqueWhite"
                Padding="0,20"/>
             
-            <!--El nombre es SearchBox-->
+            <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
                      HorizontalAlignment="Right">
@@ -45,7 +45,8 @@
                                                      Padding="5"
                                                      Foreground="DarkGray"
                                                      FontSize="18"
-                                                     x:Name="SearchBox"
+                                                     x:Name="txtBusqueda"
+                                                     TextChanged="FilterSearch"
                                                      >
                                                     <!--TextChanged="SearchBox_TextChanged"-->
 
