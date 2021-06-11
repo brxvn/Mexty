@@ -14,22 +14,19 @@ namespace Mexty.MVVM.Model
         /// <param name="stringToSearch"><c>string</c> en el que se va a buscar.</param>
         /// <param name="pattern"><c>string</c> con el patron a buscar.</param>
         /// <returns><c>true</c> si cada caracter del patrón es encontrado secuencialmente.</returns>
-        public static bool FuzzyMatch(string stringToSearch, string pattern)
-        {
+        public static bool FuzzyMatch(string stringToSearch, string pattern) {
             var patternIdx = 0;
             var strIdx = 0;
             var patternLength = pattern.Length;
             var strLength = stringToSearch.Length;
 
-            while (patternIdx != patternLength && strIdx != strLength)
-            {
+            while (patternIdx != patternLength && strIdx != strLength) {
                 if (char.ToLower(pattern[patternIdx]) == char.ToLower(stringToSearch[strIdx]))
                     ++patternIdx;
                 ++strIdx;
             }
             return patternLength != 0 && strLength != 0 && patternIdx == patternLength;
         }
-        
         
         /// <summary>
         /// Hace una busqueda difusa de un patron dentro de un <c>string</c> y da un <c>score</c>
@@ -126,7 +123,6 @@ namespace Mexty.MVVM.Model
                         bestLetterIdx = strIdx;
                         bestLetterScore = newScore;
                     }
-
                     prevMatched = true;
                 }
                 else {
@@ -146,9 +142,8 @@ namespace Mexty.MVVM.Model
                 score += bestLetterScore;
                 matchedIndices.Add((int)bestLetterIdx);
             }
-
             outScore = score;
-            return patternIdx == patternLength;		
+            return patternIdx == patternLength;
         }
     }
 }

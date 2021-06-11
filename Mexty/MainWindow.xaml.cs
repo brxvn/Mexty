@@ -22,7 +22,7 @@ namespace Mexty {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow(Database usuario, string rol) {
+        public MainWindow(Database usuario, string rol) { // TODO: no ne cesitamos pasar rol
             
             InitializeComponent();
 

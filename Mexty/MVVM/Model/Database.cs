@@ -11,15 +11,18 @@ namespace Mexty.MVVM.Model {
     /// Contiene todos los métodos necesarios para la conección y uso de la Base de datos.
     /// </summary>
     public class Database {
-        private readonly MySqlDataReader _isConnected;
-        private readonly MySqlConnection _sqlSession;
+        private static MySqlDataReader _isConnected;
+        private static MySqlConnection _sqlSession;
         
-        /// <summary> Constructor principal de la clase <c>Database</c></summary>
+        /// <summary>
+        /// Constructor principal de la clase <c>Database</c>, se encarga de
+        /// hacer la conección principal a la base de datos.
+        /// </summary>
         /// <param name="username">Nombre de usuario</param>
         /// <param name="password">Contraseña del usuario</param>
         public Database(string username, string password) {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -30,10 +33,21 @@ namespace Mexty.MVVM.Model {
            };           
            login.Parameters.AddWithValue("@user", username);
            login.Parameters.AddWithValue("@pass", password);
-           
-           
+
            var connectionSuccess = login.ExecuteReader();
            _isConnected = connectionSuccess;
+        }
+
+        /// <summary>
+        /// Constructor sin parametros de Database, se usa para acceder a los métodos una vez
+        /// ya se ha hecho la conección inicial.
+        /// </summary>
+        public Database() {
+            var connObj =
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+            
+           connObj.Open();
+           _sqlSession = connObj;
         }
 
         /// <summary> Método para saber si la conección con la base de datos fue exitosa. </summary>
@@ -66,13 +80,28 @@ namespace Mexty.MVVM.Model {
         public string GetNombreUsuario() {
             return _isConnected.GetString("nombre_usuario");
         }
+
+        /// <summary>
+        /// Método para obtener todos los datos de la tabla usuario.
+        /// </summary>
+        /// <returns>Un objeto tipo <c>MySqlReader</c> con la informació con la información.</returns>
+        public MySqlDataReader GetTablesFromUsuarios() {
+            var query = new MySqlCommand() {
+                Connection = _sqlSession,
+                CommandText = "select * from usuario"
+            };
+
+            var data = query.ExecuteReader();
+            return data;
+        }
         
         /// <summary>
         /// Destructor para la clase Database.
         /// </summary>
-        /// TODO: implementar que cuando se ejecute el destructor te mande al login.
+        // TODO: implementar que cuando se ejecute el destructor te mande al login.
+        // TODO: Ver si es necesario esto o no xd (puede Q no)
         ~Database() {
-            _sqlSession.Close();
+            //_sqlSession.Close();
         }
     }
 }

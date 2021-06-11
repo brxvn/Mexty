@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Mexty.MVVM.View {
+namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminView.xaml
     /// </summary>

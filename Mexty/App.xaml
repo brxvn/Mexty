@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:Mexty"
              xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
              xmlns:View="clr-namespace:Mexty.MVVM.View"
+             xmlns:adminViews="clr-namespace:Mexty.MVVM.View.AdminViews"
              StartupUri="Login.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -15,15 +16,12 @@
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type ViewModel:AdminViewModel}">
-                <View:AdminView/>
+                <adminViews:AdminView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type ViewModel:AdminViewUserModel}">
-                <View:AdminViewUser/>
+                <adminViews:AdminViewUser/>
             </DataTemplate>
-
-
         </ResourceDictionary>
-
     </Application.Resources>
 </Application>
