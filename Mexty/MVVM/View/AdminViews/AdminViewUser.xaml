@@ -72,7 +72,7 @@
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
                                                             <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                <DataTrigger Binding="{Binding Text, ElementName=txtBusqueda}" Value="">
                                                                     <Setter Property="Visibility" Value="Visible"/>
                                                                 </DataTrigger>
                                                             </Style.Triggers>
@@ -137,6 +137,7 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     TextChanged="TextUpdateUserName"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -196,6 +197,7 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     TextChanged="TextUpdateApPa"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -255,6 +257,7 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     TextChanged="TextUpdateApMa"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -330,6 +333,7 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     TextChanged="TextUpdateDir"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -389,6 +393,8 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     PreviewTextInput="OnlyNumbersValidation"
+                                                     TextChanged="TextUpdateTel"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -448,6 +454,7 @@
                                                      Foreground="DarkGray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     TextChanged="TextUpdatePswd"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -497,7 +504,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0" Content="Registrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
-                <Button Grid.Column="1" Content="Editar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                <Button Grid.Column="1" Content="Editar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EditBtn"/>
                 <Button Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
                
                

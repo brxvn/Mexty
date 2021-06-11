@@ -14,6 +14,7 @@ namespace Mexty.MVVM.Model {
     /// La clase principal de base de datos.
     /// Contiene todos los métodos necesarios para la conección y uso de la Base de datos.
     /// </summary>
+    // TODO: Maybe usar herencia para crear diferentes clases Database 
     public class Database {
         private static MySqlDataReader _isConnected;
         private static MySqlConnection _sqlSession;
@@ -95,7 +96,6 @@ namespace Mexty.MVVM.Model {
                 CommandText = "select * from usuario"
             };
             List<Usuarios> users = new List<Usuarios>();
-            //var data = query.ExecuteReader();
             using (MySqlDataReader reader = query.ExecuteReader()) {
                 while (reader.Read()) {
                     var usuario = new Usuarios();
@@ -118,6 +118,25 @@ namespace Mexty.MVVM.Model {
                 }
             }
             return users;
+        }
+
+        /// <summary>
+        /// Método para actualziar los datos de Usuarios
+        /// </summary>
+        public void UpdateData(Usuarios usuario) {
+            var query = new MySqlCommand() {
+                Connection = _sqlSession,
+                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel where ID_USUARIO=@ID"
+            };
+            query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
+            query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
+            query.Parameters.AddWithValue("@apMat", usuario.ApMaterno);
+            query.Parameters.AddWithValue("@idTi", usuario.IdTienda);
+            query.Parameters.AddWithValue("@dom", usuario.Domicilio);
+            query.Parameters.AddWithValue("@pass", usuario.Contraseña);
+            query.Parameters.AddWithValue("@tel", usuario.Telefono);
+            query.Parameters.AddWithValue("@ID", usuario.Id);
+            query.ExecuteReader();
         }
 
         public void GetSucursales() {

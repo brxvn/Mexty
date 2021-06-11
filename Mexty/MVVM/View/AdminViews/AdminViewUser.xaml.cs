@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -109,7 +111,7 @@ namespace Mexty.MVVM.View.AdminViews {
             string empty = "";
             if (tbx.Text != "") {
                 var newtext = tbx.Text;
-                _collectionView.Filter = (e) => {
+                _collectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
                     Usuarios emp = e as Usuarios;// TODO: Armar mejor lógica para filtrado
                     if (emp.Id.ToString() == newtext) {
                         return true;
@@ -128,5 +130,91 @@ namespace Mexty.MVVM.View.AdminViews {
                 _collectionView.Filter = null;
             }
         }
+
+        public void EditBtn(object sender, RoutedEventArgs e) {
+            Usuarios selectedUser = (Usuarios) DataUsuarios.SelectedItem;
+            if (StrPrep(nombreUsuario.Text) != StrPrep(selectedUser.Nombre)) {
+                selectedUser.Nombre = nombreUsuario.Text;
+            }
+            if (StrPrep(apPaternoUsuario.Text) != StrPrep(selectedUser.ApPaterno)) {
+                selectedUser.ApPaterno = apPaternoUsuario.Text;
+            }
+            if (StrPrep(apMaternoUsuario.Text) != StrPrep(selectedUser.ApMaterno)) {
+                selectedUser.ApMaterno = apMaternoUsuario.Text;
+            }
+            // TODO: verificar sucursal
+            // if (Int32.TryParse(StrPrep(sucursal.GetValue( T
+            //     //
+            // }
+            if (StrPrep(txtDireccion.Text) != StrPrep(selectedUser.Domicilio)) {
+                selectedUser.Domicilio = txtDireccion.Text;
+            }
+            if (StrPrep(txtContraseña.Text) != StrPrep(selectedUser.Contraseña)) {
+                selectedUser.Contraseña = txtContraseña.Text;
+            }
+            if (int.Parse(StrPrep(txtTelefono.Text)) != selectedUser.Telefono) {
+                selectedUser.Telefono = int.Parse(txtTelefono.Text);
+            }
+            var dbObj = new Database(); 
+            dbObj.UpdateData(selectedUser);
+            FillDataGrid();
+        }
+        
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            Regex regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
+        
+        /// <summary>
+        /// Regresa la cadena dada en Mayusculas y sin espeacios.
+        /// </summary>
+        /// <param name="text">Texto a Preparar.</param>
+        /// <returns></returns>
+        public string StrPrep(string text) {
+            return text.ToUpper().Replace(" ", "");
+        }
+
+        public void TextUpdatePswd(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            txtContraseña.Text = newtext;
+        }
+        
+        public void TextUpdateUserName(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            nombreUsuario.Text = newtext;
+        }
+        
+        
+        public void TextUpdateApMa(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            apMaternoUsuario.Text = newtext;
+        }
+        
+        public void TextUpdateApPa(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            apPaternoUsuario.Text = newtext;
+        }
+        
+        public void TextUpdateDir(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            txtDireccion.Text = newtext;
+        }
+        
+        public void TextUpdateTel(object sender, TextChangedEventArgs a) {
+            var textbox = sender as TextBox;
+            var newtext = textbox.Text;
+            txtTelefono.Text = newtext;
+        }
+        
     }
 }
