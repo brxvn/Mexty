@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
+using K4os.Compression.LZ4.Internal;
 using MySql.Data.MySqlClient;
+using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -85,14 +89,39 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla usuario.
         /// </summary>
         /// <returns>Un objeto tipo <c>MySqlReader</c> con la informació con la información.</returns>
-        public MySqlDataReader GetTablesFromUsuarios() {
+        public List<Usuarios> GetTablesFromUsuarios() {
             var query = new MySqlCommand() {
                 Connection = _sqlSession,
                 CommandText = "select * from usuario"
             };
+            List<Usuarios> users = new List<Usuarios>();
+            //var data = query.ExecuteReader();
+            using (MySqlDataReader reader = query.ExecuteReader()) {
+                while (reader.Read()) {
+                    var usuario = new Usuarios();
+                    usuario.Id = reader.GetInt32(0);
+                    usuario.Username = reader.GetString(1);
+                    usuario.ApPaterno = reader.GetString(2);
+                    usuario.ApMaterno = reader.GetString(3);
+                    usuario.Usuario = reader.GetString(4);
+                    usuario.Contraseña = reader.GetString(5);
+                    usuario.Domicilio = reader.GetString(6);
+                    usuario.Telefono = reader.GetInt32(7);
+                    usuario.Activo = reader.GetInt32(8);
+                    usuario.IdTienda = reader.GetInt32(9);
+                    usuario.IdRol = reader.GetInt32(10);
+                    usuario.UsuraioRegistra = reader.GetString(11);
+                    usuario.FechaRegistro = reader.GetString(12);
+                    usuario.UsuarioModifica = reader.GetString(13);
+                    usuario.FechaModifica = reader.GetString(14);
+                    users.Add((usuario));
+                }
+            }
+            return users;
+        }
 
-            var data = query.ExecuteReader();
-            return data;
+        public void GetSucursales() {
+            
         }
         
         /// <summary>

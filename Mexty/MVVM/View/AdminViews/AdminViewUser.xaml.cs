@@ -16,7 +16,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DataTypes;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Cms;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -45,45 +47,55 @@ namespace Mexty.MVVM.View.AdminViews {
             var connObj = new Database();
             var query = connObj.GetTablesFromUsuarios();
             DataUsuarios.ItemsSource = query;
+            
         }
 
+        /// <summary>
+        /// Funcion que obtiene el item selecionado de la <c>datagrid</c>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void ItemSelected(object sender, EventArgs e) {
-            //DataRowView selected = (DataRowView) DataUsuarios.SelectedItems;
-            //     nombreUsuario.Text = rowSelected["ID_USUARIO"].ToString();
-            //     apMaternoUsuario.Text = rowSelected["id_usuario"].ToString();
-            //     apPaternoUsuario.Text = rowSelected["IDUSUARIO"].ToString();
-            //     txtDireccion.Text = rowSelected["idusuario"].ToString();
-            //     txtContraseña.Text = (string) DataUsuarios.SelectedCells[1].Column.Header;
+            ClearFields();
+            Usuarios usuario = (Usuarios) DataUsuarios.SelectedItem;
+            nombreUsuario.Text = usuario.Usuario;
+            apPaternoUsuario.Text = usuario.ApPaterno;
+            apMaternoUsuario.Text = usuario.ApMaterno;
+            switch (usuario.IdTienda) {
+                case 1 :
+                    sucursal.SelectedItem = "Matriz";
+                    break;
+                case 2 :
+                    sucursal.SelectedItem = "Sucursal 1";
+                    break;
+                case 3:
+                    sucursal.SelectedItem = "Sucusal 2";
+                    break;
+            }
+            txtDireccion.Text = usuario.Domicilio;
+            txtTelefono.Text = usuario.Telefono.ToString(); //ojo
+            txtContraseña.Text = usuario.Contraseña;
+            if (usuario.Activo == 1) {
+                activo.IsChecked = true;
+            }
+            else {
+                activo.IsChecked = false;
+            }
+        }
+        /// <summary>
+        /// Función que limpia los campos de datos.
+        /// </summary>
+        public void ClearFields() {
+            nombreUsuario.Text = "";
+            apPaternoUsuario.Text = "";
+            apMaternoUsuario.Text = "";
+            sucursal.SelectedItem = "Mexty";
+            txtDireccion.Text = "";
+            txtContraseña.Text = "";
+            txtTelefono.Text = "";
+            activo.IsChecked = false;
         }
         
-        /// <summary>
-        /// Take a value from a the selected row of a DataGrid
-        /// </summary>
-        /// <param name="dGrid">The DataGrid where we take the value.</param>
-        /// <param name="columnName">The column's name of the searched value. Be careful, the parameter must be the same as the shown on the dataGrid</param>
-        /// <returns>The value contained in the selected line or an empty string if nothing is selected or if the column doesn't exist</returns>
-        public static string getDataGridValueAt(DataGrid dGrid, string columnName)
-        {
-            if (dGrid.SelectedItem == null)
-                return "...";
-            for (int i = 0; i < columnName.Length; i++)
-                if (columnName.ElementAt(i) == '_')
-                {
-                    columnName = columnName.Insert(i, "_");
-                    i++;
-                }
-            string str = dGrid.SelectedItem.ToString(); // Get the selected Line
-            str = str.Replace("}", "").Trim().Replace("{", "").Trim(); // Remove useless characters
-            for (int i = 0; i < str.Split(',').Length; i++)
-                if (str.Split(',')[i].Trim().Split('=')[0].Trim() == columnName) // Check if the searched column exists in the dataGrid.
-                    return str.Split(',')[i].Trim().Split('=')[1].Trim();
-                else {
-                    //return "-----****";
-                    return str;
-                }
-            return str;
-        }
-
         //private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) {
 
         //    var tbx = sender as TextBox;
