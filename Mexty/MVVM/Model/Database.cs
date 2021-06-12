@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using K4os.Compression.LZ4.Internal;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
+using System.Windows;
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -27,7 +28,7 @@ namespace Mexty.MVVM.Model {
         /// <param name="password">Contraseña del usuario</param>
         public Database(string username, string password) {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -49,7 +50,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         public Database() {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -142,7 +143,45 @@ namespace Mexty.MVVM.Model {
         public void GetSucursales() {
             
         }
-        
+
+
+        /// <summary>
+        /// Método para registrar un nuevo usuario, en dado caso de que ya exista se valida y se manda un mensaje
+        /// </summary>
+        /// <param name="nombre"> Recibe el nombre del nuevo usuario </param>
+        /// <param name="apPaterno"></param>
+        /// <param name="apMaterno"></param>
+        /// <param name="direccion"></param>
+        /// <param name="telefono"></param>
+        /// <param name="contraseña"></param>
+        /// <param name="sucursalID"></param>
+        public void NewUser(string nombre, string apPaterno, string apMaterno, string direccion, string telefono, string contraseña, int sucursalID) {
+            MySqlCommand query = new() {
+                Connection = _sqlSession,
+                CommandText = "insert into usuario (NOMBRE_USUARIO, AP_PATERNO, AP_MATERNO, USUARIO, CONTRASENIA, DOMICILIO, TELEFONO, ACTIVO, ID_TIENDA, ID_ROL, USUARIO_REGISTRA, FECHA_REGISTRO, USUARIO_MODIFICA, FECHA_MODIFICA)" +
+               " values ( @nombre, @apPaterno, @apMaterno, @nombre, @contrasenia, @direccion, @telefono, 1, 1, 1, @usrRegistra, sysdate(), @usrActualiza, sysdate())" 
+            };
+
+            query.Parameters.AddWithValue("@nombre", nombre);
+            query.Parameters.AddWithValue("@apPaterno", apPaterno);
+            query.Parameters.AddWithValue("@apMaterno", apMaterno);
+            query.Parameters.AddWithValue("@usuario", nombre);
+            query.Parameters.AddWithValue("@contrasenia", contraseña);
+            query.Parameters.AddWithValue("@direccion", direccion);
+            query.Parameters.AddWithValue("@telefono", telefono);
+            query.Parameters.AddWithValue("@id_tienda", sucursalID);
+            query.Parameters.AddWithValue("@usrRegistra", "admin");
+            query.Parameters.AddWithValue("@usrActualiza", "admin");
+
+            try {
+                query.ExecuteNonQuery();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("El usuario " + nombre + " ya existe. Intente de nuevo.");
+            }
+           
+        }
+
         /// <summary>
         /// Destructor para la clase Database.
         /// </summary>

@@ -29,6 +29,8 @@ namespace Mexty.MVVM.View.AdminViews {
     public partial class AdminViewUser : UserControl {
 
         private ListCollectionView _collectionView;
+        private Database _usuarioActivo;
+        private int _sucursalID;
         public AdminViewUser() {
             InitializeComponent();
             
@@ -37,6 +39,13 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            switch (sucursal.Text) {
+                case "Mexty":
+                    _sucursalID = 1;
+                    break;
+                
+            }
         }
 
         public void UpdateTimerTick(object sender, EventArgs e) { // TODO: hacerlo una clase para no repetir código
@@ -107,10 +116,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FilterSearch(object sender, TextChangedEventArgs e) {
-            var tbx = sender as TextBox;
-            string empty = "";
+            TextBox tbx = sender as TextBox;
+            
             if (tbx.Text != "") {
-                var newtext = tbx.Text;
+                string newtext = tbx.Text;
                 _collectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
                     Usuarios emp = e as Usuarios;// TODO: Armar mejor lógica para filtrado
                     if (emp.Id.ToString() == newtext) {
@@ -159,7 +168,25 @@ namespace Mexty.MVVM.View.AdminViews {
             dbObj.UpdateData(selectedUser);
             FillDataGrid();
         }
-        
+
+        private void btnRegistrar(object sender, RoutedEventArgs e) {
+            Database connObj = new();
+                
+            connObj.NewUser(
+                nombreUsuario.Text,
+                apPaternoUsuario.Text,
+                apMaternoUsuario.Text,
+                txtDireccion.Text,
+                txtTelefono.Text,
+                txtContraseña.Text,
+                _sucursalID  
+                );
+
+
+            FillDataGrid();
+            ClearFields();
+        }
+
         /// <summary>
         /// Función que valida los campos númericos.
         /// </summary>
@@ -180,41 +207,34 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         public void TextUpdatePswd(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            txtContraseña.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            txtContraseña.Text = textbox.Text;
         }
         
         public void TextUpdateUserName(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            nombreUsuario.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            nombreUsuario.Text = textbox.Text;
         }
         
         
         public void TextUpdateApMa(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            apMaternoUsuario.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            apMaternoUsuario.Text = textbox.Text;
         }
         
         public void TextUpdateApPa(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            apPaternoUsuario.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            apPaternoUsuario.Text = textbox.Text;
         }
         
         public void TextUpdateDir(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            txtDireccion.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            txtDireccion.Text = textbox.Text;
         }
         
         public void TextUpdateTel(object sender, TextChangedEventArgs a) {
-            var textbox = sender as TextBox;
-            var newtext = textbox.Text;
-            txtTelefono.Text = newtext;
+            TextBox textbox = sender as TextBox;
+            txtTelefono.Text = textbox.Text;
         }
-        
     }
 }
