@@ -89,12 +89,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = usuario.Domicilio;
             txtTelefono.Text = usuario.Telefono.ToString(); //ojo
             txtContraseña.Text = usuario.Contraseña;
-            if (usuario.Activo == 1) {
-                activo.IsChecked = true;
-            }
-            else {
-                activo.IsChecked = false;
-            }
+
         }
         /// <summary>
         /// Función que limpia los campos de datos.
@@ -103,11 +98,11 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
-            sucursal.SelectedItem = "Mexty";
+            sucursal.SelectedIndex = 0;
             txtDireccion.Text = "";
             txtContraseña.Text = "";
             txtTelefono.Text = "";
-            activo.IsChecked = false;
+            Rol.SelectedIndex = 0 ;
         }
         
         /// <summary>
@@ -235,6 +230,20 @@ namespace Mexty.MVVM.View.AdminViews {
         public void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtTelefono.Text = textbox.Text;
+        }
+
+        private void TextUpdateRol(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            Rol.Text = textbox.Text;
+        }
+
+        /// <summary>
+        /// Limpia los text box
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnLimpiar(object sender, RoutedEventArgs e) {
+            ClearFields();
         }
     }
 }

@@ -103,7 +103,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
-                <RowDefinition/>
+                
             </Grid.RowDefinitions>
 
             <Grid>
@@ -114,7 +114,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="nombreUsuario"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
@@ -134,7 +134,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextChanged="TextUpdateUserName"
@@ -174,7 +174,7 @@
                     </TextBox.Style>
                 </TextBox>
                 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="apPaternoUsuario"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
@@ -194,7 +194,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextChanged="TextUpdateApPa"
@@ -234,7 +234,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="apMaternoUsuario"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
@@ -254,7 +254,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextChanged="TextUpdateApMa"
@@ -294,7 +294,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="sucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="DarkGray" Height="40"
+                <ComboBox x:Name="sucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0"
                           Background="Beige" BorderThickness="0">
                     <ComboBoxItem Content="Matriz"/>
@@ -305,12 +305,13 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="txtDireccion"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
@@ -330,7 +331,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextChanged="TextUpdateDir"
@@ -370,7 +371,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="txtTelefono"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
@@ -390,7 +391,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      PreviewTextInput="OnlyNumbersValidation"
@@ -431,9 +432,9 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <TextBox Background="WhiteSmoke"
+                <TextBox Background="Beige"
                      x:Name="txtContraseña"
-                     Grid.Column="3"
+                     Grid.Column="2"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
                     <TextBox.Style>
@@ -451,7 +452,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
-                                                     Foreground="DarkGray"
+                                                     Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextChanged="TextUpdatePswd"
@@ -491,21 +492,31 @@
                     </TextBox.Style>
                 </TextBox>
 
+                <ComboBox x:Name="Rol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0"
+                          Background="Beige" BorderThickness="0">
+                    <ComboBoxItem Content="Administrador"/>
+                    <ComboBoxItem Content="Supervisor"/>
+                    <ComboBoxItem Content="Vendedor"/>
+                </ComboBox>
+
 
             </Grid>
 
-            <CheckBox x:Name="activo" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" Content="Activado" FontSize="20" Foreground="AntiqueWhite" Margin="10"/>
+            
 
             <Grid Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Content="Registrar" Click="btnRegistrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                <Button Grid.Column="0" Content="Registrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="btnRegistrar"/>
                 <Button Grid.Column="1" Content="Editar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EditBtn"/>
                 <Button Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                <Button Grid.Column="3" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="btnLimpiar"/>
                
                
             </Grid>
