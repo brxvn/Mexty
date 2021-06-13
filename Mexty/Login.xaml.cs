@@ -33,11 +33,10 @@ namespace Mexty {
         /// Lógica de el botón de Log-in.
         /// </summary>
         private void PasswordKeyDown(object sender, RoutedEventArgs e) {
-            Database dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
-
-            if (dbConnection.IsConnected()) {
-                var rol = dbConnection.GetRol();
-                MainWindow win = new MainWindow(dbConnection, rol);
+            var dbConnection = new Database(txtUsuario.Text, pswrdUsuario.Password);
+            if (Database.IsConnected()) {
+                var rol = Database.GetRol(); // TODO pasar el rol
+                MainWindow win = new MainWindow(dbConnection);
                 win.Show();
                 this.Close();
             }

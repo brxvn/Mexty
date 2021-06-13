@@ -10,6 +10,7 @@ namespace Mexty.MVVM.Model.DataTypes
     /// Clase Base para objetos tipo Usuarios.
     /// </summary>
     // TODO: Agregar restricciónes para modificar estos parametros aqui.
+    // TODO: agregar que en el set, los campos de nombre, appaterno, apmaterno y domicilio sean minuscula y quitarlo de la clase database.
     // TODO: Refactorizar esta clase de Usuarios a Empleados idk.
     public class Usuarios {
         /// <summary>

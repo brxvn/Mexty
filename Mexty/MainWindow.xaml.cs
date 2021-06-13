@@ -22,7 +22,7 @@ namespace Mexty {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow(Database usuario, string rol) { // TODO: no ne cesitamos pasar rol
+        public MainWindow(Database usuario) { 
             
             InitializeComponent();
 
@@ -34,7 +34,7 @@ namespace Mexty {
             //        Invent.Visibility = Visibility.Collapsed;
             //        break;
             //}
-            activeUser.Text = usuario.GetNombreUsuario();
+            activeUser.Text = Database.GetUsername();
 
             //Para mostrar la hora actual del sistema
             DispatcherTimer timer = new DispatcherTimer();

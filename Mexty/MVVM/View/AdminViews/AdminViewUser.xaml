@@ -494,7 +494,8 @@
 
                 <ComboBox x:Name="Rol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0">
+                          Background="Beige" BorderThickness="0" >
+                    <!-- OJO, Aqui habia un evento llamado Selection changed-->
                     <ComboBoxItem Content="Administrador"/>
                     <ComboBoxItem Content="Supervisor"/>
                     <ComboBoxItem Content="Vendedor"/>
@@ -513,10 +514,10 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Content="Registrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="btnRegistrar"/>
+                <Button Grid.Column="0" Content="Registrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="BtnRegistrar"/>
                 <Button Grid.Column="1" Content="Editar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EditBtn"/>
                 <Button Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
-                <Button Grid.Column="3" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="btnLimpiar"/>
+                <Button Grid.Column="3" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="BtnLimpiar"/>
                
                
             </Grid>

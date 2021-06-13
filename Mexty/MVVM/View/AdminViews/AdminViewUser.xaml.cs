@@ -20,17 +20,23 @@ using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.Theme;
-using MySql.Data.MySqlClient;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
-    /// Interaction logic for AdminViewUser.xaml
+    /// Lógica de interación de AdminViewUser.xaml
     /// </summary>
     public partial class AdminViewUser : UserControl {
 
-        private ListCollectionView _collectionView;
-        private Database _usuarioActivo;
-        private int _sucursalID;
+        /// <summary>
+        /// La vista actual de la tabla de usuarios.
+        /// </summary>
+        private ListCollectionView CollectionView { get; set; }
+        
+        /// <summary>
+        /// Lista de los usuarios de la base de datos.
+        /// </summary>
+        private List<Usuarios> UsuariosList { get; set; }
+        
         public AdminViewUser() {
             InitializeComponent();
             
@@ -39,37 +45,47 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
-
-            switch (sucursal.Text) {
-                case "Mexty":
-                    _sucursalID = 1;
-                    break;
-                
-            }
         }
-
-        public void UpdateTimerTick(object sender, EventArgs e) { // TODO: hacerlo una clase para no repetir código
+        
+        
+        /// <summary>
+        /// Actualiza la hora.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
 
         /// <summary>
         /// Método que llena la tabla con los datos de la tabla usuarios.
         /// </summary>
-        public void FillDataGrid() {
+        private void FillDataGrid() {
             var connObj = new Database();
             var query = connObj.GetTablesFromUsuarios();
-            DataUsuarios.ItemsSource = query;
+            UsuariosList = query;
             // TODO: Armar una lista de objetos con las sucursales y usarlas como source para el combobox de las sucursales.
-            ListCollectionView collectionView = new ListCollectionView(query);
-            _collectionView = collectionView;
+            var collectionView = new ListCollectionView(query) {
+                Filter = (e) => e is Usuarios emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
+            };
+            CollectionView = collectionView;
+            DataUsuarios.ItemsSource = collectionView;
         }
 
+        private void FillRol() {
+            
+        }
+
+        private void FillSucursales() {
+            
+        }
+        
         /// <summary>
         /// Funcion que obtiene el item selecionado de la <c>datagrid</c>.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void ItemSelected(object sender, EventArgs e) {
+        private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
             Usuarios usuario = (Usuarios) DataUsuarios.SelectedItem;
             nombreUsuario.Text = usuario.Username;
@@ -94,7 +110,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Función que limpia los campos de datos.
         /// </summary>
-        public void ClearFields() {
+        private void ClearFields() {
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
@@ -114,29 +130,27 @@ namespace Mexty.MVVM.View.AdminViews {
             TextBox tbx = sender as TextBox;
             
             if (tbx.Text != "") {
-                string newtext = tbx.Text;
-                _collectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
+                var newText = tbx.Text;
+                CollectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
                     Usuarios emp = e as Usuarios;// TODO: Armar mejor lógica para filtrado
-                    if (emp.Id.ToString() == newtext) {
+                    // TODO: Preguntar si en la busqueda deben de aparecer usuarios desactivados.
+                    if (emp.Nombre == newText) {
                         return true;
                     }
-                    if (emp.Nombre == newtext) {
-                        return true;
-                    }
-                    if (emp.Username == newtext) {
+                    if (emp.Username == newText) {
                         return true;
                     }
                     return false;
                 };
-                DataUsuarios.ItemsSource = _collectionView;
+                DataUsuarios.ItemsSource = CollectionView;
             }
             else {
-                _collectionView.Filter = null;
+                CollectionView.Filter = null;
             }
         }
 
-        public void EditBtn(object sender, RoutedEventArgs e) {
-            Usuarios selectedUser = (Usuarios) DataUsuarios.SelectedItem;
+        private void EditBtn(object sender, RoutedEventArgs e) {
+            var selectedUser = (Usuarios) DataUsuarios.SelectedItem; // TODO null 
             if (StrPrep(nombreUsuario.Text) != StrPrep(selectedUser.Nombre)) {
                 selectedUser.Nombre = nombreUsuario.Text;
             }
@@ -164,22 +178,40 @@ namespace Mexty.MVVM.View.AdminViews {
             FillDataGrid();
         }
 
-        private void btnRegistrar(object sender, RoutedEventArgs e) {
-            Database connObj = new();
-                
-            connObj.NewUser(
-                nombreUsuario.Text,
-                apPaternoUsuario.Text,
-                apMaternoUsuario.Text,
-                txtDireccion.Text,
-                txtTelefono.Text,
-                txtContraseña.Text,
-                _sucursalID  
-                );
-
-
-            FillDataGrid();
+        /// <summary>
+        /// Lógica detras del boton de registrar.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnRegistrar(object sender, RoutedEventArgs e) {
+            var newUsuario = new Usuarios();
+            // Campos de texto
+            newUsuario.Nombre = nombreUsuario.Text.ToLower();
+            newUsuario.ApPaterno = apPaternoUsuario.Text.ToLower();
+            newUsuario.ApMaterno = apMaternoUsuario.Text.ToLower();
+            newUsuario.Domicilio = txtDireccion.Text.ToLower();
+            newUsuario.Telefono = int.Parse(txtTelefono.Text);
+            newUsuario.Contraseña = txtContraseña.Text;
+            newUsuario.IdTienda = 1;// TODO: armar objetos de tienda.
+            newUsuario.IdRol = 1; // TODO: armar objetos de rol. tabla cat_rol_usuario.
+            // Campos generados
+            newUsuario.Activo = 1;
+            newUsuario.UsuraioRegistra = Database.GetUsername();
+            newUsuario.UsuarioModifica = Database.GetUsername();
+            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno;
+            // TODO hacer valoración de que no existe.
+            foreach (var usuario in UsuariosList) {
+                if (usuario.Username == newUsuario.Username) {
+                    var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
+                                 " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
+                    const string title = "Posible registro de usuario duplicado";
+                    MessageBox.Show(msg, title);
+                }
+            }
+            
+            Database.NewUser(newUsuario);
             ClearFields();
+            FillDataGrid();
         }
 
         /// <summary>
@@ -187,7 +219,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
@@ -197,44 +229,8 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="text">Texto a Preparar.</param>
         /// <returns></returns>
-        public string StrPrep(string text) {
+        private static string StrPrep(string text) {
             return text.ToUpper().Replace(" ", "");
-        }
-
-        public void TextUpdatePswd(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            txtContraseña.Text = textbox.Text;
-        }
-        
-        public void TextUpdateUserName(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            nombreUsuario.Text = textbox.Text;
-        }
-        
-        
-        public void TextUpdateApMa(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            apMaternoUsuario.Text = textbox.Text;
-        }
-        
-        public void TextUpdateApPa(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            apPaternoUsuario.Text = textbox.Text;
-        }
-        
-        public void TextUpdateDir(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            txtDireccion.Text = textbox.Text;
-        }
-        
-        public void TextUpdateTel(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            txtTelefono.Text = textbox.Text;
-        }
-
-        private void TextUpdateRol(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            Rol.Text = textbox.Text;
         }
 
         /// <summary>
@@ -242,8 +238,48 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnLimpiar(object sender, RoutedEventArgs e) {
+        private void BtnLimpiar(object sender, RoutedEventArgs e) {
             ClearFields();
+        }
+        
+        // -- Eventos de TextUpdate.
+        // TODO: buscar una forma de hacerlos genericos
+        
+        private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtContraseña.Text = textbox.Text;
+        }
+        
+        private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            nombreUsuario.Text = textbox.Text;
+        }
+        
+        
+        private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            apMaternoUsuario.Text = textbox.Text;
+        }
+        
+        private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            apPaternoUsuario.Text = textbox.Text;
+        }
+        
+        private void TextUpdateDir(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtDireccion.Text = textbox.Text;
+        }
+        
+        private void TextUpdateTel(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtTelefono.Text = textbox.Text;
+        }
+
+        //TODO: nunca usado
+        private void TextUpdateRol(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            Rol.Text = textbox.Text;
         }
     }
 }
