@@ -294,12 +294,9 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="sucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                <ComboBox x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0"
                           Background="Beige" BorderThickness="0">
-                    <ComboBoxItem Content="Matriz"/>
-                    <ComboBoxItem Content="sucursal 1"/>
-                    <ComboBoxItem Content="surcursal 2"/>
                 </ComboBox>
             </Grid>
 
@@ -312,7 +309,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBox Background="Beige"
-                     x:Name="txtDireccion"
+                     x:Name="TxtDireccion"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
@@ -347,7 +344,8 @@
                                                        Margin="10,0,0,0"
                                                        FontSize="15"
                                                        Foreground="DarkGray"
-                                                       Grid.Column="1">
+                                                       Grid.Column="1"> 
+                                                        <!-- ^ Esto esta Fuera de la definición de columnas  -->
 
                                                         <TextBlock.Style>
                                                             <Style TargetType="{x:Type TextBlock}">
@@ -372,7 +370,7 @@
                 </TextBox>
 
                 <TextBox Background="Beige"
-                     x:Name="txtTelefono"
+                     x:Name="TxtTelefono"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
@@ -433,7 +431,7 @@
                 </TextBox>
 
                 <TextBox Background="Beige"
-                     x:Name="txtContraseña"
+                     x:Name="TxtContraseña"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
@@ -492,20 +490,17 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="Rol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                <ComboBox x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0"
                           Background="Beige" BorderThickness="0" >
                     <!-- OJO, Aqui habia un evento llamado Selection changed-->
-                    <ComboBoxItem Content="Administrador"/>
-                    <ComboBoxItem Content="Supervisor"/>
-                    <ComboBoxItem Content="Vendedor"/>
                 </ComboBox>
 
 
             </Grid>
 
             
-
+            <!-- Grid.Row="3" esta afuera de la definición de columnas. -->
             <Grid Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

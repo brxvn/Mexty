@@ -46,6 +46,9 @@ namespace Mexty.MVVM.View.AdminViews {
             InitializeComponent();
             
             FillDataGrid();
+            FillRol();
+            FillSucursales();
+            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -77,12 +80,26 @@ namespace Mexty.MVVM.View.AdminViews {
             DataUsuarios.ItemsSource = collectionView;
         }
 
+        /// <summary>
+        /// Función que llena el ComboBox de Rol.
+        /// </summary>
         private void FillRol() {
-            
+            var data = new Database();
+            var roles = data.GetTablesFromRoles();
+            foreach (var rol in roles) {
+                ComboRol.Items.Add(rol.RolDescription.ToLower());
+            }
         }
 
+        /// <summary>
+        /// Función que llena el Combobox de Sucursales.
+        /// </summary>
         private void FillSucursales() {
-            
+            var data = new Database();
+            var sucursales = data.GetTablesFromSucursales();
+            foreach (var sucursal in sucursales) {
+                ComboSucursal.Items.Add(sucursal.NombreTienda);
+            }
         }
         
         /// <summary>
@@ -99,18 +116,18 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.Text = usuario.ApMaterno;
             switch (usuario.IdTienda) {
                 case 1 :
-                    sucursal.SelectedItem = "Matriz";
+                    ComboSucursal.SelectedItem = "Matriz";
                     break;
                 case 2 :
-                    sucursal.SelectedItem = "Sucursal 1";
+                    ComboSucursal.SelectedItem = "Sucursal 1";
                     break;
                 case 3:
-                    sucursal.SelectedItem = "Sucusal 2";
+                    ComboSucursal.SelectedItem = "Sucusal 2";
                     break;
             }
-            txtDireccion.Text = usuario.Domicilio;
-            txtTelefono.Text = usuario.Telefono.ToString(); //ojo
-            txtContraseña.Text = usuario.Contraseña;
+            TxtDireccion.Text = usuario.Domicilio;
+            TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
+            TxtContraseña.Text = usuario.Contraseña;
 
         }
         /// <summary>
@@ -120,11 +137,11 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
-            sucursal.SelectedIndex = 0;
-            txtDireccion.Text = "";
-            txtContraseña.Text = "";
-            txtTelefono.Text = "";
-            Rol.SelectedIndex = 0 ;
+            ComboSucursal.SelectedIndex = 0;
+            TxtDireccion.Text = "";
+            TxtContraseña.Text = "";
+            TxtTelefono.Text = "";
+            ComboRol.SelectedIndex = 0 ;
         }
 
         /// <summary>
@@ -138,7 +155,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var newText = tbx.Text;
                 CollectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
                     Usuario emp = e as Usuario;
-                    
+                    // BUG: No oculta inactivos en la busqueda.
                     if (emp.Activo == 0) { // solo usuarios activos.
                         return false;
                     }
@@ -179,14 +196,14 @@ namespace Mexty.MVVM.View.AdminViews {
             // if (Int32.TryParse(StrPrep(sucursal.GetValue( T
             //     //
             // }
-            if (StrPrep(txtDireccion.Text) != StrPrep(SelectedUser.Domicilio)) {
-                SelectedUser.Domicilio = txtDireccion.Text;
+            if (StrPrep(TxtDireccion.Text) != StrPrep(SelectedUser.Domicilio)) {
+                SelectedUser.Domicilio = TxtDireccion.Text;
             }
-            if (StrPrep(txtContraseña.Text) != StrPrep(SelectedUser.Contraseña)) {
-                SelectedUser.Contraseña = txtContraseña.Text;
+            if (StrPrep(TxtContraseña.Text) != StrPrep(SelectedUser.Contraseña)) {
+                SelectedUser.Contraseña = TxtContraseña.Text;
             }
-            if (int.Parse(StrPrep(txtTelefono.Text)) != SelectedUser.Telefono) {
-                SelectedUser.Telefono = int.Parse(txtTelefono.Text);
+            if (int.Parse(StrPrep(TxtTelefono.Text)) != SelectedUser.Telefono) {
+                SelectedUser.Telefono = int.Parse(TxtTelefono.Text);
             }
             var dbObj = new Database(); 
             Database.UpdateData(SelectedUser);
@@ -204,9 +221,9 @@ namespace Mexty.MVVM.View.AdminViews {
             newUsuario.Nombre = nombreUsuario.Text;
             newUsuario.ApPaterno = apPaternoUsuario.Text;
             newUsuario.ApMaterno = apMaternoUsuario.Text;
-            newUsuario.Domicilio = txtDireccion.Text;
-            newUsuario.Telefono = int.Parse(txtTelefono.Text);
-            newUsuario.Contraseña = txtContraseña.Text;
+            newUsuario.Domicilio = TxtDireccion.Text;
+            newUsuario.Telefono = int.Parse(TxtTelefono.Text);
+            newUsuario.Contraseña = TxtContraseña.Text;
             newUsuario.IdTienda = 1;// TODO: armar objetos de tienda.
             newUsuario.IdRol = 1; // TODO: armar objetos de rol. tabla cat_rol_usuario.
             // Campos generados
@@ -226,6 +243,20 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             
             Database.NewUser(newUsuario);
+            ClearFields();
+            FillDataGrid();
+        }
+
+        /// <summary>
+        /// Elimina (hace inactivo) el usuario seleccionado.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EliminarUsuario(object sender, RoutedEventArgs e) {
+            var usuario = SelectedUser;
+            usuario.Activo = 0;
+            var db = new Database();
+            Database.UpdateData(usuario);
             ClearFields();
             FillDataGrid();
         }
@@ -258,26 +289,12 @@ namespace Mexty.MVVM.View.AdminViews {
             ClearFields();
         }
 
-        /// <summary>
-        /// Elimina (hace inactivo) el usuario seleccionado.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EliminarUsuario(object sender, RoutedEventArgs e) {
-            var usuario = SelectedUser;
-            usuario.Activo = 0;
-            var db = new Database();
-            Database.UpdateData(usuario);
-            ClearFields();
-            FillDataGrid();
-        }
-
         // -- Eventos de TextUpdate.
         // TODO: buscar una forma de hacerlos genericos
 
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
-            txtContraseña.Text = textbox.Text;
+            TxtContraseña.Text = textbox.Text;
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
@@ -297,18 +314,18 @@ namespace Mexty.MVVM.View.AdminViews {
 
         private void TextUpdateDir(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
-            txtDireccion.Text = textbox.Text;
+            TxtDireccion.Text = textbox.Text;
         }
 
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
-            txtTelefono.Text = textbox.Text;
+            TxtTelefono.Text = textbox.Text;
         }
 
         //TODO: nunca usado
         private void TextUpdateRol(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
-            Rol.Text = textbox.Text;
+            ComboRol.Text = textbox.Text;
         }
     }
 }

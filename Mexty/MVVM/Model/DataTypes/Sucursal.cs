@@ -1,14 +1,16 @@
-﻿using System.Windows.Controls;
+﻿using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace Mexty.MVVM.Model.DataTypes {
     public class Sucursal {
         private string _nombreTienda;
         private string _dirección;
+        private int _telefono;
 
         /// <summary>
         /// Id De la tienda.
         /// </summary>
-        public int IdTienda { get; init; }
+        public int IdTienda { get; set; }
 
         /// <summary>
         /// Nombre de la tienda.
@@ -40,7 +42,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Logo de la tienda.
         /// </summary>
         // TODO: Ver que onda con el objeto blob que viene de la base de datos.
-        public Image Logo { get; set; }
+        public List<byte> Logo { get; set; }
 
         /// <summary>
         /// Mensaje de la tienda.

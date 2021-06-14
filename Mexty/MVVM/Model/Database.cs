@@ -75,7 +75,6 @@ namespace Mexty.MVVM.Model {
             
            connObj.Open();
            _sqlSession = connObj;
-           
         }
 
         /// <summary>
@@ -103,7 +102,7 @@ namespace Mexty.MVVM.Model {
         /// Método que retorna el username de la persona conectada.
         /// </summary>
         /// <returns></returns>
-        public static string GetUsername() { // -------------------------
+        public static string GetUsername() {
             return Username;
         }
 
@@ -111,7 +110,7 @@ namespace Mexty.MVVM.Model {
         /// Método que retorna el ID del rol del usuario connectado.
         /// </summary>
         /// <returns>ID del usuario conectado </returns>
-        public static int GetRol() { // -----------------------
+        public static int GetRol() {
             return Rol;
         }
 
@@ -136,28 +135,28 @@ namespace Mexty.MVVM.Model {
                 CommandText = "select * from usuario"
             };
             var users = new List<Usuario>();
-            using (MySqlDataReader reader = query.ExecuteReader()) {
-                while (reader.Read()) {
-                    var usuario = new Usuario {
-                        Id = reader.GetInt32(0),
-                        Nombre = reader.GetString(1),
-                        ApPaterno = reader.GetString(2),
-                        ApMaterno = reader.GetString(3),
-                        Username = reader.GetString(4),
-                        Contraseña = reader.GetString(5),
-                        Domicilio = reader.GetString(6),
-                        Telefono = reader.GetInt32(7),
-                        Activo = reader.GetInt32(8),
-                        IdTienda = reader.GetInt32(9),
-                        IdRol = reader.GetInt32(10),
-                        UsuraioRegistra = reader.GetString(11),
-                        FechaRegistro = reader.GetString(12),
-                        UsuarioModifica = reader.GetString(13),
-                        FechaModifica = reader.GetString(14)
-                    };
-                    users.Add((usuario));
-                }
+            using MySqlDataReader reader = query.ExecuteReader();
+            while (reader.Read()) {
+                var usuario = new Usuario {
+                    Id = reader.GetInt32(0),
+                    Nombre = reader.GetString(1),
+                    ApPaterno = reader.GetString(2),
+                    ApMaterno = reader.GetString(3),
+                    Username = reader.GetString(4),
+                    Contraseña = reader.GetString(5),
+                    Domicilio = reader.GetString(6),
+                    Telefono = reader.GetInt32(7),
+                    Activo = reader.GetInt32(8),
+                    IdTienda = reader.GetInt32(9),
+                    IdRol = reader.GetInt32(10),
+                    UsuraioRegistra = reader.GetString(11),
+                    FechaRegistro = reader.GetString(12),
+                    UsuarioModifica = reader.GetString(13),
+                    FechaModifica = reader.GetString(14)
+                };
+                users.Add((usuario));
             }
+
             return users;
         }
 
@@ -215,13 +214,62 @@ namespace Mexty.MVVM.Model {
         // ============================================
         // ------- Querrys de Sucursales --------------
         // ============================================
-        
-        public void GetTablesFromSucursales() {
+
+        /// <summary>
+        /// Función que obtiene las tablas de las Sucursales.
+        /// </summary>
+        public List<Sucursal> GetTablesFromSucursales() {
             var query = new MySqlCommand() {
                 Connection = _sqlSession,
                 CommandText = "select * from cat_tienda"
             };
-            
+            var sucursales = new List<Sucursal>();
+            using MySqlDataReader reader = query.ExecuteReader();
+            while (reader.Read()) {
+                var sucursal = new Sucursal {
+                    IdTienda = reader.GetInt32(0),
+                    NombreTienda = reader.GetString(1),
+                    Dirección = reader.GetString(2),
+                    // Telefono = reader.GetInt32(3), TODO: Lidiar con datos nulos.
+                    // Rfc = reader.GetString(4),
+                    // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
+                    // Mensaje = reader.GetString(6),
+                    // Facebook = reader.GetString(7),
+                    // Instagram = reader.GetString(8),
+                    // TipoTienda = reader.GetString(9)
+                };
+                sucursales.Add(sucursal);
+            }
+
+            return sucursales;
+        }
+
+
+        // ============================================
+        // ------- Querrys de Rol ---------------------
+        // ============================================
+
+
+        /// <summary>
+        /// Función que obtiene las tablas de los Roles.
+        /// </summary>
+        public List<Rol> GetTablesFromRoles() {
+            var querry = new MySqlCommand() {
+                Connection = _sqlSession,
+                CommandText = "select * from cat_rol_usuario"
+            };
+            var roles = new List<Rol>();
+            using MySqlDataReader reader = querry.ExecuteReader();
+            while (reader.Read()) {
+                var rol = new Rol() {
+                    IdRol = reader.GetInt32(0),
+                    RolDescription = reader.GetString(1),
+                    IdTienda = reader.GetInt32(2)
+                };
+                roles.Add(rol);
+            }
+
+            return roles;
         }
 
         /// <summary>
