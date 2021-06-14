@@ -9,6 +9,7 @@ using K4os.Compression.LZ4.Internal;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
+using Google.Protobuf.WellKnownTypes;
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -19,12 +20,26 @@ namespace Mexty.MVVM.Model {
     public class Database {
         private static MySqlDataReader _firstQuery;
         private static MySqlConnection _sqlSession;
-        
+
+        /// <summary>
+        /// Campo con el nombre de usuario de la persona logeada.
+        /// </summary>
         private static string Username { get; set; }
+        /// <summary>
+        /// Campo con el password de la persona logeada.
+        /// </summary>
         private static string Password { get; set; }
+
+        /// <summary>
+        /// ID del Rol de la persona logeada.
+        /// </summary>
         private static int Rol { get; set; }
+
+        /// <summary>
+        /// <c>Bool</c> que guarda si el log-in fue exitoso.
+        /// </summary>
         private static bool ConnectionSuccess { get; set; }
-        
+
         /// <summary>
         /// Constructor principal de la clase <c>Database</c>, se encarga de
         /// hacer la conección principal a la base de datos.
@@ -91,7 +106,7 @@ namespace Mexty.MVVM.Model {
         public static string GetUsername() { // -------------------------
             return Username;
         }
-        
+
         /// <summary>
         /// Método que retorna el ID del rol del usuario connectado.
         /// </summary>
@@ -99,7 +114,7 @@ namespace Mexty.MVVM.Model {
         public static int GetRol() { // -----------------------
             return Rol;
         }
-        
+
         /// <summary>
         /// Método que cierra la conección con la base de datos.
         /// </summary>
@@ -107,19 +122,23 @@ namespace Mexty.MVVM.Model {
             _sqlSession.Close();
         }
 
+        // ============================================
+        // ------- Querrys de Usuario ----------------
+        // ============================================
+
         /// <summary>
         /// Método para obtener todos los datos de la tabla usuario.
         /// </summary>
         /// <returns>Un objeto tipo <c>MySqlReader</c> con la informació con la información.</returns>
-        public List<Usuarios> GetTablesFromUsuarios() {
+        public List<Usuario> GetTablesFromUsuarios() {
             var query = new MySqlCommand() {
                 Connection = _sqlSession,
                 CommandText = "select * from usuario"
             };
-            var users = new List<Usuarios>();
+            var users = new List<Usuario>();
             using (MySqlDataReader reader = query.ExecuteReader()) {
                 while (reader.Read()) {
-                    var usuario = new Usuarios {
+                    var usuario = new Usuario {
                         Id = reader.GetInt32(0),
                         Nombre = reader.GetString(1),
                         ApPaterno = reader.GetString(2),
@@ -143,47 +162,45 @@ namespace Mexty.MVVM.Model {
         }
 
         /// <summary>
-        /// Método para actualziar los datos de Usuarios
+        /// Método para actualziar los datos de Usuario
         /// </summary>
-        public void UpdateData(Usuarios usuario) {
+        public static void UpdateData(Usuario usuario) {
             var query = new MySqlCommand() {
                 Connection = _sqlSession,
-                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel where ID_USUARIO=@ID"
+                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel, ACTIVO=@act where ID_USUARIO=@ID"
             };
-            query.Parameters.AddWithValue("@nomUsr", usuario.Nombre.ToLower());
-            query.Parameters.AddWithValue("@apPat", usuario.ApPaterno.ToLower());
-            query.Parameters.AddWithValue("@apMat", usuario.ApMaterno.ToLower());
-            query.Parameters.AddWithValue("@idTi", usuario.IdTienda);
-            query.Parameters.AddWithValue("@dom", usuario.Domicilio.ToLower());
+            query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
+            query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
+            query.Parameters.AddWithValue("@apMat", usuario.ApMaterno);
+            query.Parameters.AddWithValue("@idTi",usuario.IdTienda.ToString()); // evitamos boxing//evitamos boxing.
+            query.Parameters.AddWithValue("@dom", usuario.Domicilio);
             query.Parameters.AddWithValue("@pass", usuario.Contraseña);
-            query.Parameters.AddWithValue("@tel", usuario.Telefono);
-            query.Parameters.AddWithValue("@ID", usuario.Id);
+            query.Parameters.AddWithValue("@tel", usuario.Telefono.ToString());
+            query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
+            query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.ExecuteReader();
-        }
-
-        public void GetSucursales() {
-            
         }
 
         /// <summary>
         /// Método que registra un nuevo usuario.
         /// </summary>
-        /// <param name="newUser">Objeto tipo <c>Usuarios</c> que tiene la información del usuario nuevo.</param>
-        public static void NewUser(Usuarios newUser) {
+        /// <param name="newUser">Objeto tipo <c>Usuario</c> que tiene la información del usuario nuevo.</param>
+        public static void NewUser(Usuario newUser) {
             MySqlCommand query = new() {
                 Connection = _sqlSession,
                 CommandText = "insert into usuario values (default, @nombre, @apPat, @apMat, @usr, @pass, @dom, @tel, @act, @idT, @idR, @usrReg, sysdate(), @usrMod, sysdate())"
             };
-            query.Parameters.AddWithValue("@nombre", newUser.Nombre.ToLower());
-            query.Parameters.AddWithValue("@apPat", newUser.ApPaterno.ToLower());
-            query.Parameters.AddWithValue("@apMat", newUser.ApMaterno.ToLower());
-            query.Parameters.AddWithValue("@usr", newUser.Username.ToLower());
+
+            query.Parameters.AddWithValue("@nombre", newUser.Nombre);
+            query.Parameters.AddWithValue("@apPat", newUser.ApPaterno);
+            query.Parameters.AddWithValue("@apMat", newUser.ApMaterno);
+            query.Parameters.AddWithValue("@usr", newUser.Username);
             query.Parameters.AddWithValue("@pass", newUser.Contraseña);
-            query.Parameters.AddWithValue("@dom", newUser.Domicilio.ToLower());
-            query.Parameters.AddWithValue("@tel", newUser.Telefono);
-            query.Parameters.AddWithValue("@act", newUser.Activo);
-            query.Parameters.AddWithValue("@idT", newUser.IdTienda);
-            query.Parameters.AddWithValue("@idR", newUser.IdRol);
+            query.Parameters.AddWithValue("@dom", newUser.Domicilio);
+            query.Parameters.AddWithValue("@tel", newUser.Telefono.ToString());// Evitamos boxing
+            query.Parameters.AddWithValue("@act", newUser.Activo.ToString());
+            query.Parameters.AddWithValue("@idT", newUser.IdTienda.ToString());
+            query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
             query.Parameters.AddWithValue("@usrReg", newUser.UsuraioRegistra);
             query.Parameters.AddWithValue("@usrMod", newUser.UsuarioModifica);
 
@@ -191,8 +208,20 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery();// retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error exepción: "+e);
+                MessageBox.Show("Error exepción: {0}",e.ToString());
             }
+        }
+
+        // ============================================
+        // ------- Querrys de Sucursales --------------
+        // ============================================
+        
+        public void GetTablesFromSucursales() {
+            var query = new MySqlCommand() {
+                Connection = _sqlSession,
+                CommandText = "select * from cat_tienda"
+            };
+            
         }
 
         /// <summary>

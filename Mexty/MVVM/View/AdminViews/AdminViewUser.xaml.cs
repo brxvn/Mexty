@@ -31,12 +31,17 @@ namespace Mexty.MVVM.View.AdminViews {
         /// La vista actual de la tabla de usuarios.
         /// </summary>
         private ListCollectionView CollectionView { get; set; }
-        
+
         /// <summary>
         /// Lista de los usuarios de la base de datos.
         /// </summary>
-        private List<Usuarios> UsuariosList { get; set; }
-        
+        private List<Usuario> UsuariosList { get; set; }
+
+        /// <summary>
+        /// El último usuario seleccionado.
+        /// </summary>
+        private Usuario SelectedUser { get; set; }
+
         public AdminViewUser() {
             InitializeComponent();
             
@@ -46,8 +51,8 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
-        
-        
+
+
         /// <summary>
         /// Actualiza la hora.
         /// </summary>
@@ -66,7 +71,7 @@ namespace Mexty.MVVM.View.AdminViews {
             UsuariosList = query;
             // TODO: Armar una lista de objetos con las sucursales y usarlas como source para el combobox de las sucursales.
             var collectionView = new ListCollectionView(query) {
-                Filter = (e) => e is Usuarios emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
+                Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
             };
             CollectionView = collectionView;
             DataUsuarios.ItemsSource = collectionView;
@@ -87,7 +92,8 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
-            Usuarios usuario = (Usuarios) DataUsuarios.SelectedItem;
+            Usuario usuario = (Usuario) DataUsuarios.SelectedItem;
+            SelectedUser = usuario;
             nombreUsuario.Text = usuario.Username;
             apPaternoUsuario.Text = usuario.ApPaterno;
             apMaternoUsuario.Text = usuario.ApMaterno;
@@ -120,7 +126,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtTelefono.Text = "";
             Rol.SelectedIndex = 0 ;
         }
-        
+
         /// <summary>
         /// Lógica para el boton de busqueda.
         /// </summary>
@@ -128,16 +134,21 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void FilterSearch(object sender, TextChangedEventArgs e) {
             TextBox tbx = sender as TextBox;
-            
             if (tbx.Text != "") {
                 var newText = tbx.Text;
                 CollectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
-                    Usuarios emp = e as Usuarios;// TODO: Armar mejor lógica para filtrado
-                    // TODO: Preguntar si en la busqueda deben de aparecer usuarios desactivados.
-                    if (emp.Nombre == newText) {
+                    Usuario emp = e as Usuario;
+                    
+                    if (emp.Activo == 0) { // solo usuarios activos.
+                        return false;
+                    }
+                    if (FuzzySearch.FuzzyMatch(emp.Nombre, newText)) { // Por nombre.
                         return true;
                     }
-                    if (emp.Username == newText) {
+                    if (FuzzySearch.FuzzyMatch(emp.Username, newText)) { // Por Nombre de usuario.
+                        return true;
+                    }
+                    if (FuzzySearch.FuzzyMatch(emp.ApPaterno, newText)) { // Por Ap paterno.
                         return true;
                     }
                     return false;
@@ -149,32 +160,36 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
-        private void EditBtn(object sender, RoutedEventArgs e) {
-            var selectedUser = (Usuarios) DataUsuarios.SelectedItem; // TODO null 
-            if (StrPrep(nombreUsuario.Text) != StrPrep(selectedUser.Nombre)) {
-                selectedUser.Nombre = nombreUsuario.Text;
+        /// <summary>
+        /// Función para editar el usuario seleccionado.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EditarUsuario(object sender, RoutedEventArgs e) {
+            if (StrPrep(nombreUsuario.Text) != StrPrep(SelectedUser.Nombre)) {
+                SelectedUser.Nombre = nombreUsuario.Text;
             }
-            if (StrPrep(apPaternoUsuario.Text) != StrPrep(selectedUser.ApPaterno)) {
-                selectedUser.ApPaterno = apPaternoUsuario.Text;
+            if (StrPrep(apPaternoUsuario.Text) != StrPrep(SelectedUser.ApPaterno)) {
+                SelectedUser.ApPaterno = apPaternoUsuario.Text;
             }
-            if (StrPrep(apMaternoUsuario.Text) != StrPrep(selectedUser.ApMaterno)) {
-                selectedUser.ApMaterno = apMaternoUsuario.Text;
+            if (StrPrep(apMaternoUsuario.Text) != StrPrep(SelectedUser.ApMaterno)) {
+                SelectedUser.ApMaterno = apMaternoUsuario.Text;
             }
             // TODO: verificar sucursal
             // if (Int32.TryParse(StrPrep(sucursal.GetValue( T
             //     //
             // }
-            if (StrPrep(txtDireccion.Text) != StrPrep(selectedUser.Domicilio)) {
-                selectedUser.Domicilio = txtDireccion.Text;
+            if (StrPrep(txtDireccion.Text) != StrPrep(SelectedUser.Domicilio)) {
+                SelectedUser.Domicilio = txtDireccion.Text;
             }
-            if (StrPrep(txtContraseña.Text) != StrPrep(selectedUser.Contraseña)) {
-                selectedUser.Contraseña = txtContraseña.Text;
+            if (StrPrep(txtContraseña.Text) != StrPrep(SelectedUser.Contraseña)) {
+                SelectedUser.Contraseña = txtContraseña.Text;
             }
-            if (int.Parse(StrPrep(txtTelefono.Text)) != selectedUser.Telefono) {
-                selectedUser.Telefono = int.Parse(txtTelefono.Text);
+            if (int.Parse(StrPrep(txtTelefono.Text)) != SelectedUser.Telefono) {
+                SelectedUser.Telefono = int.Parse(txtTelefono.Text);
             }
             var dbObj = new Database(); 
-            dbObj.UpdateData(selectedUser);
+            Database.UpdateData(SelectedUser);
             FillDataGrid();
         }
 
@@ -183,13 +198,13 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BtnRegistrar(object sender, RoutedEventArgs e) {
-            var newUsuario = new Usuarios();
+        private void RegistrarUsuario(object sender, RoutedEventArgs e) {
+            var newUsuario = new Usuario();
             // Campos de texto
-            newUsuario.Nombre = nombreUsuario.Text.ToLower();
-            newUsuario.ApPaterno = apPaternoUsuario.Text.ToLower();
-            newUsuario.ApMaterno = apMaternoUsuario.Text.ToLower();
-            newUsuario.Domicilio = txtDireccion.Text.ToLower();
+            newUsuario.Nombre = nombreUsuario.Text;
+            newUsuario.ApPaterno = apPaternoUsuario.Text;
+            newUsuario.ApMaterno = apMaternoUsuario.Text;
+            newUsuario.Domicilio = txtDireccion.Text;
             newUsuario.Telefono = int.Parse(txtTelefono.Text);
             newUsuario.Contraseña = txtContraseña.Text;
             newUsuario.IdTienda = 1;// TODO: armar objetos de tienda.
@@ -199,7 +214,8 @@ namespace Mexty.MVVM.View.AdminViews {
             newUsuario.UsuraioRegistra = Database.GetUsername();
             newUsuario.UsuarioModifica = Database.GetUsername();
             newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno;
-            // TODO hacer valoración de que no existe.
+            // TODO: hacer valoración de que no existe.
+            // TODO: si ya existe darlo de alta.
             foreach (var usuario in UsuariosList) {
                 if (usuario.Username == newUsuario.Username) {
                     var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
@@ -223,7 +239,7 @@ namespace Mexty.MVVM.View.AdminViews {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
-        
+
         /// <summary>
         /// Regresa la cadena dada en Mayusculas y sin espeacios.
         /// </summary>
@@ -238,39 +254,52 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void BtnLimpiar(object sender, RoutedEventArgs e) {
+        private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
         }
-        
+
+        /// <summary>
+        /// Elimina (hace inactivo) el usuario seleccionado.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EliminarUsuario(object sender, RoutedEventArgs e) {
+            var usuario = SelectedUser;
+            usuario.Activo = 0;
+            var db = new Database();
+            Database.UpdateData(usuario);
+            ClearFields();
+            FillDataGrid();
+        }
+
         // -- Eventos de TextUpdate.
         // TODO: buscar una forma de hacerlos genericos
-        
+
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtContraseña.Text = textbox.Text;
         }
-        
+
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
         }
-        
-        
+
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
         }
-        
+
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apPaternoUsuario.Text = textbox.Text;
         }
-        
+
         private void TextUpdateDir(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtDireccion.Text = textbox.Text;
         }
-        
+
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtTelefono.Text = textbox.Text;

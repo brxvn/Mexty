@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Mexty.MVVM.Model
 {
-    public class FuzzySearch {
+    public static class FuzzySearch {
         
         /// <summary>
         /// Hace una busqueda difusa de un patrón en un <c>string</c>.
@@ -27,7 +27,7 @@ namespace Mexty.MVVM.Model
             }
             return patternLength != 0 && strLength != 0 && patternIdx == patternLength;
         }
-        
+
         /// <summary>
         /// Hace una busqueda difusa de un patron dentro de un <c>string</c> y da un <c>score</c>
         /// calificando la coincidencia con el <c>string</c> en el que se busca.
