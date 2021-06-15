@@ -48,9 +48,9 @@ namespace Mexty.MVVM.Model {
         /// <param name="password">Contraseña del usuario</param>
         public Database(string username, string password) {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
+                new MySqlConnection(ConnectionInfo());
             
-           connObj.Open();
+           connObj.Open(); // lanzar exepción o minimo un combo box cuando el susuario no sea correcto.
            _sqlSession = connObj;
 
            var login = new MySqlCommand {
@@ -71,10 +71,22 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         public Database() {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
+                new MySqlConnection(ConnectionInfo());
             
            connObj.Open();
            _sqlSession = connObj;
+        }
+
+        /// <summary>
+        /// Método que Lee el contenido del archivo ini para la connección.
+        /// </summary>
+        /// <returns></returns>
+        private static string ConnectionInfo() {
+            var myIni = new IniFile(@"C:\Mexty\Settings.ini");
+            var user = myIni.Read("DbUser");
+            var pass = myIni.Read("DbPass");
+            var connString = $"server=localhost; database = mexty; Uid={user}; pwd ={pass}";
+            return connString;
         }
 
         /// <summary>
@@ -178,7 +190,13 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
-            query.ExecuteReader();
+
+            try {
+                query.ExecuteReader();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("Error (update) exepción: {0}",e.ToString());
+            }
         }
 
         /// <summary>
@@ -208,7 +226,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery();// retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error exepción: {0}",e.ToString());
+                MessageBox.Show("Error (new) exepción: {0}",e.ToString());
             }
         }
 

@@ -11,6 +11,7 @@ namespace Mexty.MVVM.Model.DataTypes
     /// Clase Base para objetos tipo Usuario.
     /// </summary>
     // TODO: Agregar restricciónes para modificar estos parametros aqui.
+    // TODO: añadir operator overloading para verificar si dos usuarios son iguales.
     public class Usuario {
         private string _nombre;
         private string _apPaterno;
