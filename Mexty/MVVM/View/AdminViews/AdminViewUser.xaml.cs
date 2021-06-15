@@ -109,26 +109,17 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
-            Usuario usuario = (Usuario) DataUsuarios.SelectedItem;
+            var usuario = (Usuario) DataUsuarios.SelectedItem;
+            if (usuario == null) return; // Check si no es nulo.
             SelectedUser = usuario;
             nombreUsuario.Text = usuario.Username;
             apPaternoUsuario.Text = usuario.ApPaterno;
             apMaternoUsuario.Text = usuario.ApMaterno;
-            switch (usuario.IdTienda) {
-                case 1 :
-                    ComboSucursal.SelectedItem = "Matriz";
-                    break;
-                case 2 :
-                    ComboSucursal.SelectedItem = "Sucursal 1";
-                    break;
-                case 3:
-                    ComboSucursal.SelectedItem = "Sucusal 2";
-                    break;
-            }
+            ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
+            ComboRol.SelectedIndex = usuario.IdRol - 1;
             TxtDireccion.Text = usuario.Domicilio;
             TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
             TxtContraseña.Text = usuario.Contraseña;
-
         }
         /// <summary>
         /// Función que limpia los campos de datos.
@@ -151,29 +142,45 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void FilterSearch(object sender, TextChangedEventArgs e) {
             TextBox tbx = sender as TextBox;
-            if (tbx.Text != "") {
-                var newText = tbx.Text;
-                CollectionView.Filter = (e) => { // TODO: probablemente Hacer una clase con esto para reutilizarlo
-                    Usuario emp = e as Usuario;
-                    // BUG: No oculta inactivos en la busqueda.
-                    if (emp.Activo == 0) { // solo usuarios activos.
-                        return false;
-                    }
-                    if (FuzzySearch.FuzzyMatch(emp.Nombre, newText)) { // Por nombre.
-                        return true;
-                    }
-                    if (FuzzySearch.FuzzyMatch(emp.Username, newText)) { // Por Nombre de usuario.
-                        return true;
-                    }
-                    if (FuzzySearch.FuzzyMatch(emp.ApPaterno, newText)) { // Por Ap paterno.
-                        return true;
-                    }
-                    return false;
-                };
-                DataUsuarios.ItemsSource = CollectionView;
+            var collection = CollectionView;
+            if (tbx != null && tbx.Text != "") {
+                string newText = tbx.Text;
+                var noNull = new Predicate<object>(empleado => {
+                    if (empleado == null) return false;
+                    return ((Usuario) empleado).Activo == 1;
+                });
+                var usuarios = new Predicate<object>(empleado => {
+                    if (empleado == null) return false;
+                    return (
+                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Username, newText));
+                });
+                var nombre = new Predicate<object>(empleado => {
+                    if (empleado == null) return false;
+                    return (
+                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre, newText));
+                });
+                var apPat = new Predicate<object>(empleado => {
+                    if (empleado == null) return false;
+                    return (
+                        FuzzySearch.FuzzyMatch(((Usuario) empleado).ApPaterno, newText));
+                });
+                
+                collection.Filter = noNull;
+                collection.Filter = usuarios;
+                collection.Filter = nombre;
+                collection.Filter = apPat;
+                DataUsuarios.ItemsSource = collection;
+                CollectionView = collection;
             }
             else {
-                CollectionView.Filter = null;
+                collection.Filter = null;
+                var noNull = new Predicate<object>(empleado => {
+                    if (empleado == null) return false;
+                    return ((Usuario) empleado).Activo == 1;
+                });
+                collection.Filter = noNull;
+                DataUsuarios.ItemsSource = collection;
+                CollectionView = collection;
             }
         }
 
@@ -192,10 +199,11 @@ namespace Mexty.MVVM.View.AdminViews {
             if (StrPrep(apMaternoUsuario.Text) != StrPrep(SelectedUser.ApMaterno)) {
                 SelectedUser.ApMaterno = apMaternoUsuario.Text;
             }
-            // TODO: verificar sucursal
-            // if (Int32.TryParse(StrPrep(sucursal.GetValue( T
-            //     //
-            // }
+            if (ComboRol.SelectedIndex + 1 != SelectedUser.IdRol) {
+                SelectedUser.IdRol = ComboRol.SelectedIndex + 1; }
+            if (ComboSucursal.SelectedIndex + 1 != SelectedUser.IdTienda) {
+                SelectedUser.IdTienda = ComboSucursal.SelectedIndex + 1;
+            }
             if (StrPrep(TxtDireccion.Text) != StrPrep(SelectedUser.Domicilio)) {
                 SelectedUser.Domicilio = TxtDireccion.Text;
             }
@@ -205,7 +213,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (int.Parse(StrPrep(TxtTelefono.Text)) != SelectedUser.Telefono) {
                 SelectedUser.Telefono = int.Parse(TxtTelefono.Text);
             }
-            var dbObj = new Database(); 
+            var dbObj = new Database();
             Database.UpdateData(SelectedUser);
             FillDataGrid();
         }
@@ -224,8 +232,8 @@ namespace Mexty.MVVM.View.AdminViews {
             newUsuario.Domicilio = TxtDireccion.Text;
             newUsuario.Telefono = int.Parse(TxtTelefono.Text);
             newUsuario.Contraseña = TxtContraseña.Text;
-            newUsuario.IdTienda = 1;// TODO: armar objetos de tienda.
-            newUsuario.IdRol = 1; // TODO: armar objetos de rol. tabla cat_rol_usuario.
+            newUsuario.IdTienda = ComboSucursal.SelectedIndex + 1;
+            newUsuario.IdRol = ComboRol.SelectedIndex + 1; 
             // Campos generados
             newUsuario.Activo = 1;
             newUsuario.UsuraioRegistra = Database.GetUsername();
