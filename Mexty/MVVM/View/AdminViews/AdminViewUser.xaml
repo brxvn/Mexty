@@ -128,6 +128,7 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -137,6 +138,7 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -146,6 +148,7 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -155,6 +158,7 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
@@ -164,7 +168,8 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="20"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -173,6 +178,7 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
