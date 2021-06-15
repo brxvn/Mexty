@@ -140,7 +140,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FilterSearch(object sender, TextChangedEventArgs e) {
+        private void FilterSearch(object sender, TextChangedEventArgs e) { //TODO Fix this messss probablemente usar contains para search
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
@@ -157,7 +157,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var nombre = new Predicate<object>(empleado => {
                     if (empleado == null) return false;
                     return (
-                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre, newText));
+                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre.Replace(" ", ""), newText));
                 });
                 var apPat = new Predicate<object>(empleado => {
                     if (empleado == null) return false;
