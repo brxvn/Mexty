@@ -48,7 +48,7 @@ namespace Mexty.MVVM.Model {
         /// <param name="password">Contraseña del usuario</param>
         public Database(string username, string password) {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
@@ -71,7 +71,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         public Database() {
             var connObj =
-                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = Jorgedavid12");
+                new MySqlConnection("server=localhost; database = mexty; Uid=root; pwd = root");
             
            connObj.Open();
            _sqlSession = connObj;
