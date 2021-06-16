@@ -48,6 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             FillDataGrid();
             FillRol();
             FillSucursales();
+            ClearFields();
             
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -112,7 +113,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var usuario = (Usuario) DataUsuarios.SelectedItem;
             if (usuario == null) return; // Check si no es nulo.
             SelectedUser = usuario;
-            nombreUsuario.Text = usuario.Username;
+            nombreUsuario.Text = usuario.Nombre;
             apPaternoUsuario.Text = usuario.ApPaterno;
             apMaternoUsuario.Text = usuario.ApMaterno;
             ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
@@ -213,9 +214,17 @@ namespace Mexty.MVVM.View.AdminViews {
             if (int.Parse(StrPrep(TxtTelefono.Text)) != SelectedUser.Telefono) {
                 SelectedUser.Telefono = int.Parse(TxtTelefono.Text);
             }
-            var dbObj = new Database();
-            Database.UpdateData(SelectedUser);
-            FillDataGrid();
+
+            var mensaje = "Está a punto de editar al usuario: \n" + SelectedUser.Nombre + " " + SelectedUser.ApPaterno + " " + SelectedUser.ApMaterno + "\n"
+               + "¿Desea continuar?";
+            var titulo = "Confirmación de Edicionde Usuario";
+            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
+                Database.UpdateData(SelectedUser);
+                FillDataGrid();
+                ClearFields();
+            }
+
+               
         }
 
         /// <summary>
@@ -238,21 +247,28 @@ namespace Mexty.MVVM.View.AdminViews {
             newUsuario.Activo = 1;
             newUsuario.UsuraioRegistra = Database.GetUsername();
             newUsuario.UsuarioModifica = Database.GetUsername();
-            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno;
-            // TODO: hacer valoración de que no existe.
-            // TODO: si ya existe darlo de alta.
-            foreach (var usuario in UsuariosList) {
-                if (usuario.Username == newUsuario.Username) {
-                    var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
-                                 " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
-                    const string title = "Posible registro de usuario duplicado";
-                    MessageBox.Show(msg, title);
+            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno.ToLower();
+
+            // ventana de confirmación
+            var mensaje = "Agregar al usuario: \n" + newUsuario.Nombre + " " + newUsuario.ApPaterno + " " + newUsuario.ApMaterno + "\n"
+                + "Con el nombre de usuario: " + newUsuario.Username;
+            var titulo = "Confirmación de Usuario Nuevo";
+
+            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) {
+                // TODO: hacer valoración de que no existe.
+                // TODO: si ya existe darlo de alta.
+                foreach (var usuario in UsuariosList) {
+                    if (usuario.Username == newUsuario.Username) {
+                        var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApPaterno + " ya existe.";
+                        const string title = "Usuario duplicado";
+                        MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
+                Database.NewUser(newUsuario);           
+                FillDataGrid();
+                ClearFields();
             }
             
-            Database.NewUser(newUsuario);
-            ClearFields();
-            FillDataGrid();
         }
 
         /// <summary>
@@ -262,11 +278,18 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
             var usuario = SelectedUser;
-            usuario.Activo = 0;
-            var db = new Database();
-            Database.UpdateData(usuario);
-            ClearFields();
-            FillDataGrid();
+            string mensaje = "¿Seguro quiere eliminar a el usuario " + usuario.Nombre + " " + usuario.ApPaterno +"?";
+            MessageBoxButton buttons = MessageBoxButton.OKCancel;
+            MessageBoxImage icon = MessageBoxImage.Warning;
+
+            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) == MessageBoxResult.OK) {
+                usuario.Activo = 0;
+                Database.UpdateData(usuario);
+                ClearFields();
+                FillDataGrid();
+            }
+            
+
         }
 
         /// <summary>
@@ -295,6 +318,14 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
+            //string menssage = "¡Desea limpiar los campos?";
+            //string titulo = "Confirmación";
+
+            //if (MessageBox.Show("Do you want to close this window?",
+            //"Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
+                
+            //}
+
         }
 
         // -- Eventos de TextUpdate.

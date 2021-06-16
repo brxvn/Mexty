@@ -43,12 +43,16 @@ namespace Mexty {
             else { 
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
             }
-            dbConnection.CloseConnection(); //TODO: no cerrar conección y pasar el objeto
+            Database.CloseConnection(); //TODO: no cerrar conección y pasar el objeto
         }
 
         // TODO: documentar
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
+        }
+
+        private void LogOut(object sender, RoutedEventArgs e) {
+            App.Current.Shutdown();
         }
     }
 }

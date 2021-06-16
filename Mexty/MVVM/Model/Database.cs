@@ -62,7 +62,12 @@ namespace Mexty.MVVM.Model {
 
            var connectionSuccess = login.ExecuteReader();
            _firstQuery = connectionSuccess;
-           InitializeFields();
+            //InitializeFields();
+            if (_firstQuery.Read()) {
+                InitializeFields();
+            }
+            //
+
         }
 
         /// <summary>
@@ -117,8 +122,12 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método que cierra la conección con la base de datos.
         /// </summary>
-        public void CloseConnection() {
+        public static void CloseConnection() {
             _sqlSession.Close();
+            Username = null;
+            Password = null;
+            Rol = 0;
+            ConnectionSuccess = false;
         }
 
         // ============================================
@@ -208,7 +217,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery();// retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error exepción: {0}",e.ToString());
+                Console.WriteLine("Usuario existente");            
             }
         }
 
@@ -278,8 +287,8 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         // TODO: implementar que cuando se ejecute el destructor te mande al login.
         // TODO: Ver si es necesario esto o no xd (puede Q no)
-        ~Database() {
-            //_sqlSession.Close();
-        }
+        //~Database() {
+        //    _sqlSession.Close();
+        //}
     }
 }

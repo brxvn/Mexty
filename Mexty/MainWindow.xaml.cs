@@ -1,4 +1,5 @@
 ﻿using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.ViewModel;
 using MySql.Data.MySqlClient;
 using System;
@@ -48,5 +49,16 @@ namespace Mexty {
             time.Content = DateTime.Now.ToString("G");
         }
 
+        private void SignOut(object sender, RoutedEventArgs e) {
+            var message = "¿Desea cerrar sesión?";
+            var title = "Confirmación.";
+            if (MessageBox.Show(message, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
+                Login login = new Login();
+                Database.CloseConnection();
+                login.Show();
+                Close();
+            }
+            
+        }
     }
 }
