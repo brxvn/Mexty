@@ -1,21 +1,7 @@
 ﻿using Mexty.MVVM.Model;
-using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.ViewModel;
-using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Mexty {
@@ -23,18 +9,15 @@ namespace Mexty {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        public MainWindow(Database usuario) { 
+        public MainWindow() {
             
             InitializeComponent();
-
+                        
             DataContext = new MainViewModel();
-            // Mostramos el usuario activo
-
-            //switch (rol) {
-            //    case "2":
-            //        Invent.Visibility = Visibility.Collapsed;
-            //        break;
-            //}
+            
+            if (Database.GetRol().Equals(3)) {
+                Admn.Visibility = Visibility.Collapsed;
+            }
             activeUser.Text = Database.GetUsername();
 
             //Para mostrar la hora actual del sistema
@@ -45,15 +28,23 @@ namespace Mexty {
  
         }
 
+        /// <summary>
+        /// Método para mostrar hora y fecha actual en pantalla.
+        /// </summary>
         public void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
 
+        /// <summary>
+        /// Logica del botón para cerrar sesión desde la pantalla principal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SignOut(object sender, RoutedEventArgs e) {
             var message = "¿Desea cerrar sesión?";
             var title = "Confirmación.";
             if (MessageBox.Show(message, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                Login login = new Login();
+                Login login = new();
                 Database.CloseConnection();
                 login.Show();
                 Close();

@@ -25,9 +25,6 @@ namespace Mexty.Commands {
                 viewModel.SelectedViewModel = new AdminViewModel();
             }
 
-            else if(parameter.ToString() == "Product") {
-                viewModel.SelectedViewModel = new AdminViewUserModel();
-            }
         }
     }
 }

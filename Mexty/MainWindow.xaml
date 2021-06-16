@@ -74,7 +74,8 @@
                     HorizontalAlignment="Left"/>
 
                 </StackPanel>
-                <Button  Background="Transparent"  Margin="50 0" BorderThickness="0" Foreground="AntiqueWhite" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Right" Click="SignOut">
+                <Button  Background="Transparent"  Margin="50 0" BorderThickness="0" Foreground="AntiqueWhite" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Right" Click="SignOut"
+                         ToolTip="Cerrar Sesión" ToolTipService.ShowDuration="2500">
                     <fa:FontAwesomeIcon SolidIcon="SignOutAlt"/>
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">

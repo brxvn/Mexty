@@ -1,7 +1,6 @@
 ﻿namespace Mexty.MVVM.Model.DataTypes {
     public class Rol {
-        private string _rolDescripcion; 
-        
+        private string _rolDescripcion;
         // TODO: Hacer un método para obtener el rol por id o por nombre.
         /// <summary>
         /// Id del rol.
