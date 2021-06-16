@@ -73,7 +73,6 @@ namespace Mexty.MVVM.View.AdminViews {
             var connObj = new Database();
             var query = connObj.GetTablesFromUsuarios();
             UsuariosList = query;
-            // TODO: Armar una lista de objetos con las sucursales y usarlas como source para el combobox de las sucursales.
             var collectionView = new ListCollectionView(query) {
                 Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
             };
@@ -122,6 +121,7 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
             TxtContraseña.Text = usuario.Contraseña;
         }
+
         /// <summary>
         /// Función que limpia los campos de datos.
         /// </summary>
@@ -141,7 +141,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FilterSearch(object sender, TextChangedEventArgs e) {
+        private void FilterSearch(object sender, TextChangedEventArgs e) { //TODO Fix this messss probablemente usar contains para search
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
@@ -158,7 +158,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var nombre = new Predicate<object>(empleado => {
                     if (empleado == null) return false;
                     return (
-                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre, newText));
+                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre.Replace(" ", ""), newText));
                 });
                 var apPat = new Predicate<object>(empleado => {
                     if (empleado == null) return false;
@@ -166,10 +166,10 @@ namespace Mexty.MVVM.View.AdminViews {
                         FuzzySearch.FuzzyMatch(((Usuario) empleado).ApPaterno, newText));
                 });
                 
-                collection.Filter = noNull;
-                collection.Filter = usuarios;
-                collection.Filter = nombre;
-                collection.Filter = apPat;
+                collection.Filter += noNull;
+                collection.Filter += usuarios;
+                collection.Filter += nombre;
+                collection.Filter += apPat;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -179,7 +179,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (empleado == null) return false;
                     return ((Usuario) empleado).Activo == 1;
                 });
-                collection.Filter = noNull;
+                collection.Filter += noNull;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -201,7 +201,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 SelectedUser.ApMaterno = apMaternoUsuario.Text;
             }
             if (ComboRol.SelectedIndex + 1 != SelectedUser.IdRol) {
-                SelectedUser.IdRol = ComboRol.SelectedIndex + 1; }
+                SelectedUser.IdRol = ComboRol.SelectedIndex + 1; 
+            }
             if (ComboSucursal.SelectedIndex + 1 != SelectedUser.IdTienda) {
                 SelectedUser.IdTienda = ComboSucursal.SelectedIndex + 1;
             }
@@ -247,28 +248,23 @@ namespace Mexty.MVVM.View.AdminViews {
             newUsuario.Activo = 1;
             newUsuario.UsuraioRegistra = Database.GetUsername();
             newUsuario.UsuarioModifica = Database.GetUsername();
-            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno.ToLower();
-
-            // ventana de confirmación
-            var mensaje = "Agregar al usuario: \n" + newUsuario.Nombre + " " + newUsuario.ApPaterno + " " + newUsuario.ApMaterno + "\n"
-                + "Con el nombre de usuario: " + newUsuario.Username;
-            var titulo = "Confirmación de Usuario Nuevo";
-
-            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Question) == MessageBoxResult.OK) {
-                // TODO: hacer valoración de que no existe.
-                // TODO: si ya existe darlo de alta.
-                foreach (var usuario in UsuariosList) {
-                    if (usuario.Username == newUsuario.Username) {
-                        var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApPaterno + " ya existe.";
-                        const string title = "Usuario duplicado";
-                        MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno;
+            // TODO: si ya existe darlo de alta.
+            var repetido = false;
+            foreach (var usuario in UsuariosList) {
+                if (usuario.Username == newUsuario.Username) {
+                    var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
+                                 " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
+                    const string title = "Posible registro de usuario duplicado";
+                    MessageBox.Show(msg, title);
+                    repetido = true;
                 }
-                Database.NewUser(newUsuario);           
-                FillDataGrid();
-                ClearFields();
             }
-            
+            if (!repetido) {
+                Database.NewUser(newUsuario);
+            }
+            ClearFields();
+            FillDataGrid();
         }
 
         /// <summary>
