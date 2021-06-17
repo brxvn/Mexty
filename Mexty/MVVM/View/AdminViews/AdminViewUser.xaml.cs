@@ -247,13 +247,12 @@ namespace Mexty.MVVM.View.AdminViews {
             // TODO: si ya existe darlo de alta.
             var repetido = false;
             foreach (var usuario in UsuariosList) {
-                if (usuario.Username == newUsuario.Username) {
-                    var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
-                                 " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
-                    const string title = "Posible registro de usuario duplicado";
-                    MessageBox.Show(msg, title);
-                    repetido = true;
-                }
+                if (usuario.Username != newUsuario.Username) continue;
+                var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
+                          " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
+                const string title = "Posible registro de usuario duplicado";
+                MessageBox.Show(msg, title);
+                repetido = true;
             }
             if (!repetido) {
                 Database.NewUser(newUsuario);
@@ -269,18 +268,15 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
             var usuario = SelectedUser;
-            string mensaje = "¿Seguro quiere eliminar a el usuario " + usuario.Nombre + " " + usuario.ApPaterno +"?";
-            MessageBoxButton buttons = MessageBoxButton.OKCancel;
-            MessageBoxImage icon = MessageBoxImage.Warning;
+            var mensaje = "¿Seguro quiere eliminar a el usuario " + usuario.Nombre + " " + usuario.ApPaterno +"?";
+            const MessageBoxButton buttons = MessageBoxButton.OKCancel;
+            const MessageBoxImage icon = MessageBoxImage.Warning;
 
-            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) == MessageBoxResult.OK) {
-                usuario.Activo = 0;
-                Database.UpdateData(usuario);
-                ClearFields();
-                FillDataGrid();
-            }
-            
-
+            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
+            usuario.Activo = 0;
+            Database.UpdateData(usuario);
+            ClearFields();
+            FillDataGrid();
         }
 
         /// <summary>
@@ -289,7 +285,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            Regex regex = new Regex("[^0-9]+");
+            var regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
         }
 
