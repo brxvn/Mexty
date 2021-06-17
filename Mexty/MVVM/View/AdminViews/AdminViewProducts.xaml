@@ -3,10 +3,607 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Mexty.MVVM.View"
+             xmlns:local="clr-namespace:Mexty.MVVM.View.AdminViews"
+             xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#710a24">
-        <Label Content="Hola Productos" FontSize="50"/>
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             RenderOptions.EdgeMode="Aliased">
+
+    <Grid Background="#7f233a">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"  Margin="50 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Catálogo de Productos"
+               FontSize="40"
+               VerticalContentAlignment="Center"
+               Foreground="AntiqueWhite"
+               Padding="0,20"/>
+
+            <!--El nombre es searchBox-->
+            <TextBox Background="WhiteSmoke"
+                     Grid.Column="1"
+                     HorizontalAlignment="Right">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Setters>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border Background="Beige" UseLayoutRounding="False" CornerRadius="10" Width="350" Height="40">
+                                            <Grid>
+                                                <Rectangle StrokeThickness="1"/>
+                                                <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="DarkGray"
+                                                     FontSize="18"
+                                                     x:Name="txtBusqueda">
+                                                    <!--TextChanged="FilterSearch"-->
+                                                     
+                                                    <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                </TextBox>
+                                                <fa:FontAwesomeIcon SolidIcon="Search"
+                                                        FontSize="15"
+                                                        Foreground="DarkGray"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Right"
+                                                        HorizontalContentAlignment="Center"
+                                                        Margin="10,0,15,0"
+                                                        x:Name="Icon"
+                                                        />
+                                                <TextBlock IsHitTestVisible="False"
+                                                       Text="Buscar..."
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="DarkGray"
+                                                       Grid.Column="1">
+
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Text, ElementName=txtBusqueda}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>
+
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+        </Grid>
+
+        <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0"
+               BorderBrush="AntiqueWhite"/>
+        <DataGrid x:Name="DataUsuarios" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Usuario}" Background="White">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#f78b37" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+
+                    </Style.Resources>
+                </Style>
+
+            </DataGrid.RowStyle>
+            <DataGrid.Resources>
+                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="#fac034" />
+                    <Setter Property="Padding" Value="3 0"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    <Setter Property="FontWeight" Value="Bold"/>
+                    <Setter Property="FontSize" Value="27"/>
+
+                </Style>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns  >
+                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Precio" Binding="{Binding ApPaterno}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding Username}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Sucursal" Binding="{Binding IdTienda}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Detalle" Binding="{Binding FechaRegistro}" Width="0.3*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="20"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Grid Grid.Row="2" Margin="50, 0, 50, 50">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Background="Beige"
+                     x:Name="txtNombreProducto"
+                     Grid.Column="0"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                    
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Nombre del Producto"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+               
+                <ComboBox x:Name="ComboVenta" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0"
+                          Background="Beige" BorderThickness="0">
+                </ComboBox>
+
+                <TextBox Background="Beige"
+                     x:Name="txtPrecioMayoreo"
+                     Grid.Column="2"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Precio Mayoreo"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <TextBox Background="Beige"
+                     x:Name="txtPrecioMenudeo"
+                     Grid.Column="1"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                    
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Precio Menudeo"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Background="Beige"
+                     x:Name="txtDetalle"
+                     Grid.Column="0"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="80">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Detalle"
+                                                       Padding="5 10"
+                                                       VerticalAlignment="Top"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <ComboBox x:Name="ComboTipo" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0"
+                          Background="Beige" BorderThickness="0">
+                </ComboBox>
+
+                <TextBox Background="Beige"
+                     x:Name="txtMedida"
+                     Grid.Column="2"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Medida"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <TextBox Background="Beige"
+                     x:Name="txtIdProducto"
+                     Grid.Column="1"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="ID Producto"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <CheckBox Grid.Column="0" Margin="10 0" VerticalAlignment="Center" FontSize="25" HorizontalAlignment="Center" Content="Activo" Foreground="AntiqueWhite" VerticalContentAlignment="Center">
+
+                </CheckBox>
+
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Height="40" Grid.Column="0" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                    <Button Height="40" Grid.Column="1" Content="Registrar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                    <Button Height="40" Grid.Column="2" Content="Editar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                    <Button Height="40" Grid.Column="3" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <Label Name="time" 
+               Grid.Row="3"
+                Foreground="AntiqueWhite" 
+                FontSize="20" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="50 15"/>
     </Grid>
 </UserControl>
