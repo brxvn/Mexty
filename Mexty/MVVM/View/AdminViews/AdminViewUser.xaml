@@ -119,8 +119,6 @@
 
                 </Style>
             </DataGrid.Resources>
-            
-            
 
             <DataGrid.Columns  >
                 <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="0.25*"> 
