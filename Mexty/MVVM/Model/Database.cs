@@ -181,7 +181,7 @@ namespace Mexty.MVVM.Model {
         public static void UpdateData(Usuario usuario) {
             var query = new MySqlCommand() {
                 Connection = _sqlSession,
-                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel, ACTIVO=@act, ID_ROL=@idRo where ID_USUARIO=@ID"
+                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel, ACTIVO=@act, ID_ROL=@idRo, USUARIO_MODIFICA=@uMod, FECHA_MODIFICA=sysdate() where ID_USUARIO=@ID"
             };
             query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
             query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
@@ -193,6 +193,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
+            query.Parameters.AddWithValue("@uMod",usuario.UsuarioModifica);
 
             try {
                 query.ExecuteReader();
