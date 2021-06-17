@@ -146,30 +146,9 @@ namespace Mexty.MVVM.View.AdminViews {
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
                 string newText = tbx.Text;
-                var noNull = new Predicate<object>(empleado => {
-                    if (empleado == null) return false;
-                    return ((Usuario) empleado).Activo == 1;
-                });
-                var usuarios = new Predicate<object>(empleado => {
-                    if (empleado == null) return false;
-                    return (
-                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Username, newText));
-                });
-                var nombre = new Predicate<object>(empleado => {
-                    if (empleado == null) return false;
-                    return (
-                        FuzzySearch.FuzzyMatch(((Usuario) empleado).Nombre.Replace(" ", ""), newText));
-                });
-                var apPat = new Predicate<object>(empleado => {
-                    if (empleado == null) return false;
-                    return (
-                        FuzzySearch.FuzzyMatch(((Usuario) empleado).ApPaterno, newText));
-                });
+                var customFilter = new Predicate<object>(o => FilterLogic(o,newText));
                 
-                collection.Filter += noNull;
-                collection.Filter += usuarios;
-                collection.Filter += nombre;
-                collection.Filter += apPat;
+                collection.Filter = customFilter;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -183,6 +162,22 @@ namespace Mexty.MVVM.View.AdminViews {
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
             }
+        }
+
+        /// <summary>
+        /// Lógica para el filtro del datagrid.
+        /// </summary>
+        /// <param name="obj">Objeto en el que se busca.</param>
+        /// <param name="text">Texto del cuadro de búsqueda.</param>
+        /// <returns></returns>
+        private static bool FilterLogic(object obj, string text) {
+            var usuario = (Usuario) obj;
+            if (usuario.Username.Contains(text) ||
+                usuario.ApPaterno.Contains(text) ||
+                usuario.Nombre.Contains(text)) {
+                return usuario.Activo == 1;
+            }
+            return false;
         }
 
         /// <summary>
@@ -216,6 +211,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 SelectedUser.Telefono = int.Parse(TxtTelefono.Text);
             }
 
+            SelectedUser.UsuarioModifica = Database.GetUsername();
+
             var mensaje = "Está a punto de editar al usuario: \n" + SelectedUser.Nombre + " " + SelectedUser.ApPaterno + " " + SelectedUser.ApMaterno + "\n"
                + "¿Desea continuar?";
             var titulo = "Confirmación de Edicionde Usuario";
@@ -224,8 +221,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 FillDataGrid();
                 ClearFields();
             }
-
-               
         }
 
         /// <summary>
