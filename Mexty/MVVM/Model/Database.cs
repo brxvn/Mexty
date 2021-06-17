@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
@@ -10,7 +11,7 @@ namespace Mexty.MVVM.Model {
     /// La clase principal de base de datos.
     /// Contiene todos los métodos necesarios para la conección y uso de la Base de datos.
     /// </summary>
-    // TODO: Maybe usar herencia para crear diferentes clases Database 
+    // TODO: Hacer la clase Database estacica y re implementar login.
     public class Database {
         private static MySqlDataReader _firstQuery;
         private static MySqlConnection _sqlSession;
@@ -56,30 +57,16 @@ namespace Mexty.MVVM.Model {
 
            var connectionSuccess = login.ExecuteReader();
            _firstQuery = connectionSuccess;
-            //InitializeFields();
             if (_firstQuery.Read()) {
                 InitializeFields();
             }
-            //
 
-        }
-
-        /// <summary>
-        /// Constructor sin parametros de Database, se usa para acceder a los métodos una vez
-        /// ya se ha hecho la conección inicial.
-        /// </summary>
-        public Database() {
-            var connObj =
-                new MySqlConnection(ConnectionInfo());
-            
-           connObj.Open();
-           _sqlSession = connObj;
         }
 
         /// <summary>
         /// Método que Lee el contenido del archivo ini para la connección.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>String con la información de log-in a la base de datos</returns>
         private static string ConnectionInfo() {
             var myIni = new IniFile(@"C:\Mexty\Settings.ini");
             var user = myIni.Read("DbUser");
@@ -101,6 +88,10 @@ namespace Mexty.MVVM.Model {
             }
         }
 
+        // =================================================
+        // ------- Info sobre el usuario connectado. -------
+        // =================================================
+
         /// <summary> Método para saber si la conección con la base de datos fue exitosa. </summary>
         /// <returns>
         /// <c>true</c> si la conección fue exitosa, <c>false</c> si no.
@@ -112,7 +103,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método que retorna el username de la persona conectada.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>string</c> con el username de la persona logeada.</returns>
         public static string GetUsername() {
             return Username;
         }
@@ -120,7 +111,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método que retorna el ID del rol del usuario connectado.
         /// </summary>
-        /// <returns>ID del usuario conectado </returns>
+        /// <returns>ID <c>int</c> del usuario conectado </returns>
         public static int GetRol() {
             return Rol;
         }
@@ -144,9 +135,11 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla usuario.
         /// </summary>
         /// <returns>Un objeto tipo <c>MySqlReader</c> con la informació con la información.</returns>
-        public List<Usuario> GetTablesFromUsuarios() {
+        public static List<Usuario> GetTablesFromUsuarios() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
             var query = new MySqlCommand() {
-                Connection = _sqlSession,
+                Connection = connObj,
                 CommandText = "select * from usuario"
             };
             var users = new List<Usuario>();
@@ -169,8 +162,9 @@ namespace Mexty.MVVM.Model {
                     UsuarioModifica = reader.GetString(13),
                     FechaModifica = reader.GetString(14)
                 };
-                users.Add((usuario));
+                users.Add(usuario);
             }
+            connObj.Close();
 
             return users;
         }
@@ -179,8 +173,10 @@ namespace Mexty.MVVM.Model {
         /// Método para actualziar los datos de Usuario
         /// </summary>
         public static void UpdateData(Usuario usuario) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
             var query = new MySqlCommand() {
-                Connection = _sqlSession,
+                Connection = connObj,
                 CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel, ACTIVO=@act, ID_ROL=@idRo, USUARIO_MODIFICA=@uMod, FECHA_MODIFICA=sysdate() where ID_USUARIO=@ID"
             };
             query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
@@ -199,7 +195,10 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteReader();
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (update) exepción: {0}",e.ToString());
+                MessageBox.Show("Error (update) exepción: {0}", e.ToString());
+            }
+            finally {
+                connObj.Close();
             }
         }
 
@@ -208,8 +207,11 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="newUser">Objeto tipo <c>Usuario</c> que tiene la información del usuario nuevo.</param>
         public static void NewUser(Usuario newUser) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
             MySqlCommand query = new() {
-                Connection = _sqlSession,
+                Connection = connObj,
                 CommandText = "insert into usuario values (default, @nombre, @apPat, @apMat, @usr, @pass, @dom, @tel, @act, @idT, @idR, @usrReg, sysdate(), @usrMod, sysdate())"
             };
 
@@ -227,10 +229,13 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usrMod", newUser.UsuarioModifica);
 
             try {
-                query.ExecuteNonQuery();// retorna el número de columnas cambiadas.
+                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                Console.WriteLine("Usuario existente");            
+                Console.WriteLine("Usuario existente");
+            }
+            finally {
+                connObj.Close();
             }
         }
 
@@ -241,20 +246,24 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Función que obtiene las tablas de las Sucursales.
         /// </summary>
-        public List<Sucursal> GetTablesFromSucursales() {
+        /// <returns>Una lista de objetos tipo <c>Sucursal</c>.</returns>
+        public static List<Sucursal> GetTablesFromSucursales() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
             var query = new MySqlCommand() {
-                Connection = _sqlSession,
+                Connection = connObj,
                 CommandText = "select * from cat_tienda"
             };
             var sucursales = new List<Sucursal>();
-            using MySqlDataReader reader = query.ExecuteReader();
+            using var reader = query.ExecuteReader();
             while (reader.Read()) {
                 var sucursal = new Sucursal {
                     IdTienda = reader.GetInt32(0),
                     NombreTienda = reader.GetString(1),
                     Dirección = reader.GetString(2),
                     // Telefono = reader.GetInt32(3), TODO: Lidiar con datos nulos.
-                    // Rfc = reader.GetString(4),
+                    //reader.IsDBNull("rfc") ? Sucursal.Rfc = "" : Rfc = reader.GetString(4),
                     // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
                     // Mensaje = reader.GetString(6),
                     // Facebook = reader.GetString(7),
@@ -264,8 +273,10 @@ namespace Mexty.MVVM.Model {
                 sucursales.Add(sucursal);
             }
 
+            connObj.Close();
             return sucursales;
         }
+        
 
 
         // ============================================
@@ -276,13 +287,17 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Función que obtiene las tablas de los Roles.
         /// </summary>
-        public List<Rol> GetTablesFromRoles() {
+        /// <returns>Una lista con objetos tipo <c>Rol</c>.</returns>
+        public static List<Rol> GetTablesFromRoles() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
             var querry = new MySqlCommand() {
-                Connection = _sqlSession,
+                Connection = connObj,
                 CommandText = "select * from cat_rol_usuario"
             };
             var roles = new List<Rol>();
-            using MySqlDataReader reader = querry.ExecuteReader();
+            using var reader = querry.ExecuteReader();
             while (reader.Read()) {
                 var rol = new Rol() {
                     IdRol = reader.GetInt32(0),
@@ -292,16 +307,48 @@ namespace Mexty.MVVM.Model {
                 roles.Add(rol);
             }
 
+            connObj.Close();
             return roles;
         }
 
+        // ============================================
+        // ------- Querrys de Productos ---------------
+        // ============================================
+
         /// <summary>
-        /// Destructor para la clase Database.
+        /// Función que retorna una lista con los productos de la base de datos.
         /// </summary>
-        // TODO: implementar que cuando se ejecute el destructor te mande al login.
-        // TODO: Ver si es necesario esto o no xd (puede Q no)
-        //~Database() {
-        //    _sqlSession.Close();
-        //}
+        /// <returns> Una lista de objetos tipo <c>Producto</c>.</returns>
+        public static List<Producto> GetTablesFromProductos() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var querry = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "select * from cat_producto"
+            };
+            var productos = new List<Producto>();
+            using var reader = querry.ExecuteReader();
+            while (reader.Read()) {
+                var producto = new Producto();
+                producto.IdProducto = reader.GetInt32(0);
+                producto.NombreProducto = reader.GetString(1);
+                producto.MedidaProducto = reader.GetString(2);
+                producto.TipoProducto = reader.GetString(3);
+                producto.TipoVenta = reader.GetInt32(4);
+                producto.PrecioMayoreo = reader.GetInt32(5);
+                producto.PrecioMenudeo = reader.GetInt32(6);
+                producto.DetallesProducto = reader.GetString(7);
+                productos.Add(producto);
+            }
+
+            connObj.Close();
+            return productos;
+        }
+        
+        
+        // ============================================
+        // ------- Métodos De la clase ----------------
+        // ============================================
+
     }
 }

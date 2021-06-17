@@ -70,8 +70,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la tabla con los datos de la tabla usuarios.
         /// </summary>
         private void FillDataGrid() {
-            var connObj = new Database();
-            var query = connObj.GetTablesFromUsuarios();
+            var query = Database.GetTablesFromUsuarios();
             UsuariosList = query;
             var collectionView = new ListCollectionView(query) {
                 Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
@@ -84,8 +83,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Función que llena el ComboBox de Rol.
         /// </summary>
         private void FillRol() {
-            var data = new Database();
-            var roles = data.GetTablesFromRoles();
+            var roles = Database.GetTablesFromRoles();
             foreach (var rol in roles) {
                 ComboRol.Items.Add(rol.RolDescription.ToLower());
             }
@@ -95,8 +93,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Función que llena el Combobox de Sucursales.
         /// </summary>
         private void FillSucursales() {
-            var data = new Database();
-            var sucursales = data.GetTablesFromSucursales();
+            var sucursales = Database.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
@@ -146,7 +143,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
                 string newText = tbx.Text;
-                var customFilter = new Predicate<object>(o => FilterLogic(o,newText));
+                var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
                 
                 collection.Filter = customFilter;
                 DataUsuarios.ItemsSource = collection;
