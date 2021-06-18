@@ -108,6 +108,20 @@ namespace Mexty.MVVM.Model.DataTypes
         /// Fecha de la última modificación a este empleado.
         /// </summary>
         public string FechaModifica { get; set; }
-        
+
+        /// <summary>
+        /// Campo que da el nombre de la tienda en letra.
+        /// </summary>
+        public string SucursalNombre {
+            get {
+                var data = Database.GetTablesFromSucursales();
+                var nombre = "";
+                foreach (var sucursal in data.Where(sucursal => this.IdTienda == sucursal.IdTienda)) {
+                    nombre = sucursal.NombreTienda;
+                }
+
+                return nombre;
+            }
+        }
     }
 }
