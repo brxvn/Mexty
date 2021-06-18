@@ -144,23 +144,24 @@ namespace Mexty.MVVM.Model {
             };
             var users = new List<Usuario>();
             using MySqlDataReader reader = query.ExecuteReader();
+            //string val = (reader.IsDBNull(columnIndex)) ? "" : reader.GetString(columnIndex);
             while (reader.Read()) {
                 var usuario = new Usuario {
-                    Id = reader.GetInt32(0),
-                    Nombre = reader.GetString(1),
-                    ApPaterno = reader.GetString(2),
-                    ApMaterno = reader.GetString(3),
-                    Username = reader.GetString(4),
-                    Contraseña = reader.GetString(5),
-                    Domicilio = reader.GetString(6),
-                    Telefono = reader.GetInt32(7),
-                    Activo = reader.GetInt32(8),
-                    IdTienda = reader.GetInt32(9),
-                    IdRol = reader.GetInt32(10),
-                    UsuraioRegistra = reader.GetString(11),
-                    FechaRegistro = reader.GetString(12),
-                    UsuarioModifica = reader.GetString(13),
-                    FechaModifica = reader.GetString(14)
+                    Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32(0),
+                    Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString(1),
+                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
+                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
+                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
+                    Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString(5),
+                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(6),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(7),
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32(8),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(9),
+                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32(10),
+                    UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(11),
+                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(12),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(13),
+                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(14)
                 };
                 users.Add(usuario);
             }
@@ -259,16 +260,16 @@ namespace Mexty.MVVM.Model {
             using var reader = query.ExecuteReader();
             while (reader.Read()) {
                 var sucursal = new Sucursal {
-                    IdTienda = reader.GetInt32(0),
-                    NombreTienda = reader.GetString(1),
-                    Dirección = reader.GetString(2),
-                    // Telefono = reader.GetInt32(3), TODO: Lidiar con datos nulos.
-                    //reader.IsDBNull("rfc") ? Sucursal.Rfc = "" : Rfc = reader.GetString(4),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(0),
+                    NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString(1),
+                    Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString(2),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(3), 
+                    Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString(4),
                     // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
-                    // Mensaje = reader.GetString(6),
-                    // Facebook = reader.GetString(7),
-                    // Instagram = reader.GetString(8),
-                    // TipoTienda = reader.GetString(9)
+                    Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString(6),
+                    Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString(7),
+                    Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString(8),
+                    TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString(9)
                 };
                 sucursales.Add(sucursal);
             }
@@ -300,9 +301,9 @@ namespace Mexty.MVVM.Model {
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
                 var rol = new Rol() {
-                    IdRol = reader.GetInt32(0),
-                    RolDescription = reader.GetString(1),
-                    IdTienda = reader.GetInt32(2)
+                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32(0),
+                    RolDescription = reader.IsDBNull("desc_rol") ? "" : reader.GetString(1),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(2)
                 };
                 roles.Add(rol);
             }
@@ -329,15 +330,16 @@ namespace Mexty.MVVM.Model {
             var productos = new List<Producto>();
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
-                var producto = new Producto();
-                producto.IdProducto = reader.GetInt32(0);
-                producto.NombreProducto = reader.GetString(1);
-                producto.MedidaProducto = reader.GetString(2);
-                producto.TipoProducto = reader.GetString(3);
-                producto.TipoVenta = reader.GetInt32(4);
-                producto.PrecioMayoreo = reader.GetInt32(5);
-                producto.PrecioMenudeo = reader.GetInt32(6);
-                producto.DetallesProducto = reader.GetString(7);
+                var producto = new Producto {
+                    IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32(0),
+                    NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString(1),
+                    MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString(2),
+                    TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString(3),
+                    TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32(4),
+                    PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32(5),
+                    PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32(6),
+                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString(7)
+                };
                 productos.Add(producto);
             }
 
@@ -410,6 +412,7 @@ namespace Mexty.MVVM.Model {
         // ============================================
         // ------- Métodos De la clase ----------------
         // ============================================
+
 
     }
 }
