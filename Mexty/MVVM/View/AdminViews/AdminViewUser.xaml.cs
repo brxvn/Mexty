@@ -171,6 +171,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var usuario = (Usuario) obj;
             if (usuario.Username.Contains(text) ||
                 usuario.ApPaterno.Contains(text) ||
+                //usuario.IdTienda.Contains(text) TODO: Implementar nombre de tiendas
                 usuario.Nombre.Contains(text)) {
                 return usuario.Activo == 1;
             }

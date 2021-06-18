@@ -514,7 +514,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <!--txtProducto-->
+                <!--txtProducto, no va iD producto-->
                 <TextBox Background="Beige"
                      x:Name="txtIdProducto"
                      Grid.Column="1"

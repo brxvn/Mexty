@@ -232,7 +232,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                Console.WriteLine("Usuario existente");
+                MessageBox.Show("Error (new User) exepción: {0}", e.ToString());
             }
             finally {
                 connObj.Close();
@@ -344,7 +344,68 @@ namespace Mexty.MVVM.Model {
             connObj.Close();
             return productos;
         }
-        
+
+        /// <summary>
+        /// Método que actualiza un producto en la base de datos.
+        /// </summary>
+        /// <param name="producto"></param>
+        public static void UpdateData(Producto producto) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "update cat_producto set NOMBRE_PRODUCTO=@nom, MEDIDA=@med, TIPO_PRODUCTO=@tipoP, TIPO_VENTA=@tipoV, PRECIO_MAYOREO=@pMayo, PRECIO_MENUDEO=@pMenu, ESPECIFICACION_PRODUCTO=@esp where ID_PRODUCTO=@id"
+            };
+            query.Parameters.AddWithValue("@nom", producto.NombreProducto);
+            query.Parameters.AddWithValue("@med", producto.MedidaProducto);
+            query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
+            query.Parameters.AddWithValue("@tipoV", producto.TipoVenta.ToString());
+            query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString());
+            query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString());
+            query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
+            query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
+            
+            try {
+                query.ExecuteReader();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("Error (update Producto) exepción: {0}", e.ToString());
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que registra un nuevo producto.
+        /// </summary>
+        /// <param name="newProduct">Objeto tipo <c>Producto</c>.</param>
+        public static void NewProduct(Producto newProduct) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "insert into cat_producto values (default, @nom, @medida, @tipoP, @tipoV, @pMayo, @pMenu, @esp)"
+            };
+            query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
+            query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
+            query.Parameters.AddWithValue("@tipoP", newProduct.TipoProducto);
+            query.Parameters.AddWithValue("@tipoV", newProduct.TipoVenta.ToString());
+            query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString());
+            query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString());
+            query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
+
+            try {
+                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("Error (new Producto) exepción: {0}", e.ToString());
+            }
+            finally {
+                connObj.Close();
+            }
+        }
         
         // ============================================
         // ------- Métodos De la clase ----------------

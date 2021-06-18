@@ -17,6 +17,7 @@ namespace Mexty.MVVM.Model.DataTypes
         private string _apPaterno;
         private string _apMaterno;
         private string _domicilio;
+        private string _username;
 
         /// <summary>
         /// Id del empleado.
@@ -36,7 +37,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApPaterno {
             get => _apPaterno; 
-            set => _apPaterno = value.ToLower();
+            set => _apPaterno = value.ToLower().Replace(" ", "");
         }
 
         /// <summary>
@@ -44,13 +45,16 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApMaterno {
             get => _apMaterno; 
-            set => _apMaterno = value.ToLower();
+            set => _apMaterno = value.ToLower().Replace(" ", "");
         }
 
         /// <summary>
         /// Nick del empleado (username).
         /// </summary>
-        public string Username { get; set; }
+        public string Username {
+            get => _username; 
+            set => _username = value.Replace(" ", "");
+        }
 
         /// <summary>
         /// Contraseña del emplado.

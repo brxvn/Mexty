@@ -59,12 +59,13 @@ namespace Mexty.MVVM.View.AdminViews{
         }
 
         /// <summary>
-        /// Método que llena la datadrid con los usuarios.
+        /// Método que llena la datadrid con los productos.
         /// </summary>
         private void FillData() {
             var data = Database.GetTablesFromProductos();
             ListaProductos = data;
             DataProductos.ItemsSource = data; // provicional
+            // TODO: ver que onda con los productos activos.
             // var collectionView = new ListCollectionView(query) {
             //     Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
             // };
@@ -78,14 +79,30 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-
+            ClearFields();
+            var producto = (Producto) DataProductos.SelectedItem;
+            if (producto == null) return;
+            SelectedProduct = producto;
+            txtNombreProducto.Text = producto.NombreProducto;
+            ComboVenta.SelectedIndex = producto.TipoVenta; // Implementar ComboBox 
+            //ComboTipo.SelectedIndex = producto.TipoProducto; TODO: inconsistencia de tipos int a string.
+            txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
+            txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
+            txtDetalle.Text = producto.DetallesProducto;
+            txtMedida.Text = producto.MedidaProducto;
         }
 
         /// <summary>
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
-            
+            txtNombreProducto.Text = "";
+            ComboVenta.SelectedIndex = 0;
+            ComboTipo.SelectedIndex = 0;
+            txtPrecioMayoreo.Text = "";
+            txtPrecioMenudeo.Text = "";
+            txtDetalle.Text = "";
+            txtMedida.Text = "";
         }
 
         /// <summary>
@@ -95,7 +112,14 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         // TODO agregarlo como funcion al evento TxtChangedEvent.
         private void FilterSearch(object sender, TextChangedEventArgs e) {
-            
+            TextBox tbx = sender as TextBox;
+            var collection = CollectionView;
+            if (tbx != null && tbx.Text != "") {
+                
+            }
+            else {
+                
+            }
         }
 
         /// <summary>
@@ -105,12 +129,12 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="text"></param>
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
-            var usuario = (Usuario) obj;
-            // if (usuario.Username.Contains(text) ||
-            //     usuario.ApPaterno.Contains(text) ||
-            //     usuario.Nombre.Contains(text)) {
-            //     return usuario.Activo == 1;
-            // }
+            var producto = (Producto) obj;
+            if (producto.NombreProducto.Contains(text) ||
+                //producto.TipoVenta.Contains(text) || TODO: implementar Tipo de venta no numerico
+                producto.TipoProducto.Contains(text)) {
+                //return usuario.Activo == 1; Ver que onda con los productos activos.
+            }
             return false;
         }
 
@@ -121,7 +145,37 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         // TODO: agregar esta función al evento clic del boton editar.
         private void EditarProducto(object sender, RoutedEventArgs e) {
+            if (StrPrep(txtNombreProducto.Text) != StrPrep(SelectedProduct.NombreProducto)) {
+                SelectedProduct.NombreProducto = txtNombreProducto.Text;
+            }
+
+            // if (ComboTipo.SelectedIndex != SelectedProduct.TipoProducto) {
+            //     SelectedProduct.TipoProducto = ComboTipo.SelectedIndex;
+            // } TODO: Inconsitencias tipo de productos.
+            if (ComboVenta.SelectedIndex != SelectedProduct.TipoVenta) {
+                SelectedProduct.TipoVenta = ComboTipo.SelectedIndex;
+            }
+            if (txtPrecioMayoreo.Text != SelectedProduct.PrecioMayoreo.ToString()) {
+                SelectedProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
+            }
+            if (txtPrecioMenudeo.Text != SelectedProduct.PrecioMenudeo.ToString()) {
+                SelectedProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
+            }
+            if (StrPrep(txtDetalle.Text) != StrPrep(SelectedProduct.DetallesProducto)) {
+                SelectedProduct.DetallesProducto = txtDetalle.Text;
+            }
+            if (StrPrep(txtMedida.Text) != StrPrep(SelectedProduct.MedidaProducto)) {
+                SelectedProduct.MedidaProducto = txtMedida.Text;
+            }
             
+            var mensaje = "Está a punto de editar el producto: \n" + SelectedProduct.NombreProducto + "\n"
+               + "¿Desea continuar?";
+            var titulo = "Confirmación de Edicionde Usuario";
+            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
+                //Database.UpdateData(SelectedProduct); TODO implementar método de Update
+                FillData();
+                ClearFields();
+            }
         }
 
         /// <summary>
@@ -131,7 +185,26 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         // TODO: agregar esta función al evento clic del boton registar.
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
+            var newProduct = new Producto();
+            newProduct.NombreProducto = txtNombreProducto.Text;
+            newProduct.MedidaProducto = txtMedida.Text;
+            newProduct.TipoProducto = txtMedida.Text;
+            newProduct.TipoVenta = ComboVenta.SelectedIndex;
+            //newProduct.TipoProducto = ComboTipo.SelectedIndex; TODO inconsistencia de datos de arriba.
+            newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
+            newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
+            newProduct.DetallesProducto = txtDetalle.Text;
+            foreach (var producto in ListaProductos) {
+                // TODO: Checar por repetidos
+            }
+            // TODO: mostrar cuadro de dialogo
             
+            // if (!repetido) {
+            //     Database.NewProduct(newUsuario);
+            // }
+            
+            ClearFields();
+            FillData();
         }
 
         /// <summary>
@@ -180,6 +253,11 @@ namespace Mexty.MVVM.View.AdminViews{
             //"Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                 
             //}
+
+        }
+
+        private void txtIdProducto_TextChanged(object sender)
+        {
 
         }
     }
