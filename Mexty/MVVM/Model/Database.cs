@@ -151,7 +151,7 @@ namespace Mexty.MVVM.Model {
                     Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString(1),
                     ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
                     ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
-                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
+                    //Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
                     Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString(5),
                     Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(6),
                     Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(7),
@@ -190,7 +190,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
-            query.Parameters.AddWithValue("@uMod",usuario.UsuarioModifica);
+            query.Parameters.AddWithValue("@uMod", Database.GetUsername());
 
             try {
                 query.ExecuteReader();
@@ -226,8 +226,8 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", newUser.Activo.ToString());
             query.Parameters.AddWithValue("@idT", newUser.IdTienda.ToString());
             query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
-            query.Parameters.AddWithValue("@usrReg", newUser.UsuraioRegistra);
-            query.Parameters.AddWithValue("@usrMod", newUser.UsuarioModifica);
+            query.Parameters.AddWithValue("@usrReg", Database.GetUsername());
+            query.Parameters.AddWithValue("@usrMod", Database.GetUsername());
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.

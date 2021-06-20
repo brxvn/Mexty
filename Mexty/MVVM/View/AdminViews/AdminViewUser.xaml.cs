@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -20,6 +21,7 @@ using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.Theme;
+using Color = System.Windows.Media.Color;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -98,7 +100,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
         }
-        
+
         /// <summary>
         /// Funcion que obtiene el item selecionado de la <c>datagrid</c>.
         /// </summary>
@@ -106,6 +108,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
+            nombreUsuario.IsReadOnly = true;
+            apPaternoUsuario.IsReadOnly = true;
+            apMaternoUsuario.IsReadOnly = true;
+            
             var usuario = (Usuario) DataUsuarios.SelectedItem;
             if (usuario == null) return; // Check si no es nulo.
             SelectedUser = usuario;
@@ -131,6 +137,9 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtContraseña.Text = "";
             TxtTelefono.Text = "";
             ComboRol.SelectedIndex = 0 ;
+            nombreUsuario.IsReadOnly = false;
+            apPaternoUsuario.IsReadOnly = false;
+            apMaternoUsuario.IsReadOnly = false;
         }
 
         /// <summary>
@@ -227,37 +236,48 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
-            var newUsuario = new Usuario();
-            // Campos de texto
-            newUsuario.Nombre = nombreUsuario.Text;
-            newUsuario.ApPaterno = apPaternoUsuario.Text;
-            newUsuario.ApMaterno = apMaternoUsuario.Text;
-            newUsuario.Domicilio = TxtDireccion.Text;
-            newUsuario.Telefono = int.Parse(TxtTelefono.Text);
-            newUsuario.Contraseña = TxtContraseña.Text;
-            newUsuario.IdTienda = ComboSucursal.SelectedIndex + 1;
-            newUsuario.IdRol = ComboRol.SelectedIndex + 1; 
-            // Campos generados
-            newUsuario.Activo = 1;
-            newUsuario.UsuraioRegistra = Database.GetUsername();
-            newUsuario.UsuarioModifica = Database.GetUsername();
-            newUsuario.Username = newUsuario.Nombre[..2] + newUsuario.ApPaterno;
-            // TODO: si ya existe darlo de alta.
-            var repetido = false;
-            foreach (var usuario in UsuariosList) {
-                if (usuario.Username != newUsuario.Username) continue;
-                var msg = "Error: usuario " + usuario.Nombre + " " + usuario.ApMaterno +
-                          " Ya tiene el mismo nombre de usuario y probablemente ya este registrado.";
-                const string title = "Posible registro de usuario duplicado";
-                MessageBox.Show(msg, title);
-                repetido = true;
+            var newUsuario = new Usuario {
+                Nombre = nombreUsuario.Text,
+                ApPaterno = apPaternoUsuario.Text,
+                ApMaterno = apMaternoUsuario.Text,
+                Domicilio = TxtDireccion.Text,
+                Telefono = int.Parse(TxtTelefono.Text), //TODO: truena si esta vacio.
+                Contraseña = TxtContraseña.Text,
+                IdTienda = ComboSucursal.SelectedIndex + 1,
+                IdRol = ComboRol.SelectedIndex + 1
+            };
+
+            if (SelectedUser == newUsuario) {
+                newUsuario -= SelectedUser;
+                Database.UpdateData(newUsuario);
+                
+                var msg = $"Se ha actualizado el usuario {newUsuario.Id.ToString()} {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                MessageBox.Show(msg, "Usuario Actualizado");
             }
-            if (!repetido) {
-                Database.NewUser(newUsuario);
+            else {
+                var flag = true;
+                foreach (var usuario in UsuariosList) {
+                    if (usuario != newUsuario || usuario.Activo != 0) continue;
+                    newUsuario += usuario;
+                    newUsuario.Activo = 1;
+                    Database.UpdateData(newUsuario);
+                    var msg = $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                    MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                    flag = false;
+                }
+                if (flag) {
+                    newUsuario.Activo = 1;
+                    Database.NewUser(newUsuario);
+                    var msg = $"Se ha creado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                    MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                }
+                
             }
             ClearFields();
             FillDataGrid();
+
         }
+        
 
         /// <summary>
         /// Elimina (hace inactivo) el usuario seleccionado.

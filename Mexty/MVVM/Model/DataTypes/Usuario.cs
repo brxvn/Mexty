@@ -3,12 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Google.Protobuf.WellKnownTypes;
 
 namespace Mexty.MVVM.Model.DataTypes
 {
     /// <summary>
-    /// Clase Base para objetos tipo Usuario.
+    /// Clase Base para objetos tipo Usuario,
+    /// Métodos:
+    /// <list type="bullet">
+    /// <item>Id. <c>Int</c>.</item>
+    /// <item>Nombre. <c>String</c>.</item>
+    /// <item>ApPaterno. <c>String</c>.</item>
+    /// <item>ApMaterno. <c>String</c>.</item>
+    /// <item>Username. <c>String</c>, Solo <c>get</c>.</item>
+    /// <item>Contraseña. <c>String</c>.</item>
+    /// <item>Domicilio. <c>String</c>.</item>
+    /// <item>Telefono. <c>Int</c>.</item>
+    /// <item>Activo. <c>Int</c>.</item>
+    /// <item>IdTienda. <c>Int</c>.</item>
+    /// <item>IdRol. <c>Int</c>.</item>
+    /// <item>UsuarioRegistra. <c>String</c>, Manejado por <c>Database</c>.</item>
+    /// <item>FechaRegistro. <c>String</c>, Manejado por <c>Database</c>.</item>
+    /// <item>UsuarioModifica. <c>String</c>, Manejado por <c>Database</c>.</item>
+    /// <item>FechaModifica. <c>String</c>, Manejado por <c>Database</c>.</item>
+    /// <item>SucursalNombre. <c>String</c>, Solo <c>get</c>.</item>
+    /// </list>
     /// </summary>
     // TODO: Agregar restricciónes para modificar estos parametros aqui.
     // TODO: añadir operator overloading para verificar si dos usuarios son iguales.
@@ -22,14 +42,14 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <summary>
         /// Id del empleado.
         /// </summary>
-        public int Id { get; init; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Nombre del empleado.
         /// </summary>
         public string Nombre {
             get => _nombre;
-            set => _nombre = value.ToLower();
+            set => _nombre = value.ToLower(); // TODO: quitar espacios al final.
         }
 
         /// <summary>
@@ -49,11 +69,11 @@ namespace Mexty.MVVM.Model.DataTypes
         }
 
         /// <summary>
-        /// Nick del empleado (username).
+        /// Nick del empleado (username), Solo get.
         /// </summary>
         public string Username {
-            get => _username; 
-            set => _username = value.Replace(" ", "");
+            // TODO: hacer nueva lógica para el nombre de usuario.
+            get => Nombre[..2] + ApPaterno;
         }
 
         /// <summary>
@@ -90,7 +110,7 @@ namespace Mexty.MVVM.Model.DataTypes
         public int IdRol { get; set; }
 
         /// <summary>
-        /// Nombre del Empleado que registro a este empleado.
+        /// Nombre del Empleado que registro a este empleado. Manejado por <c>Database</c>.
         /// </summary>
         public string UsuraioRegistra { get; set; }
 
@@ -100,17 +120,17 @@ namespace Mexty.MVVM.Model.DataTypes
         public string FechaRegistro { get; set; }
 
         /// <summary>
-        /// Nombre del empleado que modifico por última vez a este empleado.
+        /// Nombre del empleado que modifico por última vez a este empleado. Manejado por <c>Database</c>.
         /// </summary>
         public string UsuarioModifica { get; set; }
 
         /// <summary>
-        /// Fecha de la última modificación a este empleado.
+        /// Fecha de la última modificación a este empleado, Manejado por <c>Database</c>.
         /// </summary>
         public string FechaModifica { get; set; }
 
         /// <summary>
-        /// Campo que da el nombre de la tienda en letra.
+        /// Campo que da el nombre de la tienda en letra, Solo Get.
         /// </summary>
         public string SucursalNombre {
             get {
@@ -123,5 +143,79 @@ namespace Mexty.MVVM.Model.DataTypes
                 return nombre;
             }
         }
+        
+        /// <summary>
+        /// Sobrecarga de opreadores para objetos tipo Usuario, para saber si un usuario es el mismo que otro.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool operator ==(Usuario a, Usuario b) {
+            if (a is null || b is null) return false;
+            return a.Username == b.Username &&
+                   a.Nombre == b.Nombre &&
+                   a.ApPaterno == b.ApPaterno &&
+                   a.ApMaterno == b.ApMaterno;
+        }
+
+        public static bool operator !=(Usuario a, Usuario b) {
+            return !(a == b);
+        }
+
+        /// <summary>
+        /// Escribe los campos no directamente editables del por el usuario de <c>b</c> a <c>a</c>.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>Un usuario con la información actualizada y en el caso de un error un valor null.</returns>
+        public static Usuario operator +(Usuario a, Usuario b) {
+            var resultado = new Usuario() {
+                //no editables directamente
+                Id = b.Id,
+                Activo = a.Activo,
+                UsuraioRegistra = b.UsuraioRegistra,
+                FechaRegistro = b.FechaRegistro,
+                // Identificadores de usuario
+                Nombre = b.Nombre, 
+                ApPaterno = b.ApPaterno,
+                ApMaterno = b.ApMaterno,
+                // Editables directamente por el usuario
+                Contraseña = a.Contraseña,
+                Domicilio = a.Domicilio,
+                Telefono = a.Telefono,
+                IdTienda = a.IdTienda,
+                IdRol = a.IdRol,
+            };
+            
+            return resultado;
+        }
+
+        /// <summary>
+        /// Escribe los campos no editables Id, Activo, UsuarioRegistra y FechaRegistro de <c>b</c> a <c>a</c>.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static Usuario operator -(Usuario a, Usuario b) {
+            var resultado = new Usuario {
+                //no editables
+                Id = b.Id,
+                Activo = b.Activo,
+                UsuraioRegistra = b.UsuraioRegistra,
+                FechaRegistro = b.FechaRegistro,
+                
+                // editables
+                Nombre = a.Nombre, 
+                ApPaterno = a.ApPaterno,
+                ApMaterno = a.ApMaterno,
+                Contraseña = a.Contraseña,
+                Domicilio = a.Domicilio,
+                Telefono = a.Telefono,
+                IdTienda = a.IdTienda,
+                IdRol = a.IdRol,
+            };
+            return resultado;
+        }
+        
     }
 }

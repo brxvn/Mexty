@@ -172,7 +172,7 @@ namespace Mexty.MVVM.View.AdminViews{
                + "¿Desea continuar?";
             var titulo = "Confirmación de Edicionde Usuario";
             if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                //Database.UpdateData(SelectedProduct); TODO implementar método de Update
+                Database.UpdateData(SelectedProduct);
                 FillData();
                 ClearFields();
             }
@@ -207,6 +207,7 @@ namespace Mexty.MVVM.View.AdminViews{
             FillData();
         }
 
+        //x
         /// <summary>
         /// Elimina (hace inactivo) el producto seleccionado.
         /// </summary>
