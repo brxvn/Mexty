@@ -52,6 +52,7 @@ namespace Mexty.MVVM.View.AdminViews {
             FillSucursales();
             ClearFields();
             
+            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -180,7 +181,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var usuario = (Usuario) obj;
             if (usuario.Username.Contains(text) ||
                 usuario.ApPaterno.Contains(text) ||
-                //usuario.IdTienda.Contains(text) TODO: Implementar nombre de tiendas
+                usuario.SucursalNombre.Contains(text) ||
                 usuario.Nombre.Contains(text)) {
                 return usuario.Activo == 1;
             }
