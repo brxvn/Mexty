@@ -188,49 +188,6 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// Función para editar el usuario seleccionado.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void EditarUsuario(object sender, RoutedEventArgs e) {
-            if (StrPrep(nombreUsuario.Text) != StrPrep(SelectedUser.Nombre)) {
-                SelectedUser.Nombre = nombreUsuario.Text;
-            }
-            if (StrPrep(apPaternoUsuario.Text) != StrPrep(SelectedUser.ApPaterno)) {
-                SelectedUser.ApPaterno = apPaternoUsuario.Text;
-            }
-            if (StrPrep(apMaternoUsuario.Text) != StrPrep(SelectedUser.ApMaterno)) {
-                SelectedUser.ApMaterno = apMaternoUsuario.Text;
-            }
-            if (ComboRol.SelectedIndex + 1 != SelectedUser.IdRol) {
-                SelectedUser.IdRol = ComboRol.SelectedIndex + 1; 
-            }
-            if (ComboSucursal.SelectedIndex + 1 != SelectedUser.IdTienda) {
-                SelectedUser.IdTienda = ComboSucursal.SelectedIndex + 1;
-            }
-            if (StrPrep(TxtDireccion.Text) != StrPrep(SelectedUser.Domicilio)) {
-                SelectedUser.Domicilio = TxtDireccion.Text;
-            }
-            if (StrPrep(TxtContraseña.Text) != StrPrep(SelectedUser.Contraseña)) {
-                SelectedUser.Contraseña = TxtContraseña.Text;
-            }
-            if (int.Parse(StrPrep(TxtTelefono.Text)) != SelectedUser.Telefono) {
-                SelectedUser.Telefono = int.Parse(TxtTelefono.Text);
-            }
-
-            SelectedUser.UsuarioModifica = Database.GetUsername();
-
-            var mensaje = "Está a punto de editar al usuario: \n" + SelectedUser.Nombre + " " + SelectedUser.ApPaterno + " " + SelectedUser.ApMaterno + "\n"
-               + "¿Desea continuar?";
-            var titulo = "Confirmación de Edicionde Usuario";
-            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                Database.UpdateData(SelectedUser);
-                FillDataGrid();
-                ClearFields();
-            }
-        }
-
-        /// <summary>
         /// Lógica detras del boton de registrar.
         /// </summary>
         /// <param name="sender"></param>
@@ -241,7 +198,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 ApPaterno = apPaternoUsuario.Text,
                 ApMaterno = apMaternoUsuario.Text,
                 Domicilio = TxtDireccion.Text,
-                Telefono = int.Parse(TxtTelefono.Text), //TODO: truena si esta vacio.
+                Telefono = TxtTelefono.Text.Equals("") ? 0 : int.Parse(TxtTelefono.Text),
                 Contraseña = TxtContraseña.Text,
                 IdTienda = ComboSucursal.SelectedIndex + 1,
                 IdRol = ComboRol.SelectedIndex + 1
@@ -271,7 +228,6 @@ namespace Mexty.MVVM.View.AdminViews {
                     var msg = $"Se ha creado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");
                 }
-                
             }
             ClearFields();
             FillDataGrid();
