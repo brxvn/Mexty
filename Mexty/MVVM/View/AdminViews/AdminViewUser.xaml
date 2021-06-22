@@ -224,6 +224,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     MaxLength="50"
                                                      TextChanged="TextUpdateUserName"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -276,14 +277,15 @@
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
-                                                     Text="{TemplateBinding Text}"
-                                                     BorderThickness="0"
-                                                     Background="Transparent"
-                                                     VerticalContentAlignment="Center"
-                                                     Padding="5"
-                                                     Foreground="Gray"
-                                                     FontSize="15"
-                                                     x:Name="SearchBox"
+                                                    Text="{TemplateBinding Text}"
+                                                    BorderThickness="0"
+                                                    Background="Transparent"
+                                                    VerticalContentAlignment="Center"
+                                                    Padding="5"
+                                                    Foreground="Gray"
+                                                    FontSize="15"
+                                                    x:Name="SearchBox"
+                                                    MaxLength="50"
                                                      TextChanged="TextUpdateApPa"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -344,6 +346,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     MaxLength="50"
                                                      TextChanged="TextUpdateApMa"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -418,6 +421,8 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     MaxLength="90"
+                                                     TextWrapping="Wrap"
                                                      TextChanged="TextUpdateDir"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -460,7 +465,10 @@
                      x:Name="TxtTelefono"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     Focusable="True"
+                        >
+                    
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -480,9 +488,13 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      PreviewTextInput="OnlyNumbersValidation"
+                                                     MaxLength="10"
                                                      TextChanged="TextUpdateTel"
+                                                     LostFocus="PhoneValidation"
+                                                     Focusable="True"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
+                                                        
 
                                                     </TextBox>
 
@@ -540,6 +552,8 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     MaxLength="8"
+                                                     LostFocus="PwdValidation"
                                                      TextChanged="TextUpdatePswd"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -588,17 +602,16 @@
 
 
             <!-- Grid.Row="3" esta afuera de la definición de columnas. -->
-            <Grid Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
+            <Grid Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition/>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                 </Grid.ColumnDefinitions>
 
-                <Button Height="40" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos"/>
-                <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario"/>
-                <Button Height="40" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarUsuario"/>
+                <Button Height="40" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos" IsEnabled="False"/>
+                <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario" IsEnabled="False"/>
+                <Button Height="40" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarUsuario" IsEnabled="False"/>
 
 
             </Grid>

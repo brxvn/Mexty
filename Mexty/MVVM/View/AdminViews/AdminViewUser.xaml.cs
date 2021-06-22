@@ -59,7 +59,6 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Start();
         }
 
-
         /// <summary>
         /// Actualiza la hora.
         /// </summary>
@@ -124,6 +123,8 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtDireccion.Text = usuario.Domicilio;
             TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
             TxtContraseña.Text = usuario.Contraseña;
+            Limpiar.IsEnabled = true;
+            Eliminar.IsEnabled = true;
         }
 
         /// <summary>
@@ -230,8 +231,10 @@ namespace Mexty.MVVM.View.AdminViews {
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");
                 }
             }
-            ClearFields();
+            
             FillDataGrid();
+            ClearFields();
+            DesactivarBotones();
 
         }
         
@@ -280,14 +283,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
-            //string menssage = "¡Desea limpiar los campos?";
-            //string titulo = "Confirmación";
-
-            //if (MessageBox.Show("Do you want to close this window?",
-            //"Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                
-            //}
-
+            DesactivarBotones();
         }
 
         // -- Eventos de TextUpdate.
@@ -296,16 +292,29 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
+            if (textbox.Text.Length <= 8 && textbox.Text.Length > 0 && TxtTelefono.Text.Length == 10) {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
+            if (textbox.Text == "" || apPaternoUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
+                Guardar.IsEnabled = false;
+            }
+            else Guardar.IsEnabled = true;
+           
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
+            if (textbox.Text == "" || nombreUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
+                Guardar.IsEnabled = false;
+            }
+            else Guardar.IsEnabled = true;
         }
 
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
@@ -321,6 +330,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtTelefono.Text = textbox.Text;
+            if (textbox.Text.Length == 10 && TxtContraseña.Text.Length <= 8 && TxtContraseña.Text.Length > 0) {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
 
         //TODO: nunca usado
@@ -329,5 +342,23 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboRol.Text = textbox.Text;
         }
 
+        private void PhoneValidation(object sender, RoutedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            if (textbox.Text.Length < 10) {
+                MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
+            }
+        }
+
+        private void PwdValidation(object sender, RoutedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            if (textbox.Text.Equals("")) {
+                MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
+            }
+        }
+
+        private void DesactivarBotones() {
+            Guardar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
+        }
     }
 }

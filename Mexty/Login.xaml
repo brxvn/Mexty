@@ -50,7 +50,7 @@
                 
                 <Image Margin="0,40,0,0" Source="/Resource/brand.png"></Image>
 
-                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="txtUsuario">
+                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="txtUsuario" MaxLength="20">
                     <TextBox.Style>
                         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                             <Style.Resources>
@@ -80,7 +80,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <PasswordBox Margin="20,20,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="pswrdUsuario" KeyDown="EnterKeyPassword">
+                <PasswordBox Margin="20,20,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="pswrdUsuario" KeyDown="EnterKeyPassword" MaxLength="8">
                     <PasswordBox.Style>
                         <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="{x:Type PasswordBox}">
                             <Style.Resources>
@@ -114,7 +114,7 @@
 
                 <Button Width="70" Height="25" Margin="0,50,20,0" HorizontalAlignment="Right" Content="Ingresar" FontSize="15" Click="PasswordKeyDown" Background="Beige" BorderThickness="0"/>
 
-                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="50" HorizontalContentAlignment="Center"></Label>
+                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="50" HorizontalContentAlignment="Center" HorizontalAlignment="Center"></Label>
 
             </StackPanel>
 
