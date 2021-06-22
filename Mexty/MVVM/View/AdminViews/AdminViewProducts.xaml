@@ -121,7 +121,7 @@
             </DataGrid.Resources>
 
             <DataGrid.Columns  >
-                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="0.25*">
+                <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -131,7 +131,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Precio" Binding="{Binding ApPaterno}" Width="0.25*">
+                <DataGridTextColumn Header="Precio Menudeo" Binding="{Binding PrecioMenudeo}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -141,7 +141,17 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding Username}" Width="0.25*">
+                <DataGridTextColumn Header="Precio Mayoreo" Binding="{Binding PrecioMayoreo}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding TipoVenta}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -161,7 +171,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Detalle" Binding="{Binding FechaRegistro}" Width="0.3*">
+                <DataGridTextColumn Header="Detalle" Binding="{Binding DetallesProducto}" Width="0.3*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -214,6 +224,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
+                                                     TextChanged="TextUpdateNombre"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -279,8 +290,9 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     PreviewTextInput="OnlyNumbersValidation"
                                                      x:Name="SearchBox"
-                                                     
+                                                     TextChanged="TextUpdatePrecioMayoreo"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -340,8 +352,9 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     PreviewTextInput="OnlyNumbersValidation"
                                                      x:Name="SearchBox"
-                                                    
+                                                     TextChanged="TextUpdatePrecioMenudeo"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -413,6 +426,7 @@
                                                      x:Name="SearchBox"
                                                      TextWrapping="Wrap"
                                                      MaxLength="50"
+                                                     TextChanged="TextUpdateDetalle"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -482,6 +496,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
+                                                     TextChanged="TextUpdateMedida"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -528,9 +543,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                    <Button Height="40" Grid.Column="0" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
-                    <Button Height="40" Grid.Column="1" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
-                    <Button Height="40" Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center"/>
+                    <Button Height="40" Grid.Column="0" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos"/>
+                    <Button Height="40" Grid.Column="1" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarProducto"/>
+                    <Button Height="40" Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarProducto"/>
                    
 
             </Grid>

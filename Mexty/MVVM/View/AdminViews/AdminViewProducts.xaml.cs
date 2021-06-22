@@ -64,13 +64,19 @@ namespace Mexty.MVVM.View.AdminViews{
         private void FillData() {
             var data = Database.GetTablesFromProductos();
             ListaProductos = data;
-            DataProductos.ItemsSource = data; // provicional
-            // TODO: ver que onda con los productos activos.
-            // var collectionView = new ListCollectionView(query) {
-            //     Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
-            // };
-            // CollectionView = collectionView;
-            // DataUsuarios.ItemsSource = collectionView;
+            var collectionView = new ListCollectionView(data) {
+                Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
+            };
+            CollectionView = collectionView;
+            DataProductos.ItemsSource = collectionView;
+            
+            //Datos ComboVenta
+            var venta = new[] {"Mayoreo y Menudeo", "Mayoreo", "Menudeo"};
+            ComboVenta.ItemsSource = venta;
+            
+            // Provicional combo tipos
+            var tipo = new[] {"Paleta", "Agua", "Helado", "Otros"};
+            ComboTipo.ItemsSource = tipo;
         }
 
         /// <summary>
@@ -80,6 +86,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
+            txtNombreProducto.IsReadOnly = true;
             var producto = (Producto) DataProductos.SelectedItem;
             if (producto == null) return;
             SelectedProduct = producto;
@@ -128,6 +135,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
+        //TODO: tiene que buscar por: Nombre, Código, Tipo, Tipo de venta.
         private static bool FilterLogic(object obj, string text) {
             var producto = (Producto) obj;
             if (producto.NombreProducto.Contains(text) ||
@@ -139,75 +147,56 @@ namespace Mexty.MVVM.View.AdminViews{
         }
 
         /// <summary>
-        /// Método para editar el producto seleccionado.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        // TODO: agregar esta función al evento clic del boton editar.
-        private void EditarProducto(object sender, RoutedEventArgs e) {
-            if (StrPrep(txtNombreProducto.Text) != StrPrep(SelectedProduct.NombreProducto)) {
-                SelectedProduct.NombreProducto = txtNombreProducto.Text;
-            }
-
-            // if (ComboTipo.SelectedIndex != SelectedProduct.TipoProducto) {
-            //     SelectedProduct.TipoProducto = ComboTipo.SelectedIndex;
-            // } TODO: Inconsitencias tipo de productos.
-            if (ComboVenta.SelectedIndex != SelectedProduct.TipoVenta) {
-                SelectedProduct.TipoVenta = ComboTipo.SelectedIndex;
-            }
-            if (txtPrecioMayoreo.Text != SelectedProduct.PrecioMayoreo.ToString()) {
-                SelectedProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
-            }
-            if (txtPrecioMenudeo.Text != SelectedProduct.PrecioMenudeo.ToString()) {
-                SelectedProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
-            }
-            if (StrPrep(txtDetalle.Text) != StrPrep(SelectedProduct.DetallesProducto)) {
-                SelectedProduct.DetallesProducto = txtDetalle.Text;
-            }
-            if (StrPrep(txtMedida.Text) != StrPrep(SelectedProduct.MedidaProducto)) {
-                SelectedProduct.MedidaProducto = txtMedida.Text;
-            }
-            
-            var mensaje = "Está a punto de editar el producto: \n" + SelectedProduct.NombreProducto + "\n"
-               + "¿Desea continuar?";
-            var titulo = "Confirmación de Edicionde Usuario";
-            if (MessageBox.Show(mensaje, titulo, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                Database.UpdateData(SelectedProduct);
-                FillData();
-                ClearFields();
-            }
-        }
-
-        /// <summary>
-        /// Lógica del boton de registrar.
+        /// Lógica del boton de Guardar producto.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         // TODO: agregar esta función al evento clic del boton registar.
-        private void RegistrarUsuario(object sender, RoutedEventArgs e) {
+        private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newProduct = new Producto();
             newProduct.NombreProducto = txtNombreProducto.Text;
             newProduct.MedidaProducto = txtMedida.Text;
             newProduct.TipoProducto = txtMedida.Text;
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
-            //newProduct.TipoProducto = ComboTipo.SelectedIndex; TODO inconsistencia de datos de arriba.
+            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+            MessageBox.Show(txtPrecioMayoreo.Text);
             newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
             newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
-            foreach (var producto in ListaProductos) {
-                // TODO: Checar por repetidos
+
+            if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) { //TODO: añadir que pasa si Selected product es nullo
+                newProduct.IdProducto = SelectedProduct.IdProducto;
+                newProduct.Activo = SelectedProduct.Activo;
+                Database.UpdateData(newProduct);
+                
+                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Usuario Actualizado");
             }
-            // TODO: mostrar cuadro de dialogo
+            else {
+                var alta = true;
+                foreach (var producto in ListaProductos) {
+                    if (newProduct.NombreProducto == producto.NombreProducto && producto.Activo == 0) {
+                        // actualizamos y activamos.
+                        newProduct.IdProducto = producto.IdProducto;
+                        newProduct.Activo = 1;
+                        Database.UpdateData(newProduct);
+                        alta = false;
+                        var msg = $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                        MessageBox.Show(msg, "Usuario Actualizado");
+                    }
+                }
+                if (alta) {
+                    // Alta
+                    Database.NewProduct(newProduct);
+                    var msg = $"Se ha dado de alta el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                    MessageBox.Show(msg, "Usuario Actualizado");
+                }
+            }
             
-            // if (!repetido) {
-            //     Database.NewProduct(newUsuario);
-            // }
-            
-            ClearFields();
             FillData();
+            ClearFields();
         }
 
-        //x
         /// <summary>
         /// Elimina (hace inactivo) el producto seleccionado.
         /// </summary>
@@ -216,7 +205,16 @@ namespace Mexty.MVVM.View.AdminViews{
         // TODO: Preguntar si debemos agregar el campo activo a tabla de productos.
         // TODO: agregar esta función al evento clicl del boton eliminar.
         private void EliminarProducto(object sender, RoutedEventArgs e) {
-            
+            var producto = SelectedProduct;
+            var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
+            const MessageBoxButton buttons = MessageBoxButton.OKCancel;
+            const MessageBoxImage icon = MessageBoxImage.Warning;
+
+            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
+            producto.Activo = 0;
+            Database.UpdateData(producto);
+            ClearFields();
+            FillData();
         }
 
         /// <summary>
@@ -247,19 +245,33 @@ namespace Mexty.MVVM.View.AdminViews{
         // TODO: agregarlo al evento click del boton Limpiar.
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
-            //string menssage = "¡Desea limpiar los campos?";
-            //string titulo = "Confirmación";
+        }
+        
+        // --- Eventos Text-Update--
 
-            //if (MessageBox.Show("Do you want to close this window?",
-            //"Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                
-            //}
-
+        private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtNombreProducto.Text = textbox.Text;
         }
 
-        private void txtIdProducto_TextChanged(object sender)
-        {
+        private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtPrecioMenudeo.Text = textbox.Text;
+        }
 
+        private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtPrecioMayoreo.Text = textbox.Text;
+        }
+
+        private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtDetalle.Text = textbox.Text;
+        }
+
+        private void TextUpdateMedida(object sender, TextChangedEventArgs a) {
+            TextBox textbox = sender as TextBox;
+            txtMedida.Text = textbox.Text;
         }
     }
 }

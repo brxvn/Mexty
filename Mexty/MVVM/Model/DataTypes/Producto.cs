@@ -30,8 +30,7 @@
         /// <summary>
         /// Tipo de producto.
         /// </summary>
-        // TODO: Quizá hacerlo númerico idk.
-        public string TipoProducto { get; set; }
+        public string TipoProducto { get; set; } //TODO: Probablemente leerlos del ini.
 
         /// <summary>
         /// Clave del tipo de venta.
@@ -52,5 +51,11 @@
         /// Detalles/descripción del producto.
         /// </summary>
         public string DetallesProducto { get; set; }
+
+        /// <summary>
+        /// Indica si el producto esta activo o no.
+        /// </summary>
+        public int Activo { get; set; }
+
     }
 }

@@ -338,7 +338,8 @@ namespace Mexty.MVVM.Model {
                     TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32(4),
                     PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32(5),
                     PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32(6),
-                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString(7)
+                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString(7),
+                    Activo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32(8)
                 };
                 productos.Add(producto);
             }
@@ -356,7 +357,7 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "update cat_producto set NOMBRE_PRODUCTO=@nom, MEDIDA=@med, TIPO_PRODUCTO=@tipoP, TIPO_VENTA=@tipoV, PRECIO_MAYOREO=@pMayo, PRECIO_MENUDEO=@pMenu, ESPECIFICACION_PRODUCTO=@esp where ID_PRODUCTO=@id"
+                CommandText = "update cat_producto set NOMBRE_PRODUCTO=@nom, MEDIDA=@med, TIPO_PRODUCTO=@tipoP, TIPO_VENTA=@tipoV, PRECIO_MAYOREO=@pMayo, PRECIO_MENUDEO=@pMenu, ESPECIFICACION_PRODUCTO=@esp, ACTIVO=@act where ID_PRODUCTO=@id"
             };
             query.Parameters.AddWithValue("@nom", producto.NombreProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
@@ -366,6 +367,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString());
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
+            query.Parameters.AddWithValue("@act", producto.Activo.ToString());
             
             try {
                 query.ExecuteReader();
@@ -388,7 +390,7 @@ namespace Mexty.MVVM.Model {
             
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "insert into cat_producto values (default, @nom, @medida, @tipoP, @tipoV, @pMayo, @pMenu, @esp)"
+                CommandText = "insert into cat_producto values (default, @nom, @medida, @tipoP, @tipoV, @pMayo, @pMenu, @esp, @act)"
             };
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
@@ -397,6 +399,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString());
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString());
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
+            query.Parameters.AddWithValue("@act", 1.ToString());
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.

@@ -206,7 +206,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 IdRol = ComboRol.SelectedIndex + 1
             };
 
-            if (SelectedUser == newUsuario) {
+            if (SelectedUser != null && SelectedUser == newUsuario) {
                 newUsuario -= SelectedUser;
                 Database.UpdateData(newUsuario);
                 
