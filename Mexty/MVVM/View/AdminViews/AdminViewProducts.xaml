@@ -133,7 +133,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoProducto}" Width="0.25*">
+                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoProducto}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -143,7 +143,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Detalle" Binding="{Binding NombreProducto}" Width="0.25*">
+                <DataGridTextColumn Header="Detalle" Binding="{Binding NombreProducto}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -153,7 +153,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Precio Menudeo" Binding="{Binding PrecioMenudeo}" Width="0.25*">
+                <DataGridTextColumn Header="Precio Menudeo" Binding="{Binding PrecioMenudeo}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -163,7 +163,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Precio Mayoreo" Binding="{Binding PrecioMayoreo}" Width="0.25*">
+                <DataGridTextColumn Header="Precio Mayoreo" Binding="{Binding PrecioMayoreo}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -173,7 +173,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding TipoVentaNombre}" Width="0.25*">
+                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding TipoVentaNombre}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -183,7 +183,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Medida" Binding="{Binding MedidaProducto}" Width="0.3*">
+                <DataGridTextColumn Header="Medida" Binding="{Binding MedidaProducto}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
