@@ -42,7 +42,7 @@ namespace Mexty.MVVM.View.AdminViews{
             
             InitializeComponent();
             FillData();
-            
+            ClearFields();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -88,6 +88,7 @@ namespace Mexty.MVVM.View.AdminViews{
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
+            ComboTipo.IsEnabled = false;
             
             var producto = (Producto) DataProductos.SelectedItem;
             if (producto == null) return;
@@ -99,6 +100,9 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
+            Guardar.IsEnabled = true;
+            Eliminar.IsEnabled = true;
+            
         }
 
         /// <summary>
@@ -113,6 +117,9 @@ namespace Mexty.MVVM.View.AdminViews{
             txtDetalle.Text = "";
             ComboMedida.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
+            ComboTipo.IsEnabled = true;
+            Guardar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
         }
 
         /// <summary>
@@ -259,6 +266,7 @@ namespace Mexty.MVVM.View.AdminViews{
         // TODO: agregarlo al evento click del boton Limpiar.
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
+            
         }
         
         // --- Eventos Text-Update--
@@ -266,16 +274,29 @@ namespace Mexty.MVVM.View.AdminViews{
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtNombreProducto.Text = textbox.Text;
+            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtPrecioMayoreo.Text != ""  && txtPrecioMenudeo.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
 
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
+            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMayoreo.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
+
         }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
+            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {

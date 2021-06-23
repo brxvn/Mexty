@@ -51,8 +51,7 @@ namespace Mexty.MVVM.View.AdminViews {
             FillRol();
             FillSucursales();
             ClearFields();
-            
-            
+           
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -142,6 +141,8 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
+            Eliminar.IsEnabled = false;
+            Guardar.IsEnabled = false;
         }
 
         /// <summary>
