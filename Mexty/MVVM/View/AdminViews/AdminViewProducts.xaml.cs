@@ -95,7 +95,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
-            txtMedida.Text = producto.MedidaProducto;
+            //txtMedida.Text = producto.MedidaProducto;
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
             txtDetalle.Text = "";
-            txtMedida.Text = "";
+            //txtMedida.Text = "";
             txtNombreProducto.IsReadOnly = false;
         }
 
@@ -168,8 +168,8 @@ namespace Mexty.MVVM.View.AdminViews{
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newProduct = new Producto();
             newProduct.NombreProducto = txtNombreProducto.Text;
-            newProduct.MedidaProducto = txtMedida.Text;
-            newProduct.TipoProducto = txtMedida.Text;
+            //newProduct.MedidaProducto = txtMedida.Text;
+            //newProduct.TipoProducto = txtMedida.Text;
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
@@ -282,7 +282,7 @@ namespace Mexty.MVVM.View.AdminViews{
 
         private void TextUpdateMedida(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
-            txtMedida.Text = textbox.Text;
+            //txtMedida.Text = textbox.Text;
         }
     }
 }
