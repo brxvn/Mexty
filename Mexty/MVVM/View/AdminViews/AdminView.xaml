@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Mexty.MVVM.View.AdminViews"
-             xmlns:models="clr-namespace:Mexty.MVVM.ViewModel"
              xmlns:adminViews="clr-namespace:Mexty.MVVM.View.AdminViews"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920"
@@ -29,6 +27,17 @@
             </TabItem>
             <TabItem Header="Clientes" Background="#710a24"  BorderBrush="Transparent"
                       Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content>
+                    <adminViews:AdminViewClients/>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Establecimiento" Background="#710a24" BorderBrush="Transparent"
+                      Style="{StaticResource ButtonThemeActive}">
+                
+            </TabItem>
+            <TabItem Header="Base de Datos" Background="#710a24" BorderBrush="Transparent"
+                      Style="{StaticResource ButtonThemeActive}">
+
             </TabItem>
         </TabControl>
     </Grid>

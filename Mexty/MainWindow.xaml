@@ -34,19 +34,19 @@
                              Command="{Binding UpdateViewCommand}"
                              CommandParameter="Admin"/>
 
-                <RadioButton
+                <RadioButton x:Name="Ventas"
                              Content="Ventas"
                              Style="{StaticResource ButtonTheme}"
                              Command="{Binding UpdateViewCommand}"
                              CommandParameter="Ventas"/>
 
-                <RadioButton 
+                <RadioButton x:Name="Inventario"
                              Content="Inventario"
                              Style="{StaticResource ButtonTheme}"
                              Command="{Binding UpdateViewCommand}"
                              CommandParameter="Inventario"/>
 
-                <RadioButton
+                <RadioButton x:Name="Reportes"
                              Content="Reportes"
                              Style="{StaticResource ButtonTheme}"
                              Command="{Binding UpdateViewCommand}"
@@ -99,6 +99,8 @@
                     </Button.Style>
                 </Button>
             </Grid>
+
+            <Image Source="Resource/brand.png" Grid.Column="1" Margin="70"/>
             <Label Grid.Column="1"
                    Name="time" 
                    Foreground="AntiqueWhite" 

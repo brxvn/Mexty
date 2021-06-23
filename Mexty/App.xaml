@@ -5,6 +5,9 @@
              xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
              xmlns:View="clr-namespace:Mexty.MVVM.View"
              xmlns:adminViews="clr-namespace:Mexty.MVVM.View.AdminViews"
+             xmlns:ventasViews="clr-namespace:Mexty.MVVM.View.VentasViews"             
+             xmlns:inventarioView="clr-namespace:Mexty.MVVM.View.InventarioViews"
+             xmlns:reportesViews="clr-namespace:Mexty.MVVM.View.ReportesViews"
              StartupUri="Login.xaml">
     <Application.Resources>
         <ResourceDictionary>
@@ -19,9 +22,18 @@
                 <adminViews:AdminView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type ViewModel:AdminViewUserModel}">
-                <adminViews:AdminViewUser/>
+            <DataTemplate DataType="{x:Type ViewModel:VentasViewModel}">
+                <ventasViews:VentasView/>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type ViewModel:InventarioViewModel}">
+                <inventarioView:InventarioView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type ViewModel:ReportesViewModel}">
+                <reportesViews:ReportesView/>
+            </DataTemplate>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>
