@@ -149,7 +149,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void FilterSearch(object sender, TextChangedEventArgs e) { //TODO Fix this messss probablemente usar contains para search
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {

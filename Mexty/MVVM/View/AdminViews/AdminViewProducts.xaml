@@ -47,7 +47,9 @@
                                                      Padding="5"
                                                      Foreground="DarkGray"
                                                      FontSize="18"
-                                                     x:Name="txtBusqueda">
+                                                     x:Name="txtBusqueda"
+                                                     TextChanged="FilterSearch"
+                                                     >
                                                     <!--TextChanged="FilterSearch"-->
                                                      
                                                     <!--TextChanged="SearchBox_TextChanged"-->
@@ -121,7 +123,17 @@
             </DataGrid.Resources>
 
             <DataGrid.Columns  >
-                <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="0.25*">
+                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoProducto}" Width="0.25*">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="FontSize" Value="25"/>
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Detalle" Binding="{Binding NombreProducto}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -151,7 +163,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding TipoVenta}" Width="0.25*">
+                <DataGridTextColumn Header="Tipo Venta" Binding="{Binding TipoVentaNombre}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -161,17 +173,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Sucursal" Binding="{Binding IdTienda}" Width="0.25*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Margin" Value="5" />
-                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                            <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="FontSize" Value="25"/>
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Detalle" Binding="{Binding DetallesProducto}" Width="0.3*">
+                <DataGridTextColumn Header="Medida" Binding="{Binding MedidaProducto}" Width="0.3*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />

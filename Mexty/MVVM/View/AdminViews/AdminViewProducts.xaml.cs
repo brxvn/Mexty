@@ -71,12 +71,10 @@ namespace Mexty.MVVM.View.AdminViews{
             DataProductos.ItemsSource = collectionView;
             
             //Datos ComboVenta
-            var venta = new[] {"Mayoreo y Menudeo", "Mayoreo", "Menudeo"};
-            ComboVenta.ItemsSource = venta;
+            ComboVenta.ItemsSource = Producto.TiposVentaTexto;
             
-            // Provicional combo tipos
-            var tipo = new[] {"Paleta", "Agua", "Helado", "Otros"};
-            ComboTipo.ItemsSource = tipo;
+            //Datos Combo tipos.
+            ComboTipo.ItemsSource = Producto.GetTiposProducto();
         }
 
         /// <summary>
@@ -87,12 +85,13 @@ namespace Mexty.MVVM.View.AdminViews{
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
+            
             var producto = (Producto) DataProductos.SelectedItem;
             if (producto == null) return;
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta; // Implementar ComboBox 
-            //ComboTipo.SelectedIndex = producto.TipoProducto; TODO: inconsistencia de tipos int a string.
+            ComboTipo.SelectedItem = producto.TipoProducto; // TODO: inconsistencia de tipos int a string.
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
@@ -110,6 +109,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = "";
             txtDetalle.Text = "";
             txtMedida.Text = "";
+            txtNombreProducto.IsReadOnly = false;
         }
 
         /// <summary>
@@ -117,15 +117,26 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO agregarlo como funcion al evento TxtChangedEvent.
         private void FilterSearch(object sender, TextChangedEventArgs e) {
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
-                
+                var newText = tbx.Text;
+                var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
+
+                collection.Filter = customFilter;
+                DataProductos.ItemsSource = collection;
+                CollectionView = collection;
             }
             else {
-                
+                collection.Filter = null;
+                var noNull = new Predicate<object>(producto => {
+                    if (producto == null) return false;
+                    return ((Producto) producto).Activo == 1;
+                });
+                collection.Filter += noNull;
+                DataProductos.ItemsSource = collection;
+                CollectionView = collection;
             }
         }
 
@@ -137,11 +148,13 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <returns></returns>
         //TODO: tiene que buscar por: Nombre, Código, Tipo, Tipo de venta.
         private static bool FilterLogic(object obj, string text) {
+            text = text.ToLower();
             var producto = (Producto) obj;
             if (producto.NombreProducto.Contains(text) ||
-                //producto.TipoVenta.Contains(text) || TODO: implementar Tipo de venta no numerico
-                producto.TipoProducto.Contains(text)) {
-                //return usuario.Activo == 1; Ver que onda con los productos activos.
+                producto.IdProducto.ToString().Contains(text) ||
+                producto.TipoProducto.ToLower().Contains(text) ||
+                producto.TipoVentaNombre.ToLower().Contains(text)) {
+                return producto.Activo == 1;
             }
             return false;
         }
@@ -159,7 +172,6 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.TipoProducto = txtMedida.Text;
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-            MessageBox.Show(txtPrecioMayoreo.Text);
             newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
             newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
@@ -188,11 +200,10 @@ namespace Mexty.MVVM.View.AdminViews{
                 if (alta) {
                     // Alta
                     Database.NewProduct(newProduct);
-                    var msg = $"Se ha dado de alta el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                    var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
                     MessageBox.Show(msg, "Usuario Actualizado");
                 }
             }
-            
             FillData();
             ClearFields();
         }

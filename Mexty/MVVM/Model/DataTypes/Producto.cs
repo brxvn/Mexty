@@ -7,6 +7,25 @@
         private string _medidaProducto;
 
         /// <summary>
+        /// Variable estatica que tiene los tipos de venta, sin id.
+        /// </summary>
+        public static readonly string[] TiposVentaTexto = {"Mayoreo y Menudeo", "Mayoreo", "Menudeo"};
+
+        /// <summary>
+        /// Variable que obtiene los tipos de producto.
+        /// </summary>
+        // TODO: probablemente leerlos del ini.
+        private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Agua", "Helado", "Otros", "Extras"};
+
+        /// <summary>
+        /// Método estatico para obtener Los tipos de producto que hay.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetTiposProducto() {
+            return _tipoProductoText;
+        }
+        
+        /// <summary>
         /// Id del producto.
         /// </summary>
         public int IdProducto { get; set; }
@@ -36,6 +55,12 @@
         /// Clave del tipo de venta.
         /// </summary>
         public int TipoVenta { get; set; }
+
+
+        /// <summary>
+        /// Obtiene el tipo de venta en formato leible de la instancia.
+        /// </summary>
+        public string TipoVentaNombre => TiposVentaTexto[TipoVenta];
 
         /// <summary>
         /// Precio del producto en venta mayoreo.
