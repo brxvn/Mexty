@@ -18,11 +18,25 @@
         private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Agua", "Helado", "Otros", "Extras"};
 
         /// <summary>
+        /// Variable que obtiene los tipos de medida.
+        /// </summary>
+        // TODO: probablemente leerlos del ini.
+        private static readonly string[] TiposMedida = {"pieza", "gramos", "litro", "plato"};
+
+        /// <summary>
         /// Método estatico para obtener Los tipos de producto que hay.
         /// </summary>
         /// <returns></returns>
         public static string[] GetTiposProducto() {
             return _tipoProductoText;
+        }
+
+        /// <summary>
+        /// Método estatico para obtener los tipos de medidas que hay.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetTiposMedida() {
+            return TiposMedida;
         }
         
         /// <summary>

@@ -75,6 +75,9 @@ namespace Mexty.MVVM.View.AdminViews{
             
             //Datos Combo tipos.
             ComboTipo.ItemsSource = Producto.GetTiposProducto();
+            
+            //Datos Combo Medida.
+            ComboMedida.ItemsSource = Producto.GetTiposMedida();
         }
 
         /// <summary>
@@ -90,12 +93,12 @@ namespace Mexty.MVVM.View.AdminViews{
             if (producto == null) return;
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
-            ComboVenta.SelectedIndex = producto.TipoVenta; // Implementar ComboBox 
-            ComboTipo.SelectedItem = producto.TipoProducto; // TODO: inconsistencia de tipos int a string.
+            ComboVenta.SelectedIndex = producto.TipoVenta;
+            ComboTipo.SelectedItem = producto.TipoProducto;
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
-            //txtMedida.Text = producto.MedidaProducto;
+            ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
         }
 
         /// <summary>
@@ -108,7 +111,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
             txtDetalle.Text = "";
-            //txtMedida.Text = "";
+            ComboMedida.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
         }
 
@@ -168,8 +171,8 @@ namespace Mexty.MVVM.View.AdminViews{
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newProduct = new Producto();
             newProduct.NombreProducto = txtNombreProducto.Text;
-            //newProduct.MedidaProducto = txtMedida.Text;
-            //newProduct.TipoProducto = txtMedida.Text;
+            newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
+            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
