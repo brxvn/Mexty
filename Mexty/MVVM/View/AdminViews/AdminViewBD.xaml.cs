@@ -13,12 +13,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Mexty.MVVM.View {
+namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
-    /// Interaction logic for AdminView.xaml
+    /// Interaction logic for AdminViewBD.xaml
     /// </summary>
-    public partial class AdminView : UserControl {
-        public AdminView() {
+    public partial class AdminViewBD : UserControl {
+        public AdminViewBD() {
             InitializeComponent();
         }
     }

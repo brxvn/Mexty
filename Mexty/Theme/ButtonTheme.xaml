@@ -11,26 +11,38 @@
                     <ControlTemplate TargetType="RadioButton">
                         <Grid VerticalAlignment="Stretch"
                               HorizontalAlignment="Stretch"
+                              Width="auto"
                               Background="{TemplateBinding Background}">
 
                             <TextBlock Text="{TemplateBinding Property=Content }"
                                        VerticalAlignment="Center"
-                                       Margin="15,0,15,0"
-                                       ></TextBlock>
-
+                                       Margin="35,0,0,0"
+                                       x:Name="Active"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       />
                         </Grid>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Foreground" Value="#fac034" TargetName="Active"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
 
             <Setter Property="Background" Value="Transparent"></Setter>
             <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="FontSize" Value="30"/>
+            <Setter Property="Foreground" Value="AntiqueWhite"/>
+            <Setter Property="Height" Value="75"/>
+            <!--<Setter Property="Margin" Value="10,0,10,10"/>-->
         </Style.Setters>
 
-        <Style.Triggers>
+        <!--<Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#812C3A"></Setter>
+                <Setter Property="Foreground" Value="#fac034"></Setter>
             </Trigger>
-        </Style.Triggers>
+        </Style.Triggers>-->
     </Style>
 </ResourceDictionary>

@@ -4,20 +4,36 @@
              xmlns:local="clr-namespace:Mexty"
              xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
              xmlns:View="clr-namespace:Mexty.MVVM.View"
+             xmlns:adminViews="clr-namespace:Mexty.MVVM.View.AdminViews"
+             xmlns:ventasViews="clr-namespace:Mexty.MVVM.View.VentasViews"             
+             xmlns:inventarioView="clr-namespace:Mexty.MVVM.View.InventarioViews"
+             xmlns:reportesViews="clr-namespace:Mexty.MVVM.View.ReportesViews"
              StartupUri="Login.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Theme\ButtonTheme.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Theme\ButtonThemeActive.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\SearchBoxTheme.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Meziantou.WpfFontAwesome;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type ViewModel:AdminViewModel}">
-                <View:AdminView/>
+                <adminViews:AdminView/>
             </DataTemplate>
 
-        </ResourceDictionary>
+            <DataTemplate DataType="{x:Type ViewModel:VentasViewModel}">
+                <ventasViews:VentasView/>
+            </DataTemplate>
 
+            <DataTemplate DataType="{x:Type ViewModel:InventarioViewModel}">
+                <inventarioView:InventarioView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type ViewModel:ReportesViewModel}">
+                <reportesViews:ReportesView/>
+            </DataTemplate>
+            
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

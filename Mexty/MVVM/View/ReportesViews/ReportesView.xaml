@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="Mexty.MVVM.View.ReportesViews.ReportesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:reportesView="clr-namespace:Mexty.MVVM.View.ReportesViews"
+             mc:Ignorable="d" 
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             RenderOptions.EdgeMode="Aliased">
+    <Grid>
+        <ContentControl Content="{Binding SelectedViewModel}"/>
+        
+        <TabControl BorderThickness="0" Padding="0">
+            <TabItem Header="Reportes de Ventas" Background="#710a24" BorderBrush="Transparent"
+                     Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content >
+                    <reportesView:ReportesViewVentas/>
+                </TabItem.Content>
+            </TabItem>
+            <TabItem Header="Reportes de Inventario" Background="#710a24" BorderBrush="Transparent"
+                     Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content >
+                    <reportesView:ReportesViewInventario/>
+                </TabItem.Content>
+            </TabItem>
+
+        </TabControl>
+    </Grid>
+</UserControl>

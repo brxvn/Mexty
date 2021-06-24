@@ -10,14 +10,15 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Mexty {
+namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
-    /// Interaction logic for UserWindow.xaml
+    /// Interaction logic for InventarioViewInvent.xaml
     /// </summary>
-    public partial class UserWindow : Window {
-        public UserWindow() {
+    public partial class InventarioViewInvent : UserControl {
+        public InventarioViewInvent() {
             InitializeComponent();
         }
     }
