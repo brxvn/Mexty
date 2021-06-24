@@ -13,7 +13,7 @@
         <ContentControl Content="{Binding SelectedViewModel}" />
 
         <TabControl BorderThickness="0" Padding="0">
-            <TabItem Header="Usuario" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Usuarios" Background="#710a24" BorderBrush="Transparent"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content >
                     <adminViews:AdminViewUser/>
@@ -31,13 +31,13 @@
                     <adminViews:AdminViewClients/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Establecimiento" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Establecimientos" Background="#710a24" BorderBrush="Transparent"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewEstablecimiento/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Base de Datos" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Bases de Datos" Background="#710a24" BorderBrush="Transparent"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewBD/>
