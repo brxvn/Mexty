@@ -33,11 +33,15 @@
             </TabItem>
             <TabItem Header="Establecimiento" Background="#710a24" BorderBrush="Transparent"
                       Style="{StaticResource ButtonThemeActive}">
-                
+                <TabItem.Content>
+                    <adminViews:AdminViewEstablecimiento/>
+                </TabItem.Content>
             </TabItem>
             <TabItem Header="Base de Datos" Background="#710a24" BorderBrush="Transparent"
                       Style="{StaticResource ButtonThemeActive}">
-
+                <TabItem.Content>
+                    <adminViews:AdminViewBD/>
+                </TabItem.Content>
             </TabItem>
         </TabControl>
     </Grid>

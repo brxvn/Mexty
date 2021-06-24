@@ -594,14 +594,12 @@
                 <ComboBox x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0"
                           Background="Beige" BorderThickness="0" >
-                    <!-- OJO, Aqui habia un evento llamado Selection changed-->
+                   
                 </ComboBox>
 
 
             </Grid>
 
-
-            <!-- Grid.Row="3" esta afuera de la definición de columnas. -->
             <Grid Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -613,12 +611,9 @@
                 <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario" IsEnabled="False"/>
                 <Button Height="40" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarUsuario" IsEnabled="False"/>
 
-
             </Grid>
 
-
         </Grid>
-
 
         <Label Name="time" 
                Grid.Row="3"
