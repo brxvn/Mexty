@@ -156,7 +156,6 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        //TODO: tiene que buscar por: Nombre, Código, Tipo, Tipo de venta.
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var producto = (Producto) obj;
@@ -174,7 +173,6 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregar esta función al evento clic del boton registar.
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newProduct = new Producto();
             newProduct.NombreProducto = txtNombreProducto.Text;
@@ -186,7 +184,7 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
 
-            if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) { //TODO: añadir que pasa si Selected product es nullo
+            if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
                 newProduct.IdProducto = SelectedProduct.IdProducto;
                 newProduct.Activo = SelectedProduct.Activo;
                 Database.UpdateData(newProduct);
@@ -223,8 +221,6 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: Preguntar si debemos agregar el campo activo a tabla de productos.
-        // TODO: agregar esta función al evento clicl del boton eliminar.
         private void EliminarProducto(object sender, RoutedEventArgs e) {
             var producto = SelectedProduct;
             var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
@@ -243,7 +239,6 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregarlo al evento PreviewTextInput de los campos númericos.
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             var regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
@@ -263,10 +258,8 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregarlo al evento click del boton Limpiar.
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
-            
         }
         
         // --- Eventos Text-Update--

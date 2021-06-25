@@ -144,7 +144,6 @@ namespace Mexty.MVVM.Model {
             };
             var users = new List<Usuario>();
             using MySqlDataReader reader = query.ExecuteReader();
-            //string val = (reader.IsDBNull(columnIndex)) ? "" : reader.GetString(columnIndex);
             while (reader.Read()) {
                 var usuario = new Usuario {
                     Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32(0),

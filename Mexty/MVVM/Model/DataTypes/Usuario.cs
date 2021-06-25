@@ -30,8 +30,6 @@ namespace Mexty.MVVM.Model.DataTypes
     /// <item>SucursalNombre. <c>String</c>, Solo <c>get</c>.</item>
     /// </list>
     /// </summary>
-    // TODO: Agregar restricciónes para modificar estos parametros aqui.
-    // TODO: añadir operator overloading para verificar si dos usuarios son iguales.
     public class Usuario {
         private string _nombre;
         private string _apPaterno;
@@ -92,7 +90,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <summary>
         /// Teléfono del empleado.
         /// </summary>
-        public int Telefono { get; set; }
+        public long Telefono { get; set; }
 
         /// <summary>
         /// Indica si el usuario esta activo o no.

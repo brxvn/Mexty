@@ -201,7 +201,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 ApPaterno = apPaternoUsuario.Text,
                 ApMaterno = apMaternoUsuario.Text,
                 Domicilio = TxtDireccion.Text,
-                Telefono = TxtTelefono.Text.Equals("") ? 0 : int.Parse(TxtTelefono.Text),
+                Telefono = TxtTelefono.Text.Equals("") ? 0 : long.Parse(TxtTelefono.Text),
                 Contraseña = TxtContraseña.Text,
                 IdTienda = ComboSucursal.SelectedIndex + 1,
                 IdRol = ComboRol.SelectedIndex + 1
@@ -288,7 +288,6 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         // -- Eventos de TextUpdate.
-        // TODO: buscar una forma de hacerlos genericos
 
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
@@ -337,23 +336,17 @@ namespace Mexty.MVVM.View.AdminViews {
             else Guardar.IsEnabled = false;
         }
 
-        //TODO: nunca usado
-        private void TextUpdateRol(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            ComboRol.Text = textbox.Text;
-        }
-
         private void PhoneValidation(object sender, RoutedEventArgs e) {
             TextBox textbox = sender as TextBox;
             if (textbox.Text.Length < 10) {
-                MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
+                //MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
             }
         }
 
         private void PwdValidation(object sender, RoutedEventArgs e) {
             TextBox textbox = sender as TextBox;
             if (textbox.Text.Equals("")) {
-                MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
+                //MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
             }
         }
 
