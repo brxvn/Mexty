@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -20,7 +21,22 @@ namespace Mexty.MVVM.View.AdminViews {
     public partial class AdminViewEstablecimiento : UserControl {
         public AdminViewEstablecimiento() {
             InitializeComponent();
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Start();
         }
+
+        /// <summary>
+        /// Actualiza la hora.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateTimerTick(object sender, EventArgs e) {
+            time.Content = DateTime.Now.ToString("G");
+        }
+
 
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
 

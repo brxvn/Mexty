@@ -211,12 +211,10 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <ComboBox x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True"
-                          Background="Beige" BorderThickness="0" Text="Tipo">
-                </ComboBox>
-
-
+                           BorderThickness="0" />
+                
                 <!--txtNombreProducto-->
                 <TextBox Background="Beige"
                      x:Name="txtNombreProducto"
@@ -476,14 +474,12 @@
                 </TextBox>
 
                 <!--ComboVenta-->
-                <ComboBox x:Name="ComboVenta" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0"/>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboVenta" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0"/>
 
                 <!--ComboMedida-->
-                <ComboBox x:Name="ComboMedida" Grid.Column="2" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0"/>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboMedida" Grid.Column="2" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0"/>
 
             </Grid>
 

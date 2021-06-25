@@ -319,9 +319,8 @@
                 </TextBox>
                 
                 <!--ComboTipo-->
-                <ComboBox x:Name="ComboTipo" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True"
-                          Background="Beige" BorderThickness="0" Text="Tipo"/>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" IsReadOnly="True" BorderThickness="0"/>
 
                 <!--txtInstagram-->
                 <TextBox Background="Beige"
@@ -531,5 +530,14 @@
 
             </Grid>
         </Grid>
+        <Label Name="time" 
+               Grid.Row="3"
+                Foreground="AntiqueWhite" 
+                FontSize="20" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="50 15"/>
     </Grid>
 </UserControl>

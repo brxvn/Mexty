@@ -384,10 +384,9 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0">
-                </ComboBox>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0"/>
+
             </Grid>
 
             <Grid Grid.Row="1">
@@ -591,12 +590,8 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0" >
-                   
-                </ComboBox>
-
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0"/>
 
             </Grid>
 
