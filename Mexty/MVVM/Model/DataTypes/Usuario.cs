@@ -141,7 +141,7 @@ namespace Mexty.MVVM.Model.DataTypes
                 return nombre;
             }
         }
-        
+
         /// <summary>
         /// Sobrecarga de opreadores para objetos tipo Usuario, para saber si un usuario es el mismo que otro.
         /// </summary>

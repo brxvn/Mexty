@@ -20,6 +20,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
+using Mexty.MVVM.Model.Validations;
 using Mexty.Theme;
 using Color = System.Windows.Media.Color;
 
@@ -141,8 +142,8 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
-            Eliminar.IsEnabled = false;
-            Guardar.IsEnabled = false;
+            //Eliminar.IsEnabled = false;
+            //Guardar.IsEnabled = false;
         }
 
         /// <summary>
@@ -206,9 +207,20 @@ namespace Mexty.MVVM.View.AdminViews {
                 IdTienda = ComboSucursal.SelectedIndex + 1,
                 IdRol = ComboRol.SelectedIndex + 1
             };
+            
+            var validator = new UserValidation();
+            var results = validator.Validate(newUsuario);
+            if (!results.IsValid) {
+                //Guardar.IsEnabled = false;
+                foreach (var error in results.Errors) {
+                    MessageBox.Show(error.ErrorMessage);
+                }
+                return;
+            }
 
             if (SelectedUser != null && SelectedUser == newUsuario) {
                 newUsuario -= SelectedUser;
+                
                 Database.UpdateData(newUsuario);
                 
                 var msg = $"Se ha actualizado el usuario {newUsuario.Id.ToString()} {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
@@ -292,29 +304,29 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
-            if (textbox.Text.Length <= 8 && textbox.Text.Length > 0 && TxtTelefono.Text.Length == 10) {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            // if (textbox.Text.Length <= 8 && textbox.Text.Length > 0 && TxtTelefono.Text.Length == 10) {
+            //     Guardar.IsEnabled = true;
+            // }
+            // else Guardar.IsEnabled = false;
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
-            if (textbox.Text == "" || apPaternoUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
-                Guardar.IsEnabled = false;
-            }
-            else Guardar.IsEnabled = true;
+            // if (textbox.Text == "" || apPaternoUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
+            //     Guardar.IsEnabled = false;
+            // }
+            // else Guardar.IsEnabled = true;
            
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
-            if (textbox.Text == "" || nombreUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
-                Guardar.IsEnabled = false;
-            }
-            else Guardar.IsEnabled = true;
+            // if (textbox.Text == "" || nombreUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
+            //     Guardar.IsEnabled = false;
+            // }
+            // else Guardar.IsEnabled = true;
         }
 
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
@@ -330,10 +342,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtTelefono.Text = textbox.Text;
-            if (textbox.Text.Length == 10 && TxtContraseña.Text.Length <= 8 && TxtContraseña.Text.Length > 0) {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            // if (textbox.Text.Length == 10 && TxtContraseña.Text.Length <= 8 && TxtContraseña.Text.Length > 0) {
+            //     Guardar.IsEnabled = true;
+            // }
+            // else Guardar.IsEnabled = false;
         }
 
         private void PhoneValidation(object sender, RoutedEventArgs e) {
@@ -351,8 +363,8 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void DesactivarBotones() {
-            Guardar.IsEnabled = false;
-            Eliminar.IsEnabled = false;
+            // Guardar.IsEnabled = false;
+            // Eliminar.IsEnabled = false;
         }
     }
 }

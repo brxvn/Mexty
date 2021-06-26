@@ -226,7 +226,8 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="50"
-                                                     Focusable="True" />
+                                                     Focusable="True"
+                                                     TextChanged="TextUpdateUserName"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre"
@@ -295,7 +296,7 @@
                                                     FontSize="15"
                                                     x:Name="SearchBox"
                                                     MaxLength="50"
-                                                     TextChanged="TextUpdateApPa"
+                                                    TextChanged="TextUpdateApPa"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
@@ -669,7 +670,7 @@
                  </Grid.ColumnDefinitions>
 
                 <Button Height="40" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos" IsEnabled="False"/>
-                <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario" IsEnabled="False"/>
+                <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario" IsEnabled="True"/>
                 <Button Height="40" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarUsuario" IsEnabled="False"/>
 
             </Grid>
