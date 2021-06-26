@@ -212,7 +212,8 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Nombre del Usuario nuevo" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
+
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -225,11 +226,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="50"
-                                                     TextChanged="TextUpdateUserName"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     Focusable="True" />
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre"
@@ -246,6 +243,7 @@
                                                                     <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
                                                                         <Setter Property="Visibility" Value="Visible"/>
                                                                     </DataTrigger>
+
                                                                 </Style.Triggers>
                                                                 <Setter Property="Visibility" Value="Hidden"/>
                                                             </Style>
@@ -253,6 +251,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -273,7 +282,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -314,6 +323,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -334,7 +354,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -375,6 +395,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -385,7 +416,9 @@
                 </TextBox>
 
                 <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0"/>
+                          VerticalContentAlignment="Center" SelectedIndex="0" Focusable="True"/>
+
+
 
             </Grid>
 
@@ -408,7 +441,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -451,6 +484,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -474,7 +518,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -519,6 +563,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -539,7 +594,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -581,6 +636,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FF7EB4EA"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>

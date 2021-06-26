@@ -6,12 +6,13 @@
         <Setter Property="Control.Template">
             <Setter.Value>
                 <ControlTemplate>
-                    <Rectangle Margin="2" StrokeDashArray="1 2" SnapsToDevicePixels="true" StrokeThickness="1" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+                    <Border CornerRadius="10" BorderThickness="3" BorderBrush="#FF7EB4EA"/>
+
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-    <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TextBox.Static.Background" Color="Beige"/>
     <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="AllowDrop" Value="true"/>
@@ -32,7 +33,7 @@
         <GradientStop Color="Beige" Offset="0.0"/>
         <GradientStop Color="Beige" Offset="1.0"/>
     </LinearGradientBrush>
-    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FFACACAC"/>
+    <SolidColorBrush x:Key="ComboBox.Static.Border" Color="Beige"/>
     <SolidColorBrush x:Key="ComboBox.Static.Glyph" Color="#FF606060"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Background" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="ComboBox.Static.Editable.Border" Color="#FFABADB3"/>
@@ -96,6 +97,8 @@
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Static.Editable.Border}"/>
                             <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Background}"/>
                             <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Static.Editable.Button.Border}"/>
+                            <Setter Property="BorderThickness" Value="3"/>
+
                         </MultiDataTrigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.MouseOver.Glyph}"/>
@@ -107,6 +110,8 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -117,6 +122,8 @@
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Editable.Border}"/>
                             <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.MouseOver.Editable.Button.Background}"/>
                             <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.MouseOver.Editable.Button.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
                         <Trigger Property="IsPressed" Value="true">
                             <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Pressed.Glyph}"/>
@@ -128,6 +135,8 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Background}"/>
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -138,6 +147,8 @@
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Editable.Border}"/>
                             <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Pressed.Editable.Button.Background}"/>
                             <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Pressed.Editable.Button.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Disabled.Glyph}"/>
@@ -149,6 +160,8 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -159,7 +172,10 @@
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Editable.Border}"/>
                             <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Background}"/>
                             <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Editable.Button.Border}"/>
+                            <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
+
                         </MultiDataTrigger>
+                       
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -204,6 +220,7 @@
             <Trigger Property="HasItems" Value="false">
                 <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
             </Trigger>
+
             <MultiTrigger>
                 <MultiTrigger.Conditions>
                     <Condition Property="IsGrouping" Value="true"/>
@@ -265,6 +282,7 @@
         <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource ComboBox.Static.Background}"/>
         <Setter Property="BorderBrush" Value="{StaticResource ComboBox.Static.Border}"/>
+        <Setter Property="BorderThickness" Value="3"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
