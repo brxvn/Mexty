@@ -491,7 +491,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="Limpiar" Height="40" Grid.Column="0" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos"/>
-                <Button x:Name="Guardar" Height="40" Grid.Column="1" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarProducto" IsEnabled="False"/>
+                <Button x:Name="Guardar" Height="40" Grid.Column="1" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarProducto" IsEnabled="True"/>
                 <Button x:Name="Eliminar" Height="40" Grid.Column="2" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarProducto" IsEnabled="False"/>
 
             </Grid>

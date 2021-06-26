@@ -124,7 +124,7 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
             TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
-            Eliminar.IsEnabled = true;
+            //Eliminar.IsEnabled = true;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
-            //Eliminar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
             //Guardar.IsEnabled = false;
         }
 
@@ -364,7 +364,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         private void DesactivarBotones() {
             // Guardar.IsEnabled = false;
-            // Eliminar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
         }
     }
 }

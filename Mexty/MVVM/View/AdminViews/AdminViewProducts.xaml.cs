@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
+using Mexty.MVVM.Model.Validations;
 
 namespace Mexty.MVVM.View.AdminViews{
     /// <summary>
@@ -100,7 +101,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
-            Guardar.IsEnabled = true;
+            //Guardar.IsEnabled = true;
             Eliminar.IsEnabled = true;
             
         }
@@ -118,7 +119,7 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboMedida.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
-            Guardar.IsEnabled = false;
+            //Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }
 
@@ -180,9 +181,18 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-            newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
-            newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
+            newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
+            newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
+
+            var validator = new ProductValidation();
+            var results = validator.Validate(newProduct);
+            if (!results.IsValid) {
+                foreach (var error in results.Errors) {
+                    MessageBox.Show(error.ErrorMessage);
+                }
+                return;
+            }
 
             if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
                 newProduct.IdProducto = SelectedProduct.IdProducto;
@@ -267,29 +277,29 @@ namespace Mexty.MVVM.View.AdminViews{
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtNombreProducto.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtPrecioMayoreo.Text != ""  && txtPrecioMenudeo.Text != "") {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtPrecioMayoreo.Text != ""  && txtPrecioMenudeo.Text != "") {
+            //     Guardar.IsEnabled = true;
+            // }
+            // else Guardar.IsEnabled = false;
         }
 
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMayoreo.Text != "") {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMayoreo.Text != "") {
+            //     Guardar.IsEnabled = true;
+            // }
+            // else Guardar.IsEnabled = false;
 
         }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "") {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "") {
+            //     Guardar.IsEnabled = true;
+            // }
+            // else Guardar.IsEnabled = false;
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {

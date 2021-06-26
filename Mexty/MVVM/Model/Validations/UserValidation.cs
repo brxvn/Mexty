@@ -5,12 +5,12 @@ using Mexty.MVVM.Model.DataTypes;
 using FluentValidation;
 
 namespace Mexty.MVVM.Model.Validations {
+
     /// <summary>
     /// Clase Para validación de datos de el objeto usuario.
     /// </summary>
     public class UserValidation : AbstractValidator<Usuario> {
         public UserValidation() {
-            
             RuleFor(usuario => usuario.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacio.")
@@ -44,7 +44,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(usuario => usuario.Contraseña)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El domicilio no puede estar vacio.")
-                .Length(4, 8).WithMessage("La contraseña debe tener entre 4 y 8 caracteres.")
+                .Length(4, 8).WithMessage("La contraseña tiene {TotalLength} y debe tener entre 4 y 8 caracteres.")
                 .Must(BeAValidText).WithMessage("La contraseña debe tiene caracteres prohibidos.");
         }
 
