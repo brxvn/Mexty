@@ -4,6 +4,7 @@ using System.Data;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
+using System.Windows.Documents;
 
 
 namespace Mexty.MVVM.Model {
@@ -150,7 +151,7 @@ namespace Mexty.MVVM.Model {
                     Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString(1),
                     ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
                     ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
-                    //Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
+                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
                     Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString(5),
                     Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(6),
                     Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(7),
@@ -232,7 +233,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (new User) exepción: {0}", e.ToString());
+                MessageBox.Show($"Error (new User) exepción: {e.ToString()}");
             }
             finally {
                 connObj.Close();
@@ -410,7 +411,44 @@ namespace Mexty.MVVM.Model {
                 connObj.Close();
             }
         }
-        
+
+        // ============================================
+        // ------- Querys de Clientes -----------------
+        // ============================================
+
+        /// <summary>
+        /// Método para obtener todos los datos de la tabla de clientes Mayoreo.
+        /// </summary>
+        /// <returns></returns>
+        public static List<Cliente> GetTablesFromClientes() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "select * from cliente_mayoreo"
+            };
+            var clientes = new List<Cliente>();
+            using MySqlDataReader reader = query.ExecuteReader();
+            while (reader.Read()) {
+                var cliente = new Cliente() {
+                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32(0),
+                    Nombre = reader.IsDBNull("nombre_cliente") ? "" : reader.GetString(1),
+                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
+                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
+                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(4),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(5),
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32(6),
+                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(7),
+                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(8),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(9),
+                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(10)
+                };
+                clientes.Add(cliente);
+            }
+            connObj.Close();
+            return clientes;
+        }
+
         // ============================================
         // ------- Métodos De la clase ----------------
         // ============================================

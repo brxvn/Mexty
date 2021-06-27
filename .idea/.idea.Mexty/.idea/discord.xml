@@ -3,6 +3,7 @@
   <component name="DiscordProjectSettings">
     <option name="show" value="PROJECT_FILES" />
     <option name="nameOverrideEnabled" value="true" />
-    <option name="nameOverrideText" value="BasedProject" />
+    <option name="nameOverrideText" value="HelpMeImUnderpaid" />
+    <option name="description" value="Send Help or cookies!" />
   </component>
 </project>

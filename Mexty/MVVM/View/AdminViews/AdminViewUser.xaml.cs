@@ -239,6 +239,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 }
                 if (flag) {
                     newUsuario.Activo = 1;
+                    newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
                     Database.NewUser(newUsuario);
                     var msg = $"Se ha creado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");

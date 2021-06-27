@@ -10,25 +10,6 @@ namespace Mexty.MVVM.Model.DataTypes
 {
     /// <summary>
     /// Clase Base para objetos tipo Usuario,
-    /// Métodos:
-    /// <list type="bullet">
-    /// <item>Id. <c>Int</c>.</item>
-    /// <item>Nombre. <c>String</c>.</item>
-    /// <item>ApPaterno. <c>String</c>.</item>
-    /// <item>ApMaterno. <c>String</c>.</item>
-    /// <item>Username. <c>String</c>, Solo <c>get</c>.</item>
-    /// <item>Contraseña. <c>String</c>.</item>
-    /// <item>Domicilio. <c>String</c>.</item>
-    /// <item>Telefono. <c>Int</c>.</item>
-    /// <item>Activo. <c>Int</c>.</item>
-    /// <item>IdTienda. <c>Int</c>.</item>
-    /// <item>IdRol. <c>Int</c>.</item>
-    /// <item>UsuarioRegistra. <c>String</c>, Manejado por <c>Database</c>.</item>
-    /// <item>FechaRegistro. <c>String</c>, Manejado por <c>Database</c>.</item>
-    /// <item>UsuarioModifica. <c>String</c>, Manejado por <c>Database</c>.</item>
-    /// <item>FechaModifica. <c>String</c>, Manejado por <c>Database</c>.</item>
-    /// <item>SucursalNombre. <c>String</c>, Solo <c>get</c>.</item>
-    /// </list>
     /// </summary>
     public class Usuario {
         private string _nombre;
@@ -67,11 +48,18 @@ namespace Mexty.MVVM.Model.DataTypes
         }
 
         /// <summary>
-        /// Nick del empleado (username), Solo get.
+        /// Nick del empleado (username).
         /// </summary>
-        public string Username {
-            // TODO: hacer nueva lógica para el nombre de usuario.
-            get => Nombre[..2] + ApPaterno;
+        public string Username { get; set; }
+
+        /// <summary>
+        /// Método que genera el Username usando los primeros dos digitos de el nombre y
+        /// del el apellido materno junto con el apellido paterno y un número random del 1 al 10.
+        /// </summary>
+        /// <returns></returns>
+        public static string GenUsername(Usuario usr) {
+            var random = new Random();
+            return $"{usr.Nombre[..2]}{usr.ApMaterno[..2]}{usr.ApPaterno}{random.Next(1, 10).ToString()}";
         }
 
         /// <summary>
