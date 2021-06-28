@@ -1,52 +1,43 @@
-﻿using System;
-using System.Data;
-using System.Linq;
+﻿using FluentValidation;
 using Mexty.MVVM.Model.DataTypes;
-using FluentValidation;
 
 namespace Mexty.MVVM.Model.Validations {
-
     /// <summary>
-    /// Clase Para validación de datos de el objeto usuario.
+    /// Clase para la validación de datos de le objeto usuario.
     /// </summary>
-    public class UserValidation : AbstractValidator<Usuario> {
-        public UserValidation() {
-            RuleFor(usuario => usuario.Nombre)
+    public class ClientValidation : AbstractValidator<Cliente> {
+        public ClientValidation() {
+            RuleFor(cliente => cliente.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacio.")
                 .Length(3, 50).WithMessage("El nombre es muy largo o muy corto.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
-            RuleFor(usuario => usuario.ApPaterno)
+            RuleFor(cliente => cliente.ApPaterno)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El apellido Paterno no puede estar vacio")
                 .Length(3, 50).WithMessage("El apellido paterno es muy largo o muy corto.")
                 .Must(Validations.BeAValidName).WithMessage("No es un apellido paterno válido.");
-  
-            RuleFor(usuario => usuario.ApMaterno)
+
+            RuleFor(cliente => cliente.ApMaterno)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El apellido paterno no puede estar vacio")
                 .Length(3, 50).WithMessage("El apellido paterno es muy largo o muy corto.")
                 .Must(Validations.BeAValidName).WithMessage("No es un apellido paterno válido.");
 
-            RuleFor(expression: usuario => usuario.Telefono.ToString())
+            RuleFor(expression: cliente => cliente.Telefono.ToString())
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El número de teléfono no puede esar vacio.")
                 .Length(10).WithMessage("El número de teléfono debe de ser de 10 dígitos.")
                 .Must(Validations.BeAValidNumber).WithMessage("No es un número de teléfono valido.");
 
-            RuleFor(usuario => usuario.Domicilio)
+            RuleFor(cliente => cliente.Domicilio)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El domicio no puede estar vacio.")
                 .Length(5, 90).WithMessage("El domicilio es muy corto o largo par ser válido.")
                 .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");
-
-            RuleFor(usuario => usuario.Contraseña)
-                .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("El domicilio no puede estar vacio.")
-                .Length(4, 8).WithMessage("La contraseña tiene {TotalLength} y debe tener entre 4 y 8 caracteres.")
-                .Must(Validations.BeAValidText).WithMessage("La contraseña debe tiene caracteres prohibidos.");
         }
-
+        
+        
     }
 }
