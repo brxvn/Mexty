@@ -196,7 +196,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteReader();
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (update) exepción: {0}", e.ToString());
+                MessageBox.Show($"Error (update Usuario) exepción: {e.ToString()}","Error");
             }
             finally {
                 connObj.Close();
@@ -233,7 +233,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new User) exepción: {e.ToString()}");
+                MessageBox.Show($"Error (new User) exepción: {e.ToString()}", "Error");
             }
             finally {
                 connObj.Close();
@@ -419,7 +419,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método para obtener todos los datos de la tabla de clientes Mayoreo.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Una lista de elementos tipo <c>Cliente</c>.</returns>
         public static List<Cliente> GetTablesFromClientes() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -447,6 +447,157 @@ namespace Mexty.MVVM.Model {
             }
             connObj.Close();
             return clientes;
+        }
+
+        /// <summary>
+        /// Método para actualizar los datos del Cliente.
+        /// </summary>
+        /// <param name="cliente"></param>
+        public static void UpdateData(Cliente cliente) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "update cliente_mayoreo set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate() where ID_CLIENTE=@id"
+            };
+            query.Parameters.AddWithValue("@nom", cliente.Nombre);
+            query.Parameters.AddWithValue("@apP", cliente.ApPaterno);
+            query.Parameters.AddWithValue("@apM", cliente.ApMaterno);
+            query.Parameters.AddWithValue("@dom", cliente.Domicilio);
+            query.Parameters.AddWithValue("@tel", cliente.Telefono.ToString());
+            query.Parameters.AddWithValue("@act", cliente.Activo.ToString());
+            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
+
+            try {
+                query.ExecuteReader();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show($"Error (update Cliente) exepción: {e.ToString()}", "Error");
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que registra un nuevo cliente.
+        /// </summary>
+        /// <param name="newClient"></param>
+        public static void NewClient(Cliente newClient) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = "insert into cliente_mayoreo values (default, @nom, @apP, @apM, @dom, @tel, @act, @usReg, sysdate(), @usMod, sysdate())"
+            };
+            query.Parameters.AddWithValue("@nom", newClient.Nombre);
+            query.Parameters.AddWithValue("@apP", newClient.ApPaterno);
+            query.Parameters.AddWithValue("@apM", newClient.ApMaterno);
+            query.Parameters.AddWithValue("@dom", newClient.Domicilio);
+            query.Parameters.AddWithValue("@tel", newClient.Telefono.ToString());
+            query.Parameters.AddWithValue("@act", newClient.Activo.ToString());
+            query.Parameters.AddWithValue("@usReg", Database.GetUsername());
+            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            
+            try {
+                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+            }
+            catch (MySqlException e) {
+                MessageBox.Show($"Error (new User) exepción: {e.ToString()}", "Error");
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        // ============================================
+        // ------- Querys de Deudas Mayoreo -----------
+        // ============================================
+
+        /// <summary>
+        /// Método para obtener todos los datos de la tabla de Deudas Mayoreo.
+        /// </summary>
+        /// <returns>Una lista de elementos tipo <c>Deuda</c>.</returns>
+        public static List<Deuda> GetTablesFromDeuda() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "select * from deuda_mayoreo"
+            };
+            var deudas = new List<Deuda>();
+            using MySqlDataReader reader = query.ExecuteReader();
+            while (reader.Read()) {
+                var deuda = new Deuda() {
+                    IdDeuda = reader.IsDBNull("id_deuda") ? 0 : reader.GetInt32(0),
+                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32(1),
+                    Debe = reader.IsDBNull("debe") ? 0 : reader.GetDouble(3),
+                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(4),
+                    FechaRegistra = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(5),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(6),
+                    FechaModifca = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(7)
+                };
+                deudas.Add(deuda);
+            }
+            connObj.Close();
+            return deudas;
+        }
+
+        /// <summary>
+        /// Método para actualizar los datos de las deudas del cliente.
+        /// </summary>
+        /// <param name="deuda"></param>
+        public static void UpdateData(Deuda deuda) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "update deuda_mayoreo set ID_CLIENTE=@idCli, DEBE=@debe, USUARIO_REGISTRA=@usReg, FECHA_REGISTRO=@feReg, USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate() where ID_DEUDA=@idDeu"
+            };
+            query.Parameters.AddWithValue("@idCli", deuda.IdCliente.ToString());
+            query.Parameters.AddWithValue("@debe", deuda.Debe.ToString());
+            query.Parameters.AddWithValue("@usReg", deuda.UsuarioRegistra);
+            query.Parameters.AddWithValue("@feReg", deuda.FechaRegistra);
+            
+            try {
+                query.ExecuteReader();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show($"Error (update deuda) exepción: {e.ToString()}", "Error");
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que registra una nueva deuda.
+        /// </summary>
+        /// <param name="newDeuda"></param>
+        public static void NewDeuda(Deuda newDeuda) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = "insert into deuda_mayoreo values (default, @idCli, @debe, @usReg, sysdate(), @usMod, sysdate())"
+            };
+            query.Parameters.AddWithValue("@idCli", newDeuda.IdCliente.ToString());
+            query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString());
+            query.Parameters.AddWithValue("@usReg", Database.GetUsername());
+            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+
+            try {
+                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+            }
+            catch (MySqlException e) {
+                MessageBox.Show($"Error (new Deuda) exepción: {e.ToString()}", "Error");
+            }
+            finally {
+                connObj.Close();
+            }
         }
 
         // ============================================
