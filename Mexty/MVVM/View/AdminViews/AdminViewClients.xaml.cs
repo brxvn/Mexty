@@ -84,6 +84,11 @@ namespace Mexty.MVVM.View.AdminViews {
             ListaDeudas = dataDeudas;
         }
 
+        /// <summary>
+        /// Lógica para el evento SelectedItem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
             txtNombreCliente.IsReadOnly = true;
@@ -215,7 +220,7 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// 
+        /// Lógica boton eliminar cliente.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -279,6 +284,5 @@ namespace Mexty.MVVM.View.AdminViews {
             TextBox textBox = sender as TextBox;
             txtComentario.Text = textBox.Text;
         }
-
     }
 }

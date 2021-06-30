@@ -75,5 +75,10 @@
         /// Fecha de la ultima modificación a este cliente.
         /// </summary>
         public string FechaModifica { get; set; }
+
+        /// <summary>
+        /// Comentarios sobre el cliente.
+        /// </summary>
+        public string Comentario { get; set; }
     }
 }
