@@ -147,21 +147,21 @@ namespace Mexty.MVVM.Model {
             using MySqlDataReader reader = query.ExecuteReader();
             while (reader.Read()) {
                 var usuario = new Usuario {
-                    Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32(0),
-                    Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString(1),
-                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
-                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
-                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString(4),
-                    Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString(5),
-                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(6),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(7),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32(8),
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(9),
-                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32(10),
-                    UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(11),
-                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(12),
-                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(13),
-                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(14)
+                    Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32("id_usuario"),
+                    Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString("nombre_usuario"),
+                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
+                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
+                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString("usuario"),
+                    Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString("contrasenia"),
+                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"),
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
+                    UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
                 };
                 users.Add(usuario);
             }
@@ -178,7 +178,20 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "update usuario set NOMBRE_USUARIO=@nomUsr, AP_PATERNO=@apPat, AP_MATERNO=@apMat, ID_TIENDA=@idTi, DOMICILIO=@dom, CONTRASENIA=@pass, TELEFONO=@tel, ACTIVO=@act, ID_ROL=@idRo, USUARIO_MODIFICA=@uMod, FECHA_MODIFICA=sysdate() where ID_USUARIO=@ID"
+                CommandText = @"
+                    update usuario 
+                    set NOMBRE_USUARIO=@nomUsr, 
+                        AP_PATERNO=@apPat, 
+                        AP_MATERNO=@apMat, 
+                        ID_TIENDA=@idTi, 
+                        DOMICILIO=@dom, 
+                        CONTRASENIA=@pass, 
+                        TELEFONO=@tel, 
+                        ACTIVO=@act, 
+                        ID_ROL=@idRo, 
+                        USUARIO_MODIFICA=@uMod, 
+                        FECHA_MODIFICA=sysdate() 
+                    where ID_USUARIO=@ID"
             };
             query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
             query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
@@ -213,7 +226,22 @@ namespace Mexty.MVVM.Model {
             
             MySqlCommand query = new() {
                 Connection = connObj,
-                CommandText = "insert into usuario values (default, @nombre, @apPat, @apMat, @usr, @pass, @dom, @tel, @act, @idT, @idR, @usrReg, sysdate(), @usrMod, sysdate())"
+                CommandText = @"
+                    insert into usuario 
+                        (ID_USUARIO, NOMBRE_USUARIO, AP_PATERNO, AP_MATERNO, 
+                         USUARIO, CONTRASENIA, DOMICILIO, TELEFONO, 
+                         ACTIVO, ID_TIENDA, ID_ROL, 
+                         USUARIO_REGISTRA, 
+                         FECHA_REGISTRO, 
+                         USUARIO_MODIFICA, 
+                         FECHA_MODIFICA) 
+                    values (default, @nombre, @apPat, @apMat, 
+                            @usr, @pass, @dom, @tel, 
+                            @act, @idT, @idR, 
+                            @usrReg, 
+                            sysdate(), 
+                            @usrMod, 
+                            sysdate())"
             };
 
             query.Parameters.AddWithValue("@nombre", newUser.Nombre);
@@ -260,16 +288,16 @@ namespace Mexty.MVVM.Model {
             using var reader = query.ExecuteReader();
             while (reader.Read()) {
                 var sucursal = new Sucursal {
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(0),
-                    NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString(1),
-                    Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString(2),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(3), 
-                    Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString(4),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                    NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString("nombre_tienda"),
+                    Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString("direccion"),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"), 
+                    Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString("rfc"),
                     // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
-                    Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString(6),
-                    Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString(7),
-                    Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString(8),
-                    TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString(9)
+                    Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
+                    Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
+                    Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
+                    TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda")
                 };
                 sucursales.Add(sucursal);
             }
@@ -301,9 +329,9 @@ namespace Mexty.MVVM.Model {
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
                 var rol = new Rol() {
-                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32(0),
-                    RolDescription = reader.IsDBNull("desc_rol") ? "" : reader.GetString(1),
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32(2)
+                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
+                    RolDescription = reader.IsDBNull("desc_rol") ? "" : reader.GetString("desc_rol"),
+                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda")
                 };
                 roles.Add(rol);
             }
@@ -331,15 +359,15 @@ namespace Mexty.MVVM.Model {
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
                 var producto = new Producto {
-                    IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32(0),
-                    NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString(1),
-                    MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString(2),
-                    TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString(3),
-                    TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32(4),
-                    PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32(5),
-                    PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32(6),
-                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString(7),
-                    Activo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32(8)
+                    IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                    NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
+                    MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
+                    TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                    TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
+                    PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
+                    PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
+                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
+                    Activo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo")
                 };
                 productos.Add(producto);
             }
@@ -357,7 +385,17 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "update cat_producto set NOMBRE_PRODUCTO=@nom, MEDIDA=@med, TIPO_PRODUCTO=@tipoP, TIPO_VENTA=@tipoV, PRECIO_MAYOREO=@pMayo, PRECIO_MENUDEO=@pMenu, ESPECIFICACION_PRODUCTO=@esp, ACTIVO=@act where ID_PRODUCTO=@id"
+                CommandText = @"
+                update cat_producto 
+                set NOMBRE_PRODUCTO=@nom, 
+                    MEDIDA=@med, 
+                    TIPO_PRODUCTO=@tipoP, 
+                    TIPO_VENTA=@tipoV, 
+                    PRECIO_MAYOREO=@pMayo, 
+                    PRECIO_MENUDEO=@pMenu, 
+                    ESPECIFICACION_PRODUCTO=@esp, 
+                    ACTIVO=@act 
+                where ID_PRODUCTO=@id"
             };
             query.Parameters.AddWithValue("@nom", producto.NombreProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
@@ -390,7 +428,14 @@ namespace Mexty.MVVM.Model {
             
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "insert into cat_producto values (default, @nom, @medida, @tipoP, @tipoV, @pMayo, @pMenu, @esp, @act)"
+                CommandText = @"
+                insert into cat_producto 
+                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
+                     TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
+                     ESPECIFICACION_PRODUCTO, ACTIVO) 
+                values (default, @nom, @medida, @tipoP, 
+                        @tipoV, @pMayo, @pMenu, 
+                        @esp, @act)"
             };
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
@@ -431,17 +476,18 @@ namespace Mexty.MVVM.Model {
             using MySqlDataReader reader = query.ExecuteReader();
             while (reader.Read()) {
                 var cliente = new Cliente() {
-                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32(0),
-                    Nombre = reader.IsDBNull("nombre_cliente") ? "" : reader.GetString(1),
-                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString(2),
-                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString(3),
-                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString(4),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32(5),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32(6),
-                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(7),
-                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(8),
-                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(9),
-                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(10)
+                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
+                    Nombre = reader.IsDBNull("nombre_cliente") ? "" : reader.GetString("nombre_cliente"),
+                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
+                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
+                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
+                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"),
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica"),
+                    Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario")
                 };
                 clientes.Add(cliente);
             }
@@ -458,7 +504,13 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "update cliente_mayoreo set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate() where ID_CLIENTE=@id"
+                CommandText = @"
+                update cliente_mayoreo 
+                set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
+                    DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, 
+                    USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate(), 
+                    COMENTARIO=@com 
+                where ID_CLIENTE=@id"
             };
             query.Parameters.AddWithValue("@nom", cliente.Nombre);
             query.Parameters.AddWithValue("@apP", cliente.ApPaterno);
@@ -468,6 +520,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", cliente.Activo.ToString());
             query.Parameters.AddWithValue("@usMod", Database.GetUsername());
             query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
+            query.Parameters.AddWithValue("@com", cliente.Comentario);
 
             try {
                 query.ExecuteReader();
@@ -490,7 +543,18 @@ namespace Mexty.MVVM.Model {
             
             MySqlCommand query = new() {
                 Connection = connObj,
-                CommandText = "insert into cliente_mayoreo values (default, @nom, @apP, @apM, @dom, @tel, @act, @usReg, sysdate(), @usMod, sysdate())"
+                CommandText = @"
+                insert into cliente_mayoreo 
+                    (id_cliente, nombre_cliente, ap_paterno, ap_materno, 
+                     domicilio, telefono, activo, 
+                     usuario_registra, fecha_registro, 
+                     usuario_modifica, fecha_modifica, 
+                     comentario) 
+                values (default, @nom, @apP, @apM, 
+                        @dom, @tel, @act, 
+                        @usReg, sysdate(), 
+                        @usMod, sysdate(), 
+                        @com)"
             };
             query.Parameters.AddWithValue("@nom", newClient.Nombre);
             query.Parameters.AddWithValue("@apP", newClient.ApPaterno);
@@ -500,6 +564,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", newClient.Activo.ToString());
             query.Parameters.AddWithValue("@usReg", Database.GetUsername());
             query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@com", newClient.Comentario);
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
@@ -531,13 +596,13 @@ namespace Mexty.MVVM.Model {
             using MySqlDataReader reader = query.ExecuteReader();
             while (reader.Read()) {
                 var deuda = new Deuda() {
-                    IdDeuda = reader.IsDBNull("id_deuda") ? 0 : reader.GetInt32(0),
-                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32(1),
-                    Debe = reader.IsDBNull("debe") ? 0 : reader.GetDouble(3),
-                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString(4),
-                    FechaRegistra = reader.IsDBNull("fecha_registro") ? "" : reader.GetString(5),
-                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString(6),
-                    FechaModifca = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString(7)
+                    IdDeuda = reader.IsDBNull("id_deuda") ? 0 : reader.GetInt32("id_deuda"),
+                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
+                    Debe = reader.IsDBNull("debe") ? 0 : reader.GetDouble("debe"),
+                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                    FechaRegistra = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                    FechaModifca = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
                 };
                 deudas.Add(deuda);
             }
@@ -554,7 +619,15 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "update deuda_mayoreo set ID_CLIENTE=@idCli, DEBE=@debe, USUARIO_REGISTRA=@usReg, FECHA_REGISTRO=@feReg, USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate() where ID_DEUDA=@idDeu"
+                CommandText = @"
+                update deuda_mayoreo 
+                set ID_CLIENTE=@idCli, 
+                    DEBE=@debe, 
+                    USUARIO_REGISTRA=@usReg, 
+                    FECHA_REGISTRO=@feReg, 
+                    USUARIO_MODIFICA=@usMod, 
+                    FECHA_MODIFICA=sysdate() 
+                where ID_DEUDA=@idDeu"
             };
             query.Parameters.AddWithValue("@idCli", deuda.IdCliente.ToString());
             query.Parameters.AddWithValue("@debe", deuda.Debe.ToString());
@@ -582,7 +655,14 @@ namespace Mexty.MVVM.Model {
             
             MySqlCommand query = new() {
                 Connection = connObj,
-                CommandText = "insert into deuda_mayoreo values (default, @idCli, @debe, @usReg, sysdate(), @usMod, sysdate())"
+                CommandText = @"
+                insert into deuda_mayoreo 
+                    (ID_DEUDA, ID_CLIENTE, DEBE, 
+                     USUARIO_REGISTRA, FECHA_REGISTRO, 
+                     USUARIO_MODIFICA, FECHA_MODIFICA) 
+                values (default, @idCli, @debe, 
+                        @usReg, sysdate(), 
+                        @usMod, sysdate())"
             };
             query.Parameters.AddWithValue("@idCli", newDeuda.IdCliente.ToString());
             query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString());
