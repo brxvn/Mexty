@@ -7,10 +7,12 @@ namespace Mexty.MVVM.Model.Validations {
     /// </summary>
     public class ClientValidation : AbstractValidator<Cliente> {
         public ClientValidation() {
+            CascadeMode = CascadeMode.Stop;
+            
             RuleFor(cliente => cliente.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacio.")
-                .Length(3, 50).WithMessage("El nombre es muy largo o muy corto.")
+                .Length(3, 50).WithMessage("El nombre tiene {TotalLength} y debe de tener entre 3 y 50 caracteres.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
             RuleFor(cliente => cliente.ApPaterno)
@@ -37,7 +39,5 @@ namespace Mexty.MVVM.Model.Validations {
                 .Length(5, 90).WithMessage("El domicilio es muy corto o largo par ser válido.")
                 .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");
         }
-        
-        
     }
 }

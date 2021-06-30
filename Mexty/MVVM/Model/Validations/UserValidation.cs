@@ -14,7 +14,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(usuario => usuario.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacio.")
-                .Length(3, 50).WithMessage("El nombre es muy largo o muy corto.")
+                .Length(3, 50).WithMessage("El nombre tiene {TotalLength} caracteres y debe de tener entre 3 y 50.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
             RuleFor(usuario => usuario.ApPaterno)

@@ -200,7 +200,7 @@ namespace Mexty.MVVM.View.AdminViews{
                 Database.UpdateData(newProduct);
                 
                 var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Usuario Actualizado");
+                MessageBox.Show(msg, "Producto Actualizado");
             }
             else {
                 var alta = true;
@@ -212,14 +212,14 @@ namespace Mexty.MVVM.View.AdminViews{
                         Database.UpdateData(newProduct);
                         alta = false;
                         var msg = $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Usuario Actualizado");
+                        MessageBox.Show(msg, "Producto Actualizado");
                     }
                 }
                 if (alta) {
                     // Alta
                     Database.NewProduct(newProduct);
                     var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-                    MessageBox.Show(msg, "Usuario Actualizado");
+                    MessageBox.Show(msg, "Producto Actualizado");
                 }
             }
             FillData();
