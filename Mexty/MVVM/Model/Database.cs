@@ -520,7 +520,7 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla de Deudas Mayoreo.
         /// </summary>
         /// <returns>Una lista de elementos tipo <c>Deuda</c>.</returns>
-        public static List<Deuda> GetTablesFromDeuda() {
+        public static List<Deuda> GetTablesFromDeudas() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {

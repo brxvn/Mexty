@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,6 +30,11 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Cliente> ListaClientes { get; set; }
+
+        /// <summary>
+        /// Lista de deudas dada por la base de datos.
+        /// </summary>
+        private List<Deuda> ListaDeudas { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -66,13 +72,16 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la datagrid con los Clientes.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromClientes();
-            ListaClientes = data;
-            var collectionView = new ListCollectionView(data) {
+            var dataClientes = Database.GetTablesFromClientes();
+            ListaClientes = dataClientes;
+            var collectionView = new ListCollectionView(dataClientes) {
                 Filter = e => e is Cliente cliente && cliente.Activo != 0
             };
             CollectionView = collectionView;
             DataClientes.ItemsSource = collectionView;
+
+            var dataDeudas = Database.GetTablesFromDeudas();
+            ListaDeudas = dataDeudas;
         }
 
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
@@ -81,8 +90,8 @@ namespace Mexty.MVVM.View.AdminViews {
             txtApPaternoCliente.IsReadOnly = true;
             txtApMaternoCliente.IsReadOnly = true;
 
+            if (DataClientes.SelectedItem == null) return;
             var cliente = (Cliente) DataClientes.SelectedItem;
-            if (cliente == null) return;
             SelectedClient = cliente;
             txtNombreCliente.Text = cliente.Nombre;
             txtApPaternoCliente.Text = cliente.ApPaterno;
@@ -224,8 +233,17 @@ namespace Mexty.MVVM.View.AdminViews {
             ClearFields();
             FillData();
         }
-        
-        // TODO: OnlyNumbersValidation
+
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //TODO: agregarlo al evento de PreviewTextInput de la deuda.
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            var regex = new Regex("[^0-9]+");
+            e.Handled = regex.IsMatch(e.Text);
+        }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
@@ -233,27 +251,33 @@ namespace Mexty.MVVM.View.AdminViews {
 
 
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtNombreCliente.Text = textBox.Text;
         }
 
         private void txtUpdateApPaterno(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtApPaternoCliente.Text = textBox.Text;
         }
 
         private void txtUpdateApMaterno(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtApMaternoCliente.Text = textBox.Text;
         }
 
         private void txtUpdateTelefono(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtTelefono.Text = textBox.Text;
         }
 
         private void txtUpdateDireccion(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtDireccion.Text = textBox.Text;
         }
 
         private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtComentario.Text = textBox.Text;
         }
 
     }

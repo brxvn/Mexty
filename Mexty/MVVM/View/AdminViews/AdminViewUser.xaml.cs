@@ -112,8 +112,8 @@ namespace Mexty.MVVM.View.AdminViews {
             apPaternoUsuario.IsReadOnly = true;
             apMaternoUsuario.IsReadOnly = true;
             
+            if (DataUsuarios.SelectedItem == null) return; //Check si no es nulo.
             var usuario = (Usuario) DataUsuarios.SelectedItem;
-            if (usuario == null) return; // Check si no es nulo.
             SelectedUser = usuario;
             nombreUsuario.Text = usuario.Nombre;
             apPaternoUsuario.Text = usuario.ApPaterno;
