@@ -203,13 +203,13 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
-            query.Parameters.AddWithValue("@uMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@uMod", GetUsername());
 
             try {
                 query.ExecuteReader();
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (update Usuario) exepción: {e.ToString()}","Error");
+                MessageBox.Show($"Error (update Usuario) exepción: {e}","Error");
             }
             finally {
                 connObj.Close();
@@ -254,14 +254,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", newUser.Activo.ToString());
             query.Parameters.AddWithValue("@idT", newUser.IdTienda.ToString());
             query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
-            query.Parameters.AddWithValue("@usrReg", Database.GetUsername());
-            query.Parameters.AddWithValue("@usrMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@usrReg", GetUsername());
+            query.Parameters.AddWithValue("@usrMod", GetUsername());
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new User) exepción: {e.ToString()}", "Error");
+                MessageBox.Show($"Error (new User) exepción: {e}", "Error");
             }
             finally {
                 connObj.Close();
@@ -351,10 +351,12 @@ namespace Mexty.MVVM.Model {
         public static List<Producto> GetTablesFromProductos() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
+            
             var querry = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from cat_producto"
             };
+            
             var productos = new List<Producto>();
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
@@ -518,7 +520,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@dom", cliente.Domicilio);
             query.Parameters.AddWithValue("@tel", cliente.Telefono.ToString());
             query.Parameters.AddWithValue("@act", cliente.Activo.ToString());
-            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
             query.Parameters.AddWithValue("@com", cliente.Comentario);
 
@@ -526,7 +528,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteReader();
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (update Cliente) exepción: {e.ToString()}", "Error");
+                MessageBox.Show($"Error (update Cliente) exepción: {e}", "Error");
             }
             finally {
                 connObj.Close();
@@ -562,15 +564,15 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@dom", newClient.Domicilio);
             query.Parameters.AddWithValue("@tel", newClient.Telefono.ToString());
             query.Parameters.AddWithValue("@act", newClient.Activo.ToString());
-            query.Parameters.AddWithValue("@usReg", Database.GetUsername());
-            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@usReg", GetUsername());
+            query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@com", newClient.Comentario);
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new User) exepción: {e.ToString()}", "Error");
+                MessageBox.Show($"Error (new User) exepción: {e}", "Error");
             }
             finally {
                 connObj.Close();
@@ -638,7 +640,7 @@ namespace Mexty.MVVM.Model {
                 query.ExecuteReader();
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (update deuda) exepción: {e.ToString()}", "Error");
+                MessageBox.Show($"Error (update deuda) exepción: {e}", "Error");
             }
             finally {
                 connObj.Close();
@@ -666,14 +668,14 @@ namespace Mexty.MVVM.Model {
             };
             query.Parameters.AddWithValue("@idCli", newDeuda.IdCliente.ToString());
             query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString());
-            query.Parameters.AddWithValue("@usReg", Database.GetUsername());
-            query.Parameters.AddWithValue("@usMod", Database.GetUsername());
+            query.Parameters.AddWithValue("@usReg", GetUsername());
+            query.Parameters.AddWithValue("@usMod", GetUsername());
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new Deuda) exepción: {e.ToString()}", "Error");
+                MessageBox.Show($"Error (new Deuda) exepción: {e}", "Error");
             }
             finally {
                 connObj.Close();
