@@ -112,6 +112,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apPaternoUsuario.IsReadOnly = true;
             apMaternoUsuario.IsReadOnly = true;
             
+
             var usuario = (Usuario) DataUsuarios.SelectedItem;
             if (usuario == null) return; // Check si no es nulo.
             SelectedUser = usuario;
@@ -124,13 +125,14 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
             TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
-            //Eliminar.IsEnabled = true;
+            Eliminar.IsEnabled = true;
         }
 
         /// <summary>
         /// Función que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            SearchBox.Text = "";
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
@@ -267,8 +269,9 @@ namespace Mexty.MVVM.View.AdminViews {
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
             Database.UpdateData(usuario);
-            ClearFields();
             FillDataGrid();
+            ClearFields();
+            Eliminar.IsEnabled = false;
         }
 
         /// <summary>
@@ -367,5 +370,6 @@ namespace Mexty.MVVM.View.AdminViews {
             // Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }
+
     }
 }

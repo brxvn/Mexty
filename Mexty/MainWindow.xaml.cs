@@ -41,13 +41,12 @@ namespace Mexty {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SignOut(object sender, RoutedEventArgs e) {
-            var message = "¿Desea cerrar sesión?";
+            var message = "¿Desea salir?";
             var title = "Confirmación.";
             if (MessageBox.Show(message, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                Login login = new();
                 Database.CloseConnection();
-                login.Show();
-                Close();
+                Application.Current.Shutdown();
+
             }
             
         }
