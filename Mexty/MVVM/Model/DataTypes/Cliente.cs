@@ -49,7 +49,7 @@
         /// <summary>
         /// Número de teléfono del cliente.
         /// </summary>
-        public int Telefono { get; set; }
+        public string Telefono { get; set; }
 
         /// <summary>
         /// Indica si el cliente esta activo.

@@ -29,7 +29,7 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
-                     Name="SearchBox"
+                     x:Name="SearchBox"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -432,7 +432,7 @@
                 </TextBox>
 
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0" Focusable="True"/>
+                          VerticalContentAlignment="Center" SelectedIndex="0" Focusable="True" ToolTip="Sucursal"/>
 
 
 
@@ -549,7 +549,6 @@
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      MaxLength="10"
                                                      TextChanged="TextUpdateTel"
-                                                     LostFocus="PhoneValidation"
                                                      Focusable="True"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -623,7 +622,6 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="8"
-                                                     LostFocus="PwdValidation"
                                                      TextChanged="TextUpdatePswd"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->

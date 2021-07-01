@@ -154,7 +154,7 @@ namespace Mexty.MVVM.Model {
                     Username = reader.IsDBNull("usuario") ? "" : reader.GetString("usuario"),
                     Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString("contrasenia"),
                     Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"),
+                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
                     Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                     IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
@@ -483,7 +483,7 @@ namespace Mexty.MVVM.Model {
                     ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
                     ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
                     Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"),
+                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
                     Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                     UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                     FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
@@ -518,7 +518,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@apP", cliente.ApPaterno);
             query.Parameters.AddWithValue("@apM", cliente.ApMaterno);
             query.Parameters.AddWithValue("@dom", cliente.Domicilio);
-            query.Parameters.AddWithValue("@tel", cliente.Telefono.ToString());
+            query.Parameters.AddWithValue("@tel", cliente.Telefono);
             query.Parameters.AddWithValue("@act", cliente.Activo.ToString());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
@@ -562,7 +562,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@apP", newClient.ApPaterno);
             query.Parameters.AddWithValue("@apM", newClient.ApMaterno);
             query.Parameters.AddWithValue("@dom", newClient.Domicilio);
-            query.Parameters.AddWithValue("@tel", newClient.Telefono.ToString());
+            query.Parameters.AddWithValue("@tel", newClient.Telefono);
             query.Parameters.AddWithValue("@act", newClient.Activo.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());

@@ -49,9 +49,9 @@ namespace Mexty.MVVM.View.AdminViews {
             InitializeComponent();
             
             FillDataGrid();
+            ClearFields();
             FillRol();
             FillSucursales();
-            ClearFields();
            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -121,17 +121,17 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
             ComboRol.SelectedIndex = usuario.IdRol - 1;
             TxtDireccion.Text = usuario.Domicilio;
-            TxtTelefono.Text = usuario.Telefono.ToString(); //ojo
+            TxtTelefono.Text = usuario.Telefono; //ojo
             TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
             Eliminar.IsEnabled = true;
+            SearchBox.Text = "";
         }
 
         /// <summary>
         /// Función que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
-            SearchBox.Text = "";
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
@@ -144,7 +144,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
             Eliminar.IsEnabled = false;
-            //Guardar.IsEnabled = false;
+            Guardar.IsEnabled = false;
         }
 
         /// <summary>
@@ -172,6 +172,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter += noNull;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
+
             }
         }
 
@@ -203,7 +205,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 ApPaterno = apPaternoUsuario.Text,
                 ApMaterno = apMaternoUsuario.Text,
                 Domicilio = TxtDireccion.Text,
-                Telefono = TxtTelefono.Text.Equals("") ? 0 : long.Parse(TxtTelefono.Text),
+                Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
                 Contraseña = TxtContraseña.Text,
                 IdTienda = ComboSucursal.SelectedIndex + 1,
                 IdRol = ComboRol.SelectedIndex + 1
@@ -224,7 +226,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 
                 Database.UpdateData(newUsuario);
                 
-                var msg = $"Se ha actualizado el usuario {newUsuario.Id.ToString()} {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
                 MessageBox.Show(msg, "Usuario Actualizado");
             }
             else {
@@ -242,7 +244,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     newUsuario.Activo = 1;
                     newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
                     Database.NewUser(newUsuario);
-                    var msg = $"Se ha creado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                    var msg = $"Se ha creado el usuario {newUsuario.Username}.";
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");
                 }
             }
@@ -261,11 +263,11 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
             var usuario = SelectedUser;
-            var mensaje = "¿Seguro quiere eliminar a el usuario " + usuario.Nombre + " " + usuario.ApPaterno +"?";
+            var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username +"?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
-            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
+            if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
             Database.UpdateData(usuario);
             FillDataGrid();
@@ -307,66 +309,58 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
-            // if (textbox.Text.Length <= 8 && textbox.Text.Length > 0 && TxtTelefono.Text.Length == 10) {
-            //     Guardar.IsEnabled = true;
-            // }
-            // else Guardar.IsEnabled = false;
+            if(textbox.Text != "") Guardar.IsEnabled = true;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
-            // if (textbox.Text == "" || apPaternoUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
-            //     Guardar.IsEnabled = false;
-            // }
-            // else Guardar.IsEnabled = true;
-           
+            Guardar.IsEnabled = textbox.Text != "";
+
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
-            // if (textbox.Text == "" || nombreUsuario.Text == "" || TxtTelefono.Text == "" || TxtContraseña.Text == "") {
-            //     Guardar.IsEnabled = false;
-            // }
-            // else Guardar.IsEnabled = true;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apPaternoUsuario.Text = textbox.Text;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdateDir(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtDireccion.Text = textbox.Text;
+            Guardar.IsEnabled = textbox.Text != "";
         }
+    
 
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtTelefono.Text = textbox.Text;
-            // if (textbox.Text.Length == 10 && TxtContraseña.Text.Length <= 8 && TxtContraseña.Text.Length > 0) {
-            //     Guardar.IsEnabled = true;
-            // }
-            // else Guardar.IsEnabled = false;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
-        private void PhoneValidation(object sender, RoutedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            if (textbox.Text.Length < 10) {
-                //MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
-            }
-        }
+        //private void PhoneValidation(object sender, RoutedEventArgs e) {
+        //    TextBox textbox = sender as TextBox;
+        //    if (textbox.Text.Length < 10) {
+        //        //MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
+        //    }
+        //}
 
-        private void PwdValidation(object sender, RoutedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            if (textbox.Text.Equals("")) {
-                //MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
-            }
-        }
+        //private void PwdValidation(object sender, RoutedEventArgs e) {
+        //    TextBox textbox = sender as TextBox;
+        //    if (textbox.Text.Equals("")) {
+        //        //MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
+        //    }
+        //}
 
         private void DesactivarBotones() {
-            // Guardar.IsEnabled = false;
+            Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }
 

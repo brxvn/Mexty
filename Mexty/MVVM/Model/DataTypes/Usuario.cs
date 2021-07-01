@@ -78,7 +78,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <summary>
         /// Teléfono del empleado.
         /// </summary>
-        public long Telefono { get; set; }
+        public string Telefono { get; set; }
 
         /// <summary>
         /// Indica si el usuario esta activo o no.
@@ -138,8 +138,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <returns></returns>
         public static bool operator ==(Usuario a, Usuario b) {
             if (a is null || b is null) return false;
-            return a.Username == b.Username &&
-                   a.Nombre == b.Nombre &&
+            return a.Nombre == b.Nombre &&
                    a.ApPaterno == b.ApPaterno &&
                    a.ApMaterno == b.ApMaterno;
         }

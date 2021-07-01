@@ -101,7 +101,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreCliente.Text = cliente.Nombre;
             txtApPaternoCliente.Text = cliente.ApPaterno;
             txtApMaternoCliente.Text = cliente.ApMaterno;
-            txtTelefono.Text = cliente.Telefono.ToString();
+            txtTelefono.Text = cliente.Telefono;
             txtDireccion.Text = cliente.Domicilio;
             //txtComentario.Text = cliente.
             //Eliminar.IsEnabled = true;
@@ -172,7 +172,7 @@ namespace Mexty.MVVM.View.AdminViews {
             newClient.ApMaterno = txtApMaternoCliente.Text;
             newClient.Domicilio = txtDireccion.Text;
             //TODO: falta comentario.
-            newClient.Telefono = txtTelefono.Text == "" ? 0 : int.Parse(txtTelefono.Text);
+            newClient.Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text;
             //TODO: falta campo de deuda.
             //
 

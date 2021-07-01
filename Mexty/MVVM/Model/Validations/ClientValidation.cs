@@ -27,7 +27,7 @@ namespace Mexty.MVVM.Model.Validations {
                 .Length(3, 50).WithMessage("El apellido paterno es muy largo o muy corto.")
                 .Must(Validations.BeAValidName).WithMessage("No es un apellido paterno válido.");
 
-            RuleFor(expression: cliente => cliente.Telefono.ToString())
+            RuleFor(expression: cliente => cliente.Telefono)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El número de teléfono no puede esar vacio.")
                 .Length(10).WithMessage("El número de teléfono debe de ser de 10 dígitos.")
