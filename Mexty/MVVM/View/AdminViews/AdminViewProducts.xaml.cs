@@ -43,6 +43,7 @@ namespace Mexty.MVVM.View.AdminViews{
             
             InitializeComponent();
             FillData();
+            FillSucursales();
             ClearFields();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -76,9 +77,17 @@ namespace Mexty.MVVM.View.AdminViews{
             
             //Datos Combo tipos.
             ComboTipo.ItemsSource = Producto.GetTiposProducto();
-            
+
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
+
+        }
+
+        private void FillSucursales() {
+            var sucursales = Database.GetTablesFromSucursales();
+            foreach (var sucursal in sucursales) {
+                ComboSucursal.Items.Add(sucursal.NombreTienda);
+            }
         }
 
         /// <summary>
@@ -101,9 +110,8 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
-            //Guardar.IsEnabled = true;
             Eliminar.IsEnabled = true;
-            
+            Guardar.IsEnabled = true;
         }
 
         /// <summary>
@@ -277,34 +285,25 @@ namespace Mexty.MVVM.View.AdminViews{
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtNombreProducto.Text = textbox.Text;
-            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtPrecioMayoreo.Text != ""  && txtPrecioMenudeo.Text != "") {
-            //     Guardar.IsEnabled = true;
-            // }
-            // else Guardar.IsEnabled = false;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMayoreo.Text != "") {
-            //     Guardar.IsEnabled = true;
-            // }
-            // else Guardar.IsEnabled = false;
-
-        }
+            Guardar.IsEnabled = textbox.Text != "";
+        }    
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            // if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "") {
-            //     Guardar.IsEnabled = true;
-            // }
-            // else Guardar.IsEnabled = false;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtDetalle.Text = textbox.Text;
+            Guardar.IsEnabled = textbox.Text != "";
         }
 
         private void TextUpdateMedida(object sender, TextChangedEventArgs a) {

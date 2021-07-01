@@ -369,7 +369,7 @@ namespace Mexty.MVVM.Model {
                     PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
                     PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
                     DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
-                    Activo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo")
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo")
                 };
                 productos.Add(producto);
             }
@@ -438,7 +438,7 @@ namespace Mexty.MVVM.Model {
                 values (default, @nom, @medida, @tipoP, 
                         @tipoV, @pMayo, @pMenu, 
                         @esp, @act)"
-            };
+            }; 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
             query.Parameters.AddWithValue("@tipoP", newProduct.TipoProducto);
@@ -458,6 +458,7 @@ namespace Mexty.MVVM.Model {
                 connObj.Close();
             }
         }
+        //TODO: Agregar la surcursal en producto
 
         // ============================================
         // ------- Querys de Clientes -----------------

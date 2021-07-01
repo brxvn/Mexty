@@ -309,7 +309,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
-            if(textbox.Text != "") Guardar.IsEnabled = true;
             Guardar.IsEnabled = textbox.Text != "";
         }
 
@@ -317,7 +316,6 @@ namespace Mexty.MVVM.View.AdminViews {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
             Guardar.IsEnabled = textbox.Text != "";
-
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
