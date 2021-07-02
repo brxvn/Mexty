@@ -6,7 +6,6 @@ using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
 using System.Windows.Documents;
 
-
 namespace Mexty.MVVM.Model {
     /// <summary>
     /// La clase principal de base de datos.
@@ -139,10 +138,12 @@ namespace Mexty.MVVM.Model {
         public static List<Usuario> GetTablesFromUsuarios() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
+
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from usuario"
             };
+
             var users = new List<Usuario>();
             using MySqlDataReader reader = query.ExecuteReader();
             while (reader.Read()) {
@@ -193,6 +194,7 @@ namespace Mexty.MVVM.Model {
                         FECHA_MODIFICA=sysdate() 
                     where ID_USUARIO=@ID"
             };
+
             query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
             query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
             query.Parameters.AddWithValue("@apMat", usuario.ApMaterno);
@@ -223,7 +225,7 @@ namespace Mexty.MVVM.Model {
         public static void NewUser(Usuario newUser) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-            
+
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
@@ -279,11 +281,12 @@ namespace Mexty.MVVM.Model {
         public static List<Sucursal> GetTablesFromSucursales() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-            
+
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from cat_tienda"
             };
+
             var sucursales = new List<Sucursal>();
             using var reader = query.ExecuteReader();
             while (reader.Read()) {
@@ -320,11 +323,12 @@ namespace Mexty.MVVM.Model {
         public static List<Rol> GetTablesFromRoles() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-            
+
             var querry = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from cat_rol_usuario"
             };
+
             var roles = new List<Rol>();
             using var reader = querry.ExecuteReader();
             while (reader.Read()) {
@@ -399,6 +403,7 @@ namespace Mexty.MVVM.Model {
                     ACTIVO=@act 
                 where ID_PRODUCTO=@id"
             };
+
             query.Parameters.AddWithValue("@nom", producto.NombreProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
             query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
@@ -542,7 +547,7 @@ namespace Mexty.MVVM.Model {
         public static void NewClient(Cliente newClient) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-            
+
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
@@ -631,6 +636,7 @@ namespace Mexty.MVVM.Model {
                     FECHA_MODIFICA=sysdate() 
                 where ID_DEUDA=@idDeu"
             };
+
             query.Parameters.AddWithValue("@idCli", deuda.IdCliente.ToString());
             query.Parameters.AddWithValue("@debe", deuda.Debe.ToString());
             query.Parameters.AddWithValue("@usReg", deuda.UsuarioRegistra);
@@ -666,6 +672,7 @@ namespace Mexty.MVVM.Model {
                         @usReg, sysdate(), 
                         @usMod, sysdate())"
             };
+    
             query.Parameters.AddWithValue("@idCli", newDeuda.IdCliente.ToString());
             query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
@@ -685,7 +692,6 @@ namespace Mexty.MVVM.Model {
         // ============================================
         // ------- Métodos De la clase ----------------
         // ============================================
-
 
     }
 }

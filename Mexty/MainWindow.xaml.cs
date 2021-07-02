@@ -3,13 +3,16 @@ using Mexty.MVVM.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Threading;
+using log4net;
 
 namespace Mexty {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+            private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MainWindow() {
+            log4net.Config.XmlConfigurator.Configure();
             
             InitializeComponent();
                         

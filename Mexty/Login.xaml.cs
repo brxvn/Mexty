@@ -3,13 +3,20 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
+using log4net;
+using log4net.Config;
 
 namespace Mexty {
     /// <summary>
     /// Lógica para <c>Login.xaml</c>.
     /// </summary>
     public partial class Login : Window {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Login() {
+            
+            
+            log4net.Config.XmlConfigurator.Configure();
+            log.Info("Test info");
             InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
