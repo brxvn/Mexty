@@ -23,6 +23,7 @@
         // TODO: probablemente leerlos del ini.
         private static readonly string[] TiposMedida = {"pieza", "gramos", "litro", "plato"};
 
+        
         /// <summary>
         /// Método estatico para obtener Los tipos de producto que hay.
         /// </summary>
@@ -38,7 +39,8 @@
         public static string[] GetTiposMedida() {
             return TiposMedida;
         }
-        
+
+           
         /// <summary>
         /// Id del producto.
         /// </summary>

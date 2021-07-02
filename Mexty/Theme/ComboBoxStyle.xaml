@@ -65,9 +65,9 @@
         <GradientStop Color="Beige" Offset="1.0"/>
     </LinearGradientBrush>
     <SolidColorBrush x:Key="ComboBox.Pressed.Editable.Button.Border" Color="#F78B37"/>
-    <SolidColorBrush x:Key="ComboBox.Disabled.Background" Color="Beige"/>
-    <SolidColorBrush x:Key="ComboBox.Disabled.Border" Color="Beige"/>
-    <SolidColorBrush x:Key="ComboBox.Disabled.Glyph" Color="#FFBFBFBF"/>
+    <SolidColorBrush x:Key="ComboBox.Disabled.Background" Color="LightGray"/>
+    <SolidColorBrush x:Key="ComboBox.Disabled.Border" Color="LightGray"/>
+    <SolidColorBrush x:Key="ComboBox.Disabled.Glyph" Color="Gray"/>
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Background" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Border" Color="#FFBFBFBF"/>
     <SolidColorBrush x:Key="ComboBox.Disabled.Editable.Button.Background" Color="Transparent"/>
@@ -152,6 +152,7 @@
                         </MultiDataTrigger>
                         <Trigger Property="IsEnabled" Value="false">
                             <Setter Property="Fill" TargetName="arrow" Value="{StaticResource ComboBox.Disabled.Glyph}"/>
+                            <Setter Property="ToolTip" TargetName="templateRoot" Value="No se puede editar"/>
                         </Trigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
@@ -160,6 +161,7 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
                             <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
+                            <Setter Property="ToolTip" TargetName="templateRoot" Value="No se puede editar"/>
                             <Setter Property="BorderThickness" TargetName="templateRoot" Value="3"/>
 
                         </MultiDataTrigger>
@@ -209,6 +211,7 @@
         <ControlTemplate.Triggers>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                <Setter Property="ToolTip" TargetName="toggleButton" Value="No se puede editar"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="true">
                 <Setter Property="Foreground" Value="Black"/>
@@ -297,6 +300,9 @@
                 <Setter Property="IsTabStop" Value="false"/>
                 <Setter Property="Padding" Value="2"/>
                 <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="ToolTip" Value="No se puede editar"/>
             </Trigger>
         </Style.Triggers>
     </Style>
