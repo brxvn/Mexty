@@ -322,9 +322,9 @@
                 <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True" BorderThickness="0"/>
 
-                <!--txtInstagram-->
+                <!--txtRFC-->
                 <TextBox Background="Beige"
-                     x:Name="txtInstagram"
+                     x:Name="txtRFC"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
@@ -354,7 +354,7 @@
                                                     </TextBox>
 
                                                     <TextBlock IsHitTestVisible="False"
-                                                       Text="Instagram"
+                                                       Text="RFC"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Left"
                                                        Margin="10,0,0,0"
@@ -387,7 +387,8 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
@@ -457,6 +458,68 @@
                 <TextBox Background="Beige"
                      x:Name="txtFacebook"
                      Grid.Column="1"
+                     HorizontalAlignment="Stretch"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     MaxLength="25"
+                                                     TextChanged="txtUpdateFacebook"
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Facebook"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!--txtInstagram-->
+                <TextBox Background="Beige"
+                     x:Name="txtInstagram"
+                     Grid.Column="2"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
                     <TextBox.Style>
