@@ -100,6 +100,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
             
+            if (DataProductos.SelectedItem == null) return;
             var producto = (Producto) DataProductos.SelectedItem;
             if (producto == null) return;
             SelectedProduct = producto;
@@ -109,7 +110,8 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
-            ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
+            ComboMedida.SelectedItem = producto.MedidaProducto;
+            ComboSucursal.SelectedItem = producto.Sucursal;// ojo
             Eliminar.IsEnabled = true;
             Guardar.IsEnabled = true;
         }
@@ -125,6 +127,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = "";
             txtDetalle.Text = "";
             ComboMedida.SelectedIndex = 0;
+            ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
             //Guardar.IsEnabled = false;
@@ -192,6 +195,7 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
             newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
+            newProduct.Sucursal = ComboSucursal.SelectedItem.ToString();
 
             var validator = new ProductValidation();
             var results = validator.Validate(newProduct);

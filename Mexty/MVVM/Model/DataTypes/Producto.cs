@@ -98,5 +98,10 @@
         /// </summary>
         public int Activo { get; set; }
 
+        /// <summary>
+        /// Sucursal en la que se va a vender el producto.
+        /// </summary>
+        public string Sucursal { get; set; }
+
     }
 }

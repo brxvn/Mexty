@@ -373,7 +373,8 @@ namespace Mexty.MVVM.Model {
                     PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
                     PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
                     DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo")
+                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                    Sucursal = reader.IsDBNull("sucursal") ? "" : reader.GetString("sucursal")
                 };
                 productos.Add(producto);
             }
@@ -400,7 +401,8 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
-                    ACTIVO=@act 
+                    ACTIVO=@act,
+                    SUCURSAL=@suc
                 where ID_PRODUCTO=@id"
             };
 
@@ -413,6 +415,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
+            query.Parameters.AddWithValue("@suc", producto.Sucursal);
             
             try {
                 query.ExecuteReader();
@@ -439,10 +442,10 @@ namespace Mexty.MVVM.Model {
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
                      TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO) 
+                     ESPECIFICACION_PRODUCTO, ACTIVO, SUCURSAL) 
                 values (default, @nom, @medida, @tipoP, 
                         @tipoV, @pMayo, @pMenu, 
-                        @esp, @act)"
+                        @esp, @act, @suc)"
             }; 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
@@ -452,6 +455,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString());
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
+            query.Parameters.AddWithValue("@suc", newProduct.Sucursal);
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
@@ -463,7 +467,6 @@ namespace Mexty.MVVM.Model {
                 connObj.Close();
             }
         }
-        //TODO: Agregar la surcursal en producto
 
         // ============================================
         // ------- Querys de Clientes -----------------
