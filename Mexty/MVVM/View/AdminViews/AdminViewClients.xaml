@@ -138,7 +138,7 @@
 
             <DataGrid.Columns>
                 
-                <DataGridTextColumn Header="Nombre" Binding="{Binding TipoProducto}" Width="1*">
+                <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -148,7 +148,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Apellido Paterno" Binding="{Binding MedidaProducto}" Width="1*">
+                <DataGridTextColumn Header="Apellido Paterno" Binding="{Binding ApPaterno}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -158,7 +158,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Telefono" Binding="{Binding NombreProducto}" Width="1*">
+                <DataGridTextColumn Header="Telefono" Binding="{Binding Telefono}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -168,7 +168,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Deuda" Binding="{Binding PrecioMenudeo}" Width="1*">
+                <DataGridTextColumn Header="Deuda" Binding="{Binding Debe}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -178,7 +178,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Fecha Registro" Binding="{Binding PrecioMayoreo}" Width="1*">
+                <DataGridTextColumn Header="Fecha Registro" Binding="{Binding FechaRegistro}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -188,7 +188,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Usuario que Registró" Binding="{Binding TipoVentaNombre}" Width="1*">
+                <DataGridTextColumn Header="Usuario que Registró" Binding="{Binding UsuarioRegistra}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -689,14 +689,15 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
-                                                     TextChanged="txtUpdateComentario"
+                                                     TextChanged="txtUpdateDeuda"
+                                                     PreviewTextInput="OnlyNumbersValidation"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
 
                                                     </TextBox>
 
                                                     <TextBlock IsHitTestVisible="False"
-                                                       Text="Comentario"
+                                                       Text="Deuda"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Left"
                                                        Margin="10,0,0,0"

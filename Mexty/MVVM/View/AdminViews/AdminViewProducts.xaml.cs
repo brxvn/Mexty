@@ -30,6 +30,11 @@ namespace Mexty.MVVM.View.AdminViews{
         private List<Producto> ListaProductos { get; set; }
 
         /// <summary>
+        /// Lista de todas las sucursales dada por la Base de datos
+        /// </summary>
+        private List<Sucursal> ListaSucursales { get; set; }
+
+        /// <summary>
         /// Collection view actual de la datagrid.
         /// </summary>
         private CollectionView CollectionView { get; set; }
@@ -85,6 +90,7 @@ namespace Mexty.MVVM.View.AdminViews{
 
         private void FillSucursales() {
             var sucursales = Database.GetTablesFromSucursales();
+            ListaSucursales = sucursales;
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
@@ -101,7 +107,14 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboTipo.IsEnabled = false;
             
             if (DataProductos.SelectedItem == null) return;
-            var producto = (Producto) DataProductos.SelectedItem;
+            Producto producto;
+            try {
+                producto = (Producto) DataProductos.SelectedItem;
+            }
+            catch (InvalidCastException exception) {
+                Console.WriteLine(exception);
+                throw;
+            }
             if (producto == null) return;
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
@@ -111,7 +124,7 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
-            ComboSucursal.SelectedItem = producto.Sucursal;// ojo
+            ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
             Guardar.IsEnabled = true;
         }
@@ -174,7 +187,8 @@ namespace Mexty.MVVM.View.AdminViews{
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
-                producto.TipoVentaNombre.ToLower().Contains(text)) {
+                producto.TipoVentaNombre.ToLower().Contains(text) ||
+                producto.GetSucursalNombre.ToLower().Contains(text)) {
                 return producto.Activo == 1;
             }
             return false;
@@ -195,7 +209,7 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
             newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
-            newProduct.Sucursal = ComboSucursal.SelectedItem.ToString();
+            newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
 
             var validator = new ProductValidation();
             var results = validator.Validate(newProduct);
@@ -216,15 +230,19 @@ namespace Mexty.MVVM.View.AdminViews{
             }
             else {
                 var alta = true;
-                foreach (var producto in ListaProductos) {
-                    if (newProduct.NombreProducto == producto.NombreProducto && producto.Activo == 0) {
-                        // actualizamos y activamos.
-                        newProduct.IdProducto = producto.IdProducto;
-                        newProduct.Activo = 1;
-                        Database.UpdateData(newProduct);
-                        alta = false;
-                        var msg = $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Producto Actualizado");
+                if (ListaProductos != null) {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                        var producto = ListaProductos[index];
+                        if (newProduct.NombreProducto == producto.NombreProducto && producto.Activo == 0) {
+                            // actualizamos y activamos.
+                            newProduct.IdProducto = producto.IdProducto;
+                            newProduct.Activo = 1;
+                            Database.UpdateData(newProduct);
+                            alta = false;
+                            var msg =
+                                $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                            MessageBox.Show(msg, "Producto Actualizado");
+                        }
                     }
                 }
                 if (alta) {
@@ -262,19 +280,9 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            var regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
-
-        /// <summary>
-        /// Regresa la cadena dada en Mayusculas y sin espeacios.
-        /// </summary>
-        /// <param name="text">Texto a Preparar.</param>
-        /// <returns></returns>
-        private static string StrPrep(string text) {
-            return text.ToUpper().Replace(" ", "");
-        }
-
+        
         /// <summary>
         /// Limpia los text box
         /// </summary>

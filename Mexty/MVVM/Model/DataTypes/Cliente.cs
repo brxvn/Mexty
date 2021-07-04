@@ -7,7 +7,6 @@
         private string _apPaterno;
         private string _apMaterno;
         private string _domicilio;
-        private string _username;
 
         /// <summary>
         /// Id de el cliente.
@@ -19,7 +18,7 @@
         /// </summary>
         public string Nombre {
             get => _nombre;
-            set => _nombre = value.ToLower(); // TODO: quitar espacios al final.
+            set => _nombre = value.ToLower().Trim(); // TODO: quitar espacios al final.
         }
 
         /// <summary>
@@ -27,7 +26,7 @@
         /// </summary>
         public string ApPaterno {
             get => _apPaterno; 
-            set => _apPaterno = value.ToLower().Replace(" ", "");
+            set => _apPaterno = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -35,7 +34,7 @@
         /// </summary>
         public string ApMaterno {
             get => _apMaterno; 
-            set => _apMaterno = value.ToLower().Replace(" ", "");
+            set => _apMaterno = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -80,5 +79,27 @@
         /// Comentarios sobre el cliente.
         /// </summary>
         public string Comentario { get; set; }
+        
+        /// <summary>
+        /// Monto que debe el cliente.
+        /// </summary>
+        public float Debe { get; set; }
+
+        /// <summary>
+        /// Evalua si dos clientes son el mismo, Mismo nombre y apellidos
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool operator ==(Cliente a, Cliente b) {
+            if (a is null || b is null) return false;
+            return a.Nombre == b.Nombre &&
+                   a.ApPaterno == b.ApPaterno &&
+                   a.ApMaterno == b.ApMaterno;
+        }
+
+        public static bool operator !=(Cliente a, Cliente b) {
+            return !(a == b);
+        }
     }
 }

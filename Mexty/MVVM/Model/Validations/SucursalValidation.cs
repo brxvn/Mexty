@@ -10,7 +10,7 @@ namespace Mexty.MVVM.Model.Validations {
                 .Length(3, 15).WithMessage("El nombre tiene {TotalLength} caracteres y debe tener entre 3 y 15.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
-            RuleFor(sucursal => sucursal.Telefono.ToString()) // TODO convertir este numero a varchar
+            RuleFor(sucursal => sucursal.Telefono) 
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El número de teléfono no puede esar vacio.")
                 .Length(10).WithMessage("El número de teléfono debe de ser de 10 dígitos.")

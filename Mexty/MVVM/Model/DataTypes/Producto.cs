@@ -1,4 +1,7 @@
-﻿namespace Mexty.MVVM.Model.DataTypes {
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Mexty.MVVM.Model.DataTypes {
     /// <summary>
     /// Clase principal de productos.
     /// </summary>
@@ -39,7 +42,6 @@
         public static string[] GetTiposMedida() {
             return TiposMedida;
         }
-
            
         /// <summary>
         /// Id del producto.
@@ -51,7 +53,7 @@
         /// </summary>
         public string NombreProducto {
             get => _nombreProducto; 
-            set => _nombreProducto = value.ToLower();
+            set => _nombreProducto = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -101,7 +103,30 @@
         /// <summary>
         /// Sucursal en la que se va a vender el producto.
         /// </summary>
-        public string Sucursal { get; set; }
+        public int IdSucursal { get; set; }
+
+        /// <summary>
+        /// Buffer de lista de sucursales.
+        /// </summary>
+        private static List<Sucursal> ListaSucursal { get; set; }
+        
+        /// <summary>
+        /// Obtiene la sucursal por medio del nombre.
+        /// </summary>
+        public string GetSucursalNombre {
+            get {
+                ListaSucursal ??= Database.GetTablesFromSucursales();
+                var nombre = "";
+                for (var index = 0; index < ListaSucursal.Count; index++) {
+                    var sucursal = ListaSucursal[index];
+                    if (IdSucursal == sucursal.IdTienda) {
+                        nombre = sucursal.NombreTienda;
+                    }
+                }
+
+                return nombre;
+            }
+        }
 
     }
 }

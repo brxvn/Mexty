@@ -17,6 +17,7 @@ namespace Mexty {
             
             log4net.Config.XmlConfigurator.Configure();
             log.Info("Test info");
+            
             InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);

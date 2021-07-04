@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -49,6 +50,7 @@ namespace Mexty.MVVM.View.AdminViews {
         public AdminViewClients() {
 
             InitializeComponent();
+            FillData();
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -64,9 +66,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
-
-        // TODO: agregar eventos y llenarlos
-        // TODO: En la historia de usuario dice que debe de haber una sección de comentarios para cada cliente, pero no está en la bd.
 
         /// <summary>
         /// Método que llena la datagrid con los Clientes.
@@ -91,20 +90,32 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
+            
             txtNombreCliente.IsReadOnly = true;
             txtApPaternoCliente.IsReadOnly = true;
             txtApMaternoCliente.IsReadOnly = true;
+            Eliminar.IsEnabled = true;
 
-            if (DataClientes.SelectedItem == null) return;
-            var cliente = (Cliente) DataClientes.SelectedItem;
+            if (DataClientes.SelectedItem == null) return; // si no hay nada selecionado, bye
+            Cliente cliente;
+            try {
+                cliente = (Cliente) DataClientes.SelectedItem; 
+                // BUG: Si no hay nada en la tabla truena al darle clic probablemente pase en las demás pantallas.
+            }
+            catch (InvalidCastException exception) {
+                // TODO agregar al log error
+                Console.WriteLine(exception);
+                return;
+            }
+            
             SelectedClient = cliente;
             txtNombreCliente.Text = cliente.Nombre;
             txtApPaternoCliente.Text = cliente.ApPaterno;
             txtApMaternoCliente.Text = cliente.ApMaterno;
             txtTelefono.Text = cliente.Telefono;
             txtDireccion.Text = cliente.Domicilio;
-            //txtComentario.Text = cliente.
-            //Eliminar.IsEnabled = true;
+            txtComentario.Text = cliente.Comentario;
+            txtDeuda.Text = cliente.Debe.ToString(CultureInfo.InvariantCulture);
 
         }
 
@@ -117,11 +128,13 @@ namespace Mexty.MVVM.View.AdminViews {
             txtApMaternoCliente.Text = "";
             txtTelefono.Text = "";
             txtDireccion.Text = "";
-            //txtComentario.Text = cliente.
+            txtComentario.Text = "";
+            txtDeuda.Text = "";
             
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
+            Eliminar.IsEnabled = false;
         }
 
         /// <summary>
@@ -137,6 +150,16 @@ namespace Mexty.MVVM.View.AdminViews {
                 var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
 
                 collection.Filter = customFilter;
+                DataClientes.ItemsSource = collection;
+                CollectionView = collection;
+            }
+            else {
+                collection.Filter = null;
+                var noNull = new Predicate<object>(cliente => {
+                    if (cliente == null) return false;
+                    return ((Cliente) cliente).Activo == 1;
+                });
+                collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -165,49 +188,50 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GuardarCliente(object sender, RoutedEventArgs e) {
-            var newClient = new Cliente();
-            var newDeuda = new Deuda();
-            newClient.Nombre = txtNombreCliente.Text;
-            newClient.ApPaterno = txtApPaternoCliente.Text;
-            newClient.ApMaterno = txtApMaternoCliente.Text;
-            newClient.Domicilio = txtDireccion.Text;
-            //TODO: falta comentario.
-            newClient.Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text;
-            //TODO: falta campo de deuda.
-            //
+            var newClient = new Cliente {
+                Nombre = txtNombreCliente.Text,
+                ApPaterno = txtApPaternoCliente.Text,
+                ApMaterno = txtApMaternoCliente.Text,
+                Domicilio = txtDireccion.Text,
+                Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
+                Debe = float.Parse(txtDeuda.Text),
+                Comentario = txtComentario.Text
+            };
 
-            // TODO: También validar el objeto deuda.
             var validatorClient = new ClientValidation();
             var resultsClient = validatorClient.Validate(newClient);
-            var validatorDeuda = new DeudaValidation();
-            var resultsDeuda = validatorDeuda.Validate(newDeuda);
-            if (!resultsClient.IsValid || !resultsDeuda.IsValid) {
-                // No es valido
+            if (!resultsClient.IsValid) {
+                foreach (var error in resultsClient.Errors) {
+                    MessageBox.Show(error.ErrorMessage, "Error");
+                }
                 return;
             }
 
-            // TODO: armar operador de igual.
             if (SelectedClient != null && SelectedClient == newClient) {
-                // Update
-                
                 Database.UpdateData(newClient);
                 
                 var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
             }
             else {
+                MessageBox.Show("entra else");
                 var alta = true;
-                foreach (var cliente in ListaClientes) {
-                    if (newClient == cliente && cliente.Activo == 0) {
-                        //activamos y actualizamos
-                        
-                        Database.UpdateData(newClient);
-                        alta = false;
-                        var msg = $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                        MessageBox.Show(msg, "Cliente Actualizado");
+                if (ListaClientes != null) {
+                    for (var index = 0; index < ListaClientes.Count; index++) {
+                        var cliente = ListaClientes[index];
+                        if (newClient == cliente && cliente.Activo == 0) {
+                            //activamos y actualizamos
+                            newClient.IdCliente = cliente.IdCliente;
+                            newClient.Activo = 1;
+
+                            Database.UpdateData(newClient);
+                            alta = false;
+                            var msg =
+                                $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                            MessageBox.Show(msg, "Cliente Actualizado");
+                        }
                     }
                 }
-
                 if (alta) {
                     // Alta
                     Database.NewClient(newClient);
@@ -246,8 +270,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         //TODO: agregarlo al evento de PreviewTextInput de la deuda.
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            var regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            // Patrón para floats
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+            //var regex = new Regex("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ");
+            //e.Handled = regex.IsMatch(e.Text);
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
@@ -283,6 +309,11 @@ namespace Mexty.MVVM.View.AdminViews {
         private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtComentario.Text = textBox.Text;
+        }
+        
+        private void txtUpdateDeuda(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtDeuda.Text = textBox.Text;
         }
     }
 }

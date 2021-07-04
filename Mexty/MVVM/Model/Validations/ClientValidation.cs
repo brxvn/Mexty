@@ -38,6 +38,12 @@ namespace Mexty.MVVM.Model.Validations {
                 .NotEmpty().WithMessage("El domicio no puede estar vacio.")
                 .Length(5, 90).WithMessage("El domicilio es muy corto o largo par ser válido.")
                 .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");
+            
+            RuleFor(cliente => cliente.Debe.ToString())
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("La deuda no puede estar vacia, en caso de no tener deuda poner 0")
+                .Length(1, 6).WithMessage("La deuda dada exede el largo permitido que es de 5 dijitos. {TotalLength}")
+                .Must(Validations.BeAValidFloat).WithMessage("No es un número valido, tiene caracteres prohibidos.");
         }
     }
 }

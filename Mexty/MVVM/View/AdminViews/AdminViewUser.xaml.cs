@@ -231,15 +231,20 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 var flag = true;
-                foreach (var usuario in UsuariosList) {
-                    if (usuario != newUsuario || usuario.Activo != 0) continue;
-                    newUsuario += usuario;
-                    newUsuario.Activo = 1;
-                    Database.UpdateData(newUsuario);
-                    var msg = $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
-                    MessageBox.Show(msg, "Nuevo Usuario registrado.");
-                    flag = false;
+                if (UsuariosList != null) {
+                    for (var index = 0; index < UsuariosList.Count; index++) {
+                        var usuario = UsuariosList[index];
+                        if (usuario != newUsuario || usuario.Activo != 0) continue;
+                        newUsuario += usuario;
+                        newUsuario.Activo = 1;
+                        Database.UpdateData(newUsuario);
+                        var msg =
+                            $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                        MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                        flag = false;
+                    }
                 }
+
                 if (flag) {
                     newUsuario.Activo = 1;
                     newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.

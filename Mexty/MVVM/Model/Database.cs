@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
@@ -294,7 +295,7 @@ namespace Mexty.MVVM.Model {
                     IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString("nombre_tienda"),
                     Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString("direccion"),
-                    Telefono = reader.IsDBNull("telefono") ? 0 : reader.GetInt32("telefono"), 
+                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"), 
                     Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString("rfc"),
                     // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
                     Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
@@ -308,7 +309,90 @@ namespace Mexty.MVVM.Model {
             connObj.Close();
             return sucursales;
         }
-        
+
+        /// <summary>
+        /// Método que actualiza una sucursal en la base de datos
+        /// </summary>
+        /// <param name="sucursal"></param>
+        public static void UpdateData(Sucursal sucursal) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"
+                update cat_tienda 
+                set NOMBRE_TIENDA=@nom, 
+                    DIRECCION=@dir, 
+                    TELEFONO=@tel, 
+                    RFC=@rfc, 
+                    LOGO=@logo, 
+                    MENSAJE=@msg, 
+                    FACEBOOK=@face, 
+                    INSTAGRAM=@inst,
+                    TIPO_TIENDA=@suc
+                where ID_TIENDA=@id"
+            };
+            
+            query.Parameters.AddWithValue("@nom", sucursal.NombreTienda);
+            query.Parameters.AddWithValue("@dir", sucursal.Dirección);
+            query.Parameters.AddWithValue("@tel", sucursal.Telefono);
+            query.Parameters.AddWithValue("@rfc", sucursal.Rfc);
+            //query.Parameters.AddWithValue("@logo", sucursal.Logo); TODO ver que onda con el logo.
+            query.Parameters.AddWithValue("@msg", sucursal.Mensaje);
+            query.Parameters.AddWithValue("@face", sucursal.Facebook);
+            query.Parameters.AddWithValue("@inst", sucursal.Instagram);
+            query.Parameters.AddWithValue("@suc", sucursal.TipoTienda);
+            
+            try {
+                query.ExecuteReader();
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("Error (update Sucursal) exepción: {0}", e.ToString());
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que registra una nueva sucursal.
+        /// </summary>
+        /// <param name="newSucursal"></param>
+        public static void NewSucursal(Sucursal newSucursal) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"
+                insert into cat_tienda 
+                    (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
+                     RFC, LOGO, MENSAJE, 
+                     FACEBOOK, INSTAGRAM, TIPO_TIENDA) 
+                values (default, @nom, @dir, @tel, 
+                        @rfc, @logo, @msg, 
+                        @face, @insta, @tTienda)"
+            }; 
+            query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
+            query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
+            query.Parameters.AddWithValue("@tel", newSucursal.Telefono);
+            query.Parameters.AddWithValue("@rfc", newSucursal.Rfc);
+            //query.Parameters.AddWithValue("@logo", newSucursal.Logo); 
+            query.Parameters.AddWithValue("@msg", newSucursal.Mensaje);
+            query.Parameters.AddWithValue("@face", newSucursal.Facebook);
+            query.Parameters.AddWithValue("@insta", newSucursal.Instagram);
+            query.Parameters.AddWithValue("@tTienda", newSucursal.TipoTienda);
+            
+            try {
+                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+            }
+            catch (MySqlException e) {
+                MessageBox.Show("Error (new Sucursal) exepción: {0}", e.ToString());
+            }
+            finally {
+                connObj.Close();
+            }
+        }
 
 
         // ============================================
@@ -374,7 +458,7 @@ namespace Mexty.MVVM.Model {
                     PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
                     DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                     Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                    Sucursal = reader.IsDBNull("sucursal") ? "" : reader.GetString("sucursal")
+                    IdSucursal = reader.IsDBNull("id_establecimiento") ? 0 : reader.GetInt32("id_establecimiento"),
                 };
                 productos.Add(producto);
             }
@@ -402,7 +486,7 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@act,
-                    SUCURSAL=@suc
+                    ID_ESTABLECIMIENTO=@suc
                 where ID_PRODUCTO=@id"
             };
 
@@ -415,7 +499,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
-            query.Parameters.AddWithValue("@suc", producto.Sucursal);
+            query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
             
             try {
                 query.ExecuteReader();
@@ -442,7 +526,7 @@ namespace Mexty.MVVM.Model {
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
                      TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO, SUCURSAL) 
+                     ESPECIFICACION_PRODUCTO, ACTIVO, ID_ESTABLECIMIENTO) 
                 values (default, @nom, @medida, @tipoP, 
                         @tipoV, @pMayo, @pMenu, 
                         @esp, @act, @suc)"
@@ -455,7 +539,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString());
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
-            query.Parameters.AddWithValue("@suc", newProduct.Sucursal);
+            query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
@@ -483,6 +567,7 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = "select * from cliente_mayoreo"
             };
+            
             var clientes = new List<Cliente>();
             using MySqlDataReader reader = query.ExecuteReader();
             while (reader.Read()) {
@@ -498,7 +583,8 @@ namespace Mexty.MVVM.Model {
                     FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                     UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
                     FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica"),
-                    Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario")
+                    Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                    Debe = reader.IsDBNull("debe") ? 0 : reader.GetFloat("debe")
                 };
                 clientes.Add(cliente);
             }
@@ -520,7 +606,7 @@ namespace Mexty.MVVM.Model {
                 set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
                     DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, 
                     USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate(), 
-                    COMENTARIO=@com 
+                    COMENTARIO=@com, DEBE=@debe
                 where ID_CLIENTE=@id"
             };
             query.Parameters.AddWithValue("@nom", cliente.Nombre);
@@ -532,6 +618,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
             query.Parameters.AddWithValue("@com", cliente.Comentario);
+            query.Parameters.AddWithValue("@debe", cliente.Debe.ToString(CultureInfo.InvariantCulture));
 
             try {
                 query.ExecuteReader();
@@ -560,22 +647,23 @@ namespace Mexty.MVVM.Model {
                      domicilio, telefono, activo, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica, 
-                     comentario) 
+                     comentario, DEBE) 
                 values (default, @nom, @apP, @apM, 
                         @dom, @tel, @act, 
                         @usReg, sysdate(), 
                         @usMod, sysdate(), 
-                        @com)"
+                        @com, @debe)"
             };
             query.Parameters.AddWithValue("@nom", newClient.Nombre);
             query.Parameters.AddWithValue("@apP", newClient.ApPaterno);
             query.Parameters.AddWithValue("@apM", newClient.ApMaterno);
             query.Parameters.AddWithValue("@dom", newClient.Domicilio);
             query.Parameters.AddWithValue("@tel", newClient.Telefono);
-            query.Parameters.AddWithValue("@act", newClient.Activo.ToString());
+            query.Parameters.AddWithValue("@act", 1.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@com", newClient.Comentario);
+            query.Parameters.AddWithValue("@debe", newClient.Debe.ToString(CultureInfo.InvariantCulture));
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.

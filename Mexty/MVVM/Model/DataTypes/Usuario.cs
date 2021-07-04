@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using Google.Protobuf.WellKnownTypes;
 
 namespace Mexty.MVVM.Model.DataTypes
@@ -28,7 +29,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string Nombre {
             get => _nombre;
-            set => _nombre = value.ToLower(); // TODO: quitar espacios al final.
+            set => _nombre = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -36,7 +37,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApPaterno {
             get => _apPaterno; 
-            set => _apPaterno = value.ToLower().Replace(" ", "");
+            set => _apPaterno = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApMaterno {
             get => _apMaterno; 
-            set => _apMaterno = value.ToLower().Replace(" ", "");
+            set => _apMaterno = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -116,14 +117,22 @@ namespace Mexty.MVVM.Model.DataTypes
         public string FechaModifica { get; set; }
 
         /// <summary>
+        /// Lista estatica que contiene la lista de sucursales para más rapido acceso.
+        /// </summary>
+        private static List<Sucursal> ListaSucursal { get; set; }
+
+        /// <summary>
         /// Campo que da el nombre de la tienda en letra, Solo Get.
         /// </summary>
         public string SucursalNombre {
             get {
-                var data = Database.GetTablesFromSucursales();
+                ListaSucursal ??= Database.GetTablesFromSucursales();
                 var nombre = "";
-                foreach (var sucursal in data.Where(sucursal => this.IdTienda == sucursal.IdTienda)) {
-                    nombre = sucursal.NombreTienda;
+                for (var index = 0; index < ListaSucursal.Count; index++) {
+                    var sucursal = ListaSucursal[index];
+                    if (IdTienda == sucursal.IdTienda) {
+                        nombre = sucursal.NombreTienda;
+                    }
                 }
 
                 return nombre;
