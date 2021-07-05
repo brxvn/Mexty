@@ -366,6 +366,5 @@ namespace Mexty.MVVM.View.AdminViews {
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }
-
     }
 }

@@ -16,7 +16,7 @@ namespace Mexty {
             
             
             log4net.Config.XmlConfigurator.Configure();
-            log.Info("Test info");
+            log.Info("Iniciado login");
             
             InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer();
@@ -31,11 +31,13 @@ namespace Mexty {
         private void PasswordKeyDown(object sender, RoutedEventArgs e) {
             _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
             if (Database.IsConnected()) {
+                log.Info("Login exitoso");
                 MainWindow win = new();
                 win.Show();
                 Close();
             }
             else {
+                log.Info("Login fallido, Usuario o contraseña incorrectos.");
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
             }
             
@@ -52,21 +54,27 @@ namespace Mexty {
         /// Logica del boton para salir de la aplicación.
         /// </summary>
         private void LogOut(object sender, RoutedEventArgs e) {
+            log.Debug("Presionado boton de Salir en el login.");
             Application.Current.Shutdown();
         }
 
         /// <summary>
         /// Lógica para detectar el Enter en el password e inicie la sesion.
         /// </summary>
+        //TODO: juntarlo con el login o hacer función de login
         private void EnterKeyPassword(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
                 if (Database.IsConnected()) {
+                    log.Info("Login exitoso");
                     MainWindow win = new();
                     win.Show();
                     Close();
                 }
-                else MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
+                else {
+                    log.Info("Login fallido, Usuario o contraseña incorrectos.");
+                    MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
+                }
             }
         }
     }

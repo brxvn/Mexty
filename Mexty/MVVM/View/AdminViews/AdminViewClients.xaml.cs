@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using FluentValidation;
+using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
@@ -26,17 +27,13 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminViewClients.xaml
     /// </summary>
     public partial class AdminViewClients : UserControl {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Cliente> ListaClientes { get; set; }
-
-        /// <summary>
-        /// Lista de deudas dada por la base de datos.
-        /// </summary>
-        private List<Deuda> ListaDeudas { get; set; }
-
+        
         /// <summary>
         /// Collection view actual de la datagrid.
         /// </summary>
@@ -49,6 +46,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewClients() {
 
+            log.Info("Iniciado modulo clientes");
             InitializeComponent();
             FillData();
 
@@ -78,9 +76,6 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataClientes.ItemsSource = collectionView;
-
-            var dataDeudas = Database.GetTablesFromDeudas();
-            ListaDeudas = dataDeudas;
         }
 
         /// <summary>

@@ -37,7 +37,6 @@ namespace Mexty.MVVM.View.AdminViews {
             time.Content = DateTime.Now.ToString("G");
         }
 
-
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
 
         }

@@ -6,6 +6,7 @@ using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
 using System.Windows.Documents;
+using log4net;
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -14,6 +15,7 @@ namespace Mexty.MVVM.Model {
     /// </summary>
     // TODO: Hacer la clase Database estacica y re implementar login.
     public class Database {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private static MySqlDataReader _firstQuery;
         private static MySqlConnection _sqlSession;
 
@@ -69,23 +71,36 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <returns>String con la información de log-in a la base de datos</returns>
         private static string ConnectionInfo() {
-            var myIni = new IniFile(@"C:\Mexty\Settings.ini");
-            var user = myIni.Read("DbUser");
-            var pass = myIni.Read("DbPass");
-            var connString = $"server=localhost; database = mexty; Uid={user}; pwd ={pass}";
-            return connString;
+            try {
+                var myIni = new IniFile(@"C:\Mexty\Settings.ini");
+                var user = myIni.Read("DbUser");
+                var pass = myIni.Read("DbPass");
+                var connString = $"server=localhost; database = mexty; Uid={user}; pwd ={pass}";
+                log.Debug("Se han leido las credenciales del ini exitosamente.");
+                return connString;
+            }
+            catch (Exception e) {
+                log.Error($"Error al leer del ini {e.Message}");
+                return "";
+            }
         }
 
         /// <summary>
         /// Inicializa los campos estaticos de la clase.
         /// </summary>
         private static void InitializeFields() {
-            _firstQuery.Read();
-            Username= _firstQuery.GetString("usuario");
-            Rol = int.Parse(_firstQuery.GetString("id_rol"));
-            Password = _firstQuery.GetString("contrasenia");
-            if (Username != "" && Password != "") {
-                ConnectionSuccess = true;
+            try {
+                _firstQuery.Read();
+                Username= _firstQuery.GetString("usuario");
+                Rol = int.Parse(_firstQuery.GetString("id_rol"));
+                Password = _firstQuery.GetString("contrasenia");
+                if (Username != "" && Password != "") {
+                    log.Debug("Campos estaticos de database inicializados con exito.");
+                    ConnectionSuccess = true;
+                }
+            }
+            catch (Exception e) {
+                log.Error($"No se han podido inicializar los los campos necesarios para el logIn {e.Message}");
             }
         }
 
@@ -121,11 +136,18 @@ namespace Mexty.MVVM.Model {
         /// Método que cierra la conección con la base de datos.
         /// </summary>
         public static void CloseConnection() {
-            _sqlSession.Close();
-            Username = null;
-            Password = null;
-            Rol = 0;
-            ConnectionSuccess = false;
+            try {
+                _sqlSession.Close();
+                Username = null;
+                Password = null;
+                Rol = 0;
+                ConnectionSuccess = false;
+                log.Info("Conección con base de datos cerrada con exito.");
+            }
+            catch (Exception e) {
+                log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
+                log.Error($"Excepción: {e.Message}");
+            }
         }
 
         // ============================================
@@ -139,35 +161,42 @@ namespace Mexty.MVVM.Model {
         public static List<Usuario> GetTablesFromUsuarios() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-
+            
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from usuario"
             };
 
             var users = new List<Usuario>();
-            using MySqlDataReader reader = query.ExecuteReader();
-            while (reader.Read()) {
-                var usuario = new Usuario {
-                    Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32("id_usuario"),
-                    Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString("nombre_usuario"),
-                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
-                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
-                    Username = reader.IsDBNull("usuario") ? "" : reader.GetString("usuario"),
-                    Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString("contrasenia"),
-                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
-                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
-                    UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
-                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
-                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
-                };
-                users.Add(usuario);
+            try {
+                using MySqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var usuario = new Usuario {
+                        Id = reader.IsDBNull("id_usuario") ? 0 : reader.GetInt32("id_usuario"),
+                        Nombre = reader.IsDBNull("nombre_usuario") ? "" : reader.GetString("nombre_usuario"),
+                        ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
+                        ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
+                        Username = reader.IsDBNull("usuario") ? "" : reader.GetString("usuario"),
+                        Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString("contrasenia"),
+                        Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
+                        Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
+                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
+                        UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
+                    };
+                    users.Add(usuario);
+                }
+                log.Debug("Se han obtenido con exito los datos de la tabla usuarios");
+                connObj.Close();
             }
-            connObj.Close();
+            catch (Exception e) {
+                log.Error("Ha ocurrido un problema al obtener los datos de la tabla usuarios.");
+                log.Error($"Excepción: {e.Message}");
+            }
 
             return users;
         }
@@ -202,7 +231,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@idTi",usuario.IdTienda.ToString()); // evitamos boxing//evitamos boxing.
             query.Parameters.AddWithValue("@dom", usuario.Domicilio);
             query.Parameters.AddWithValue("@pass", usuario.Contraseña);
-            query.Parameters.AddWithValue("@tel", usuario.Telefono.ToString());
+            query.Parameters.AddWithValue("@tel", usuario.Telefono);
             query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
@@ -210,9 +239,11 @@ namespace Mexty.MVVM.Model {
 
             try {
                 query.ExecuteReader();
+                log.Info("Se ha actualizado el usuario exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (update Usuario) exepción: {e}","Error");
+                log.Error("Ha ocurrido un error al actualizar el usuario");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -253,18 +284,20 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usr", newUser.Username);
             query.Parameters.AddWithValue("@pass", newUser.Contraseña);
             query.Parameters.AddWithValue("@dom", newUser.Domicilio);
-            query.Parameters.AddWithValue("@tel", newUser.Telefono.ToString());// Evitamos boxing
-            query.Parameters.AddWithValue("@act", newUser.Activo.ToString());
+            query.Parameters.AddWithValue("@tel", newUser.Telefono);
+            query.Parameters.AddWithValue("@act", newUser.Activo.ToString());//evitamos boxing
             query.Parameters.AddWithValue("@idT", newUser.IdTienda.ToString());
             query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
             query.Parameters.AddWithValue("@usrReg", GetUsername());
             query.Parameters.AddWithValue("@usrMod", GetUsername());
 
             try {
-                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                query.ExecuteNonQuery();
+                log.Info("Se ha creado un nuevo usuario exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new User) exepción: {e}", "Error");
+                log.Error("Ha ocurrido un error al dar de alta un un nuevo usuario.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -289,24 +322,33 @@ namespace Mexty.MVVM.Model {
             };
 
             var sucursales = new List<Sucursal>();
-            using var reader = query.ExecuteReader();
-            while (reader.Read()) {
-                var sucursal = new Sucursal {
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                    NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString("nombre_tienda"),
-                    Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString("direccion"),
-                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"), 
-                    Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString("rfc"),
-                    // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
-                    Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
-                    Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
-                    Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
-                    TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda")
-                };
-                sucursales.Add(sucursal);
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var sucursal = new Sucursal {
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        NombreTienda = reader.IsDBNull("nombre_tienda") ? "" : reader.GetString("nombre_tienda"),
+                        Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString("direccion"),
+                        Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
+                        Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString("rfc"),
+                        // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
+                        Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
+                        Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
+                        Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
+                        TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda")
+                    };
+                    sucursales.Add(sucursal);
+                    log.Debug("Se han obtenido con exito las tablas de sucursales.");
+                }
             }
-
-            connObj.Close();
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al obtener las tablas de surcursales.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+            
             return sucursales;
         }
 
@@ -345,9 +387,11 @@ namespace Mexty.MVVM.Model {
             
             try {
                 query.ExecuteReader();
+                log.Info("Se ha actualizado la sucursal exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (update Sucursal) exepción: {0}", e.ToString());
+                log.Error("Ha ocurrido un error al actualizar la sucursal.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -385,9 +429,11 @@ namespace Mexty.MVVM.Model {
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                log.Info("Se ha creado una nueva sucursal exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (new Sucursal) exepción: {0}", e.ToString());
+                log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -414,17 +460,27 @@ namespace Mexty.MVVM.Model {
             };
 
             var roles = new List<Rol>();
-            using var reader = querry.ExecuteReader();
-            while (reader.Read()) {
-                var rol = new Rol() {
-                    IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
-                    RolDescription = reader.IsDBNull("desc_rol") ? "" : reader.GetString("desc_rol"),
-                    IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda")
-                };
-                roles.Add(rol);
+            try {
+                using var reader = querry.ExecuteReader();
+                while (reader.Read()) {
+                    var rol = new Rol() {
+                        IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
+                        RolDescription = reader.IsDBNull("desc_rol") ? "" : reader.GetString("desc_rol"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda")
+                    };
+                    roles.Add(rol);
+                }
+
+                log.Debug("Se han obtenido con exito las tablas de roles.");
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al obtener las tablas de roles.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
             }
 
-            connObj.Close();
             return roles;
         }
 
@@ -446,24 +502,36 @@ namespace Mexty.MVVM.Model {
             };
             
             var productos = new List<Producto>();
-            using var reader = querry.ExecuteReader();
-            while (reader.Read()) {
-                var producto = new Producto {
-                    IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
-                    NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
-                    MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
-                    TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
-                    TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
-                    PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
-                    PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
-                    DetallesProducto = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                    IdSucursal = reader.IsDBNull("id_establecimiento") ? 0 : reader.GetInt32("id_establecimiento"),
-                };
-                productos.Add(producto);
+            try {
+                using var reader = querry.ExecuteReader();
+                while (reader.Read()) {
+                    var producto = new Producto {
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
+                        MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
+                        TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
+                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
+                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
+                        DetallesProducto = reader.IsDBNull("especificacion_producto")
+                            ? ""
+                            : reader.GetString("especificacion_producto"),
+                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                        IdSucursal = reader.IsDBNull("id_establecimiento") ? 0 : reader.GetInt32("id_establecimiento"),
+                    };
+                    productos.Add(producto);
+                }
+
+                log.Debug("Se han obtenido con exito las tablas de productos.");
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al obtener las tablas de productos.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
             }
 
-            connObj.Close();
             return productos;
         }
 
@@ -503,9 +571,11 @@ namespace Mexty.MVVM.Model {
             
             try {
                 query.ExecuteReader();
+                log.Info("Se han actualizado los datos de producto exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (update Producto) exepción: {0}", e.ToString());
+                log.Error("Ha ocurrido un error al actualizar los datos en la tabla producto.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -543,9 +613,11 @@ namespace Mexty.MVVM.Model {
 
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                log.Info("Se ha dado de alta un nuevo produto exitosamente.");
             }
             catch (MySqlException e) {
-                MessageBox.Show("Error (new Producto) exepción: {0}", e.ToString());
+                log.Error("Ha ocurrido un error al dar de alta un nuevo producto.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -569,26 +641,35 @@ namespace Mexty.MVVM.Model {
             };
             
             var clientes = new List<Cliente>();
-            using MySqlDataReader reader = query.ExecuteReader();
-            while (reader.Read()) {
-                var cliente = new Cliente() {
-                    IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
-                    Nombre = reader.IsDBNull("nombre_cliente") ? "" : reader.GetString("nombre_cliente"),
-                    ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
-                    ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
-                    Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
-                    Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
-                    Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                    UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
-                    FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                    UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
-                    FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica"),
-                    Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
-                    Debe = reader.IsDBNull("debe") ? 0 : reader.GetFloat("debe")
-                };
-                clientes.Add(cliente);
+            try {
+                using MySqlDataReader reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var cliente = new Cliente() {
+                        IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
+                        Nombre = reader.IsDBNull("nombre_cliente") ? "" : reader.GetString("nombre_cliente"),
+                        ApPaterno = reader.IsDBNull("ap_paterno") ? "" : reader.GetString("ap_paterno"),
+                        ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
+                        Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
+                        Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
+                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica"),
+                        Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                        Debe = reader.IsDBNull("debe") ? 0 : reader.GetFloat("debe")
+                    };
+                    clientes.Add(cliente);
+                }
+                log.Debug("Se han obtenido con exito las tablas de clientes.");
             }
-            connObj.Close();
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al obtener las tablas de clientes.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally{
+                connObj.Close();
+            }
             return clientes;
         }
 
@@ -622,9 +703,11 @@ namespace Mexty.MVVM.Model {
 
             try {
                 query.ExecuteReader();
+                log.Info("Se han actualizado los datos de cliente de manera exitosa.");
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (update Cliente) exepción: {e}", "Error");
+                log.Error("Ha ocurrido un error al actualizar los datos de cliente.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -667,9 +750,11 @@ namespace Mexty.MVVM.Model {
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                log.Info("Se ha dado de alta un nuevo cliente de manera exitosa.");
             }
             catch (MySqlException e) {
-                MessageBox.Show($"Error (new User) exepción: {e}", "Error");
+                log.Error("Ha ocurrido un error al dar de alta un nuevo cliente.");
+                log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -730,7 +815,7 @@ namespace Mexty.MVVM.Model {
             };
 
             query.Parameters.AddWithValue("@idCli", deuda.IdCliente.ToString());
-            query.Parameters.AddWithValue("@debe", deuda.Debe.ToString());
+            query.Parameters.AddWithValue("@debe", deuda.Debe.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@usReg", deuda.UsuarioRegistra);
             query.Parameters.AddWithValue("@feReg", deuda.FechaRegistra);
             
@@ -766,7 +851,7 @@ namespace Mexty.MVVM.Model {
             };
     
             query.Parameters.AddWithValue("@idCli", newDeuda.IdCliente.ToString());
-            query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString());
+            query.Parameters.AddWithValue("@debe", newDeuda.Debe.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
 
