@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
@@ -29,6 +30,7 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Lógica de interación de AdminViewUser.xaml
     /// </summary>
     public partial class AdminViewUser : UserControl {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// La vista actual de la tabla de usuarios.
@@ -47,6 +49,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewUser() {
             InitializeComponent();
+            log.Info("Iniciado modulo Usuarios");
             
             FillDataGrid();
             ClearFields();
@@ -54,7 +57,7 @@ namespace Mexty.MVVM.View.AdminViews {
             FillSucursales();
            
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -79,6 +82,7 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataUsuarios.ItemsSource = collectionView;
+            log.Debug("Se ha llenado la data grid de usuarios.");
         }
 
         /// <summary>
@@ -89,6 +93,7 @@ namespace Mexty.MVVM.View.AdminViews {
             foreach (var rol in roles) {
                 ComboRol.Items.Add(rol.RolDescription.ToLower());
             }
+            log.Debug("Se ha llenado el combo box de roles.");
         }
 
         /// <summary>
@@ -99,6 +104,7 @@ namespace Mexty.MVVM.View.AdminViews {
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
+            log.Debug("Se ha llenado el combo box de sucursales.");
         }
 
         /// <summary>
@@ -113,6 +119,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.IsReadOnly = true;
             
             if (DataUsuarios.SelectedItem == null) return; //Check si no es nulo.
+            log.Debug("Se ha seleccionado un usuario de la data grid.");
             var usuario = (Usuario) DataUsuarios.SelectedItem;
             SelectedUser = usuario;
             nombreUsuario.Text = usuario.Nombre;
@@ -145,6 +152,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.IsReadOnly = false;
             Eliminar.IsEnabled = false;
             Guardar.IsEnabled = false;
+            log.Debug("Se han limpiado los campos de texto del modulo usuarios.");
         }
 
         /// <summary>
@@ -173,7 +181,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
-
             }
         }
 
@@ -200,6 +207,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
+            log.Debug("Precionado boton guardar.");
             var newUsuario = new Usuario {
                 Nombre = nombreUsuario.Text,
                 ApPaterno = apPaternoUsuario.Text,
@@ -210,18 +218,23 @@ namespace Mexty.MVVM.View.AdminViews {
                 IdTienda = ComboSucursal.SelectedIndex + 1,
                 IdRol = ComboRol.SelectedIndex + 1
             };
-            
+            log.Debug("Se ha creado el objeto Usuario exitosamente.");
+
             var validator = new UserValidation();
             var results = validator.Validate(newUsuario);
             if (!results.IsValid) {
                 //Guardar.IsEnabled = false;
                 foreach (var error in results.Errors) {
                     MessageBox.Show(error.ErrorMessage);
+                    log.Warn(error.ErrorMessage);
                 }
+                log.Warn("El objeto creado tipo Usuario no ha pasado la validación.");
                 return;
             }
+            log.Debug("El objeto creado tipo Usuario ha pasado las validaciones.");
 
             if (SelectedUser != null && SelectedUser == newUsuario) {
+                log.Debug("Detectada edición de usuario.");
                 newUsuario -= SelectedUser;
                 
                 Database.UpdateData(newUsuario);
@@ -235,6 +248,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     for (var index = 0; index < UsuariosList.Count; index++) {
                         var usuario = UsuariosList[index];
                         if (usuario != newUsuario || usuario.Activo != 0) continue;
+                        log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
                         newUsuario += usuario;
                         newUsuario.Activo = 1;
                         Database.UpdateData(newUsuario);
@@ -242,12 +256,14 @@ namespace Mexty.MVVM.View.AdminViews {
                             $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
                         MessageBox.Show(msg, "Nuevo Usuario registrado.");
                         flag = false;
+                        break;
                     }
                 }
 
                 if (flag) {
                     newUsuario.Activo = 1;
                     newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
+                    log.Debug("Detectado nuevo usuario, dando de alta.");
                     Database.NewUser(newUsuario);
                     var msg = $"Se ha creado el usuario {newUsuario.Username}.";
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");
@@ -267,6 +283,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
+            log.Debug("Precionado boton eliminar usuario.");
             var usuario = SelectedUser;
             var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username +"?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
@@ -274,6 +291,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
+            log.Info("Eliminando usuario.");
             Database.UpdateData(usuario);
             FillDataGrid();
             ClearFields();
@@ -291,20 +309,12 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// Regresa la cadena dada en Mayusculas y sin espeacios.
-        /// </summary>
-        /// <param name="text">Texto a Preparar.</param>
-        /// <returns></returns>
-        private static string StrPrep(string text) {
-            return text.ToUpper().Replace(" ", "");
-        }
-
-        /// <summary>
         /// Limpia los text box
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            log.Debug("Precionado boton limpiar en modulo usuario.");
             ClearFields();
             DesactivarBotones();
         }
@@ -363,6 +373,7 @@ namespace Mexty.MVVM.View.AdminViews {
         //}
 
         private void DesactivarBotones() {
+            log.Debug("Botones desactivados en modulo usuarios.");
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }

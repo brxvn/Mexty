@@ -214,17 +214,17 @@ namespace Mexty.MVVM.View.AdminViews {
                 if (ListaClientes != null) {
                     for (var index = 0; index < ListaClientes.Count; index++) {
                         var cliente = ListaClientes[index];
-                        if (newClient == cliente && cliente.Activo == 0) {
-                            //activamos y actualizamos
-                            newClient.IdCliente = cliente.IdCliente;
-                            newClient.Activo = 1;
-
-                            Database.UpdateData(newClient);
-                            alta = false;
-                            var msg =
-                                $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                            MessageBox.Show(msg, "Cliente Actualizado");
-                        }
+                        
+                        if (newClient != cliente || cliente.Activo != 0) continue;
+                        //activamos y actualizamos
+                        newClient.IdCliente = cliente.IdCliente;
+                        newClient.Activo = 1;
+                        Database.UpdateData(newClient);
+                        alta = false;
+                        var msg =
+                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                        MessageBox.Show(msg, "Cliente Actualizado");
+                        break;
                     }
                 }
                 if (alta) {
