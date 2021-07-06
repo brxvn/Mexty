@@ -212,7 +212,7 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
             newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.TipoVenta = ComboVenta.SelectedIndex;
-            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString(); //TODO: Cambiar int por flotante en productos
+            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
             newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
             newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
@@ -295,10 +295,9 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
-            
-        }
-        
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+         }
+
         /// <summary>
         /// Limpia los text box
         /// </summary>
@@ -320,31 +319,12 @@ namespace Mexty.MVVM.View.AdminViews{
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
             EnableGuardar();
-
-            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
-            Match m = r.Match(txtPrecioMenudeo.Text);
-            if (m.Success) {
-                txtPrecioMenudeo.Text = textbox.Text;
-            }
-            else {
-                txtPrecioMenudeo.Text = "";
-                Keyboard.Focus(textbox);
-            }
         }    
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
             EnableGuardar();
-            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
-            Match m = r.Match(txtPrecioMayoreo.Text);
-            if (m.Success) {
-                txtPrecioMayoreo.Text = textbox.Text;
-            }
-            else {
-                txtPrecioMayoreo.Text = "";
-                Keyboard.Focus(textbox); 
-            }
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
@@ -364,7 +344,9 @@ namespace Mexty.MVVM.View.AdminViews{
         /// Metodo para la validacion de solo Letras en el input
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetter(x));
+            if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ]")) {
+                e.Handled = true;
+            }
         }
 
     }

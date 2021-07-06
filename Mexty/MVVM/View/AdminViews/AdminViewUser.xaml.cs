@@ -400,7 +400,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Metodo que solamente activa el boton de guardar una vex que todos los cambppos de texto estan completos
         /// </summary>
-        public void EnableGuardar() {
+        private void EnableGuardar() {
             if (nombreUsuario.Text != "" && apPaternoUsuario.Text != "" && apMaternoUsuario.Text != "" && TxtDireccion.Text != "" && TxtTelefono.Text != "" && TxtContraseña.Text != "") {
                 Guardar.IsEnabled = true;
             }
