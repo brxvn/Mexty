@@ -48,8 +48,16 @@ namespace Mexty.MVVM.View.AdminViews {
         public AdminViewClients() {
 
             Log.Info("Iniciado modulo clientes");
-            InitializeComponent();
-            FillData();
+
+            try {
+                InitializeComponent();
+                FillData();
+                Log.Debug("Se han inicializado los campos del modulo de clientes.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos del modulo de clientes.");
+                Log.Error($"Error: {e.Message}");
+            }
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -179,59 +187,106 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void GuardarCliente(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de guardar.");
-            var newClient = new Cliente {
-                Nombre = txtNombreCliente.Text,
-                ApPaterno = txtApPaternoCliente.Text,
-                ApMaterno = txtApMaternoCliente.Text,
-                Domicilio = txtDireccion.Text,
-                Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
-                Debe = float.Parse(txtDeuda.Text),
-                Comentario = txtComentario.Text
-            };
+            try {
+                var newClient = new Cliente {
+                    Nombre = txtNombreCliente.Text,
+                    ApPaterno = txtApPaternoCliente.Text,
+                    ApMaterno = txtApMaternoCliente.Text,
+                    Domicilio = txtDireccion.Text,
+                    Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
+                    Debe = float.Parse(txtDeuda.Text),
+                    Comentario = txtComentario.Text
+                };
 
+                if (!Validar(newClient)) {
+                    Log.Warn("El producto selecionado no ha pasado las validaciones.");
+                    return;
+                }
+                Log.Debug("El producto selecionado ha pasado las validaciones.");
+
+                if (SelectedClient != null && SelectedClient == newClient) {
+                    Edit(newClient);
+                }
+                else {
+                    var alta = true;
+                    if (ListaClientes != null) {
+                        Activar(newClient, ref alta);
+                    }
+                    if (alta) {
+                        Alta(newClient);
+                    }
+                }
+                FillData();
+                ClearFields();
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al hacer el proceso de guardar.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que se encarga de la alta de un nuevo cliente.
+        /// </summary>
+        /// <param name="newClient"></param>
+        private static void Alta(Cliente newClient) {
+            Log.Debug("Detectada alta de cliente.");
+            Database.NewClient(newClient);
+            var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
+            MessageBox.Show(msg, "Cliente Actualizado");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la edición de un producto.
+        /// </summary>
+        /// <param name="newClient"></param>
+        private void Edit(Cliente newClient) {
+            Log.Debug("Detectada edición de un cliente.");
+            Database.UpdateData(newClient);
+            
+            var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+            MessageBox.Show(msg, "Cliente Actualizado");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la activación de un producto.
+        /// </summary>
+        /// <param name="newClient"></param>
+        private void Activar(Cliente newClient, ref bool alta) {
+            for (var index = 0; index < ListaClientes.Count; index++) {
+                var cliente = ListaClientes[index];
+                
+                if (newClient != cliente || cliente.Activo != 0) continue;
+                Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
+                newClient.IdCliente = cliente.IdCliente;
+                newClient.Activo = 1;
+                Database.UpdateData(newClient);
+                alta = false;
+                var msg =
+                    $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                MessageBox.Show(msg, "Cliente Actualizado");
+                break;
+            }
+        }
+
+        /// <summary>
+        /// Método que valida a un cliente.
+        /// </summary>
+        /// <param name="newCliente"></param>
+        /// <returns></returns>
+        private static bool Validar(Cliente newClient) {
             var validatorClient = new ClientValidation();
             var resultsClient = validatorClient.Validate(newClient);
             if (!resultsClient.IsValid) {
                 foreach (var error in resultsClient.Errors) {
                     MessageBox.Show(error.ErrorMessage, "Error");
+                    Log.Warn(error.ErrorMessage);
                 }
-                return;
+
+                return false;
             }
 
-            if (SelectedClient != null && SelectedClient == newClient) {
-                Database.UpdateData(newClient);
-                
-                var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                MessageBox.Show(msg, "Cliente Actualizado");
-            }
-            else {
-                MessageBox.Show("entra else");
-                var alta = true;
-                if (ListaClientes != null) {
-                    for (var index = 0; index < ListaClientes.Count; index++) {
-                        var cliente = ListaClientes[index];
-                        
-                        if (newClient != cliente || cliente.Activo != 0) continue;
-                        //activamos y actualizamos
-                        newClient.IdCliente = cliente.IdCliente;
-                        newClient.Activo = 1;
-                        Database.UpdateData(newClient);
-                        alta = false;
-                        var msg =
-                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                        MessageBox.Show(msg, "Cliente Actualizado");
-                        break;
-                    }
-                }
-                if (alta) {
-                    // Alta
-                    Database.NewClient(newClient);
-                    var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
-                    MessageBox.Show(msg, "Cliente Actualizado");
-                }
-            }
-            FillData();
-            ClearFields();
+            return true;
         }
 
         /// <summary>

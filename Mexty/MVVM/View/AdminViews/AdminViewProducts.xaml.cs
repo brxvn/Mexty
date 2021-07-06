@@ -314,8 +314,10 @@ namespace Mexty.MVVM.View.AdminViews{
                     MessageBox.Show(error.ErrorMessage);
                     Log.Warn(error.ErrorMessage);
                 }
+                
                 return false;
             }
+            
             return true;
         }
 

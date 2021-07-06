@@ -425,7 +425,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo para la validacion de solo Letras en el input
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetter(x));
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
         }
 
         /// <summary>
