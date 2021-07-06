@@ -38,11 +38,18 @@ namespace Mexty.MVVM.View.AdminViews {
         public AdminViewUser() {
             InitializeComponent();
             Log.Info("Iniciado modulo Usuarios");
-            
-            FillDataGrid();
-            ClearFields();
-            FillRol();
-            FillSucursales();
+
+            try {
+                FillDataGrid();
+                ClearFields();
+                FillRol();
+                FillSucursales();
+                Log.Debug("Se han inicializado los campos del modulo Usuarios exitosamente.");
+            }
+            catch (Exception ex) {
+                Log.Error("Ha ocurrido un error al inicializar los campos del modulo Usuarios.");
+                Log.Error($"Error: {ex.Message}");
+            }
            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
@@ -211,7 +218,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Debug("Se ha creado el objeto Usuario exitosamente.");
 
                 if (!Validar(newUsuario)) {
-                    Log.Debug("El objeto creado tipo Usuario no ha pasado las validaciones.");
+                    Log.Warn("El objeto creado tipo Usuario no ha pasado las validaciones.");
                     return;
                 }
                 Log.Debug("El objeto creado tipo Usuario ha pasado las validaciones.");
@@ -312,14 +319,20 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
             Log.Debug("Precionado boton eliminar usuario.");
             var usuario = SelectedUser;
-            var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username + "?";
+            var mensaje = $"¿Seguro quiere eliminar el usuario:  {usuario.Username} ?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
-            Database.UpdateData(usuario);
-            Log.Info("Usuario eliminado.");
+            try {
+                Database.UpdateData(usuario);
+                Log.Info("Usuario eliminado.");
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al eliminar el usuario.");
+                Log.Error($"Error: {exception.Message}");
+            }
             FillDataGrid();
             ClearFields();
             Eliminar.IsEnabled = false;
@@ -421,9 +434,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ0-9-#*]*$")) {
-                e.Handled = true;
-            }
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x));
+            // if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ0-9-#*]*$")) {
+            //     e.Handled = true;
+            // }
         }
     }
 }
