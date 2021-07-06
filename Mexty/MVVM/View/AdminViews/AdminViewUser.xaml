@@ -197,7 +197,10 @@
                      x:Name="nombreUsuario"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="25"
+                     CharacterCasing="Lower"
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -216,9 +219,11 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="50"
+                                                     MaxLength="25"
                                                      Focusable="True"
-                                                     TextChanged="TextUpdateUserName"/>
+                                                     CharacterCasing="Lower"
+                                                     TextChanged="TextUpdateUserName"
+                                                     PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre"
@@ -275,7 +280,9 @@
                      x:Name="apPaternoUsuario"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
-                         Margin="10 0">
+                     PreviewTextInput="OnlyLettersValidation"
+                     MaxLength="20"
+                     Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -294,12 +301,9 @@
                                                     Foreground="Gray"
                                                     FontSize="15"
                                                     x:Name="SearchBox"
-                                                    MaxLength="50"
+                                                    MaxLength="20"
                                                     TextChanged="TextUpdateApPa"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                    PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Apellido Paterno"
@@ -355,7 +359,9 @@
                      x:Name="apMaternoUsuario"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="20"
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -374,12 +380,9 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="50"
+                                                     MaxLength="20"
                                                      TextChanged="TextUpdateApMa"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Apellido Materno"
@@ -450,7 +453,10 @@
                      x:Name="TxtDireccion"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="90"
+                     TextWrapping="WrapWithOverflow"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -472,10 +478,7 @@
                                                      MaxLength="90"
                                                      TextWrapping="Wrap"
                                                      TextChanged="TextUpdateDir"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Dirección"
@@ -525,8 +528,8 @@
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      Margin="10 0"
-                     Focusable="True"
-                        >
+                     MaxLength="10"                         
+                     PreviewTextInput="OnlyNumbersValidation">
                     
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -602,6 +605,7 @@
                      x:Name="TxtContraseña"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     MaxLength="8"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">

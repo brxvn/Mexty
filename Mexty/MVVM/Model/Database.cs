@@ -269,7 +269,7 @@ namespace Mexty.MVVM.Model {
                          FECHA_REGISTRO, 
                          USUARIO_MODIFICA, 
                          FECHA_MODIFICA) 
-                    values (default, @nombre, @apPat, @apMat, 
+                         values (default, @nombre, @apPat, @apMat, 
                             @usr, @pass, @dom, @tel, 
                             @act, @idT, @idR, 
                             @usrReg, 

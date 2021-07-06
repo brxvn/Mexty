@@ -1,29 +1,15 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
-using Mexty.Theme;
-using Color = System.Windows.Media.Color;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -50,16 +36,17 @@ namespace Mexty.MVVM.View.AdminViews {
         public AdminViewUser() {
             InitializeComponent();
             log.Info("Iniciado modulo Usuarios");
-            
+
             FillDataGrid();
             ClearFields();
             FillRol();
             FillSucursales();
-           
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
         }
 
         /// <summary>
@@ -117,10 +104,10 @@ namespace Mexty.MVVM.View.AdminViews {
             nombreUsuario.IsReadOnly = true;
             apPaternoUsuario.IsReadOnly = true;
             apMaternoUsuario.IsReadOnly = true;
-            
+
             if (DataUsuarios.SelectedItem == null) return; //Check si no es nulo.
             log.Debug("Se ha seleccionado un usuario de la data grid.");
-            var usuario = (Usuario) DataUsuarios.SelectedItem;
+            var usuario = (Usuario)DataUsuarios.SelectedItem;
             SelectedUser = usuario;
             nombreUsuario.Text = usuario.Nombre;
             apPaternoUsuario.Text = usuario.ApPaterno;
@@ -146,7 +133,7 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtDireccion.Text = "";
             TxtContraseña.Text = "";
             TxtTelefono.Text = "";
-            ComboRol.SelectedIndex = 0 ;
+            ComboRol.SelectedIndex = 0;
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
@@ -166,16 +153,17 @@ namespace Mexty.MVVM.View.AdminViews {
             if (tbx != null && tbx.Text != "") {
                 string newText = tbx.Text;
                 var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
-                
+
                 collection.Filter = customFilter;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(empleado => {
+                var noNull = new Predicate<object>(empleado =>
+                {
                     if (empleado == null) return false;
-                    return ((Usuario) empleado).Activo == 1;
+                    return ((Usuario)empleado).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataUsuarios.ItemsSource = collection;
@@ -191,7 +179,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="text">Texto del cuadro de búsqueda.</param>
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
-            var usuario = (Usuario) obj;
+            var usuario = (Usuario)obj;
             if (usuario.Username.Contains(text) ||
                 usuario.ApPaterno.Contains(text) ||
                 usuario.SucursalNombre.Contains(text) ||
@@ -207,7 +195,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
-            log.Debug("Precionado boton guardar.");
+            log.Debug("Presionado boton guardar.");
             var newUsuario = new Usuario {
                 Nombre = nombreUsuario.Text,
                 ApPaterno = apPaternoUsuario.Text,
@@ -236,9 +224,9 @@ namespace Mexty.MVVM.View.AdminViews {
             if (SelectedUser != null && SelectedUser == newUsuario) {
                 log.Debug("Detectada edición de usuario.");
                 newUsuario -= SelectedUser;
-                
+
                 Database.UpdateData(newUsuario);
-                
+
                 var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
                 MessageBox.Show(msg, "Usuario Actualizado");
             }
@@ -269,13 +257,13 @@ namespace Mexty.MVVM.View.AdminViews {
                     MessageBox.Show(msg, "Nuevo Usuario registrado.");
                 }
             }
-            
+
             FillDataGrid();
             ClearFields();
             DesactivarBotones();
 
         }
-        
+
 
         /// <summary>
         /// Elimina (hace inactivo) el usuario seleccionado.
@@ -285,7 +273,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
             log.Debug("Precionado boton eliminar usuario.");
             var usuario = SelectedUser;
-            var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username +"?";
+            var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username + "?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
@@ -324,58 +312,81 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
 
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apPaternoUsuario.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
 
         private void TextUpdateDir(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtDireccion.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
-    
 
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtTelefono.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
+
         }
-
-        //private void PhoneValidation(object sender, RoutedEventArgs e) {
-        //    TextBox textbox = sender as TextBox;
-        //    if (textbox.Text.Length < 10) {
-        //        //MessageBox.Show("El número de teléfono debe de tener 10 dígitos.");
-        //    }
-        //}
-
-        //private void PwdValidation(object sender, RoutedEventArgs e) {
-        //    TextBox textbox = sender as TextBox;
-        //    if (textbox.Text.Equals("")) {
-        //        //MessageBox.Show("La contraseña debe de tener al menos 8 carácteres.");
-        //    }
-        //}
 
         private void DesactivarBotones() {
             log.Debug("Botones desactivados en modulo usuarios.");
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
+        }
+
+
+        /// <summary>
+        /// Metodo que solamente activa el boton de guardar una vex que todos los cambppos de texto estan completos
+        /// </summary>
+        public void EnableGuardar() {
+            if (nombreUsuario.Text != "" && apPaternoUsuario.Text != "" && apMaternoUsuario.Text != "" && TxtDireccion.Text != "" && TxtTelefono.Text != "" && TxtContraseña.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
+        }
+
+
+        /// <summary>
+        /// Metodo para la validacion de solo Letras en el input
+        /// </summary>
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+            if (!Regex.IsMatch(e.Text, "^[a-zA-Z]")) {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            if (!Regex.IsMatch(e.Text, "^[a-zA-Z0-9-#*]*$")) {
+                e.Handled = true;
+            }
         }
     }
 }

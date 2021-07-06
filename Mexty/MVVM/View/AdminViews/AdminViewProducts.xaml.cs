@@ -133,6 +133,8 @@ namespace Mexty.MVVM.View.AdminViews{
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            Guardar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
             ComboTipo.SelectedIndex = 0;
@@ -143,8 +145,6 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
-            //Guardar.IsEnabled = false;
-            Eliminar.IsEnabled = false;
         }
 
         /// <summary>
@@ -281,7 +281,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
-        }
+         }
         
         /// <summary>
         /// Limpia los text box
@@ -297,30 +297,42 @@ namespace Mexty.MVVM.View.AdminViews{
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtNombreProducto.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
         }
 
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
         }    
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtDetalle.Text = textbox.Text;
-            Guardar.IsEnabled = textbox.Text != "";
+            EnableGuardar();
         }
 
-        private void TextUpdateMedida(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            //txtMedida.Text = textbox.Text;
+        private void EnableGuardar() {
+            if (txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "" && txtPrecioMayoreo.Text != "" && txtDetalle.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
+
+        /// <summary>
+        /// Metodo para la validacion de solo Letras en el input
+        /// </summary>
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+            if (!Regex.IsMatch(e.Text, "^[a-zA-Z]")) {
+                e.Handled = true;
+            }
+        }
+
     }
 }

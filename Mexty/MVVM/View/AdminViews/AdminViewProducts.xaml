@@ -107,9 +107,9 @@
         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0"
                BorderBrush="AntiqueWhite"/>
         <!-- DataProductos-->
-         <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
+        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
                   VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Producto}" >
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
@@ -202,14 +202,16 @@
 
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto">
-                    
+
                 </ComboBox>
 
                 <!--txtNombreProducto-->
                 <TextBox Background="Beige"
                      x:Name="txtNombreProducto"
                      Grid.Column="1"
-                     Margin="10,0,10,0">
+                     Margin="10,0,10,0"
+                     MaxLength="15"
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -229,11 +231,8 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
-                                                     TextChanged="TextUpdateNombre"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersValidation"
+                                                     TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre del Producto"
@@ -290,6 +289,7 @@
                      x:Name="txtPrecioMayoreo"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -364,6 +364,7 @@
                      x:Name="txtPrecioMenudeo"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -445,7 +446,9 @@
                 <TextBox Background="Beige"
                      x:Name="txtDetalle"
                      Grid.Column="0"
-                     Margin="10,0,10,0">
+                     Margin="10,0,10,0"
+                     PreviewTextInput="OnlyLettersValidation"
+                     MaxLength="50">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -467,11 +470,8 @@
                                                      TextWrapping="Wrap"
                                                      Height="80"
                                                      MaxLength="50"
-                                                     TextChanged="TextUpdateDetalle"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersValidation"
+                                                     TextChanged="TextUpdateDetalle"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Descripción"
