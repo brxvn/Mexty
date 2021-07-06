@@ -5,6 +5,7 @@ using System.Windows.Threading;
 using Mexty.MVVM.Model;
 using log4net;
 using log4net.Config;
+using System.Windows.Controls;
 
 namespace Mexty {
     /// <summary>
@@ -76,6 +77,40 @@ namespace Mexty {
                     MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
                 }
             }
+        }
+
+        private void passwordChanged(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
+            else
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void textChanged(object sender, TextChangedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 1;
+            else
+                txtUsuario.Background.Opacity = 0;
+        }
+
+        private void hideText(object sender, DependencyPropertyChangedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 0;
+        }
+
+        private void showText(object sender, RoutedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 1;
+        }
+
+        private void hidePswrd(object sender, DependencyPropertyChangedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void showPswrd(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
         }
     }
 }
