@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
@@ -23,6 +24,8 @@ namespace Mexty.MVVM.View.AdminViews{
     /// Interaction logic for AdminViewProducts.xaml
     /// </summary>
     public partial class AdminViewProducts : UserControl {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
@@ -45,13 +48,15 @@ namespace Mexty.MVVM.View.AdminViews{
         private Producto SelectedProduct { get; set; }
         
         public AdminViewProducts() {
-            
+            Log.Info("Iniciado modulo de productos.");
+
             InitializeComponent();
             FillData();
             FillSucursales();
             ClearFields();
+
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -76,24 +81,31 @@ namespace Mexty.MVVM.View.AdminViews{
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
+            Log.Debug("Se ha llenado la datagrid de productos.");
             
             //Datos ComboVenta
             ComboVenta.ItemsSource = Producto.TiposVentaTexto;
+            Log.Debug("Se ha llenado el combo box de tipos de venta.");
             
             //Datos Combo tipos.
             ComboTipo.ItemsSource = Producto.GetTiposProducto();
+            Log.Debug("Se ha llenado el combo box de tipos de producto.");
 
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
-
+            Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
         }
 
+        /// <summary>
+        /// Método que llena la lista de sucursales.
+        /// </summary>
         private void FillSucursales() {
             var sucursales = Database.GetTablesFromSucursales();
             ListaSucursales = sucursales;
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
+            Log.Debug("Se ha llenado el combo box de sucursales.");
         }
 
         /// <summary>
@@ -107,15 +119,9 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboTipo.IsEnabled = false;
             
             if (DataProductos.SelectedItem == null) return;
-            Producto producto;
-            try {
-                producto = (Producto) DataProductos.SelectedItem;
-            }
-            catch (InvalidCastException exception) {
-                Console.WriteLine(exception);
-                throw;
-            }
-            if (producto == null) return;
+            Log.Debug("Producto seleccionado.");
+            var producto = (Producto) DataProductos.SelectedItem;
+            
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
@@ -200,6 +206,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado el boton de guardar.");
             var newProduct = new Producto();
             newProduct.NombreProducto = txtNombreProducto.Text;
             newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
@@ -210,43 +217,49 @@ namespace Mexty.MVVM.View.AdminViews{
             newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
             newProduct.DetallesProducto = txtDetalle.Text;
             newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
+            Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
             var validator = new ProductValidation();
             var results = validator.Validate(newProduct);
             if (!results.IsValid) {
+                Log.Warn("El objeto tipo Producto no ha pasado las vaidaciones");
                 foreach (var error in results.Errors) {
                     MessageBox.Show(error.ErrorMessage);
+                    Log.Warn(error.ErrorMessage);
                 }
                 return;
             }
+            Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
 
             if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
+                Log.Debug("Detectada actualización de producto.");
                 newProduct.IdProducto = SelectedProduct.IdProducto;
                 newProduct.Activo = SelectedProduct.Activo;
                 Database.UpdateData(newProduct);
-                
+
                 var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
                 MessageBox.Show(msg, "Producto Actualizado");
             }
             else {
                 var alta = true;
                 if (ListaProductos != null) {
-                for (var index = 0; index < ListaProductos.Count; index++) {
+                    for (var index = 0; index < ListaProductos.Count; index++) {
                         var producto = ListaProductos[index];
-                        if (newProduct.NombreProducto == producto.NombreProducto && producto.Activo == 0) {
-                            // actualizamos y activamos.
-                            newProduct.IdProducto = producto.IdProducto;
-                            newProduct.Activo = 1;
-                            Database.UpdateData(newProduct);
-                            alta = false;
-                            var msg =
-                                $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                            MessageBox.Show(msg, "Producto Actualizado");
-                        }
+                        if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
+                        Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
+                        // actualizamos y activamos.
+                        newProduct.IdProducto = producto.IdProducto;
+                        newProduct.Activo = 1;
+                        Database.UpdateData(newProduct);
+                        alta = false;
+                        var msg =
+                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                        MessageBox.Show(msg, "Producto Actualizado");
                     }
                 }
                 if (alta) {
                     // Alta
+                    Log.Debug("Detectada alta de producto.");
                     Database.NewProduct(newProduct);
                     var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
                     MessageBox.Show(msg, "Producto Actualizado");
@@ -262,6 +275,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EliminarProducto(object sender, RoutedEventArgs e) {
+            Log.Debug("Presionado eliminar producto.");
             var producto = SelectedProduct;
             var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
@@ -270,6 +284,7 @@ namespace Mexty.MVVM.View.AdminViews{
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             producto.Activo = 0;
             Database.UpdateData(producto);
+            Log.Debug("Producto eliminado.");
             ClearFields();
             FillData();
         }
@@ -291,7 +306,7 @@ namespace Mexty.MVVM.View.AdminViews{
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
         }
-        
+
         // --- Eventos Text-Update--
 
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {

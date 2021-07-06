@@ -27,7 +27,8 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminViewClients.xaml
     /// </summary>
     public partial class AdminViewClients : UserControl {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = 
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
@@ -46,7 +47,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewClients() {
 
-            log.Info("Iniciado modulo clientes");
+            Log.Info("Iniciado modulo clientes");
             InitializeComponent();
             FillData();
 
@@ -76,6 +77,7 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataClientes.ItemsSource = collectionView;
+            Log.Debug("Se ha llenado datagrid de clientes.");
         }
 
         /// <summary>
@@ -92,16 +94,8 @@ namespace Mexty.MVVM.View.AdminViews {
             Eliminar.IsEnabled = true;
 
             if (DataClientes.SelectedItem == null) return; // si no hay nada selecionado, bye
-            Cliente cliente;
-            try {
-                cliente = (Cliente) DataClientes.SelectedItem; 
-                // BUG: Si no hay nada en la tabla truena al darle clic probablemente pase en las demás pantallas.
-            }
-            catch (InvalidCastException exception) {
-                // TODO agregar al log error
-                Console.WriteLine(exception);
-                return;
-            }
+            Log.Debug("Cliente seleccionado.");
+            var cliente = (Cliente) DataClientes.SelectedItem; 
             
             SelectedClient = cliente;
             txtNombreCliente.Text = cliente.Nombre;
@@ -130,6 +124,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
             Eliminar.IsEnabled = false;
+            Log.Debug("Se han limpiado los campos de texto.");
         }
 
         /// <summary>
@@ -183,6 +178,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GuardarCliente(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado el boton de guardar.");
             var newClient = new Cliente {
                 Nombre = txtNombreCliente.Text,
                 ApPaterno = txtApPaternoCliente.Text,
