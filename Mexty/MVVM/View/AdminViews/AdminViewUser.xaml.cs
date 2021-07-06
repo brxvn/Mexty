@@ -23,14 +23,14 @@ using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 using Mexty.Theme;
-using Color = System.Windows.Media.Color;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Lógica de interación de AdminViewUser.xaml
     /// </summary>
     public partial class AdminViewUser : UserControl {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// La vista actual de la tabla de usuarios.
@@ -49,7 +49,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewUser() {
             InitializeComponent();
-            log.Info("Iniciado modulo Usuarios");
+            Log.Info("Iniciado modulo Usuarios");
             
             FillDataGrid();
             ClearFields();
@@ -82,7 +82,7 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataUsuarios.ItemsSource = collectionView;
-            log.Debug("Se ha llenado la data grid de usuarios.");
+            Log.Debug("Se ha llenado la data grid de usuarios.");
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace Mexty.MVVM.View.AdminViews {
             foreach (var rol in roles) {
                 ComboRol.Items.Add(rol.RolDescription.ToLower());
             }
-            log.Debug("Se ha llenado el combo box de roles.");
+            Log.Debug("Se ha llenado el combo box de roles.");
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Mexty.MVVM.View.AdminViews {
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda);
             }
-            log.Debug("Se ha llenado el combo box de sucursales.");
+            Log.Debug("Se ha llenado el combo box de sucursales.");
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.IsReadOnly = true;
             
             if (DataUsuarios.SelectedItem == null) return; //Check si no es nulo.
-            log.Debug("Se ha seleccionado un usuario de la data grid.");
+            Log.Debug("Se ha seleccionado un usuario de la data grid.");
             var usuario = (Usuario) DataUsuarios.SelectedItem;
             SelectedUser = usuario;
             nombreUsuario.Text = usuario.Nombre;
@@ -152,7 +152,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.IsReadOnly = false;
             Eliminar.IsEnabled = false;
             Guardar.IsEnabled = false;
-            log.Debug("Se han limpiado los campos de texto del modulo usuarios.");
+            Log.Debug("Se han limpiado los campos de texto del modulo usuarios.");
         }
 
         /// <summary>
@@ -207,75 +207,113 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
-            log.Debug("Precionado boton guardar.");
-            var newUsuario = new Usuario {
-                Nombre = nombreUsuario.Text,
-                ApPaterno = apPaternoUsuario.Text,
-                ApMaterno = apMaternoUsuario.Text,
-                Domicilio = TxtDireccion.Text,
-                Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
-                Contraseña = TxtContraseña.Text,
-                IdTienda = ComboSucursal.SelectedIndex + 1,
-                IdRol = ComboRol.SelectedIndex + 1
-            };
-            log.Debug("Se ha creado el objeto Usuario exitosamente.");
+            Log.Debug("Precionado boton guardar.");
+            try {
+                var newUsuario = new Usuario {
+                    Nombre = nombreUsuario.Text,
+                    ApPaterno = apPaternoUsuario.Text,
+                    ApMaterno = apMaternoUsuario.Text,
+                    Domicilio = TxtDireccion.Text,
+                    Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
+                    Contraseña = TxtContraseña.Text,
+                    IdTienda = ComboSucursal.SelectedIndex + 1,
+                    IdRol = ComboRol.SelectedIndex + 1
+                };
+                Log.Debug("Se ha creado el objeto Usuario exitosamente.");
 
+                if (!Validar(newUsuario)) {
+                    Log.Debug("El objeto creado tipo Usuario no ha pasado las validaciones.");
+                    return;
+                }
+                Log.Debug("El objeto creado tipo Usuario ha pasado las validaciones.");
+
+                if (SelectedUser != null && SelectedUser == newUsuario) {
+                    Edit(newUsuario);
+                }
+                else {
+                    var flag = true;
+                    if (UsuariosList != null) {
+                        Activar(newUsuario, ref flag);
+                    }
+                    if (flag) {
+                        Alta(newUsuario);
+                    }
+                }
+                FillDataGrid();
+                ClearFields();
+                DesactivarBotones();
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error a la hora de hacer el proceso de guardar.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que se encarga de la alta de un usuario.
+        /// </summary>
+        /// <param name="newUsuario"></param>
+        private static void Alta(Usuario newUsuario) {
+            newUsuario.Activo = 1;
+            newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
+            Log.Debug("Detectado nuevo usuario, dando de alta.");
+            Database.NewUser(newUsuario);
+            var msg = $"Se ha creado el usuario {newUsuario.Username}.";
+            MessageBox.Show(msg, "Nuevo Usuario registrado.");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la edición de un usuario.
+        /// </summary>
+        private void Edit(Usuario newUsuario) {
+            Log.Debug("Detectada edición de usuario.");
+            newUsuario -= SelectedUser;
+            
+            Database.UpdateData(newUsuario);
+            
+            var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
+            MessageBox.Show(msg, "Usuario Actualizado");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la activación de un usuario.
+        /// </summary>
+        /// <param name="newUsuario"> El usuario a activar.</param>
+        /// <param name="flag">Bandera para señalizar si es necesario dar de alta un nuevo usuario.</param>
+        private void Activar(Usuario newUsuario, ref bool flag) {
+            for (var index = 0; index < UsuariosList.Count; index++) {
+                var usuario = UsuariosList[index];
+                if (usuario != newUsuario || usuario.Activo != 0) continue;
+                Log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
+                newUsuario += usuario;
+                newUsuario.Activo = 1;
+                Database.UpdateData(newUsuario);
+                var msg =
+                    $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                flag = false;
+                break;
+            }
+        }
+
+        /// <summary>
+        /// Método que valida a un objeto tipo usuario.
+        /// </summary>
+        /// <param name="newUsuario"></param>
+        /// <returns></returns>
+        private static bool Validar(Usuario newUsuario) {
             var validator = new UserValidation();
             var results = validator.Validate(newUsuario);
             if (!results.IsValid) {
                 //Guardar.IsEnabled = false;
                 foreach (var error in results.Errors) {
                     MessageBox.Show(error.ErrorMessage);
-                    log.Warn(error.ErrorMessage);
+                    Log.Warn(error.ErrorMessage);
                 }
-                log.Warn("El objeto creado tipo Usuario no ha pasado la validación.");
-                return;
+                return false;
             }
-            log.Debug("El objeto creado tipo Usuario ha pasado las validaciones.");
-
-            if (SelectedUser != null && SelectedUser == newUsuario) {
-                log.Debug("Detectada edición de usuario.");
-                newUsuario -= SelectedUser;
-                
-                Database.UpdateData(newUsuario);
-                
-                var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
-                MessageBox.Show(msg, "Usuario Actualizado");
-            }
-            else {
-                var flag = true;
-                if (UsuariosList != null) {
-                    for (var index = 0; index < UsuariosList.Count; index++) {
-                        var usuario = UsuariosList[index];
-                        if (usuario != newUsuario || usuario.Activo != 0) continue;
-                        log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
-                        newUsuario += usuario;
-                        newUsuario.Activo = 1;
-                        Database.UpdateData(newUsuario);
-                        var msg =
-                            $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
-                        MessageBox.Show(msg, "Nuevo Usuario registrado.");
-                        flag = false;
-                        break;
-                    }
-                }
-
-                if (flag) {
-                    newUsuario.Activo = 1;
-                    newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
-                    log.Debug("Detectado nuevo usuario, dando de alta.");
-                    Database.NewUser(newUsuario);
-                    var msg = $"Se ha creado el usuario {newUsuario.Username}.";
-                    MessageBox.Show(msg, "Nuevo Usuario registrado.");
-                }
-            }
-            
-            FillDataGrid();
-            ClearFields();
-            DesactivarBotones();
-
+            return true;
         }
-        
 
         /// <summary>
         /// Elimina (hace inactivo) el usuario seleccionado.
@@ -283,7 +321,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EliminarUsuario(object sender, RoutedEventArgs e) {
-            log.Debug("Precionado boton eliminar usuario.");
+            Log.Debug("Precionado boton eliminar usuario.");
             var usuario = SelectedUser;
             var mensaje = "¿Seguro quiere eliminar el usuario: " + usuario.Username +"?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
@@ -291,8 +329,8 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
-            log.Info("Eliminando usuario.");
             Database.UpdateData(usuario);
+            Log.Info("Usuario eliminado.");
             FillDataGrid();
             ClearFields();
             Eliminar.IsEnabled = false;
@@ -314,7 +352,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
-            log.Debug("Precionado boton limpiar en modulo usuario.");
+            Log.Debug("Precionado boton limpiar en modulo usuario.");
             ClearFields();
             DesactivarBotones();
         }
@@ -373,7 +411,7 @@ namespace Mexty.MVVM.View.AdminViews {
         //}
 
         private void DesactivarBotones() {
-            log.Debug("Botones desactivados en modulo usuarios.");
+            Log.Debug("Botones desactivados en modulo usuarios.");
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
         }

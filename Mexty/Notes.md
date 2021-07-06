@@ -3,7 +3,7 @@
 ## TODO
 - [ ] Arreglar y buscar los bugs de la ultima observación.
 - [ ] Llenar el programa de entradas al log.
-    - [ ] Poner entradas en el modulo de usuarios.
+    - [x] Poner entradas en el modulo de usuarios.
     - [ ] Poner entradas en el modulo de Productos.
     - [ ] Poner entradas en el modulo de Clientes.
     - [ ] Poner entradas en el modulo de Sucursal.
