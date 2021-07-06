@@ -310,11 +310,7 @@
                                                      FontSize="15"
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      x:Name="SearchBox"
-                                                     TextChanged="TextUpdatePrecioMayoreo"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     TextChanged="TextUpdatePrecioMayoreo"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Precio Mayoreo"

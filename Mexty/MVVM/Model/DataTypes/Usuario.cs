@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -59,8 +60,19 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         /// <returns></returns>
         public static string GenUsername(Usuario usr) {
-            var random = new Random();
-            return $"{usr.Nombre[..2]}{usr.ApMaterno[..2]}{usr.ApPaterno}{random.Next(1, 10).ToString()}";
+            Random random = new();
+            string username = $"{usr.Nombre[..2]}{usr.ApMaterno[..2]}{usr.ApPaterno}{random.Next(1, 10)}";
+
+            var normalizedString = username.Normalize(NormalizationForm.FormD);
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString) {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark) {
+                    stringBuilder.Append(c);
+                }
+            }
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
         }
 
         /// <summary>

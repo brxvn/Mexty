@@ -74,7 +74,7 @@
 
                 <Button Width="70" Height="30" Margin="0,50,20,0" HorizontalAlignment="Right" Padding="0" Content="Ingresar" FontSize="15" Click="PasswordKeyDown" Background="Beige" BorderThickness="0" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}"/>
 
-                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="30 50" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="auto" ></Label>
+                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="0 50" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="auto" ></Label>
 
             </StackPanel>
 

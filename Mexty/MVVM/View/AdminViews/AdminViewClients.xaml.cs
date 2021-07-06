@@ -263,8 +263,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             // Patrón para floats
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
-            //var regex = new Regex("^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$ ");
-            //e.Handled = regex.IsMatch(e.Text);
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
@@ -303,8 +301,18 @@ namespace Mexty.MVVM.View.AdminViews {
         }
         
         private void txtUpdateDeuda(object sender, TextChangedEventArgs e) {
-            TextBox textBox = sender as TextBox;
-            txtDeuda.Text = textBox.Text;
+            TextBox textbox = sender as TextBox;
+            txtDeuda.Text = textbox.Text;
+            //EnableGuardar();
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtDeuda.Text);
+            if (m.Success) {
+                txtDeuda.Text = textbox.Text;
+            }
+            else {
+                txtDeuda.Text = "";
+                Keyboard.Focus(textbox);
+            }
         }
     }
 }

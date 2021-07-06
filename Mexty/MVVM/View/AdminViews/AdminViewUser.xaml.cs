@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -411,9 +412,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo para la validacion de solo Letras en el input
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-            if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ]")) {
-                e.Handled = true;
-            }
+            e.Handled = !e.Text.Any(x => char.IsLetter(x));
         }
 
         /// <summary>
