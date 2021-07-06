@@ -344,7 +344,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// Metodo para la validacion de solo Letras en el input
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-            if (!Regex.IsMatch(e.Text, "^[a-zA-Z]")) {
+            if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ]")) {
                 e.Handled = true;
             }
         }
