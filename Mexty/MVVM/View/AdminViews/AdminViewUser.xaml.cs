@@ -50,7 +50,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al inicializar los campos del modulo Usuarios.");
                 Log.Error($"Error: {ex.Message}");
             }
-           
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -86,7 +86,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillRol() {
             var roles = Database.GetTablesFromRoles();
             foreach (var rol in roles) {
-                ComboRol.Items.Add(rol.RolDescription.ToLower());
+                ComboRol.Items.Add(rol.RolDescription.ToUpper());
             }
             Log.Debug("Se ha llenado el combo box de roles.");
         }
@@ -97,7 +97,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillSucursales() {
             var sucursales = Database.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
-                ComboSucursal.Items.Add(sucursal.NombreTienda);
+                ComboSucursal.Items.Add(sucursal.NombreTienda.ToUpper());
             }
             Log.Debug("Se ha llenado el combo box de sucursales.");
         }
@@ -115,14 +115,14 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (DataUsuarios.SelectedItem == null) return; //Check si no es nulo.
             Log.Debug("Se ha seleccionado un usuario de la data grid.");
-            var usuario = (Usuario) DataUsuarios.SelectedItem;
+            var usuario = (Usuario)DataUsuarios.SelectedItem;
             SelectedUser = usuario;
-            nombreUsuario.Text = usuario.Nombre;
-            apPaternoUsuario.Text = usuario.ApPaterno;
-            apMaternoUsuario.Text = usuario.ApMaterno;
+            nombreUsuario.Text = usuario.Nombre.ToUpper();
+            apPaternoUsuario.Text = usuario.ApPaterno.ToUpper();
+            apMaternoUsuario.Text = usuario.ApMaterno.ToUpper();
             ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
             ComboRol.SelectedIndex = usuario.IdRol - 1;
-            TxtDireccion.Text = usuario.Domicilio;
+            TxtDireccion.Text = usuario.Domicilio.ToUpper();
             TxtTelefono.Text = usuario.Telefono; //ojo
             TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
@@ -161,7 +161,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (tbx != null && tbx.Text != "") {
                 string newText = tbx.Text;
                 var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
-                
+
                 collection.Filter = customFilter;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
@@ -264,9 +264,9 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Usuario newUsuario) {
             Log.Debug("Detectada edición de usuario.");
             newUsuario -= SelectedUser;
-            
+
             Database.UpdateData(newUsuario);
-            
+
             var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
             MessageBox.Show(msg, "Usuario Actualizado");
         }
@@ -303,7 +303,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (!results.IsValid) {
                 //Guardar.IsEnabled = false;
                 foreach (var error in results.Errors) {
-                    MessageBox.Show(error.ErrorMessage);
+                    MessageBox.Show(error.ErrorMessage, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     Log.Warn(error.ErrorMessage);
                 }
                 return false;
@@ -365,42 +365,36 @@ namespace Mexty.MVVM.View.AdminViews {
             TextBox textbox = sender as TextBox;
             TxtContraseña.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void TextUpdateUserName(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             nombreUsuario.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void TextUpdateApMa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apMaternoUsuario.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void TextUpdateApPa(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             apPaternoUsuario.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void TextUpdateDir(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtDireccion.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void TextUpdateTel(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             TxtTelefono.Text = textbox.Text;
             EnableGuardar();
-
         }
 
         private void DesactivarBotones() {
@@ -414,7 +408,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo que solamente activa el boton de guardar una vex que todos los cambppos de texto estan completos
         /// </summary>
         private void EnableGuardar() {
-            if (nombreUsuario.Text != "" && apPaternoUsuario.Text != "" && apMaternoUsuario.Text != "" && TxtDireccion.Text != "" && TxtTelefono.Text != "" && TxtContraseña.Text != "") {
+            if (nombreUsuario.Text.Length > 2 && 
+                apPaternoUsuario.Text.Length > 2 && 
+                apMaternoUsuario.Text.Length > 2 && 
+                TxtDireccion.Text.Length > 2 && 
+                TxtTelefono.Text.Length == 10 && 
+                TxtContraseña.Text.Length > 3) {
                 Guardar.IsEnabled = true;
             }
             else Guardar.IsEnabled = false;
@@ -435,9 +434,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x));
-            // if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ0-9-#*]*$")) {
-            //     e.Handled = true;
-            // }
+        }
+
+        private void OnlyuLetterNumbersSB(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
     }
 }

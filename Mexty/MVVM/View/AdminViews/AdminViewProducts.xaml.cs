@@ -19,7 +19,7 @@ using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
-namespace Mexty.MVVM.View.AdminViews{
+namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminViewProducts.xaml
     /// </summary>
@@ -46,7 +46,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// El último producto seleccionado de la datagrid.
         /// </summary>
         private Producto SelectedProduct { get; set; }
-        
+
         public AdminViewProducts() {
             Log.Info("Iniciado modulo de productos.");
 
@@ -89,11 +89,11 @@ namespace Mexty.MVVM.View.AdminViews{
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
             Log.Debug("Se ha llenado la datagrid de productos.");
-            
+
             //Datos ComboVenta
             ComboVenta.ItemsSource = Producto.TiposVentaTexto;
             Log.Debug("Se ha llenado el combo box de tipos de venta.");
-            
+
             //Datos Combo tipos.
             ComboTipo.ItemsSource = Producto.GetTiposProducto();
             Log.Debug("Se ha llenado el combo box de tipos de producto.");
@@ -124,11 +124,11 @@ namespace Mexty.MVVM.View.AdminViews{
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
-            
+
             if (DataProductos.SelectedItem == null) return;
             Log.Debug("Producto seleccionado.");
-            var producto = (Producto) DataProductos.SelectedItem;
-            
+            var producto = (Producto)DataProductos.SelectedItem;
+
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
@@ -140,6 +140,7 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
             Guardar.IsEnabled = true;
+            SearchBox.Text = "";
         }
 
         /// <summary>
@@ -179,9 +180,10 @@ namespace Mexty.MVVM.View.AdminViews{
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto => {
+                var noNull = new Predicate<object>(producto =>
+                {
                     if (producto == null) return false;
-                    return ((Producto) producto).Activo == 1;
+                    return ((Producto)producto).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
@@ -197,7 +199,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
-            var producto = (Producto) obj;
+            var producto = (Producto)obj;
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
@@ -314,10 +316,10 @@ namespace Mexty.MVVM.View.AdminViews{
                     MessageBox.Show(error.ErrorMessage);
                     Log.Warn(error.ErrorMessage);
                 }
-                
+
                 return false;
             }
-            
+
             return true;
         }
 
@@ -348,7 +350,7 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
-         }
+        }
 
         /// <summary>
         /// Limpia los text box
@@ -370,13 +372,31 @@ namespace Mexty.MVVM.View.AdminViews{
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            EnableGuardar();
-        }    
+            //EnableGuardar();
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMenudeo.Text);
+            if (m.Success) {
+                txtPrecioMenudeo.Text = textbox.Text;
+            }
+            else {
+                txtPrecioMenudeo.Text = "";
+                Keyboard.Focus(textbox);
+            }
+        }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            EnableGuardar();
+            //EnableGuardar();
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMayoreo.Text);
+            if (m.Success) {
+                txtPrecioMayoreo.Text = textbox.Text;
+            }
+            else {
+                txtPrecioMayoreo.Text = "";
+                Keyboard.Focus(textbox);
+            }
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
@@ -386,7 +406,10 @@ namespace Mexty.MVVM.View.AdminViews{
         }
 
         private void EnableGuardar() {
-            if (txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "" && txtPrecioMayoreo.Text != "" && txtDetalle.Text != "") {
+            if (txtNombreProducto.Text.Length > 3 &&
+                txtPrecioMenudeo.Text != "" &&
+                txtPrecioMayoreo.Text != "" &&
+                txtDetalle.Text != "") {
                 Guardar.IsEnabled = true;
             }
             else Guardar.IsEnabled = false;
@@ -396,10 +419,16 @@ namespace Mexty.MVVM.View.AdminViews{
         /// Metodo para la validacion de solo Letras en el input
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetter(x));
-            // if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ]")) {
-            //     e.Handled = true;
-            // }
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
 
     }

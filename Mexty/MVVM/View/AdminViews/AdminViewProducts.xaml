@@ -29,6 +29,8 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
+                     x:Name="SearchBox"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -291,6 +293,7 @@
                      x:Name="txtPrecioMayoreo"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     TextChanged="TextUpdatePrecioMayoreo"
                      PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
@@ -362,6 +365,7 @@
                      x:Name="txtPrecioMenudeo"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
+                     TextChanged="TextUpdatePrecioMenudeo"
                      PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>

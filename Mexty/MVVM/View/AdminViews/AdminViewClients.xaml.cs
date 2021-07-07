@@ -27,14 +27,14 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminViewClients.xaml
     /// </summary>
     public partial class AdminViewClients : UserControl {
-        private static readonly ILog Log = 
+        private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Cliente> ListaClientes { get; set; }
-        
+
         /// <summary>
         /// Collection view actual de la datagrid.
         /// </summary>
@@ -58,7 +58,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al inicializar los campos del modulo de clientes.");
                 Log.Error($"Error: {e.Message}");
             }
-
+            ClearFields();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -95,7 +95,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
-            
+
             txtNombreCliente.IsReadOnly = true;
             txtApPaternoCliente.IsReadOnly = true;
             txtApMaternoCliente.IsReadOnly = true;
@@ -103,8 +103,8 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (DataClientes.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Cliente seleccionado.");
-            var cliente = (Cliente) DataClientes.SelectedItem; 
-            
+            var cliente = (Cliente)DataClientes.SelectedItem;
+
             SelectedClient = cliente;
             txtNombreCliente.Text = cliente.Nombre;
             txtApPaternoCliente.Text = cliente.ApPaterno;
@@ -113,7 +113,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = cliente.Domicilio;
             txtComentario.Text = cliente.Comentario;
             txtDeuda.Text = cliente.Debe.ToString(CultureInfo.InvariantCulture);
-
+            SearchBox.Text = "";
         }
 
         /// <summary>
@@ -127,11 +127,13 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = "";
             txtComentario.Text = "";
             txtDeuda.Text = "";
-            
+
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
             Eliminar.IsEnabled = false;
+            Limpiar.IsEnabled = true;
+            Guardar.IsEnabled = false;
             Log.Debug("Se han limpiado los campos de texto.");
         }
 
@@ -153,9 +155,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(cliente => {
+                var noNull = new Predicate<object>(cliente =>
+                {
                     if (cliente == null) return false;
-                    return ((Cliente) cliente).Activo == 1;
+                    return ((Cliente)cliente).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
@@ -171,7 +174,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
-            var cliente = (Cliente) obj;
+            var cliente = (Cliente)obj;
             if (cliente.Nombre.Contains(text) ||
                 cliente.ApPaterno.Contains(text) ||
                 cliente.ApMaterno.Contains(text)) {
@@ -213,7 +216,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (ListaClientes != null) {
                         Activar(newClient, ref alta);
                     }
-                    
+
                     if (alta) {
                         Alta(newClient);
                     }
@@ -245,7 +248,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Cliente newClient) {
             Log.Debug("Detectada edición de un cliente.");
             Database.UpdateData(newClient);
-            
+
             var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
             MessageBox.Show(msg, "Cliente Actualizado");
         }
@@ -257,7 +260,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Activar(Cliente newClient, ref bool alta) {
             for (var index = 0; index < ListaClientes.Count; index++) {
                 var cliente = ListaClientes[index];
-                
+
                 if (newClient != cliente || cliente.Activo != 0) continue;
                 Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
                 newClient.IdCliente = cliente.IdCliente;
@@ -330,33 +333,39 @@ namespace Mexty.MVVM.View.AdminViews {
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtNombreCliente.Text = textBox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateApPaterno(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtApPaternoCliente.Text = textBox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateApMaterno(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtApMaternoCliente.Text = textBox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateTelefono(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtTelefono.Text = textBox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateDireccion(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtDireccion.Text = textBox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtComentario.Text = textBox.Text;
+            EnableGuardar();
         }
-        
+
         private void txtUpdateDeuda(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtDeuda.Text = textbox.Text;
@@ -365,11 +374,43 @@ namespace Mexty.MVVM.View.AdminViews {
             Match m = r.Match(txtDeuda.Text);
             if (m.Success) {
                 txtDeuda.Text = textbox.Text;
+                EnableGuardar();
             }
             else {
                 txtDeuda.Text = "";
                 Keyboard.Focus(textbox);
             }
+        }
+
+        public void EnableGuardar() {
+            if (txtNombreCliente.Text.Length > 3 &&
+                txtApPaternoCliente.Text.Length > 3 &&
+                txtApMaternoCliente.Text.Length > 3 &&
+                txtTelefono.Text.Length == 10 &&
+                txtDireccion.Text.Length > 3 &&
+                txtComentario.Text.Length > 3 &&
+                txtDeuda.Text != "") {
+                
+                Guardar.IsEnabled = true;
+            }
+
+            else Guardar.IsEnabled = false;
+        }
+
+        /// <summary>
+        /// Metodo para la validacion de solo Letras en el input
+        /// </summary>
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
     }
 }

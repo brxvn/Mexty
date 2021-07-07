@@ -30,7 +30,8 @@
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
                      x:Name="SearchBox"
-                     CharacterCasing="Upper"
+                     MaxLength="20"
+                     PreviewTextInput="OnlyuLetterNumbersSB"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -49,13 +50,11 @@
                                                      Padding="5"
                                                      Foreground="DarkGray"
                                                      FontSize="18"
+                                                     MaxLength="20"
                                                      x:Name="txtBusqueda"
-                                                     CharacterCasing="Upper"
-                                                     TextChanged="FilterSearch"
-                                                     >
-                                                    <!--TextChanged="SearchBox_TextChanged"-->
+                                                     PreviewTextInput="OnlyuLetterNumbersSB"
+                                                     TextChanged="FilterSearch"/>
 
-                                                </TextBox>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"
                                                         FontSize="15"
                                                         Foreground="DarkGray"
@@ -494,9 +493,7 @@
                                                        HorizontalAlignment="Left"
                                                        Margin="10,0,0,0"
                                                        FontSize="15"
-                                                       Foreground="Gray"
-                                                       Grid.Column="1"> 
-                                                        <!-- ^ Esto esta Fuera de la definición de columnas  -->
+                                                       Foreground="Gray">
 
                                                         <TextBlock.Style>
                                                             <Style TargetType="{x:Type TextBlock}">
@@ -538,7 +535,6 @@
                      Margin="10 0"
                      MaxLength="10"                         
                      PreviewTextInput="OnlyNumbersValidation">
-                    
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -560,12 +556,7 @@
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      MaxLength="10"
                                                      TextChanged="TextUpdateTel"
-                                                     Focusable="True"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-                                                        
-
-                                                    </TextBox>
+                                                     Focusable="True"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Teléfono"
@@ -614,6 +605,7 @@
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
                      MaxLength="8"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -633,12 +625,9 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      MaxLength="8"
-                                                     TextChanged="TextUpdatePswd"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     TextChanged="TextUpdatePswd"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Contraseña"
@@ -695,7 +684,7 @@
                  </Grid.ColumnDefinitions>
 
                 <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" Style="{StaticResource ButtonStyle}" Click="LimpiarCampos" IsEnabled="False" ToolTip="Limpiar Campos" />
-                <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="1" x:Name="Guardar" Content="Guardar" Style="{StaticResource ButtonStyle}" Click="RegistrarUsuario" IsEnabled="True" ToolTip="Guardar Cambios"/>
+                <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="1" x:Name="Guardar" Content="Guardar" Style="{StaticResource ButtonStyle}" Click="RegistrarUsuario" IsEnabled="False" ToolTip="Guardar Cambios"/>
                 <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" Style="{StaticResource ButtonStyle}" Click="EliminarUsuario" IsEnabled="False" ToolTip="Eliminar selección"/>
 
             </Grid>

@@ -31,6 +31,9 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
+                     x:Name="SearchBox"
+                     MaxLength="20"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -49,14 +52,11 @@
                                                      Padding="5"
                                                      Foreground="DarkGray"
                                                      FontSize="18"
+                                                     MaxLength="20"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      x:Name="txtBusqueda"
-                                                     TextChanged="FilterSearch"
-                                                     >
-                                                    <!--TextChanged="FilterSearch"-->
+                                                     TextChanged="FilterSearch"/>
 
-                                                    <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                </TextBox>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"
                                                         FontSize="15"
                                                         Foreground="DarkGray"
@@ -202,6 +202,8 @@
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
+                     MaxLength="25"
+                     PreviewTextInput="OnlyLettersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -223,6 +225,7 @@
                                                      x:Name="SearchBox"
                                                      CharacterCasing="Upper"
                                                      MaxLength="25"
+                                                     PreviewTextInput="OnlyLettersValidation"
                                                      TextChanged="txtUpdateNombre"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -261,6 +264,14 @@
                                                 <Trigger Property="IsKeyboardFocusWithin" Value="true">
                                                     <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
                                                 </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -277,6 +288,8 @@
                      Grid.Column="1"
                      CharacterCasing="Upper"
                      HorizontalAlignment="Stretch"
+                     MaxLength="25"
+                     PreviewTextInput="OnlyLettersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -298,6 +311,7 @@
                                                      x:Name="SearchBox"
                                                      CharacterCasing="Upper"
                                                      MaxLength="25"
+                                                     PreviewTextInput="OnlyLettersValidation"   
                                                      TextChanged="txtUpdateApPaterno"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -336,6 +350,14 @@
                                                 <Trigger Property="IsKeyboardFocusWithin" Value="true">
                                                     <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
                                                 </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -352,6 +374,8 @@
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
+                     MaxLength="25"
+                     PreviewTextInput="OnlyLettersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -373,6 +397,7 @@
                                                      CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
+                                                     PreviewTextInput="OnlyLettersValidation"
                                                      TextChanged="txtUpdateApMaterno"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -411,6 +436,14 @@
                                                 <Trigger Property="IsKeyboardFocusWithin" Value="true">
                                                     <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
                                                 </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -426,6 +459,8 @@
                      x:Name="txtTelefono"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
+                     MaxLength="10"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -446,12 +481,9 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="10"
-                                                     TextChanged="txtUpdateTelefono"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
-
+                                                     PreviewTextInput="OnlyNumbersValidation"
+                                                     TextChanged="txtUpdateTelefono"/>
+                                                   
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Telefono"
                                                        VerticalAlignment="Center"
@@ -678,7 +710,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="90"
+                                                     MaxLength="15"
                                                      TextChanged="txtUpdateDeuda"
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      >
@@ -736,9 +768,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" IsEnabled="False" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTip="Guardar Cambios" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTip="Eliminar Selección" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
 
             </Grid>
         </Grid>
