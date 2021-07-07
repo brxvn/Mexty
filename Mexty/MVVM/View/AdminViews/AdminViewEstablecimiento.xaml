@@ -394,7 +394,7 @@
 
                 <!--txtDescripcion-->
                 <TextBox Background="Beige"
-                     x:Name="txtDescipcion"
+                     x:Name="txtDirección"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">

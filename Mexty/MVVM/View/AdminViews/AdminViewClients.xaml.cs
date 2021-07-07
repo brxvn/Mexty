@@ -197,6 +197,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Debe = float.Parse(txtDeuda.Text),
                     Comentario = txtComentario.Text
                 };
+                Log.Debug("Se ha creado el objeto el objeto Cliente con los campos de texto.");
 
                 if (!Validar(newClient)) {
                     Log.Warn("El producto selecionado no ha pasado las validaciones.");
@@ -212,6 +213,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (ListaClientes != null) {
                         Activar(newClient, ref alta);
                     }
+                    
                     if (alta) {
                         Alta(newClient);
                     }
