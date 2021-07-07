@@ -1,11 +1,10 @@
-name: "Deplo"
+name: "Deploy"
 
 on:
   push:
     branches:
-      - main
-      - modClients
-
+      - master
+      
 env:
   PROJECT_PATH: Mexty/Mexty.csproj
 
