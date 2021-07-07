@@ -14,19 +14,28 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
+using Mexty.MVVM.Model.Validations;
 
-namespace Mexty.MVVM.View.AdminViews{
+namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminViewProducts.xaml
     /// </summary>
     public partial class AdminViewProducts : UserControl {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
+
+        /// <summary>
+        /// Lista de todas las sucursales dada por la Base de datos
+        /// </summary>
+        private List<Sucursal> ListaSucursales { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -37,14 +46,24 @@ namespace Mexty.MVVM.View.AdminViews{
         /// El último producto seleccionado de la datagrid.
         /// </summary>
         private Producto SelectedProduct { get; set; }
-        
+
         public AdminViewProducts() {
-            
-            InitializeComponent();
-            FillData();
-            ClearFields();
+            Log.Info("Iniciado modulo de productos.");
+
+            try {
+                InitializeComponent();
+                FillData();
+                FillSucursales();
+                ClearFields();
+                Log.Debug("Se han inicializado los campos del modulo Productos exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos del modulo producto.");
+                Log.Error($"Error: {e.Message}");
+            }
+
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -69,15 +88,31 @@ namespace Mexty.MVVM.View.AdminViews{
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
-            
+            Log.Debug("Se ha llenado la datagrid de productos.");
+
             //Datos ComboVenta
             ComboVenta.ItemsSource = Producto.TiposVentaTexto;
-            
+            Log.Debug("Se ha llenado el combo box de tipos de venta.");
+
             //Datos Combo tipos.
             ComboTipo.ItemsSource = Producto.GetTiposProducto();
-            
+            Log.Debug("Se ha llenado el combo box de tipos de producto.");
+
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
+            Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
+        }
+
+        /// <summary>
+        /// Método que llena la lista de sucursales.
+        /// </summary>
+        private void FillSucursales() {
+            var sucursales = Database.GetTablesFromSucursales();
+            ListaSucursales = sucursales;
+            foreach (var sucursal in sucursales) {
+                ComboSucursal.Items.Add(sucursal.NombreTienda);
+            }
+            Log.Debug("Se ha llenado el combo box de sucursales.");
         }
 
         /// <summary>
@@ -89,9 +124,11 @@ namespace Mexty.MVVM.View.AdminViews{
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
-            
-            var producto = (Producto) DataProductos.SelectedItem;
-            if (producto == null) return;
+
+            if (DataProductos.SelectedItem == null) return;
+            Log.Debug("Producto seleccionado.");
+            var producto = (Producto)DataProductos.SelectedItem;
+
             SelectedProduct = producto;
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
@@ -99,16 +136,19 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
-            ComboMedida.SelectedItem = producto.MedidaProducto; // ----- ojo
-            Guardar.IsEnabled = true;
+            ComboMedida.SelectedItem = producto.MedidaProducto;
+            ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
-            
+            Guardar.IsEnabled = true;
+            SearchBox.Text = "";
         }
 
         /// <summary>
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            Guardar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
             ComboTipo.SelectedIndex = 0;
@@ -116,10 +156,10 @@ namespace Mexty.MVVM.View.AdminViews{
             txtPrecioMenudeo.Text = "";
             txtDetalle.Text = "";
             ComboMedida.SelectedIndex = 0;
+            ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
-            Guardar.IsEnabled = false;
-            Eliminar.IsEnabled = false;
+            Log.Debug("Se han limpiado los campos del modulo de productos.");
         }
 
         /// <summary>
@@ -140,9 +180,10 @@ namespace Mexty.MVVM.View.AdminViews{
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto => {
+                var noNull = new Predicate<object>(producto =>
+                {
                     if (producto == null) return false;
-                    return ((Producto) producto).Activo == 1;
+                    return ((Producto)producto).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
@@ -156,14 +197,14 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        //TODO: tiene que buscar por: Nombre, Código, Tipo, Tipo de venta.
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
-            var producto = (Producto) obj;
+            var producto = (Producto)obj;
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
-                producto.TipoVentaNombre.ToLower().Contains(text)) {
+                producto.TipoVentaNombre.ToLower().Contains(text) ||
+                producto.GetSucursalNombre.ToLower().Contains(text)) {
                 return producto.Activo == 1;
             }
             return false;
@@ -174,48 +215,120 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregar esta función al evento clic del boton registar.
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
-            var newProduct = new Producto();
-            newProduct.NombreProducto = txtNombreProducto.Text;
-            newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-            newProduct.TipoVenta = ComboVenta.SelectedIndex;
-            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-            newProduct.PrecioMayoreo = int.Parse(txtPrecioMayoreo.Text);
-            newProduct.PrecioMenudeo = int.Parse(txtPrecioMenudeo.Text);
-            newProduct.DetallesProducto = txtDetalle.Text;
+            Log.Debug("Se ha presionado el boton de guardar.");
+            try {
+                var newProduct = new Producto();
+                newProduct.NombreProducto = txtNombreProducto.Text;
+                newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
+                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                newProduct.TipoVenta = ComboVenta.SelectedIndex;
+                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
+                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
+                newProduct.DetallesProducto = txtDetalle.Text;
+                newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
+                Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
-            if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) { //TODO: añadir que pasa si Selected product es nullo
-                newProduct.IdProducto = SelectedProduct.IdProducto;
-                newProduct.Activo = SelectedProduct.Activo;
-                Database.UpdateData(newProduct);
-                
-                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Usuario Actualizado");
-            }
-            else {
-                var alta = true;
-                foreach (var producto in ListaProductos) {
-                    if (newProduct.NombreProducto == producto.NombreProducto && producto.Activo == 0) {
-                        // actualizamos y activamos.
-                        newProduct.IdProducto = producto.IdProducto;
-                        newProduct.Activo = 1;
-                        Database.UpdateData(newProduct);
-                        alta = false;
-                        var msg = $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Usuario Actualizado");
+                if (!Validar(newProduct)) {
+                    Log.Warn("El objeto tipo Producto no ha pasado las vaidaciones.");
+                    return;
+                }
+                Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
+
+                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
+                    Edit(newProduct);
+                }
+                else {
+                    var alta = true;
+                    if (ListaProductos != null) {
+                        Activar(newProduct, ref alta);
+                    }
+                    if (alta) {
+                        Alta(newProduct);
                     }
                 }
-                if (alta) {
-                    // Alta
-                    Database.NewProduct(newProduct);
-                    var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-                    MessageBox.Show(msg, "Usuario Actualizado");
-                }
+                FillData();
+                ClearFields();
             }
-            FillData();
-            ClearFields();
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al hacer el proceso de guardar.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que se encarga de la alta de un producto.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        private static void Alta(Producto newProduct) {
+            Log.Debug("Detectada alta de producto.");
+            Database.NewProduct(newProduct);
+            var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
+            MessageBox.Show(msg, "Producto Actualizado");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la edición de un producto.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        private void Edit(Producto newProduct) {
+            Log.Debug("Detectada actualización de producto.");
+            newProduct.IdProducto = SelectedProduct.IdProducto;
+            newProduct.Activo = SelectedProduct.Activo;
+            Database.UpdateData(newProduct);
+
+            var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+            MessageBox.Show(msg, "Producto Actualizado");
+        }
+
+        /// <summary>
+        /// Métdodo que se encarga de la activación de un usuario.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        /// <param name="alta"></param>
+        private void Activar(Producto newProduct, ref bool alta) {
+            for (var index = 0; index < ListaProductos.Count; index++) {
+                var producto = ListaProductos[index];
+                if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
+                Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
+                // actualizamos y activamos.
+                newProduct.IdProducto = producto.IdProducto;
+                newProduct.Activo = 1;
+                Database.UpdateData(newProduct);
+                alta = false;
+                var msg =
+                    $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+            }
+        }
+
+        /// <summary>
+        /// Método que valida a un objeto tipo Producto
+        /// </summary>
+        /// <param name="newProduct"> Producto a validar.</param>
+        /// <returns></returns>
+        private static bool Validar(Producto newProduct) {
+            try {
+                var validator = new ProductValidation();
+                var results = validator.Validate(newProduct);
+                if (!results.IsValid) {
+                    foreach (var error in results.Errors) {
+                        MessageBox.Show(error.ErrorMessage);
+                        Log.Warn(error.ErrorMessage);
+                    }
+                    
+                    return false;
+                }
+                
+                return true;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {e.Message}");
+                return false;
+            }
         }
 
         /// <summary>
@@ -223,9 +336,8 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: Preguntar si debemos agregar el campo activo a tabla de productos.
-        // TODO: agregar esta función al evento clicl del boton eliminar.
         private void EliminarProducto(object sender, RoutedEventArgs e) {
+            Log.Debug("Presionado eliminar producto.");
             var producto = SelectedProduct;
             var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
@@ -234,6 +346,7 @@ namespace Mexty.MVVM.View.AdminViews{
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             producto.Activo = 0;
             Database.UpdateData(producto);
+            Log.Debug("Producto eliminado.");
             ClearFields();
             FillData();
         }
@@ -243,19 +356,8 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregarlo al evento PreviewTextInput de los campos númericos.
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            var regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
-        }
-
-        /// <summary>
-        /// Regresa la cadena dada en Mayusculas y sin espeacios.
-        /// </summary>
-        /// <param name="text">Texto a Preparar.</param>
-        /// <returns></returns>
-        private static string StrPrep(string text) {
-            return text.ToUpper().Replace(" ", "");
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
         /// <summary>
@@ -263,50 +365,79 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        // TODO: agregarlo al evento click del boton Limpiar.
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
-            
         }
-        
+
         // --- Eventos Text-Update--
 
         private void TextUpdateNombre(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtNombreProducto.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtPrecioMayoreo.Text != ""  && txtPrecioMenudeo.Text != "") {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
+            EnableGuardar();
         }
 
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMayoreo.Text != "") {
-                Guardar.IsEnabled = true;
+            //EnableGuardar();
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMenudeo.Text);
+            if (m.Success) {
+                txtPrecioMenudeo.Text = textbox.Text;
             }
-            else Guardar.IsEnabled = false;
-
+            else {
+                txtPrecioMenudeo.Text = "";
+                Keyboard.Focus(textbox);
+            }
         }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            if (textbox.Text != "" && ComboTipo.SelectedItem.ToString() != "" && txtNombreProducto.Text != "" && txtPrecioMenudeo.Text != "") {
-                Guardar.IsEnabled = true;
+            //EnableGuardar();
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMayoreo.Text);
+            if (m.Success) {
+                txtPrecioMayoreo.Text = textbox.Text;
             }
-            else Guardar.IsEnabled = false;
+            else {
+                txtPrecioMayoreo.Text = "";
+                Keyboard.Focus(textbox);
+            }
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtDetalle.Text = textbox.Text;
+            EnableGuardar();
         }
 
-        private void TextUpdateMedida(object sender, TextChangedEventArgs a) {
-            TextBox textbox = sender as TextBox;
-            //txtMedida.Text = textbox.Text;
+        private void EnableGuardar() {
+            if (txtNombreProducto.Text.Length > 3 &&
+                txtPrecioMenudeo.Text != "" &&
+                txtPrecioMayoreo.Text != "" &&
+                txtDetalle.Text != "") {
+                Guardar.IsEnabled = true;
+            }
+            else Guardar.IsEnabled = false;
         }
+
+        /// <summary>
+        /// Metodo para la validacion de solo Letras en el input
+        /// </summary>
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+        }
+
     }
 }

@@ -5,8 +5,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mexty.MVVM.View.InventarioViews"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Label Content="Recepcion" FontSize="50"/>
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <Grid Background="#7f233a">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+        </Grid>
+
+        <Label Name="time" 
+               Grid.Row="3"
+                Foreground="AntiqueWhite" 
+                FontSize="20" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="50 15"/>
     </Grid>
 </UserControl>

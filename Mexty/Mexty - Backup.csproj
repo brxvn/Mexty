@@ -7,20 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="log4net.config" />
     <None Remove="logo.png" />
     <None Remove="Resource\brand.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="log4net.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="10.2.3" />
-    <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
   </ItemGroup>
@@ -32,10 +24,6 @@
     <Resource Include="Resource\logo.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="bin\Debug" />
   </ItemGroup>
 
 </Project>
