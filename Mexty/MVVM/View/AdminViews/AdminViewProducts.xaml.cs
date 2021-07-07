@@ -50,10 +50,17 @@ namespace Mexty.MVVM.View.AdminViews{
         public AdminViewProducts() {
             Log.Info("Iniciado modulo de productos.");
 
-            InitializeComponent();
-            FillData();
-            FillSucursales();
-            ClearFields();
+            try {
+                InitializeComponent();
+                FillData();
+                FillSucursales();
+                ClearFields();
+                Log.Debug("Se han inicializado los campos del modulo Productos exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos del modulo producto.");
+                Log.Error($"Error: {e.Message}");
+            }
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
@@ -151,6 +158,7 @@ namespace Mexty.MVVM.View.AdminViews{
             ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
+            Log.Debug("Se han limpiado los campos del modulo de productos.");
         }
 
         /// <summary>
@@ -207,66 +215,110 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de guardar.");
-            var newProduct = new Producto();
-            newProduct.NombreProducto = txtNombreProducto.Text;
-            newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-            newProduct.TipoVenta = ComboVenta.SelectedIndex;
-            newProduct.TipoProducto = ComboTipo.SelectedItem.ToString(); //TODO: Cambiar int por flotante en productos
-            newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
-            newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
-            newProduct.DetallesProducto = txtDetalle.Text;
-            newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
-            Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
+            try {
+                var newProduct = new Producto();
+                newProduct.NombreProducto = txtNombreProducto.Text;
+                newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
+                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                newProduct.TipoVenta = ComboVenta.SelectedIndex;
+                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
+                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
+                newProduct.DetallesProducto = txtDetalle.Text;
+                newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
+                Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
+                if (!Validar(newProduct)) {
+                    Log.Warn("El objeto tipo Producto no ha pasado las vaidaciones.");
+                    return;
+                }
+                Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
+
+                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
+                    Edit(newProduct);
+                }
+                else {
+                    var alta = true;
+                    if (ListaProductos != null) {
+                        Activar(newProduct, ref alta);
+                    }
+                    if (alta) {
+                        Alta(newProduct);
+                    }
+                }
+                FillData();
+                ClearFields();
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al hacer el proceso de guardar.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que se encarga de la alta de un producto.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        private static void Alta(Producto newProduct) {
+            Log.Debug("Detectada alta de producto.");
+            Database.NewProduct(newProduct);
+            var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
+            MessageBox.Show(msg, "Producto Actualizado");
+        }
+
+        /// <summary>
+        /// Método que se encarga de la edición de un producto.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        private void Edit(Producto newProduct) {
+            Log.Debug("Detectada actualización de producto.");
+            newProduct.IdProducto = SelectedProduct.IdProducto;
+            newProduct.Activo = SelectedProduct.Activo;
+            Database.UpdateData(newProduct);
+
+            var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+            MessageBox.Show(msg, "Producto Actualizado");
+        }
+
+        /// <summary>
+        /// Métdodo que se encarga de la activación de un usuario.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        /// <param name="alta"></param>
+        private void Activar(Producto newProduct, ref bool alta) {
+            for (var index = 0; index < ListaProductos.Count; index++) {
+                var producto = ListaProductos[index];
+                if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
+                Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
+                // actualizamos y activamos.
+                newProduct.IdProducto = producto.IdProducto;
+                newProduct.Activo = 1;
+                Database.UpdateData(newProduct);
+                alta = false;
+                var msg =
+                    $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+            }
+        }
+
+        /// <summary>
+        /// Método que valida a un objeto tipo Producto
+        /// </summary>
+        /// <param name="newProduct"> Producto a validar.</param>
+        /// <returns></returns>
+        private static bool Validar(Producto newProduct) {
             var validator = new ProductValidation();
             var results = validator.Validate(newProduct);
             if (!results.IsValid) {
-                Log.Warn("El objeto tipo Producto no ha pasado las vaidaciones");
                 foreach (var error in results.Errors) {
                     MessageBox.Show(error.ErrorMessage);
                     Log.Warn(error.ErrorMessage);
                 }
-                return;
+                
+                return false;
             }
-            Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
-
-            if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
-                Log.Debug("Detectada actualización de producto.");
-                newProduct.IdProducto = SelectedProduct.IdProducto;
-                newProduct.Activo = SelectedProduct.Activo;
-                Database.UpdateData(newProduct);
-
-                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Producto Actualizado");
-            }
-            else {
-                var alta = true;
-                if (ListaProductos != null) {
-                    for (var index = 0; index < ListaProductos.Count; index++) {
-                        var producto = ListaProductos[index];
-                        if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                        Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
-                        // actualizamos y activamos.
-                        newProduct.IdProducto = producto.IdProducto;
-                        newProduct.Activo = 1;
-                        Database.UpdateData(newProduct);
-                        alta = false;
-                        var msg =
-                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Producto Actualizado");
-                    }
-                }
-                if (alta) {
-                    // Alta
-                    Log.Debug("Detectada alta de producto.");
-                    Database.NewProduct(newProduct);
-                    var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-                    MessageBox.Show(msg, "Producto Actualizado");
-                }
-            }
-            FillData();
-            ClearFields();
+            
+            return true;
         }
 
         /// <summary>
@@ -295,10 +347,9 @@ namespace Mexty.MVVM.View.AdminViews{
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
-            
-        }
-        
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+         }
+
         /// <summary>
         /// Limpia los text box
         /// </summary>
@@ -320,31 +371,12 @@ namespace Mexty.MVVM.View.AdminViews{
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
             EnableGuardar();
-
-            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
-            Match m = r.Match(txtPrecioMenudeo.Text);
-            if (m.Success) {
-                txtPrecioMenudeo.Text = textbox.Text;
-            }
-            else {
-                txtPrecioMenudeo.Text = "";
-                Keyboard.Focus(textbox);
-            }
         }    
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
             EnableGuardar();
-            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
-            Match m = r.Match(txtPrecioMayoreo.Text);
-            if (m.Success) {
-                txtPrecioMayoreo.Text = textbox.Text;
-            }
-            else {
-                txtPrecioMayoreo.Text = "";
-                Keyboard.Focus(textbox); 
-            }
         }
 
         private void TextUpdateDetalle(object sender, TextChangedEventArgs a) {
@@ -365,6 +397,9 @@ namespace Mexty.MVVM.View.AdminViews{
         /// </summary>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetter(x));
+            // if (!Regex.IsMatch(e.Text, "^[a-zñáéíóúüA-ZÑÁÉÍÓÚÜ]")) {
+            //     e.Handled = true;
+            // }
         }
 
     }
