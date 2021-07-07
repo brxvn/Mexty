@@ -199,6 +199,7 @@
                      x:Name="txtNombreEstablecimiento"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -217,6 +218,7 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateNombre"
@@ -327,6 +329,7 @@
                      x:Name="txtRFC"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -346,6 +349,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateInstagram"
                                                      >
@@ -397,6 +401,7 @@
                      x:Name="txtDescipcion"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -416,6 +421,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="100"
                                                      TextChanged="txtUpdateDescripcion"
                                                      >
@@ -459,6 +465,7 @@
                      x:Name="txtFacebook"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -479,6 +486,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="txtUpdateFacebook"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -521,6 +529,7 @@
                      x:Name="txtInstagram"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -541,6 +550,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="txtUpdateFacebook"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->

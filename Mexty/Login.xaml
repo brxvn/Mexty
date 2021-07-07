@@ -52,7 +52,7 @@
                 
                 <Image Margin="0,40,0,0" Source="/Resource/brand.png"></Image>
 
-                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" x:Name="txtUsuario" MaxLength="20" Foreground="LightGray" TextChanged="textChanged" IsMouseCapturedChanged="hideText" LostFocus="showText">
+                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" x:Name="txtUsuario" MaxLength="20" Foreground="LightGray" TextChanged="textChanged" IsMouseCapturedChanged="hideText" LostFocus="showText" CharacterCasing="Upper" >
                     <TextBox.Background>
                         <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
                             <VisualBrush.Visual>

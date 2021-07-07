@@ -113,31 +113,10 @@
                BorderBrush="AntiqueWhite"/>
 
         <!--DataGridClientes-->
-        <DataGrid x:Name="DataClientes" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Cliente}" Background="White">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#f78b37" />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-
-                    </Style.Resources>
-                </Style>
-
-            </DataGrid.RowStyle>
-            <DataGrid.Resources>
-                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#fac034" />
-                    <Setter Property="Padding" Value="3 0"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="FontSize" Value="27"/>
-
-                </Style>
-            </DataGrid.Resources>
-
+        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataClientes" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Cliente}">
+            
             <DataGrid.Columns>
-                
                 <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
@@ -222,6 +201,7 @@
                      x:Name="txtNombreCliente"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -241,6 +221,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateNombre"
                                                      >
@@ -294,6 +275,7 @@
                 <TextBox Background="Beige"
                      x:Name="txtApPaternoCliente"
                      Grid.Column="1"
+                     CharacterCasing="Upper"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
                     <TextBox.Style>
@@ -314,6 +296,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateApPaterno"
                                                      >
@@ -368,6 +351,7 @@
                      x:Name="txtApMaternoCliente"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -386,6 +370,7 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateApMaterno"
@@ -522,6 +507,7 @@
                 <TextBox Background="Beige"
                      x:Name="txtDireccion"
                      Grid.Column="0"
+                     CharacterCasing="Upper"
                      HorizontalAlignment="Stretch"
                      Margin="10 0">
                     <TextBox.Style>
@@ -541,6 +527,7 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
                                                      TextChanged="txtUpdateDireccion"
@@ -596,6 +583,7 @@
                      x:Name="txtComentario"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -612,6 +600,7 @@
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Center"
                                                      Padding="5"
+                                                     CharacterCasing="Upper"
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
@@ -669,6 +658,7 @@
                      x:Name="txtDeuda"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">

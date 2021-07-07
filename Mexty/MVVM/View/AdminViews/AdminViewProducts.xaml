@@ -211,6 +211,7 @@
                      Grid.Column="1"
                      Margin="10,0,10,0"
                      MaxLength="15"
+                     CharacterCasing="Upper"
                      PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -231,6 +232,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
+                                                     CharacterCasing="Upper"
                                                      PreviewTextInput="OnlyLettersValidation"
                                                      TextChanged="TextUpdateNombre"/>
 
@@ -444,6 +446,7 @@
                      Grid.Column="0"
                      Margin="10,0,10,0"
                      PreviewTextInput="OnlyLettersValidation"
+                     CharacterCasing="Upper"
                      MaxLength="50">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -464,6 +467,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextWrapping="Wrap"
+                                                     CharacterCasing="Upper"
                                                      Height="80"
                                                      MaxLength="50"
                                                      PreviewTextInput="OnlyLettersValidation"
