@@ -126,7 +126,7 @@
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Nombre" Binding="{Binding TipoProducto}" Width="1*">
+                <DataGridTextColumn Header="Nombre" Binding="{Binding NombreTienda}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -136,7 +136,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding MedidaProducto}" Width="1*">
+                <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -146,7 +146,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding NombreProducto}" Width="1*">
+                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoTienda}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -156,7 +156,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Dirección" Binding="{Binding PrecioMenudeo}" Width="1*">
+                <DataGridTextColumn Header="Dirección" Binding="{Binding Dirección}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -166,7 +166,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Usuario que Registró" Binding="{Binding TipoVentaNombre}" Width="1*">
+                <DataGridTextColumn Header="RFC" Binding="{Binding Rfc}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -199,6 +199,7 @@
                      x:Name="txtNombreEstablecimiento"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -217,6 +218,7 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateNombre"
@@ -319,15 +321,15 @@
                 </TextBox>
                 
                 <!--ComboTipo-->
-                <ComboBox x:Name="ComboTipo" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True"
-                          Background="Beige" BorderThickness="0" Text="Tipo"/>
+                <ComboBox Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" IsReadOnly="True" BorderThickness="0"/>
 
-                <!--txtInstagram-->
+                <!--txtRFC-->
                 <TextBox Background="Beige"
-                     x:Name="txtInstagram"
+                     x:Name="txtRFC"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -347,6 +349,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="25"
                                                      TextChanged="txtUpdateInstagram"
                                                      >
@@ -355,7 +358,7 @@
                                                     </TextBox>
 
                                                     <TextBlock IsHitTestVisible="False"
-                                                       Text="Instagram"
+                                                       Text="RFC"
                                                        VerticalAlignment="Center"
                                                        HorizontalAlignment="Left"
                                                        Margin="10,0,0,0"
@@ -388,15 +391,17 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
                 <!--txtDescripcion-->
                 <TextBox Background="Beige"
-                     x:Name="txtDescipcion"
+                     x:Name="txtDirección"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -416,6 +421,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     CharacterCasing="Upper"
                                                      MaxLength="100"
                                                      TextChanged="txtUpdateDescripcion"
                                                      >
@@ -459,6 +465,7 @@
                      x:Name="txtFacebook"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -479,6 +486,71 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
+                                                     CharacterCasing="Upper"
+                                                     TextChanged="txtUpdateFacebook"
+                                                     >
+                                                        <!--TextChanged="SearchBox_TextChanged"-->
+
+                                                    </TextBox>
+
+                                                    <TextBlock IsHitTestVisible="False"
+                                                       Text="Facebook"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+
+                <!--txtInstagram-->
+                <TextBox Background="Beige"
+                     x:Name="txtInstagram"
+                     Grid.Column="2"
+                     HorizontalAlignment="Stretch"
+                     CharacterCasing="Upper"
+                     Margin="10 0">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Setters>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type TextBox}">
+                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                                <Grid>
+                                                    <Rectangle StrokeThickness="1"/>
+                                                    <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     MaxLength="25"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="txtUpdateFacebook"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -531,5 +603,14 @@
 
             </Grid>
         </Grid>
+        <Label Name="time" 
+               Grid.Row="3"
+                Foreground="AntiqueWhite" 
+                FontSize="20" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="50 15"/>
     </Grid>
 </UserControl>

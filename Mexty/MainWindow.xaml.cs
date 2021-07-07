@@ -3,13 +3,16 @@ using Mexty.MVVM.ViewModel;
 using System;
 using System.Windows;
 using System.Windows.Threading;
+using log4net;
 
 namespace Mexty {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+            private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public MainWindow() {
+            log4net.Config.XmlConfigurator.Configure();
             
             InitializeComponent();
                         
@@ -41,15 +44,15 @@ namespace Mexty {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SignOut(object sender, RoutedEventArgs e) {
-            var message = "¿Desea cerrar sesión?";
+            var message = "¿Desea salir?";
             var title = "Confirmación.";
             if (MessageBox.Show(message, title, MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK) {
-                Login login = new();
                 Database.CloseConnection();
-                login.Show();
-                Close();
+                Application.Current.Shutdown();
+
             }
             
         }
+
     }
 }

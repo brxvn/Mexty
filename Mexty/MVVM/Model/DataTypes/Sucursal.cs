@@ -17,7 +17,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public string NombreTienda {
             get => _nombreTienda; 
-            set => _nombreTienda = value.ToLower();
+            set => _nombreTienda = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Teléfono de la tienda.
         /// </summary>
-        public int Telefono { get; set; }
+        public string Telefono { get; set; }
 
         /// <summary>
         /// RFC de la tienda.

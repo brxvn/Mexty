@@ -21,100 +21,60 @@
     <Border CornerRadius="50" BorderThickness="10">
  
         <Grid Margin="30">
-            <Button Background="Transparent" Foreground="AntiqueWhite" FontSize="20" HorizontalAlignment="Right" VerticalAlignment="Top" BorderThickness="0"
-                        Click="LogOut" ToolTip="Salir" ToolTipService.ShowDuration="2500" Margin="-15 -15">
+            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Click="LogOut" ToolTip="Salir" ToolTipService.ShowDuration="2500" Margin="-15 -15">
                     <fa:FontAwesomeIcon SolidIcon="Times"></fa:FontAwesomeIcon>
                     <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Background" Value="LightBlue" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type Button}">
-                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
-                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="Transparent" TargetName="Border" />
-                                            <Setter Property="FontSize" Value="25"/>
-
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>    
-                </Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Foreground" Value="AntiqueWhite"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FontSize" Value="20"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Button}">
+                                        <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="Transparent" TargetName="Border" />
+                                                <Setter Property="Foreground" Value="OrangeRed"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
             </Button>
             <StackPanel>
                 
                 <Image Margin="0,40,0,0" Source="/Resource/brand.png"></Image>
 
-                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="txtUsuario" MaxLength="20">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                            <Style.Resources>
-                                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                    <VisualBrush.Visual>
-                                        <Label Content="Usuario" Foreground="LightGray" FontSize="15"/>
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Style.Resources>
-                            <Style.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="False">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="AntiqueWhite"/>
-                                </Trigger>
-                                <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                </Trigger>
-                                <Trigger Property="Text" Value="{x:Null}">
-                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                </Trigger>
-                                <Trigger Property="IsKeyboardFocused" Value="True">
-                                    <Setter Property="Background" Value="Transparent" />
-                                    <Setter Property="Foreground" Value="AntiqueWhite"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBox.Style>
+                <TextBox Margin="20,40,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" x:Name="txtUsuario" MaxLength="20" Foreground="LightGray" TextChanged="textChanged" IsMouseCapturedChanged="hideText" LostFocus="showText" CharacterCasing="Upper" >
+                    <TextBox.Background>
+                        <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Usuario" FontSize="15" Foreground="LightGray"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </TextBox.Background>
                 </TextBox>
 
-                <PasswordBox Margin="20,20,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" Name="pswrdUsuario" KeyDown="EnterKeyPassword" MaxLength="8">
-                    <PasswordBox.Style>
-                        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="{x:Type PasswordBox}">
-                            <Style.Resources>
-                                <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                                    <VisualBrush.Visual>
-                                        <Label Content="Contraseña" Foreground="LightGray" FontSize="15" />
-                                    </VisualBrush.Visual>
-                                </VisualBrush>
-                            </Style.Resources>
-                            <Style.Triggers>
-                                <Trigger Property="IsKeyboardFocused" Value="False">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="AntiqueWhite"/>
-                                </Trigger>
-                                <DataTrigger Binding="{Binding Password}" Value="{x:Static sys:String.Empty}">
-                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding Password}" Value="{x:Null}">
-                                    <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                                </DataTrigger>
-
-                                <Trigger Property="IsKeyboardFocused" Value="True">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="AntiqueWhite"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </PasswordBox.Style>
+                <PasswordBox Margin="20,20,20,0" FontSize="15" BorderThickness="0,0,0,1" Height="25" x:Name="pswrdUsuario" KeyDown="EnterKeyPassword" PasswordChanged="passwordChanged" IsMouseCapturedChanged="hidePswrd" LostFocus="showPswrd" MaxLength="8" Foreground="LightGray">
+                    <PasswordBox.Background>
+                        <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                            <VisualBrush.Visual>
+                                <Label Content="Contraseña" FontSize="15" Foreground="LightGray"/>
+                            </VisualBrush.Visual>
+                        </VisualBrush>
+                    </PasswordBox.Background>
                 </PasswordBox>
 
-                <Button Width="70" Height="25" Margin="0,50,20,0" HorizontalAlignment="Right" Content="Ingresar" FontSize="15" Click="PasswordKeyDown" Background="Beige" BorderThickness="0"/>
+                <Button Width="70" Height="30" Margin="0,50,20,0" HorizontalAlignment="Right" Padding="0" Content="Ingresar" FontSize="15" Click="PasswordKeyDown" Background="Beige" BorderThickness="0" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}"/>
 
-                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="50" HorizontalContentAlignment="Center" HorizontalAlignment="Center"></Label>
+                <Label Name="time" Foreground="AntiqueWhite" FontSize="15" Margin="0 50" HorizontalContentAlignment="Center" HorizontalAlignment="Center" Width="auto" ></Label>
 
             </StackPanel>
 

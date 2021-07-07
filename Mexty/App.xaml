@@ -15,6 +15,12 @@
                 <ResourceDictionary Source="Theme\ButtonTheme.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Theme\ButtonThemeActive.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Theme\SearchBoxTheme.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\DatePickerStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\ComboBoxStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\CalendarStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\ButtonStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\WrappedColumsStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\ComboBoxListStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Meziantou.WpfFontAwesome;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -33,7 +39,11 @@
             <DataTemplate DataType="{x:Type ViewModel:ReportesViewModel}">
                 <reportesViews:ReportesView/>
             </DataTemplate>
-            
+
+            <DataTemplate DataType="{x:Type ViewModel:MainViewModel}">
+                <local:MainWindow/>
+            </DataTemplate>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

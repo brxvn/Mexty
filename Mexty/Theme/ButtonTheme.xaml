@@ -24,7 +24,12 @@
 
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Foreground" Value="#fac034" TargetName="Active"></Setter>
+                                <Setter Property="Foreground" Value="#fac034" TargetName="Active"/>
+                                <Setter Property="FontWeight" Value="SemiBold" TargetName="Active"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="FontWeight" Value="SemiBold" TargetName="Active"/>
+                                <Setter Property="Foreground" Value="#fac034" TargetName="Active"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

@@ -29,6 +29,9 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
+                     x:Name="SearchBox"
+                     MaxLength="20"
+                     PreviewTextInput="OnlyuLetterNumbersSB"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -36,7 +39,7 @@
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type TextBox}">
-                                        <Border Background="Beige" UseLayoutRounding="False" CornerRadius="10" Width="350" Height="40">
+                                        <Border ToolTip="Buscar" BorderBrush="Beige" BorderThickness="3" x:Name="border" Background="Beige" UseLayoutRounding="False" CornerRadius="10" Width="350" Height="40">
                                             <Grid>
                                                 <Rectangle StrokeThickness="1"/>
                                                 <TextBox Margin="1"
@@ -47,12 +50,11 @@
                                                      Padding="5"
                                                      Foreground="DarkGray"
                                                      FontSize="18"
+                                                     MaxLength="20"
                                                      x:Name="txtBusqueda"
-                                                     TextChanged="FilterSearch"
-                                                     >
-                                                    <!--TextChanged="SearchBox_TextChanged"-->
+                                                     PreviewTextInput="OnlyuLetterNumbersSB"
+                                                     TextChanged="FilterSearch"/>
 
-                                                </TextBox>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"
                                                         FontSize="15"
                                                         Foreground="DarkGray"
@@ -84,6 +86,17 @@
                                                 </TextBlock>
                                             </Grid>
                                         </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                            </Trigger>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
@@ -97,30 +110,9 @@
         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0"
                BorderBrush="AntiqueWhite"/>
 
-        <DataGrid x:Name="DataUsuarios" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Usuario}" Background="White">
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Resources>
-                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#f78b37" />
-                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-
-                    </Style.Resources>
-                </Style>
-
-            </DataGrid.RowStyle>
-            <DataGrid.Resources>
-                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="#fac034" />
-                    <Setter Property="Padding" Value="3 0"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="FontSize" Value="27"/>
-
-                </Style>
-            </DataGrid.Resources>
-
-            <DataGrid.Columns  >
+        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataUsuarios" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Usuario}" >
+            <DataGrid.Columns>
                 <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="0.25*"> 
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
@@ -168,6 +160,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="20"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -205,14 +198,17 @@
                      x:Name="nombreUsuario"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="25"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Nombre del Usuario" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -224,12 +220,11 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="50"
+                                                     MaxLength="25"
+                                                     Focusable="True"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateUserName"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre"
@@ -246,6 +241,7 @@
                                                                     <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
                                                                         <Setter Property="Visibility" Value="Visible"/>
                                                                     </DataTrigger>
+
                                                                 </Style.Triggers>
                                                                 <Setter Property="Visibility" Value="Hidden"/>
                                                             </Style>
@@ -253,6 +249,25 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -266,14 +281,17 @@
                      x:Name="apPaternoUsuario"
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
-                         Margin="10 0">
+                     PreviewTextInput="OnlyLettersValidation"
+                     CharacterCasing="Upper"
+                     MaxLength="20"
+                     Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Apellido Paterno" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -285,12 +303,10 @@
                                                     Foreground="Gray"
                                                     FontSize="15"
                                                     x:Name="SearchBox"
-                                                    MaxLength="50"
-                                                     TextChanged="TextUpdateApPa"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                    MaxLength="20"
+                                                    TextChanged="TextUpdateApPa"
+                                                    CharacterCasing="Upper"
+                                                    PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Apellido Paterno"
@@ -314,6 +330,25 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -327,14 +362,17 @@
                      x:Name="apMaternoUsuario"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="20"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Apellido Materno" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -346,12 +384,10 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="50"
+                                                     MaxLength="20"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateApMa"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Apellido Materno"
@@ -375,6 +411,25 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -384,10 +439,11 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0">
-                </ComboBox>
+                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" Focusable="True" ToolTip="Sucursal"/>
+
+
+
             </Grid>
 
             <Grid Grid.Row="1">
@@ -402,14 +458,18 @@
                      x:Name="TxtDireccion"
                      Grid.Column="0"
                      HorizontalAlignment="Stretch"
-                     Margin="10 0">
+                     Margin="10 0"
+                     MaxLength="90"
+                     TextWrapping="WrapWithOverflow"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Dirección" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -423,11 +483,9 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
                                                      TextWrapping="Wrap"
+                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateDir"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Dirección"
@@ -435,9 +493,7 @@
                                                        HorizontalAlignment="Left"
                                                        Margin="10,0,0,0"
                                                        FontSize="15"
-                                                       Foreground="Gray"
-                                                       Grid.Column="1"> 
-                                                        <!-- ^ Esto esta Fuera de la definición de columnas  -->
+                                                       Foreground="Gray">
 
                                                         <TextBlock.Style>
                                                             <Style TargetType="{x:Type TextBlock}">
@@ -452,6 +508,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -466,16 +533,15 @@
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      Margin="10 0"
-                     Focusable="True"
-                        >
-                    
+                     MaxLength="10"                         
+                     PreviewTextInput="OnlyNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Teléfono" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -490,13 +556,7 @@
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      MaxLength="10"
                                                      TextChanged="TextUpdateTel"
-                                                     LostFocus="PhoneValidation"
-                                                     Focusable="True"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-                                                        
-
-                                                    </TextBox>
+                                                     Focusable="True"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Teléfono"
@@ -520,6 +580,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -533,6 +604,8 @@
                      x:Name="TxtContraseña"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     MaxLength="8"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -540,7 +613,7 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border Background="Beige" CornerRadius="15" Width="auto" Height="40">
+                                            <Border ToolTip="Contraseña" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
                                                 <Grid>
                                                     <Rectangle StrokeThickness="1"/>
                                                     <TextBox Margin="1"
@@ -552,13 +625,9 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      MaxLength="8"
-                                                     LostFocus="PwdValidation"
-                                                     TextChanged="TextUpdatePswd"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     TextChanged="TextUpdatePswd"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Contraseña"
@@ -582,6 +651,17 @@
                                                     </TextBlock>
                                                 </Grid>
                                             </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsFocused" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -591,12 +671,8 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <ComboBox x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0"
-                          Background="Beige" BorderThickness="0" >
-                   
-                </ComboBox>
-
+                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Rol de Usuario"/>
 
             </Grid>
 
@@ -607,9 +683,9 @@
                     <ColumnDefinition/>
                  </Grid.ColumnDefinitions>
 
-                <Button Height="40" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="LimpiarCampos" IsEnabled="False"/>
-                <Button Height="40" Grid.Column="1" x:Name="Guardar" Content="Guardar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="RegistrarUsuario" IsEnabled="False"/>
-                <Button Height="40" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Click="EliminarUsuario" IsEnabled="False"/>
+                <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="0" x:Name="Limpiar" Content="Limpiar" Style="{StaticResource ButtonStyle}" Click="LimpiarCampos" IsEnabled="False" ToolTip="Limpiar Campos" />
+                <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="1" x:Name="Guardar" Content="Guardar" Style="{StaticResource ButtonStyle}" Click="RegistrarUsuario" IsEnabled="False" ToolTip="Guardar Cambios"/>
+                <Button Template="{DynamicResource ButtonTemplate1}" Grid.Column="2" x:Name="Eliminar" Content="Eliminar" Style="{StaticResource ButtonStyle}" Click="EliminarUsuario" IsEnabled="False" ToolTip="Eliminar selección"/>
 
             </Grid>
 

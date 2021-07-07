@@ -3,13 +3,22 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using Mexty.MVVM.Model;
+using log4net;
+using log4net.Config;
+using System.Windows.Controls;
 
 namespace Mexty {
     /// <summary>
     /// Lógica para <c>Login.xaml</c>.
     /// </summary>
     public partial class Login : Window {
+        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         public Login() {
+            
+            
+            log4net.Config.XmlConfigurator.Configure();
+            log.Info("Iniciado login");
+            
             InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -23,11 +32,13 @@ namespace Mexty {
         private void PasswordKeyDown(object sender, RoutedEventArgs e) {
             _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
             if (Database.IsConnected()) {
+                log.Info("Login exitoso");
                 MainWindow win = new();
                 win.Show();
                 Close();
             }
             else {
+                log.Info("Login fallido, Usuario o contraseña incorrectos.");
                 MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
             }
             
@@ -44,22 +55,62 @@ namespace Mexty {
         /// Logica del boton para salir de la aplicación.
         /// </summary>
         private void LogOut(object sender, RoutedEventArgs e) {
+            log.Debug("Presionado boton de Salir en el login.");
             Application.Current.Shutdown();
         }
 
         /// <summary>
         /// Lógica para detectar el Enter en el password e inicie la sesion.
         /// </summary>
+        //TODO: juntarlo con el login o hacer función de login
         private void EnterKeyPassword(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
                 if (Database.IsConnected()) {
+                    log.Info("Login exitoso");
                     MainWindow win = new();
                     win.Show();
                     Close();
                 }
-                else MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
+                else {
+                    log.Info("Login fallido, Usuario o contraseña incorrectos.");
+                    MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
+                }
             }
+        }
+
+        private void passwordChanged(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
+            else
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void textChanged(object sender, TextChangedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 1;
+            else
+                txtUsuario.Background.Opacity = 0;
+        }
+
+        private void hideText(object sender, DependencyPropertyChangedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 0;
+        }
+
+        private void showText(object sender, RoutedEventArgs e) {
+            if (txtUsuario.Text.Length == 0)
+                txtUsuario.Background.Opacity = 1;
+        }
+
+        private void hidePswrd(object sender, DependencyPropertyChangedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void showPswrd(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
         }
     }
 }
