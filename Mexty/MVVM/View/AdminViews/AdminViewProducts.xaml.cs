@@ -309,18 +309,26 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newProduct"> Producto a validar.</param>
         /// <returns></returns>
         private static bool Validar(Producto newProduct) {
-            var validator = new ProductValidation();
-            var results = validator.Validate(newProduct);
-            if (!results.IsValid) {
-                foreach (var error in results.Errors) {
-                    MessageBox.Show(error.ErrorMessage);
-                    Log.Warn(error.ErrorMessage);
+            try {
+                var validator = new ProductValidation();
+                var results = validator.Validate(newProduct);
+                if (!results.IsValid) {
+                    foreach (var error in results.Errors) {
+                        MessageBox.Show(error.ErrorMessage);
+                        Log.Warn(error.ErrorMessage);
+                    }
+                    
+                    return false;
                 }
+                
+                return true;
 
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {e.Message}");
                 return false;
             }
-
-            return true;
         }
 
         /// <summary>

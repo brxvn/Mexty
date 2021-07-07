@@ -118,6 +118,8 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que limpia los campos de texto.
         /// </summary>
         private void ClearFields() {
+            txtNombreEstablecimiento.IsReadOnly = false;
+            
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
             txtDirección.Text = "";
@@ -280,18 +282,26 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newSucursal"></param>
         /// <returns></returns>
         private static bool Validar(Sucursal newSucursal) {
-            var validator = new SucursalValidation();
-            var results = validator.Validate(newSucursal);
-            if (!results.IsValid) {
-                foreach (var error in results.Errors) {
-                    // MessageBox.Show(error.ErrorMessage, "Error");
-                    // Log.Warn(error.ErrorMessage);
+            try {
+                var validator = new SucursalValidation();
+                var results = validator.Validate(newSucursal);
+                if (!results.IsValid) {
+                    foreach (var error in results.Errors) {
+                        MessageBox.Show(error.ErrorMessage, "Error");
+                        Log.Warn(error.ErrorMessage);
+                    }
+
+                    return false;
                 }
 
+                return true;
+
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {exception.Message}");
                 return false;
             }
-
-            return true;
         }
 
         private void EliminarEstablecimiento(object sender, RoutedEventArgs e) {

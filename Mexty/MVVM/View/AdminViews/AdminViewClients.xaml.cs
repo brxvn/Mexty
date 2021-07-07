@@ -280,18 +280,26 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newCliente"></param>
         /// <returns></returns>
         private static bool Validar(Cliente newClient) {
-            var validatorClient = new ClientValidation();
-            var resultsClient = validatorClient.Validate(newClient);
-            if (!resultsClient.IsValid) {
-                foreach (var error in resultsClient.Errors) {
-                    MessageBox.Show(error.ErrorMessage, "Error");
-                    Log.Warn(error.ErrorMessage);
+            try {
+                var validatorClient = new ClientValidation();
+                var resultsClient = validatorClient.Validate(newClient);
+                if (!resultsClient.IsValid) {
+                    foreach (var error in resultsClient.Errors) {
+                        MessageBox.Show(error.ErrorMessage, "Error");
+                        Log.Warn(error.ErrorMessage);
+                    }
+
+                    return false;
                 }
 
+                return true;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {e.Message}");
                 return false;
             }
-
-            return true;
         }
 
         /// <summary>

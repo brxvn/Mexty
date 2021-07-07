@@ -26,7 +26,7 @@ namespace Mexty.MVVM.Model.Validations {
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El RFC no puede estar vacio.")
                 .Length(13).WithMessage("El RFC tiene que tener 13 caracteres")
-                .Must(Validations.BeAValidText).WithMessage("");// TODO: hacer validacion de RFC.
+                .Must(Validations.BeAValidText).WithMessage("No es un RFC valido");// TODO: hacer validacion de RFC.
 
             RuleFor(sucursal => sucursal.Facebook)
                 .Cascade(CascadeMode.Stop)
@@ -43,8 +43,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(sucursal => sucursal.Mensaje)
                 .Cascade(CascadeMode.Stop)
                 // TODO ver si puede estar vacio.
-                .Length(0, 150)
-                .WithMessage("El Mensaje es demaciado largo, debe de tener máximo 100 caracteres y tiene {TotalLength}")
+                .Length(0, 150).WithMessage("El Mensaje es demaciado largo, debe de tener máximo 100 caracteres y tiene {TotalLength}")
                 .Must(Validations.BeAValidText).WithMessage("El mensaje tiene caracteres invalidos.");
         }
     }
