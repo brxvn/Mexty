@@ -49,5 +49,32 @@ namespace Mexty.MVVM.Model.Validations {
             text = text.Replace("#", "");
             return text.All(Char.IsLetterOrDigit);
         }
+
+        /// <summary>
+        /// Método que revis si un texto es valido.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static bool BeAValidLink(string text) {
+            text = text.Replace(" ", "");
+            text = text.Replace("/", "");
+            text = text.Replace(":", "");
+            text = text.Replace("=", "");
+            text = text.Replace("%", "");
+            text = text.Replace("-", "");
+            text = text.Replace("#", "");
+            text = text.Replace("?", "");
+            text = text.Replace(".", "");
+            return text.All(Char.IsLetterOrDigit);
+        }
+
+        /// <summary>
+        /// Valida un RFC.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static bool BeAValidRFC(string text) {
+            return text.All(Char.IsLetterOrDigit);
+        }
     }
 }
