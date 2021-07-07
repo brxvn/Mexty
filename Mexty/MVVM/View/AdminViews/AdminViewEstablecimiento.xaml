@@ -126,7 +126,7 @@
 
             <DataGrid.Columns>
 
-                <DataGridTextColumn Header="Nombre" Binding="{Binding TipoProducto}" Width="1*">
+                <DataGridTextColumn Header="Nombre" Binding="{Binding NombreTienda}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -136,7 +136,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Teléfono" Binding="{Binding MedidaProducto}" Width="1*">
+                <DataGridTextColumn Header="Teléfono" Binding="{Binding Telefono}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -146,7 +146,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Tipo" Binding="{Binding NombreProducto}" Width="1*">
+                <DataGridTextColumn Header="Tipo" Binding="{Binding TipoTienda}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -156,7 +156,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Dirección" Binding="{Binding PrecioMenudeo}" Width="1*">
+                <DataGridTextColumn Header="Dirección" Binding="{Binding Dirección}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -166,7 +166,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Usuario que Registró" Binding="{Binding TipoVentaNombre}" Width="1*">
+                <DataGridTextColumn Header="RFC" Binding="{Binding Rfc}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
