@@ -4,6 +4,8 @@ using Mexty.MVVM.Model.DataTypes;
 namespace Mexty.MVVM.Model.Validations {
     public class SucursalValidation : AbstractValidator<Sucursal> {
         public SucursalValidation() {
+            CascadeMode = CascadeMode.Stop;
+            
             RuleFor(sucursal => sucursal.NombreTienda)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacio.")

@@ -11,6 +11,8 @@ namespace Mexty.MVVM.Model.Validations {
     /// </summary>
     public class UserValidation : AbstractValidator<Usuario> {
         public UserValidation() {
+            CascadeMode = CascadeMode.Stop;
+            
             RuleFor(usuario => usuario.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacío.")

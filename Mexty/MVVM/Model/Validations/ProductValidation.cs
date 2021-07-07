@@ -7,6 +7,8 @@ using Mexty.MVVM.Model.DataTypes;
 namespace Mexty.MVVM.Model.Validations {
     public class ProductValidation : AbstractValidator<Producto> {
         public ProductValidation() {
+            CascadeMode = CascadeMode.Stop;
+            
             RuleFor(producto => producto.NombreProducto)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El Nombre del producto no puede estar vacio.")
