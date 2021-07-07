@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - modClients
 
 env:
   PROJECT_PATH: Mexty/Mexty.csproj
