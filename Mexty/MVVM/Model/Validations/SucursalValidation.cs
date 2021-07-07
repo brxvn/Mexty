@@ -25,20 +25,20 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(sucursal => sucursal.Rfc)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El RFC no puede estar vacio.")
-                .Length(13).WithMessage("El RFC tiene que tener 13 caracteres")
-                .Must(Validations.BeAValidText).WithMessage("No es un RFC valido");// TODO: hacer validacion de RFC.
+                .Length(12, 13).WithMessage("El RFC tiene que tener 12 o 13 caracteres")
+                .Must(Validations.BeAValidRFC).WithMessage("No es un RFC valido");
 
             RuleFor(sucursal => sucursal.Facebook)
                 .Cascade(CascadeMode.Stop)
                 // TODO: ver si puede estar vacio.
                 .Length(0, 100).WithMessage("El facebook debe de tener maximo 100 caracteres y tiene {TotalLength}.")
-                .Must(Validations.BeAValidName); //TODO preguntar si va a ser el nombre o la liga o k.
+                .Must(Validations.BeAValidLink);
     
             RuleFor(sucursal => sucursal.Instagram)
                 .Cascade(CascadeMode.Stop)
                 // TODO: ver si puede estar vacio.
                 .Length(0, 100).WithMessage("El facebook debe de tener maximo 100 caracteres y tiene {TotalLength}.")
-                .Must(Validations.BeAValidName); //TODO preguntar si va a ser el nombre o la liga o k.
+                .Must(Validations.BeAValidLink);
 
             RuleFor(sucursal => sucursal.Mensaje)
                 .Cascade(CascadeMode.Stop)
