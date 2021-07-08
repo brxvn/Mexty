@@ -83,12 +83,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Precio del producto en venta mayoreo.
         /// </summary>
-        public int PrecioMayoreo { get; set; }
+        public float PrecioMayoreo { get; set; }
 
         /// <summary>
         /// Precio del producto en venta menudeo.
         /// </summary>
-        public int PrecioMenudeo { get; set; }
+        public float PrecioMenudeo { get; set; }
 
         /// <summary>
         /// Detalles/descripción del producto.

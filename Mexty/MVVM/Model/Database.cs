@@ -511,11 +511,10 @@ namespace Mexty.MVVM.Model {
                         MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
-                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetInt32("precio_mayoreo"),
-                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetInt32("precio_menudeo"),
-                        DetallesProducto = reader.IsDBNull("especificacion_producto")
-                            ? ""
-                            : reader.GetString("especificacion_producto"),
+                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetFloat("precio_mayoreo"),
+                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetFloat("precio_menudeo"),
+                        DetallesProducto = 
+                            reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                         IdSucursal = reader.IsDBNull("id_establecimiento") ? 0 : reader.GetInt32("id_establecimiento"),
                     };
@@ -562,8 +561,8 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
             query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
             query.Parameters.AddWithValue("@tipoV", producto.TipoVenta.ToString());
-            query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString());
-            query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString());
+            query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
+            query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
@@ -605,8 +604,8 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
             query.Parameters.AddWithValue("@tipoP", newProduct.TipoProducto);
             query.Parameters.AddWithValue("@tipoV", newProduct.TipoVenta.ToString());
-            query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString());
-            query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString());
+            query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
+            query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
             query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());

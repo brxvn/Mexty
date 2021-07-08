@@ -16,7 +16,8 @@ namespace Mexty.MVVM.Model.Validations {
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El número de teléfono no puede esar vacio.")
                 .Length(10).WithMessage("El número de teléfono debe de ser de 10 dígitos.")
-                .Must(Validations.BeAValidNumber).WithMessage("No es un número de teléfono valido.");
+                .Must(Validations.BeAValidNumber).WithMessage("No es un número de teléfono válido.")
+                .NotEqual("0000000000").WithMessage("No es un númro de teléfono válido");
 
             RuleFor(sucursal => sucursal.Dirección)
                 .Cascade(CascadeMode.Stop)

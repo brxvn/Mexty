@@ -21,7 +21,7 @@ namespace Mexty.MVVM.Model.Validations {
                     "El {ProertyName} No puede estar vacio, puede tener un 0 en el caso de que no exista")
                 .Length(1, 10)
                 .WithMessage("El {PropertyName} tiene {TotalLength} y debe de tener entre 1 y 10 caracteres")
-                .Must(Validations.BeAValidNumber).WithMessage("El {PropertyName} Debe de contener solo números.");
+                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} Debe de contener solo números.");
 
             RuleFor(producto => producto.PrecioMayoreo.ToString())
                 .Cascade(CascadeMode.Stop)
@@ -29,7 +29,7 @@ namespace Mexty.MVVM.Model.Validations {
                     "El {ProertyName} No puede estar vacio, puede tener un 0 en el caso de que no exista")
                 .Length(1, 10)
                 .WithMessage("El {PropertyName} tiene {TotalLength} y debe de tener entre 1 y 10 caracteres")
-                .Must(Validations.BeAValidNumber).WithMessage("El {PropertyName} Debe de contener solo números.");
+                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} Debe de contener solo números.");
 
             RuleFor(producto => producto.DetallesProducto)
                 .Cascade(CascadeMode.Stop)
