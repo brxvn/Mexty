@@ -48,7 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-                Guardar.IsEnabled = true;
+                //Guardar.IsEnabled = true;
                 Log.Debug("Se han inicializado los campos del modulo de establecimiento.");
             }
             catch (Exception e) {
@@ -57,7 +57,7 @@ namespace Mexty.MVVM.View.AdminViews {
             }
 
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -77,13 +77,11 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillData() {
             var data = Database.GetTablesFromSucursales();
             ListaSucursales = data;
-            // TODO: preguntar si va a haber sucursales inacitvas o activas.
-            // var collectionView = new ListCollectionView(data) {
-            //     Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
-            // };
-            // CollectionView = collectionView;
-            // DataEstablecimientos.ItemsSource = collectionView;
-            DataEstablecimientos.ItemsSource = data;
+            var collectionView = new ListCollectionView(data) {
+                Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
+            };
+            CollectionView = collectionView;
+            DataEstablecimientos.ItemsSource = collectionView;
             Log.Debug("Se ha llenado datagrid de sucursales.");
 
             var tipos = new[] { "Matriz", "Sucursal" };
@@ -103,16 +101,16 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (DataEstablecimientos.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Se ha selecionado un establecimiento.");
-            var sucursal = (Sucursal)DataEstablecimientos.SelectedItem;
+            var sucursal = (Sucursal) DataEstablecimientos.SelectedItem;
 
-            sucursal.NombreTienda = txtNombreEstablecimiento.Text;
-            sucursal.Rfc = txtRFC.Text;
-            sucursal.Dirección = txtDirección.Text;
-            sucursal.Instagram = txtInstagram.Text;
-            sucursal.Facebook = txtFacebook.Text;
-            sucursal.Telefono = txtTelefono.Text;
-            sucursal.TipoTienda = ComboTipo.SelectedItem.ToString();
-
+            txtNombreEstablecimiento.Text = sucursal.NombreTienda;
+            txtRFC.Text = sucursal.Rfc;
+            txtDirección.Text = sucursal.Dirección;
+            txtInstagram.Text = sucursal.Instagram;
+            txtFacebook.Text = sucursal.Facebook;
+            txtTelefono.Text = sucursal.Telefono;
+            ComboTipo.SelectedItem = sucursal.TipoTienda;
+            Log.Debug("Se ha seleccionado el elemento.");
         }
 
         /// <summary>
@@ -151,10 +149,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(cliente =>
+                var noNull = new Predicate<object>(sucursal =>
                 {
-                    if (cliente == null) return false;
-                    return ((Cliente)cliente).Activo == 1;
+                    if (sucursal == null) return false;
+                    return ((Sucursal)sucursal).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
