@@ -7,6 +7,7 @@ using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
 using System.Windows.Documents;
 using log4net;
+using Org.BouncyCastle.Ocsp;
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -335,7 +336,8 @@ namespace Mexty.MVVM.Model {
                         Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
                         Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
                         Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
-                        TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda")
+                        TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda"),
+                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo")
                     };
                     sucursales.Add(sucursal);
                     log.Debug("Se han obtenido con exito las tablas de sucursales.");
@@ -371,7 +373,8 @@ namespace Mexty.MVVM.Model {
                     MENSAJE=@msg, 
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
-                    TIPO_TIENDA=@suc
+                    TIPO_TIENDA=@suc,
+                    ACTIVO=@act
                 where ID_TIENDA=@id"
             };
             
@@ -384,6 +387,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@face", sucursal.Facebook);
             query.Parameters.AddWithValue("@inst", sucursal.Instagram);
             query.Parameters.AddWithValue("@suc", sucursal.TipoTienda);
+            query.Parameters.AddWithValue("@act", sucursal.Activo.ToString());
             
             try {
                 query.ExecuteReader();
@@ -412,10 +416,10 @@ namespace Mexty.MVVM.Model {
                 insert into cat_tienda 
                     (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
                      RFC, LOGO, MENSAJE, 
-                     FACEBOOK, INSTAGRAM, TIPO_TIENDA) 
+                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
                 values (default, @nom, @dir, @tel, 
                         @rfc, @logo, @msg, 
-                        @face, @insta, @tTienda)"
+                        @face, @insta, @tTienda, @act)"
             }; 
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
@@ -426,6 +430,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@face", newSucursal.Facebook);
             query.Parameters.AddWithValue("@insta", newSucursal.Instagram);
             query.Parameters.AddWithValue("@tTienda", newSucursal.TipoTienda);
+            query.Parameters.AddWithValue("@act", 1.ToString());
             
             try {
                 query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.

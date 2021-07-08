@@ -63,5 +63,10 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Tipo de tienda.
         /// </summary>
         public string TipoTienda { get; set; }
+
+        /// <summary>
+        /// Indica si la sucursal esta activa o no.
+        /// </summary>
+        public int Activo { get; set; }
     }
 }

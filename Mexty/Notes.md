@@ -2,13 +2,16 @@
 
 ## TODO
 - [ ] Arreglar y buscar los bugs de la ultima observación.
-- [ ] Llenar el programa de entradas al log.
+- [x] Llenar el programa de entradas al log.
     - [x] Poner entradas en el modulo de usuarios.
     - [x] Poner entradas en el modulo de Productos.
     - [x] Poner entradas en el modulo de Clientes.
-    - [ ] Poner entradas en el modulo de Sucursal.
+    - [x] Poner entradas en el modulo de Sucursal.
 - [ ]Añadir manejo de excepciones global [link](https://wpf-tutorial.com/wpf-application/handling-exceptions/).
-- [ ]Añadir CI [link](https://www.youtube.com/watch?v=VIlDni8-iWM).
+- [x]Añadir CI [link](https://www.youtube.com/watch?v=VIlDni8-iWM).
+  - [ ] Ver que onda con el archivo de configuración del logger en el deploy.
+- [ ] Terminar el modulo de sucursales.
+- [ ] Ver como hacer el cron job de la pestaña de BD para hacer el volcado de bd automáticamente cada x tiempo.
 
 
 ## Entradas al log.
