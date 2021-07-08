@@ -120,11 +120,11 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        private void ItemSelected(object sender, EventArgs e) {
+            
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
-
             if (DataProductos.SelectedItem == null) return;
             Log.Debug("Producto seleccionado.");
             var producto = (Producto)DataProductos.SelectedItem;
@@ -139,6 +139,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboMedida.SelectedItem = producto.MedidaProducto;
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
+            Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
             SearchBox.Text = "";
         }
@@ -149,6 +150,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ClearFields() {
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
+            Eliminar.ToolTip = "Seleccione al menos un producto para eliminar.";
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
             ComboTipo.SelectedIndex = 0;
@@ -159,6 +161,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
+            EnableGuardar();
             Log.Debug("Se han limpiado los campos del modulo de productos.");
         }
 
@@ -388,7 +391,7 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMenudeo.Text = "";
-                Keyboard.Focus(textbox);
+                //Keyboard.Focus(txtPrecioMenudeo);
             }
         }
 
@@ -403,7 +406,7 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMayoreo.Text = "";
-                Keyboard.Focus(textbox);
+                //Keyboard.Focus(txtPrecioMayoreo);
             }
         }
 
@@ -419,8 +422,13 @@ namespace Mexty.MVVM.View.AdminViews {
                 txtPrecioMayoreo.Text != "" &&
                 txtDetalle.Text != "") {
                 Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar Cambios.";
             }
-            else Guardar.IsEnabled = false;
+            else {
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.\nLos campos deben de tener al menos 3 carácteres.\nLos precios no deben estar vacíos.";
+
+            }
         }
 
         /// <summary>

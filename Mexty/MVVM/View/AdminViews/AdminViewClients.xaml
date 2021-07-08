@@ -133,7 +133,8 @@
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="FontSize" Value="20"/>
+                            <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -163,7 +164,8 @@
                             <Setter Property="Margin" Value="5" />
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
-                            <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="FontSize" Value="20"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -200,7 +202,6 @@
                 <TextBox Background="Beige"
                      x:Name="txtNombreCliente"
                      Grid.Column="0"
-                     HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
                      MaxLength="25"
                      PreviewTextInput="OnlyLettersValidation"
@@ -690,6 +691,7 @@
                      x:Name="txtDeuda"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
+                     MaxLength="8"
                      PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
@@ -710,7 +712,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="15"
+                                                     MaxLength="8"
                                                      TextChanged="txtUpdateDeuda"
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      >
@@ -768,9 +770,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" IsEnabled="False" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTip="Guardar Cambios" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTip="Eliminar Selección" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
 
             </Grid>
         </Grid>

@@ -41,9 +41,9 @@ namespace Mexty.MVVM.View.AdminViews {
 
             try {
                 FillDataGrid();
-                ClearFields();
                 FillRol();
                 FillSucursales();
+                ClearFields();
                 Log.Debug("Se han inicializado los campos del modulo Usuarios exitosamente.");
             }
             catch (Exception ex) {
@@ -127,6 +127,7 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
             Eliminar.IsEnabled = true;
+            Eliminar.ToolTip = "Eliminar Registro";
             SearchBox.Text = "";
         }
 
@@ -146,7 +147,9 @@ namespace Mexty.MVVM.View.AdminViews {
             apPaternoUsuario.IsReadOnly = false;
             apMaternoUsuario.IsReadOnly = false;
             Eliminar.IsEnabled = false;
+            Eliminar.ToolTip = "Seleccionar un registro para eliminar.";
             Guardar.IsEnabled = false;
+            EnableGuardar();
             Log.Debug("Se han limpiado los campos de texto del modulo usuarios.");
         }
 
@@ -344,7 +347,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             FillDataGrid();
             ClearFields();
-            Eliminar.IsEnabled = false;
         }
 
         /// <summary>
@@ -353,8 +355,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            var regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
         /// <summary>
@@ -417,17 +418,22 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo que solamente activa el boton de guardar una vex que todos los cambppos de texto estan completos
         /// </summary>
         private void EnableGuardar() {
-            if (nombreUsuario.Text.Length > 2 && 
-                apPaternoUsuario.Text.Length > 2 && 
-                apMaternoUsuario.Text.Length > 2 && 
-                TxtDireccion.Text.Length > 2 && 
-                TxtTelefono.Text.Length == 10 && 
+            if (nombreUsuario.Text.Length > 2 &&
+                apPaternoUsuario.Text.Length > 2 &&
+                apMaternoUsuario.Text.Length > 2 &&
+                TxtDireccion.Text.Length > 2 &&
+                TxtTelefono.Text.Length == 10 &&
                 TxtContraseña.Text.Length > 3) {
-                Guardar.IsEnabled = true;
-            }
-            else Guardar.IsEnabled = false;
-        }
 
+
+                Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar cambios";
+            }
+            else {
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los campos deben de tener al menos 3 carácteres.\nEl número debe de ser de 10 dígitos.\nLa contraseña debe de tener entre 4 y 8 carácteres.";
+            }
+        }
 
         /// <summary>
         /// Metodo para la validacion de solo Letras en el input
@@ -448,5 +454,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void OnlyuLetterNumbersSB(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
+
     }
 }

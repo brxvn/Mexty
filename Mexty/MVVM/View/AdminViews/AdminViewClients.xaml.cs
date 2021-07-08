@@ -52,13 +52,14 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
+                ClearFields();
                 Log.Debug("Se han inicializado los campos del modulo de clientes.");
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos del modulo de clientes.");
                 Log.Error($"Error: {e.Message}");
             }
-            ClearFields();
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -93,13 +94,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
 
             txtNombreCliente.IsReadOnly = true;
             txtApPaternoCliente.IsReadOnly = true;
             txtApMaternoCliente.IsReadOnly = true;
-            Eliminar.IsEnabled = true;
 
             if (DataClientes.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Cliente seleccionado.");
@@ -114,12 +114,19 @@ namespace Mexty.MVVM.View.AdminViews {
             txtComentario.Text = cliente.Comentario;
             txtDeuda.Text = cliente.Debe.ToString(CultureInfo.InvariantCulture);
             SearchBox.Text = "";
+            Eliminar.IsEnabled = true;
+            Eliminar.ToolTip = "Eliminar Cliente.";
+
+            Guardar.IsEnabled = true;
         }
 
         /// <summary>
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            Guardar.IsEnabled = false;
+            Eliminar.IsEnabled = false;
+            Eliminar.ToolTip = "Seleccione un cliente para eliminar.";
             txtNombreCliente.Text = "";
             txtApPaternoCliente.Text = "";
             txtApMaternoCliente.Text = "";
@@ -127,13 +134,10 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = "";
             txtComentario.Text = "";
             txtDeuda.Text = "";
-
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
-            Eliminar.IsEnabled = false;
-            Limpiar.IsEnabled = true;
-            Guardar.IsEnabled = false;
+            EnableGuardar();
             Log.Debug("Se han limpiado los campos de texto.");
         }
 
@@ -247,6 +251,9 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newClient"></param>
         private void Edit(Cliente newClient) {
             Log.Debug("Detectada edición de un cliente.");
+            Database.UpdateData(newClient);
+            newClient.IdCliente = SelectedClient.IdCliente;
+            newClient.Activo = 1;
             Database.UpdateData(newClient);
 
             var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
@@ -382,27 +389,33 @@ namespace Mexty.MVVM.View.AdminViews {
             Match m = r.Match(txtDeuda.Text);
             if (m.Success) {
                 txtDeuda.Text = textbox.Text;
-                EnableGuardar();
+                //EnableGuardar();
             }
             else {
                 txtDeuda.Text = "";
-                Keyboard.Focus(textbox);
+                //Keyboard.Focus(textbox);
             }
         }
 
-        public void EnableGuardar() {
+        //TODO: CHECAR POR QUE DEUDA LO LEE COMO CADENA VACÍA
+        private void EnableGuardar() {
             if (txtNombreCliente.Text.Length > 3 &&
                 txtApPaternoCliente.Text.Length > 3 &&
                 txtApMaternoCliente.Text.Length > 3 &&
+                //txtDeuda.Text != "" && 
                 txtTelefono.Text.Length == 10 &&
                 txtDireccion.Text.Length > 3 &&
-                txtComentario.Text.Length > 3 &&
-                txtDeuda.Text != "") {
-                
+                txtComentario.Text.Length > 3) {
+
                 Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar Cambios";
             }
 
-            else Guardar.IsEnabled = false;
+            else {
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los campos deben de tener al menos 4 carácteres.\nEl número debe de ser de 10 dígitos.\nLa deuda no debe de estar vacía.";
+            }
+
         }
 
         /// <summary>
