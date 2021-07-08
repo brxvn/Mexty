@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +24,7 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminViewEstablecimiento.xaml
     /// </summary>
     public partial class AdminViewEstablecimiento : UserControl {
-        private static readonly ILog Log = 
+        private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-
+                Guardar.IsEnabled = true;
                 Log.Debug("Se han inicializado los campos del modulo de establecimiento.");
             }
             catch (Exception e) {
@@ -84,8 +85,8 @@ namespace Mexty.MVVM.View.AdminViews {
             // DataEstablecimientos.ItemsSource = collectionView;
             DataEstablecimientos.ItemsSource = data;
             Log.Debug("Se ha llenado datagrid de sucursales.");
-            
-            var tipos = new[] {"Matriz", "Sucursal"};
+
+            var tipos = new[] { "Matriz", "Sucursal" };
             ComboTipo.ItemsSource = tipos;
             Log.Debug("Se ha llenado el campo de tipo de sucursal.");
         }
@@ -99,10 +100,10 @@ namespace Mexty.MVVM.View.AdminViews {
             ClearFields();
             txtNombreEstablecimiento.IsReadOnly = true;
             Eliminar.IsEnabled = true;
-            
+
             if (DataEstablecimientos.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Se ha selecionado un establecimiento.");
-            var sucursal = (Sucursal) DataEstablecimientos.SelectedItem;
+            var sucursal = (Sucursal)DataEstablecimientos.SelectedItem;
 
             sucursal.NombreTienda = txtNombreEstablecimiento.Text;
             sucursal.Rfc = txtRFC.Text;
@@ -119,7 +120,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void ClearFields() {
             txtNombreEstablecimiento.IsReadOnly = false;
-            
+
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
             txtDirección.Text = "";
@@ -150,9 +151,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(cliente => {
+                var noNull = new Predicate<object>(cliente =>
+                {
                     if (cliente == null) return false;
-                    return ((Cliente) cliente).Activo == 1;
+                    return ((Cliente)cliente).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
@@ -168,7 +170,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
-            var sucursal = (Sucursal) obj;
+            var sucursal = (Sucursal)obj;
             if (sucursal.NombreTienda.Contains(text) ||
                 sucursal.Dirección.Contains(text) ||
                 sucursal.Rfc.Contains(text)) {
@@ -247,10 +249,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Sucursal newSucursal) {
             Log.Debug("Detectada edición de una sucursal.");
             Database.UpdateData(newSucursal);
-            
+
             var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
             MessageBox.Show(msg, "Sucursal Actualizada");
-            
+
         }
 
         /// <summary>
@@ -261,7 +263,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Activar(Sucursal newSucursal, ref bool alta) {
             for (var index = 0; index < ListaSucursales.Count; index++) {
                 var sucursal = ListaSucursales[index];
-                
+
                 //TODO: ver que onda con los activos y definir el operador == en sucursal.
                 //if (newSucursal != cliente || cliente.Activo != 0) continue;
                 // Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
@@ -309,28 +311,59 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtNombreEstablecimiento.Text = textbox.Text;
         }
 
         private void txtUpdateTelefono(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtTelefono.Text = textbox.Text;
         }
 
         private void txtUpdateInstagram(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtInstagram.Text = textbox.Text;
         }
 
         private void txtUpdateFacebook(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtFacebook.Text = textbox.Text;
         }
 
         private void txtUpdateDescripcion(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtDirección.Text = textbox.Text;
+        }
+        private void txtUpdateRFC(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtRFC.Text = textbox.Text;
+        }
+
+        private void ComboTipo_SelectionChanged() {
 
         }
 
-        private void ComboTipo_SelectionChanged()
-        {
-
+        /// <summary>
+        /// Metodo para la validacion de solo Letras y numeros en el input
+        /// </summary>
+        private void OnlyLetterAndNumbers(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
+
+        /// <summary>
+        /// Metodo para la validacion de solo Letras en el input
+        /// </summary>
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
+        }
+
+        /// <summary>
+        /// Metodo para la validacion de solo numeros en el input
+        /// </summary>
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+        }
+
+
     }
 }
