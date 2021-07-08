@@ -5,7 +5,7 @@ on:
     tags:
       - "deploy/v*"
 env:
-  PROJECT_PATH: Mexty/Mexty.csproj
+  PROJECT_PATH: Mexty.csproj
 
 jobs:
   deploy:
