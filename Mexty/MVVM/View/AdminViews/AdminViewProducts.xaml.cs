@@ -120,7 +120,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        private void ItemSelected(object sender, EventArgs e) {
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;

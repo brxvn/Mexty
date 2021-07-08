@@ -417,15 +417,24 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo que solamente activa el boton de guardar una vex que todos los cambppos de texto estan completos
         /// </summary>
         private void EnableGuardar() {
-            if (nombreUsuario.Text.Length > 2 && 
-                apPaternoUsuario.Text.Length > 2 && 
-                apMaternoUsuario.Text.Length > 2 && 
-                TxtDireccion.Text.Length > 2 && 
-                TxtTelefono.Text.Length == 10 && 
+            if (nombreUsuario.Text.Length > 2 &&
+                apPaternoUsuario.Text.Length > 2 &&
+                apMaternoUsuario.Text.Length > 2 &&
+                TxtDireccion.Text.Length > 2 &&
+                TxtTelefono.Text.Length == 10 &&
                 TxtContraseña.Text.Length > 3) {
+
+
                 Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar cambios";
             }
-            else Guardar.IsEnabled = false;
+            else {
+
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.";
+            }
+
+
         }
 
 
