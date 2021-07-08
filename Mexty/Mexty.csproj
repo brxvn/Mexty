@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include=".github\workflows\deployApp.yml" />
+    <!--<Content Include=".github\workflows\deployApp.yml" />-->
     <Content Include="log4net.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
