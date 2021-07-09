@@ -416,10 +416,14 @@ namespace Mexty.MVVM.Model {
                 CommandText = @"
                 insert into cat_tienda 
                     (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
-                     RFC, LOGO, MENSAJE, 
+                     RFC, 
+                     -- LOGO, 
+                     MENSAJE, 
                      FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
                 values (default, @nom, @dir, @tel, 
-                        @rfc, @logo, @msg, 
+                        @rfc, 
+                        -- @logo, 
+                        @msg, 
                         @face, @insta, @tTienda, @act)"
             }; 
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);

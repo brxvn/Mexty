@@ -314,7 +314,24 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
+        /// <summary>
+        /// Lógica detras del boton de eliminar sucursal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EliminarEstablecimiento(object sender, RoutedEventArgs e) {
+            Log.Debug("Presionado eliminar establecimiento.");
+            var sucursal = SelectedSucursal;
+            var mensaje = $"¿Seguro quiere eliminar la sucursal {sucursal.NombreTienda}?";
+            const MessageBoxButton buttons = MessageBoxButton.OKCancel;
+            const MessageBoxImage icon = MessageBoxImage.Warning;
+
+            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
+            sucursal.Activo = 0;
+            Database.UpdateData(sucursal);
+            Log.Debug("Sucursal eliminada.");
+            ClearFields();
+            FillData();
 
         }
 
