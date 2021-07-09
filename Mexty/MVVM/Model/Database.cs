@@ -369,7 +369,7 @@ namespace Mexty.MVVM.Model {
                     DIRECCION=@dir, 
                     TELEFONO=@tel, 
                     RFC=@rfc, 
-                    LOGO=@logo, 
+                    -- LOGO=@logo, 
                     MENSAJE=@msg, 
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
@@ -388,6 +388,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@inst", sucursal.Instagram);
             query.Parameters.AddWithValue("@suc", sucursal.TipoTienda);
             query.Parameters.AddWithValue("@act", sucursal.Activo.ToString());
+            query.Parameters.AddWithValue("@id", sucursal.IdTienda.ToString());
             
             try {
                 query.ExecuteReader();

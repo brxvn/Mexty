@@ -48,7 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-                //Guardar.IsEnabled = true;
+                Guardar.IsEnabled = true;
                 Log.Debug("Se han inicializado los campos del modulo de establecimiento.");
             }
             catch (Exception e) {
@@ -103,6 +103,7 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se ha selecionado un establecimiento.");
             var sucursal = (Sucursal) DataEstablecimientos.SelectedItem;
 
+            SelectedSucursal = sucursal;
             txtNombreEstablecimiento.Text = sucursal.NombreTienda;
             txtRFC.Text = sucursal.Rfc;
             txtDirección.Text = sucursal.Dirección;
@@ -197,7 +198,8 @@ namespace Mexty.MVVM.View.AdminViews {
                     Rfc = txtRFC.Text,
                     Facebook = txtFacebook.Text,
                     Instagram = txtInstagram.Text,
-                    TipoTienda = ComboTipo.SelectedItem.ToString()
+                    TipoTienda = ComboTipo.SelectedItem.ToString(),
+                    Mensaje = "" // TODO agregar campo mensaje.
                 };
                 Log.Debug("Se ha creado el objeto sucursal con los campos te de texto.");
 
@@ -246,6 +248,8 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newSucursal"></param>
         private void Edit(Sucursal newSucursal) {
             Log.Debug("Detectada edición de una sucursal.");
+            newSucursal.Activo = SelectedSucursal.Activo;
+            newSucursal.IdTienda = SelectedSucursal.IdTienda;
             Database.UpdateData(newSucursal);
 
             var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
@@ -262,17 +266,17 @@ namespace Mexty.MVVM.View.AdminViews {
             for (var index = 0; index < ListaSucursales.Count; index++) {
                 var sucursal = ListaSucursales[index];
 
-                //TODO: ver que onda con los activos y definir el operador == en sucursal.
-                //if (newSucursal != cliente || cliente.Activo != 0) continue;
-                // Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                // newClient.IdCliente = cliente.IdCliente;
-                // newClient.Activo = 1;
-                // Database.UpdateData(newClient);
-                // alta = false;
-                // var msg =
-                //     $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                // MessageBox.Show(msg, "Cliente Actualizado");
-                // break;
+                //TODO: definir el operador == en sucursal.
+                if (newSucursal != sucursal || sucursal.Activo != 0) continue;
+                 Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
+                 newSucursal.IdTienda = sucursal.IdTienda;
+                 newSucursal.Activo = 1;
+                 Database.UpdateData(newSucursal);
+                 alta = false;
+                 var msg =
+                     $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                 MessageBox.Show(msg, "Cliente Actualizado");
+                 break;
             }
         }
 

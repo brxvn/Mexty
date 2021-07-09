@@ -21,6 +21,7 @@ namespace Mexty.MVVM.Model.Validations {
 
             RuleFor(sucursal => sucursal.Dirección)
                 .Cascade(CascadeMode.Stop)
+                .NotNull().WithMessage("Domicilio Nulo.")
                 .NotEmpty().WithMessage("El domicio no puede estar vacio.")
                 .Length(5, 90).WithMessage("El domicilio es muy corto o largo par ser válido.")
                 .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");

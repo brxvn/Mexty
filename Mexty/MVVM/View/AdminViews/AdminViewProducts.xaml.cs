@@ -49,7 +49,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewProducts() {
             Log.Info("Iniciado modulo de productos.");
-
+            
             try {
                 InitializeComponent();
                 FillData();

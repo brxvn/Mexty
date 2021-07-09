@@ -25,7 +25,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public string Dirección {
             get => _dirección;
-            set => _dirección = value.ToLower();
+            set => _dirección = value.ToLower().Trim();
         }
 
         /// <summary>
@@ -68,5 +68,23 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Indica si la sucursal esta activa o no.
         /// </summary>
         public int Activo { get; set; }
+
+        /// <summary>
+        /// Sobrecarga de operadores para saber si una sucursal es igual a otra, en base al nombre y la dirección.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static bool operator ==(Sucursal a, Sucursal b) {
+            if (a is null || b is null) return false;
+            return a.NombreTienda == b.NombreTienda &&
+                   a.Dirección == b.Dirección;
+
+        }
+
+        public static bool operator !=(Sucursal a, Sucursal b) {
+            return !(a == b);
+        }
+
     }
 }
