@@ -251,6 +251,14 @@
                                                 <Trigger Property="IsKeyboardFocusWithin" Value="true">
                                                     <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
                                                 </Trigger>
+                                                <Trigger Property="IsReadOnly" Value="True">
+                                                    <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                    <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                    <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                    <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                    <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Setter.Value>

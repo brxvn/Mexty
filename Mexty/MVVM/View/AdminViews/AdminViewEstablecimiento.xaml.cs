@@ -48,7 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-                Guardar.IsEnabled = true;
+                ClearFields();
                 Log.Debug("Se han inicializado los campos del modulo de establecimiento.");
             }
             catch (Exception e) {
@@ -98,6 +98,9 @@ namespace Mexty.MVVM.View.AdminViews {
             ClearFields();
             txtNombreEstablecimiento.IsReadOnly = true;
             Eliminar.IsEnabled = true;
+            Eliminar.ToolTip = "Eliminar registro";
+            Guardar.IsEnabled = true;
+            SearchBox.Text = "";
 
             if (DataEstablecimientos.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Se ha selecionado un establecimiento.");
@@ -130,6 +133,9 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se han limpiado los campos de texto.");
 
             Eliminar.IsEnabled = false;
+            Eliminar.ToolTip = "Seleccionar un registro para eliminar.";
+            Guardar.IsEnabled = false;
+            EnableGuardar();
         }
 
         /// <summary>
@@ -173,7 +179,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (sucursal.NombreTienda.Contains(text) ||
                 sucursal.Dirección.Contains(text) ||
                 sucursal.Rfc.Contains(text)) {
-                //return cliente.Activo == 1;
+                    //return cliente.Activo == 1;
                 return true;
             }
             return false;
@@ -315,34 +321,36 @@ namespace Mexty.MVVM.View.AdminViews {
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtNombreEstablecimiento.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateTelefono(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtTelefono.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateInstagram(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtInstagram.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateFacebook(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtFacebook.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateDescripcion(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtDirección.Text = textbox.Text;
+            EnableGuardar();
         }
         private void txtUpdateRFC(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtRFC.Text = textbox.Text;
-        }
-
-        private void ComboTipo_SelectionChanged() {
-
+            EnableGuardar();
         }
 
         /// <summary>
@@ -366,6 +374,24 @@ namespace Mexty.MVVM.View.AdminViews {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
+        private void EnableGuardar() {
+            if (txtNombreEstablecimiento.Text.Length >= 3 &&
+                txtTelefono.Text.Length == 10 &&
+                txtRFC.Text.Length >= 12 &&
+                txtDirección.Text.Length >= 5) {
 
+                Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar Cambios";
+            }
+
+            else {
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.\nEl nombre del establecimiento debe de tener más de 3 carácteres." +
+                    "\nEl teléfono debe de ser de 10 dígitos.\nRFC debe ser válido.\nLa dirección debe de tener más de 5 carácteres." +
+                    "\nFacebook e Instagram pueden estar vacíos.";
+            }
+
+
+        }
     }
 }
