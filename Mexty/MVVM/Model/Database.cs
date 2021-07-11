@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Documents;
 using log4net;
 using Org.BouncyCastle.Ocsp;
+using MySql.Data.MySqlClient; 
 
 namespace Mexty.MVVM.Model {
     /// <summary>
@@ -425,7 +426,7 @@ namespace Mexty.MVVM.Model {
                         -- @logo, 
                         @msg, 
                         @face, @insta, @tTienda, @act)"
-            }; 
+            };
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
             query.Parameters.AddWithValue("@tel", newSucursal.Telefono);
@@ -655,7 +656,7 @@ namespace Mexty.MVVM.Model {
             
             var clientes = new List<Cliente>();
             try {
-                using MySqlDataReader reader = query.ExecuteReader();
+                using var reader = query.ExecuteReader();
                 while (reader.Read()) {
                     var cliente = new Cliente() {
                         IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
@@ -774,9 +775,154 @@ namespace Mexty.MVVM.Model {
             }
         }
 
+        // ==============================================
+        // ------- Querrys de Inventario  ---------------
+        // ==============================================
+
+        /// <summary>
+        /// Método para obtener todos los datos de la tabla de inventario_general.
+        /// </summary>
+        /// <returns></returns>
+        public static List<Inventario> GetTablesFromInventario() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "select * from inventario_general"
+            };
+            var items = new List<Inventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new Inventario() {
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("canidad"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra")
+                            ? ""
+                            : reader.GetString("usuario_registra"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica")
+                            ? ""
+                            : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fehca_modifica") ? "" : reader.GetString("fecha_modifica")
+                    };
+                    items.Add(item);
+                }
+
+                log.Debug("Se han obtenido con exito las tablas de inventario_general.");
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al obtener las tablas de inventario-general.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return items;
+        }
+
+        /// <summary>
+        /// Método para actualizar los datos de la tabla inventario-general.
+        /// </summary>
+        /// <param name="item"></param>
+        public static void UpdateData(Inventario item) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"
+                update inventario_general
+                set ID_PRODUCTO=@idP, CANTIDAD=@can, 
+                    USUARIO_REGISTRA=@usrR, FECHA_REGISTRO=@fecR, 
+                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=sysdate()
+                where ID_REGISTRO=@idR"
+            };
+            query.Parameters.AddWithValue("@idR", item.IdRegistro.ToString());
+            query.Parameters.AddWithValue("@idP", item.IdProducto.ToString());
+            query.Parameters.AddWithValue("@can", item.Cantidad.ToString());
+            query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
+            query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
+            query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
+            try {
+                query.ExecuteReader();
+                log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al actualizar los datos de inventario-general.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que registra un nuevo item en la tabla de inventario-general.
+        /// </summary>
+        /// <param name="newItem"></param>
+        public static void NewItem(Inventario newItem) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"
+                insert into inventario_general
+                    (ID_REGISTRO, ID_PRODUCTO, CANTIDAD,
+                     usuario_registra, fecha_registro, 
+                     usuario_modifica, fecha_modifica) 
+                values (default, @idP, @cant,
+                        @usReg, sysdate(), 
+                        @usMod, sysdate())"
+            };
+            query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
+            query.Parameters.AddWithValue("@cant", newItem.Cantidad.ToString());
+            query.Parameters.AddWithValue("@usReg", GetUsername());
+            query.Parameters.AddWithValue("@usMod", GetUsername());
+            try {
+                query.ExecuteNonQuery();
+                log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario-general.");
+                log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+
+        // =========================================================
+        // ------- Querrys De modulo Base de datos  ---------------
+        // =========================================================
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void backUp() {
+            // const string file = @"C:\\backup.sql";
+            // using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+            //     using (MySqlCommand cmd = new MySqlCommand()) {
+            //         using (MySqlBackup mb = new MySqlBackup(cmd)) {
+            //             cmd.Connection = conn;
+            //             conn.Open();
+            //             mb.ExportToFile(file);
+            //             conn.Close();
+            //         }
+            //     }
+            // }
+        }
+        
+
+
+
         // ============================================
         // ------- Métodos De la clase ----------------
         // ============================================
 
+        
     }
 }
