@@ -94,7 +94,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, EventArgs e) {
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
 
             txtNombreCliente.IsReadOnly = true;
@@ -124,6 +124,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            SelectedClient = null;
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccione un cliente para eliminar.";
@@ -137,6 +138,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
+            //DataClientes.SelectedItem = null;
             EnableGuardar();
             Log.Debug("Se han limpiado los campos de texto.");
         }
@@ -433,5 +435,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
+
     }
 }

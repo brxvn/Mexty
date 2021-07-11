@@ -49,12 +49,13 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminViewProducts() {
             Log.Info("Iniciado modulo de productos.");
-            
+
             try {
                 InitializeComponent();
                 FillData();
                 FillSucursales();
                 ClearFields();
+
                 Log.Debug("Se han inicializado los campos del modulo Productos exitosamente.");
             }
             catch (Exception e) {
@@ -101,6 +102,8 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
+
+
         }
 
         /// <summary>
@@ -121,7 +124,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
-            
+
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
@@ -142,6 +145,7 @@ namespace Mexty.MVVM.View.AdminViews {
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
             SearchBox.Text = "";
+
         }
 
         /// <summary>
@@ -320,10 +324,10 @@ namespace Mexty.MVVM.View.AdminViews {
                         MessageBox.Show(error.ErrorMessage);
                         Log.Warn(error.ErrorMessage);
                     }
-                    
+
                     return false;
                 }
-                
+
                 return true;
 
             }
@@ -416,6 +420,12 @@ namespace Mexty.MVVM.View.AdminViews {
             EnableGuardar();
         }
 
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtCantidad.Text = textbox.Text;
+
+        }
+
         private void EnableGuardar() {
             if (txtNombreProducto.Text.Length > 3 &&
                 txtPrecioMenudeo.Text != "" &&
@@ -445,6 +455,50 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+        }
+
+        private void ShowCantidad(object sender, SelectionChangedEventArgs e) {
+            switch (ComboMedida.SelectedIndex) {
+                case 1:
+                case 2:
+                case 3:
+                    txtCantidad.Visibility = Visibility.Visible;
+                    girdCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                default:
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    ComboCantidad.Visibility = Visibility.Collapsed;
+                    girdCantidad.Width = GridLength.Auto;
+                    break;
+            }
+        }
+
+
+        /// <summary>
+        /// Habilita los campos para dar de alta el precio del producto.
+        /// </summary>
+        private void HabilitarInputPrecios(object sender, SelectionChangedEventArgs e) {
+            switch (ComboVenta.SelectedIndex) {
+                case 1:
+                    txtPrecioMenudeo.IsReadOnly = true;
+                    txtPrecioMenudeo.Text = "0";
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    break;
+                case 2:
+                    txtPrecioMayoreo.IsReadOnly = true;
+                    txtPrecioMayoreo.Text = "0";
+                    txtPrecioMenudeo.Text = "";
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    break;
+                default:
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMenudeo.Text = "";
+                    break;
+            }
+              
         }
 
     }

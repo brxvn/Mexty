@@ -12,19 +12,19 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Variable estatica que tiene los tipos de venta, sin id.
         /// </summary>
-        public static readonly string[] TiposVentaTexto = {"Mayoreo y Menudeo", "Mayoreo", "Menudeo"};
+        public static readonly string[] TiposVentaTexto = { "General","Mayoreo", "Menudeo"};
 
         /// <summary>
         /// Variable que obtiene los tipos de producto.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Agua", "Helado", "Otros", "Extras"};
+        private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Helado", "Agua", "Extras", "Otros"};
 
         /// <summary>
         /// Variable que obtiene los tipos de medida.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposMedida = {"pieza", "gramos", "litro", "plato"};
+        private static readonly string[] TiposMedida = {"pieza", "bolsa", "caja", "tarro", "0.5 litros", "litro", "3 litros", "12 litros"};
 
         
         /// <summary>
