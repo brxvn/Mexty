@@ -65,6 +65,11 @@ namespace Mexty.MVVM.Model.DataTypes {
         }
 
         /// <summary>
+        /// Cantidad del producto
+        /// </summary>
+        public int CantidadProducto { get; set; }
+
+        /// <summary>
         /// Tipo de producto.
         /// </summary>
         public string TipoProducto { get; set; } //TODO: Probablemente leerlos del ini.

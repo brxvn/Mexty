@@ -140,6 +140,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
+            txtCantidad.Text = producto.CantidadProducto.ToString();
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
@@ -160,6 +161,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
+            txtCantidad.Text = "";
             txtDetalle.Text = "";
             ComboMedida.SelectedIndex = 0;
             ComboSucursal.SelectedIndex = 0;
@@ -228,6 +230,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var newProduct = new Producto();
                 newProduct.NombreProducto = txtNombreProducto.Text;
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
+                newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
@@ -455,22 +458,6 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
-        }
-
-        private void ShowCantidad(object sender, SelectionChangedEventArgs e) {
-            switch (ComboMedida.SelectedIndex) {
-                case 1:
-                case 2:
-                case 3:
-                    txtCantidad.Visibility = Visibility.Visible;
-                    girdCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    break;
-                default:
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    ComboCantidad.Visibility = Visibility.Collapsed;
-                    girdCantidad.Width = GridLength.Auto;
-                    break;
-            }
         }
 
 

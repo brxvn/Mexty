@@ -459,7 +459,7 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition />
                     <ColumnDefinition />
-                     <ColumnDefinition x:Name="girdCantidad" Width="auto"/>
+                     <ColumnDefinition />
 
                 </Grid.ColumnDefinitions>
 
@@ -539,13 +539,13 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <!--ComboMedida-->
-                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboMedida" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida" SelectionChanged="ShowCantidad"/>
-
                 <!--ComboSucursal-->
-                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="2" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
+                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Sucursal"/>
+
+                <!--ComboMedida-->
+                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboMedida" Grid.Column="2" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida"/>
 
                 <!--txtCantidad-->
                 <TextBox Background="Beige"
@@ -553,7 +553,6 @@
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
                      MaxLength="8"
-                     Visibility="Collapsed"
                      PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
