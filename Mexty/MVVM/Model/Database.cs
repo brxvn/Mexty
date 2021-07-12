@@ -270,14 +270,16 @@ namespace Mexty.MVVM.Model {
                          USUARIO_REGISTRA, 
                          FECHA_REGISTRO, 
                          USUARIO_MODIFICA, 
-                         FECHA_MODIFICA) 
-                         values (default, @nombre, @apPat, @apMat, 
+                         FECHA_MODIFICA,
+                         SINCRONZA) 
+                    values (default, @nombre, @apPat, @apMat, 
                             @usr, @pass, @dom, @tel, 
                             @act, @idT, @idR, 
                             @usrReg, 
                             sysdate(), 
                             @usrMod, 
-                            sysdate())"
+                            sysdate(),
+                            1)"
             };
 
             query.Parameters.AddWithValue("@nombre", newUser.Nombre);
@@ -375,7 +377,8 @@ namespace Mexty.MVVM.Model {
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
                     TIPO_TIENDA=@suc,
-                    ACTIVO=@act
+                    ACTIVO=@act,
+                    SINCRONZA=1
                 where ID_TIENDA=@id"
             };
             
@@ -420,12 +423,14 @@ namespace Mexty.MVVM.Model {
                      RFC, 
                      -- LOGO, 
                      MENSAJE, 
-                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
+                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO,
+                     SINCRONZA) 
                 values (default, @nom, @dir, @tel, 
                         @rfc, 
                         -- @logo, 
                         @msg, 
-                        @face, @insta, @tTienda, @act)"
+                        @face, @insta, @tTienda, @act,
+                        1)"
             };
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
@@ -566,7 +571,7 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@act,
-                    ID_ESTABLECIMIENTO=@suc
+                    ID_TIENDA=@suc
                 where ID_PRODUCTO=@id"
             };
 
@@ -609,10 +614,12 @@ namespace Mexty.MVVM.Model {
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, CANTIDAD, TIPO_PRODUCTO, 
                      TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO, ID_ESTABLECIMIENTO) 
+                     ESPECIFICACION_PRODUCTO, ACTIVO, ID_TIENDA,
+                     SINCRONZA) 
                 values (default, @nom, @medida, @cantidad, @tipoP, 
                         @tipoV, @pMayo, @pMenu, 
-                        @esp, @act, @suc)"
+                        @esp, @act, @suc,
+                        1)"
             }; 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
@@ -797,14 +804,15 @@ namespace Mexty.MVVM.Model {
                     var item = new Inventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("canidad"),
-                        UsuarioRegistra = reader.IsDBNull("usuario_registra")
-                            ? ""
-                            : reader.GetString("usuario_registra"),
+                        Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                        UsuarioModifica = reader.IsDBNull("usuario_modifica")
-                            ? ""
-                            : reader.GetString("usuario_modifica"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
                         FechaModifica = reader.IsDBNull("fehca_modifica") ? "" : reader.GetString("fecha_modifica")
                     };
                     items.Add(item);
@@ -834,14 +842,21 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = @"
                 update inventario_general
-                set ID_PRODUCTO=@idP, CANTIDAD=@can, 
+                set ID_PRODUCTO=@idP, TIPO_PRODUCTO=@tipo,
+                    MEDIDA=@med, CANTIDAD=@can, PIEZAS=@pieza,
+                    COMENTARIO=@comentario, ID_TIENDA=@idT,
                     USUARIO_REGISTRA=@usrR, FECHA_REGISTRO=@fecR, 
                     USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=sysdate()
                 where ID_REGISTRO=@idR"
             };
             query.Parameters.AddWithValue("@idR", item.IdRegistro.ToString());
             query.Parameters.AddWithValue("@idP", item.IdProducto.ToString());
+            query.Parameters.AddWithValue("@tipo", item.TipoProducto);
+            query.Parameters.AddWithValue("@med", item.Medida);
             query.Parameters.AddWithValue("@can", item.Cantidad.ToString());
+            query.Parameters.AddWithValue("@pieza", item.Piezas.ToString());
+            query.Parameters.AddWithValue("@comentario", item.Comentario);
+            query.Parameters.AddWithValue("@idT", item.IdTienda.ToString());
             query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
             query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
@@ -870,15 +885,24 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = @"
                 insert into inventario_general
-                    (ID_REGISTRO, ID_PRODUCTO, CANTIDAD,
+                    (ID_REGISTRO, ID_PRODUCTO, TIPO_PRODUCTO,
+                     MEDIDA, CANTIDAD, PIEZAS,
+                     COMENTARIO, ID_TIENDA,
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
-                values (default, @idP, @cant,
+                values (default, @idP, @tipo,
+                        @med, @cant, @piezas,
+                        @comentario, @idT,
                         @usReg, sysdate(), 
                         @usMod, sysdate())"
             };
             query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
+            query.Parameters.AddWithValue("@tipo", newItem.TipoProducto);
+            query.Parameters.AddWithValue("@med", newItem.Medida);
             query.Parameters.AddWithValue("@cant", newItem.Cantidad.ToString());
+            query.Parameters.AddWithValue("@piezas", newItem.Piezas.ToString());
+            query.Parameters.AddWithValue("@comentario", newItem.Comentario);
+            query.Parameters.AddWithValue("@idT", newItem.IdTienda.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             try {
