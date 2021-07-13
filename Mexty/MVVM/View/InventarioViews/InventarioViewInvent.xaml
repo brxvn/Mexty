@@ -27,6 +27,8 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
+                     x:Name="SearchBox"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -46,8 +48,8 @@
                                                      Foreground="DarkGray"
                                                      FontSize="18"
                                                      x:Name="txtBusqueda"
-                                                     TextChanged="FilterSearch"
-                                                     >
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
+                                                     TextChanged="FilterSearch">
 
                                                 </TextBox>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"

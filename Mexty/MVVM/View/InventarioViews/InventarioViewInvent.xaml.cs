@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,19 +46,39 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void TextUpdateNombre(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtNombreProducto.Text = textbox.Text;
         }
 
         private void txtUpdateMenudeo(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtPrecioMenudeo.Text = textbox.Text;
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMenudeo.Text);
+            if (m.Success) {
+                txtPrecioMenudeo.Text = textbox.Text;
+            }
+            else {
+                txtPrecioMenudeo.Text = "";
+            }
         }
 
         private void txtUpdateMayoreo(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtPrecioMayoreo.Text = textbox.Text;
+            Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
+            Match m = r.Match(txtPrecioMayoreo.Text);
+            if (m.Success) {
+                txtPrecioMayoreo.Text = textbox.Text;
+            }
+            else {
+                txtPrecioMayoreo.Text = "";
+            }
         }
 
         private void txtUpdateDisponible(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtCantidad.Text = textbox.Text;
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
@@ -69,11 +90,15 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+        }
 
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
     }
 }
