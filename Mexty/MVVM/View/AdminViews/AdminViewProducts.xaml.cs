@@ -438,16 +438,13 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void EnableGuardar() {
-            if (txtNombreProducto.Text.Length > 3 &&
-                txtPrecioMenudeo.Text != "" &&
-                txtPrecioMayoreo.Text != "" &&
-                txtDetalle.Text != "") {
+            if (txtNombreProducto.Text.Length >= 3) {
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios.";
             }
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nLos campos deben de tener al menos 3 carácteres.\nLos precios no deben estar vacíos.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nDebe de tener al menos el nombre para dar de alta el producto.";
 
             }
         }
