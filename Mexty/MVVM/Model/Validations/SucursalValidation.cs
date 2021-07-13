@@ -8,8 +8,8 @@ namespace Mexty.MVVM.Model.Validations {
             
             RuleFor(sucursal => sucursal.NombreTienda)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("El nombre no puede estar vacio.")
-                .Length(3, 15).WithMessage("El nombre tiene {TotalLength} caracteres y debe tener entre 3 y 15.")
+                .NotEmpty().WithMessage("El nombre no puede estar vacío.")
+                .Length(3, 15).WithMessage("El nombre debe tener entre 3 y 15 caracteres.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
             RuleFor(sucursal => sucursal.Telefono) 
@@ -23,29 +23,29 @@ namespace Mexty.MVVM.Model.Validations {
                 .Cascade(CascadeMode.Stop)
                 .NotNull().WithMessage("Domicilio Nulo.")
                 //.NotEmpty().WithMessage("El domicio no puede estar vacio.")
-                .Length(5, 90).WithMessage("El domicilio es muy corto o largo par ser válido.")
-                .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");
+                .Length(5, 90).WithMessage("El domicilio debe de tener entre 5 y 90 caracteres.")
+                .Must(Validations.BeAValidText).WithMessage("El domicio no es válido o tiene caracteres prohibidos.");
 
             RuleFor(sucursal => sucursal.Rfc)
                 .Cascade(CascadeMode.Stop)
                 //.NotEmpty().WithMessage("El RFC no puede estar vacio.")
-                .Length(12, 13).WithMessage("El RFC tiene que tener 12 o 13 caracteres")
-                .Must(Validations.BeAValidRFC).WithMessage("No es un RFC valido");
+                .Length(12, 13).WithMessage("El RFC tiene que tener 12 o 13 carácteres")
+                .Must(Validations.BeAValidRFC).WithMessage("No es un RFC válido");
 
             RuleFor(sucursal => sucursal.Facebook)
                 .Cascade(CascadeMode.Stop)
-                .Length(0, 100).WithMessage("El facebook debe de tener maximo 100 caracteres y tiene {TotalLength}.")
+                .Length(0, 100).WithMessage("El facebook debe de tener máximo 100 caracteres y tiene {TotalLength}.")
                 .Must(Validations.BeAValidLink);
     
             RuleFor(sucursal => sucursal.Instagram)
                 .Cascade(CascadeMode.Stop)
-                .Length(0, 100).WithMessage("El facebook debe de tener maximo 100 caracteres y tiene {TotalLength}.")
+                .Length(0, 100).WithMessage("El facebook debe de tener máximo 100 caracteres y tiene {TotalLength}.")
                 .Must(Validations.BeAValidLink);
 
             RuleFor(sucursal => sucursal.Mensaje)
                 .Cascade(CascadeMode.Stop)
-                .Length(0, 150).WithMessage("El Mensaje es demaciado largo, debe de tener máximo 100 caracteres y tiene {TotalLength}")
-                .Must(Validations.BeAValidText).WithMessage("El mensaje tiene caracteres invalidos.");
+                .Length(0, 150).WithMessage("El Mensaje es demasiado largo, debe de tener máximo 100 carácteres.")
+                .Must(Validations.BeAValidText).WithMessage("El mensaje tiene caracteres inválidos.");
         }
     }
 }

@@ -67,5 +67,13 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
 
         }
+
+        private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
     }
 }
