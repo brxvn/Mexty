@@ -242,10 +242,20 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newSucursal"></param>
         private static void Alta(Sucursal newSucursal) {
-            Log.Debug("Detectada alta de sucursal.");
-            Database.NewSucursal(newSucursal);
-            var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
-            MessageBox.Show(msg, "Sucursal Actualizada");
+            try {
+                Log.Debug("Detectada alta de sucursal.");
+                
+                var res = Database.NewSucursal(newSucursal);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
+                MessageBox.Show(msg, "Sucursal Actualizada");
+                Log.Debug("Alta exitosa de sucursal");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -253,14 +263,22 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newSucursal"></param>
         private void Edit(Sucursal newSucursal) {
-            Log.Debug("Detectada edición de una sucursal.");
-            newSucursal.Activo = SelectedSucursal.Activo;
-            newSucursal.IdTienda = SelectedSucursal.IdTienda;
-            Database.UpdateData(newSucursal);
+            try {
+                Log.Debug("Detectada edición de una sucursal.");
+                newSucursal.Activo = SelectedSucursal.Activo;
+                newSucursal.IdTienda = SelectedSucursal.IdTienda;
+                
+                var res = Database.UpdateData(newSucursal);
+                if (res == 0) return;
 
-            var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
-            MessageBox.Show(msg, "Sucursal Actualizada");
-
+                var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                MessageBox.Show(msg, "Sucursal Actualizada");
+                Log.Debug("Edición de sucursal exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta la sucurzal.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -269,20 +287,31 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newSucursal"></param>
         /// <param name="alta"></param>
         private void Activar(Sucursal newSucursal, ref bool alta) {
-            for (var index = 0; index < ListaSucursales.Count; index++) {
-                var sucursal = ListaSucursales[index];
+            try {
+                for (var index = 0; index < ListaSucursales.Count; index++) {
+                    var sucursal = ListaSucursales[index];
 
-                //TODO: definir el operador == en sucursal.
-                if (newSucursal != sucursal || sucursal.Activo != 0) continue;
-                 Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                 newSucursal.IdTienda = sucursal.IdTienda;
-                 newSucursal.Activo = 1;
-                 Database.UpdateData(newSucursal);
-                 alta = false;
-                 var msg =
-                     $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
-                 MessageBox.Show(msg, "Cliente Actualizado");
-                 break;
+                    if (newSucursal != sucursal || sucursal.Activo != 0) continue;
+                    
+                     Log.Debug("Detectada sucursal equivalente no activa, actualizando y activando.");
+                     newSucursal.IdTienda = sucursal.IdTienda;
+                     newSucursal.Activo = 1;
+                     alta = false;
+                     
+                     var res = Database.UpdateData(newSucursal);
+                     if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                        MessageBox.Show(msg, "Cliente Actualizado");
+                        Log.Debug("Se ha activado la sucursal de manera exitosa.");
+                     }
+                     
+                     break;
+                }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrrido un error al activar la sucursal.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 

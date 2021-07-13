@@ -206,7 +206,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método para actualziar los datos de Usuario
         /// </summary>
-        public static void UpdateData(Usuario usuario) {
+        public static int UpdateData(Usuario usuario) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -240,12 +240,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@uMod", GetUsername());
 
             try {
-                query.ExecuteReader();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se ha actualizado el usuario exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al actualizar el usuario");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -256,7 +258,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo usuario.
         /// </summary>
         /// <param name="newUser">Objeto tipo <c>Usuario</c> que tiene la información del usuario nuevo.</param>
-        public static void NewUser(Usuario newUser) {
+        public static int NewUser(Usuario newUser) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
@@ -296,12 +298,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usrMod", GetUsername());
 
             try {
-                query.ExecuteNonQuery();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se ha creado un nuevo usuario exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al dar de alta un un nuevo usuario.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -362,7 +366,7 @@ namespace Mexty.MVVM.Model {
         /// Método que actualiza una sucursal en la base de datos
         /// </summary>
         /// <param name="sucursal"></param>
-        public static void UpdateData(Sucursal sucursal) {
+        public static int UpdateData(Sucursal sucursal) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -396,12 +400,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@id", sucursal.IdTienda.ToString());
             
             try {
-                query.ExecuteReader();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se ha actualizado la sucursal exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al actualizar la sucursal.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -412,7 +418,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra una nueva sucursal.
         /// </summary>
         /// <param name="newSucursal"></param>
-        public static void NewSucursal(Sucursal newSucursal) {
+        public static int NewSucursal(Sucursal newSucursal) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             
@@ -445,12 +451,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", 1.ToString());
             
             try {
-                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 log.Info("Se ha creado una nueva sucursal exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -557,7 +565,7 @@ namespace Mexty.MVVM.Model {
         /// Método que actualiza un producto en la base de datos.
         /// </summary>
         /// <param name="producto"></param>
-        public static void UpdateData(Producto producto) {
+        public static int UpdateData(Producto producto) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -592,12 +600,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
             
             try {
-                query.ExecuteReader();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se han actualizado los datos de producto exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al actualizar los datos en la tabla producto.");
                 log.Error($"Error: {e.Message}");
+                throw;
             }
             finally {
                 connObj.Close();
@@ -608,7 +618,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo producto.
         /// </summary>
         /// <param name="newProduct">Objeto tipo <c>Producto</c>.</param>
-        public static void NewProduct(Producto newProduct) {
+        public static int NewProduct(Producto newProduct) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             
@@ -638,12 +648,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
 
             try {
-                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 log.Info("Se ha dado de alta un nuevo produto exitosamente.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al dar de alta un nuevo producto.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -703,7 +715,7 @@ namespace Mexty.MVVM.Model {
         /// Método para actualizar los datos del Cliente.
         /// </summary>
         /// <param name="cliente"></param>
-        public static void UpdateData(Cliente cliente) {
+        public static int UpdateData(Cliente cliente) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -728,12 +740,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@debe", cliente.Debe.ToString(CultureInfo.InvariantCulture));
 
             try {
-                query.ExecuteReader();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se han actualizado los datos de cliente de manera exitosa.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al actualizar los datos de cliente.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -744,7 +758,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo cliente.
         /// </summary>
         /// <param name="newClient"></param>
-        public static void NewClient(Cliente newClient) {
+        public static int NewClient(Cliente newClient) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
@@ -775,12 +789,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@debe", newClient.Debe.ToString(CultureInfo.InvariantCulture));
             
             try {
-                query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
+                var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 log.Info("Se ha dado de alta un nuevo cliente de manera exitosa.");
+                return res;
             }
             catch (MySqlException e) {
                 log.Error("Ha ocurrido un error al dar de alta un nuevo cliente.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -840,7 +856,7 @@ namespace Mexty.MVVM.Model {
         /// Método para actualizar los datos de la tabla inventario-general.
         /// </summary>
         /// <param name="item"></param>
-        public static void UpdateData(Inventario item) {
+        public static int UpdateData(Inventario item) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -866,12 +882,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
             try {
-                query.ExecuteReader();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
+                return res;
             }
             catch (Exception e) {
                 log.Error("Ha ocurrido un error al actualizar los datos de inventario-general.");
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();
@@ -882,7 +900,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
-        public static void NewItem(Inventario newItem) {
+        public static int NewItem(Inventario newItem) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
@@ -911,12 +929,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             try {
-                query.ExecuteNonQuery();
+                var res = query.ExecuteNonQuery();
                 log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
+                return res;
             }
             catch (Exception e) {
                 log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario-general."); 
                 log.Error($"Error: {e.Message}");
+                return 0;
             }
             finally {
                 connObj.Close();

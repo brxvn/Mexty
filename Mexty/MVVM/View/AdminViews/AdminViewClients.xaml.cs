@@ -241,10 +241,21 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private static void Alta(Cliente newClient) {
-            Log.Debug("Detectada alta de cliente.");
-            Database.NewClient(newClient);
-            var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
-            MessageBox.Show(msg, "Cliente Actualizado");
+            try {
+                Log.Debug("Detectada alta de cliente.");
+                
+                var res = Database.NewClient(newClient);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
+                MessageBox.Show(msg, "Cliente Actualizado");
+                Log.Debug("Se ha actualizado el cliente exitosamente.");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al actualizar el cliente.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -252,14 +263,23 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private void Edit(Cliente newClient) {
-            Log.Debug("Detectada edición de un cliente.");
-            Database.UpdateData(newClient);
-            newClient.IdCliente = SelectedClient.IdCliente;
-            newClient.Activo = 1;
-            Database.UpdateData(newClient);
-
-            var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-            MessageBox.Show(msg, "Cliente Actualizado");
+            try {
+                Log.Debug("Detectada edición de un cliente.");
+                Database.UpdateData(newClient);
+                newClient.IdCliente = SelectedClient.IdCliente;
+                newClient.Activo = 1;
+                
+                var res = Database.UpdateData(newClient);
+                if (res == 0) return;
+                
+                var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                MessageBox.Show(msg, "Cliente Actualizado");
+                Log.Debug("Se ha editado el cliente exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al editar el cliente.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -267,19 +287,29 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private void Activar(Cliente newClient, ref bool alta) {
-            for (var index = 0; index < ListaClientes.Count; index++) {
-                var cliente = ListaClientes[index];
+            try {
+                for (var index = 0; index < ListaClientes.Count; index++) {
+                    var cliente = ListaClientes[index];
 
-                if (newClient != cliente || cliente.Activo != 0) continue;
-                Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                newClient.IdCliente = cliente.IdCliente;
-                newClient.Activo = 1;
-                Database.UpdateData(newClient);
-                alta = false;
-                var msg =
-                    $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                MessageBox.Show(msg, "Cliente Actualizado");
-                break;
+                    if (newClient != cliente || cliente.Activo != 0) continue;
+                    Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
+                    newClient.IdCliente = cliente.IdCliente;
+                    newClient.Activo = 1;
+                    alta = false;
+                    var res = Database.UpdateData(newClient);
+                    if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                        MessageBox.Show(msg, "Cliente Actualizado");
+                        Log.Debug("Se ha activado el cliente de manera exitosa.");
+                    }
+                    break;
+                }
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al activar el cliente.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 

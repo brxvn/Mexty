@@ -257,25 +257,44 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newUsuario"></param>
         private static void Alta(Usuario newUsuario) {
-            newUsuario.Activo = 1;
-            newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
-            Log.Debug("Detectado nuevo usuario, dando de alta.");
-            Database.NewUser(newUsuario);
-            var msg = $"Se ha creado el usuario {newUsuario.Username}.";
-            MessageBox.Show(msg, "Nuevo Usuario registrado.");
+            try {
+                newUsuario.Activo = 1;
+                newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
+                Log.Debug("Detectado nuevo usuario, dando de alta.");
+                
+                var res = Database.NewUser(newUsuario);
+                if (res == 0) return;
+                
+                var msg = $"Se ha creado el usuario {newUsuario.Username}.";
+                MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                Log.Debug("Se ha dado de alta un nuevo usuario de manera exitosa.");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo usuario.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
         /// Método que se encarga de la edición de un usuario.
         /// </summary>
         private void Edit(Usuario newUsuario) {
-            Log.Debug("Detectada edición de usuario.");
-            newUsuario -= SelectedUser;
+            try {
+                Log.Debug("Detectada edición de usuario.");
+                newUsuario -= SelectedUser;
 
-            Database.UpdateData(newUsuario);
-
-            var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
-            MessageBox.Show(msg, "Usuario Actualizado");
+                var res = Database.UpdateData(newUsuario);
+                if (res == 0) return;
+                
+                var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
+                MessageBox.Show(msg, "Usuario Actualizado");
+                Log.Debug("Se ha editado el usuario de manera exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al editar el usuario.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -284,18 +303,32 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newUsuario"> El usuario a activar.</param>
         /// <param name="flag">Bandera para señalizar si es necesario dar de alta un nuevo usuario.</param>
         private void Activar(Usuario newUsuario, ref bool flag) {
-            for (var index = 0; index < UsuariosList.Count; index++) {
-                var usuario = UsuariosList[index];
-                if (usuario != newUsuario || usuario.Activo != 0) continue;
-                Log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
-                newUsuario += usuario;
-                newUsuario.Activo = 1;
-                Database.UpdateData(newUsuario);
-                var msg =
-                    $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
-                MessageBox.Show(msg, "Nuevo Usuario registrado.");
-                flag = false;
-                break;
+            try {
+                for (var index = 0; index < UsuariosList.Count; index++) {
+                    var usuario = UsuariosList[index];
+                    
+                    if (usuario != newUsuario || usuario.Activo != 0) continue;
+                    
+                    Log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
+                    newUsuario += usuario;
+                    newUsuario.Activo = 1;
+                    flag = false;
+                    
+                    var res = Database.UpdateData(newUsuario);
+                    if (res != 0) {
+                        var msg =
+                            $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                        MessageBox.Show(msg, "Nuevo Usuario registrado.");
+                        Log.Debug("Se ha activado el usuario exitosamente.");
+                    }
+                    
+                    break;
+                }
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrdo un error al actualizar el usuario.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 

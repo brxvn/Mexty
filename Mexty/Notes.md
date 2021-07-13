@@ -12,7 +12,8 @@
 - [ ]Añadir manejo de excepciones global [link](https://wpf-tutorial.com/wpf-application/handling-exceptions/).
 - [ ] Terminar el modulo de sucursales.
 - [ ] Ver como hacer el cron job de la pestaña de BD para hacer el volcado de bd automáticamente cada x tiempo.
-- [ ] Ajustar base de datos con las nuevas especificaciones.
+- [x] Ajustar base de datos con las nuevas especificaciones.
+- [x] !!!! Añadir try y catch en todas las funciones de alta, update y activar.
 
 ## Entradas al log.
 - Error: para manejar excepciones, dando una descripción de lo que sucede y donde.
@@ -30,3 +31,7 @@
   - Inventario.
   
 ### Notas sig reunión
+- Preguntar si poner el tipo sincroniza en boolean.
+- Preguntar si debemos de poner avisos de error cuando algo salga mal y que deben de decir.
+  - Ejemplo cuando una query sale mal por alguna razón mandar una advertencia o algo.
+  - Si si, agregar un trow en los catch de database.

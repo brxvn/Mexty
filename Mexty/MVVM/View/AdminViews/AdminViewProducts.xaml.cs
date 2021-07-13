@@ -275,10 +275,20 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newProduct"></param>
         private static void Alta(Producto newProduct) {
-            Log.Debug("Detectada alta de producto.");
-            Database.NewProduct(newProduct);
-            var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-            MessageBox.Show(msg, "Producto Actualizado");
+            try {
+                Log.Debug("Detectada alta de producto.");
+                
+                var res = Database.NewProduct(newProduct);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+                Log.Debug("Se ha dado de alta el producto de manera exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta el producto.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -286,13 +296,21 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newProduct"></param>
         private void Edit(Producto newProduct) {
-            Log.Debug("Detectada actualización de producto.");
-            newProduct.IdProducto = SelectedProduct.IdProducto;
-            newProduct.Activo = SelectedProduct.Activo;
-            Database.UpdateData(newProduct);
+            try {
+                Log.Debug("Detectada actualización de producto.");
+                newProduct.IdProducto = SelectedProduct.IdProducto;
+                newProduct.Activo = SelectedProduct.Activo;
+                var result = Database.UpdateData(newProduct);
 
-            var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-            MessageBox.Show(msg, "Producto Actualizado");
+                if (result <= 0) return;
+                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+                Log.Debug("Se ha editado el producto de manera exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al editar el producto.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -301,18 +319,31 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newProduct"></param>
         /// <param name="alta"></param>
         private void Activar(Producto newProduct, ref bool alta) {
-            for (var index = 0; index < ListaProductos.Count; index++) {
-                var producto = ListaProductos[index];
-                if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
-                // actualizamos y activamos.
-                newProduct.IdProducto = producto.IdProducto;
-                newProduct.Activo = 1;
-                Database.UpdateData(newProduct);
-                alta = false;
-                var msg =
-                    $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Producto Actualizado");
+            try {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var producto = ListaProductos[index];
+                    
+                    if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
+                    Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
+                    // actualizamos y activamos.
+                    newProduct.IdProducto = producto.IdProducto;
+                    newProduct.Activo = 1;
+                    alta = false;
+                    
+                    var res = Database.UpdateData(newProduct);
+                    if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                        MessageBox.Show(msg, "Producto Actualizado");
+                        Log.Debug("Se ha activado el producto de manera exitosa.");
+                    }
+                    
+                    break;
+                }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al activar un producto.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
