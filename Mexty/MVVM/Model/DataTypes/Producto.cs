@@ -70,6 +70,11 @@ namespace Mexty.MVVM.Model.DataTypes {
         public int CantidadProducto { get; set; }
 
         /// <summary>
+        /// Cantidad de piezas del producto.
+        /// </summary>
+        public int Piezas { get; set; } 
+
+        /// <summary>
         /// Tipo de producto.
         /// </summary>
         public string TipoProducto { get; set; } //TODO: Probablemente leerlos del ini.
@@ -114,7 +119,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Buffer de lista de sucursales.
         /// </summary>
         private static List<Sucursal> ListaSucursal { get; set; }
-        
+
         /// <summary>
         /// Obtiene la sucursal por medio del nombre.
         /// </summary>

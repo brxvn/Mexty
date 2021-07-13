@@ -487,6 +487,5 @@ namespace Mexty.MVVM.View.AdminViews {
             }
               
         }
-
     }
 }

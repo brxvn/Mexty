@@ -554,7 +554,8 @@
                      HorizontalAlignment="Stretch"
                      MaxLength="8"
                      PreviewTextInput="OnlyNumbersValidation"
-                     Margin="10 0">
+                     Margin="10 0" 
+                         >
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>

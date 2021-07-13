@@ -1,6 +1,6 @@
 ﻿namespace Mexty.MVVM.Model.DataTypes {
     /// <summary>
-    /// Clase principal de inventario.
+    /// Clase principal los items del inventario.
     /// </summary>
     public class Inventario {
 

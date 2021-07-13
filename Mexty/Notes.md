@@ -7,9 +7,9 @@
     - [x] Poner entradas en el modulo de Productos.
     - [x] Poner entradas en el modulo de Clientes.
     - [x] Poner entradas en el modulo de Sucursal.
-- [ ]Añadir manejo de excepciones global [link](https://wpf-tutorial.com/wpf-application/handling-exceptions/).
 - [x]Añadir CI [link](https://www.youtube.com/watch?v=VIlDni8-iWM).
   - [x] Ver que onda con el archivo de configuración del logger en el deploy.
+- [ ]Añadir manejo de excepciones global [link](https://wpf-tutorial.com/wpf-application/handling-exceptions/).
 - [ ] Terminar el modulo de sucursales.
 - [ ] Ver como hacer el cron job de la pestaña de BD para hacer el volcado de bd automáticamente cada x tiempo.
 - [ ] Ajustar base de datos con las nuevas especificaciones.
@@ -28,3 +28,5 @@
 - Tablas por sincronizar.
   - Ventas.
   - Inventario.
+  
+### Notas sig reunión
