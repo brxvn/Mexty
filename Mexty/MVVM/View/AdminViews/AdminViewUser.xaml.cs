@@ -128,7 +128,7 @@ namespace Mexty.MVVM.View.AdminViews {
             Limpiar.IsEnabled = true;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Registro";
-            SearchBox.Text = "";
+            
         }
 
         /// <summary>
@@ -142,6 +142,7 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtDireccion.Text = "";
             TxtContraseña.Text = "";
             TxtTelefono.Text = "";
+            SearchBox.Text = "";
             ComboRol.SelectedIndex = 0;
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
@@ -181,6 +182,9 @@ namespace Mexty.MVVM.View.AdminViews {
                 CollectionView = collection;
                 ClearFields();
             }
+
+            SearchBox.Text = tbx.Text;
+
         }
 
         /// <summary>
@@ -420,18 +424,14 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EnableGuardar() {
             if (nombreUsuario.Text.Length > 2 &&
                 apPaternoUsuario.Text.Length > 2 &&
-                apMaternoUsuario.Text.Length > 2 &&
-                TxtDireccion.Text.Length > 2 &&
-                TxtTelefono.Text.Length == 10 &&
-                TxtContraseña.Text.Length > 3) {
-
+                apMaternoUsuario.Text.Length > 2 ) {
 
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar cambios";
             }
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los campos deben de tener al menos 3 carácteres.\nEl número debe de ser de 10 dígitos.\nLa contraseña debe de tener entre 4 y 8 carácteres.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los usuarios deben de tener al menos Nombre y Apellidos.";
             }
         }
 

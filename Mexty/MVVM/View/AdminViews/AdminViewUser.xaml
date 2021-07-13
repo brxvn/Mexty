@@ -683,7 +683,7 @@
                     <ColumnDefinition/>
                  </Grid.ColumnDefinitions>
 
-                <Button Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Grid.Column="0" x:Name="Limpiar" Content="Limpiar"  Click="LimpiarCampos" IsEnabled="False" ToolTip="Limpiar Campos" />
+                <Button Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Grid.Column="0" x:Name="Limpiar" Content="Limpiar"  Click="LimpiarCampos" ToolTip="Limpiar Campos" />
                 <Button Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Grid.Column="1" x:Name="Guardar" Content="Guardar"  Click="RegistrarUsuario" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>
                 <Button Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Grid.Column="2" x:Name="Eliminar" Content="Eliminar"  Click="EliminarUsuario" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>
 

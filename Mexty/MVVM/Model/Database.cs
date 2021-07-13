@@ -535,7 +535,7 @@ namespace Mexty.MVVM.Model {
                         DetallesProducto = 
                             reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                        IdSucursal = reader.IsDBNull("id_establecimiento") ? 0 : reader.GetInt32("id_establecimiento"),
+                        IdSucursal = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
                     productos.Add(producto);
                 }

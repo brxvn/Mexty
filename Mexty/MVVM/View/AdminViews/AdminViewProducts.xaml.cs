@@ -141,6 +141,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
             txtCantidad.Text = producto.CantidadProducto.ToString();
+            txtPiezas.Text = producto.Piezas.ToString();
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
@@ -162,6 +163,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
             txtCantidad.Text = "";
+            txtPiezas.Text = "";
             txtDetalle.Text = "";
             ComboMedida.SelectedIndex = 0;
             ComboSucursal.SelectedIndex = 0;
@@ -231,6 +233,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.NombreProducto = txtNombreProducto.Text;
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
                 newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
+                newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
@@ -429,6 +432,11 @@ namespace Mexty.MVVM.View.AdminViews {
 
         }
 
+        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtPiezas.Text = textbox.Text;
+        }
+
         private void EnableGuardar() {
             if (txtNombreProducto.Text.Length > 3 &&
                 txtPrecioMenudeo.Text != "" &&
@@ -457,7 +465,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x) || '.'.Equals(x));
         }
 
 
@@ -487,5 +495,36 @@ namespace Mexty.MVVM.View.AdminViews {
             }
               
         }
+
+        private void HabilitarPiezas(object sender, SelectionChangedEventArgs e) {
+            switch (ComboMedida.SelectedIndex) {
+                case 1:
+                case 2:
+                case 3:
+                    txtPiezas.Visibility = Visibility.Visible;
+                    txtCantidad.Visibility = Visibility.Visible;
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Auto);
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
+                    break;
+                default:
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    break;
+
+
+            }
+        }
+
     }
 }
