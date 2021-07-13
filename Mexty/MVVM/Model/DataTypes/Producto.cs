@@ -84,7 +84,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public int TipoVenta { get; set; }
 
-
         /// <summary>
         /// Obtiene el tipo de venta en formato leible de la instancia.
         /// </summary>

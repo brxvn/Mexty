@@ -43,7 +43,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(cliente => cliente.Debe.ToString())
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("La deuda no puede estar vacia, en caso de no tener deuda poner 0")
-                .Length(1, 6).WithMessage("La deuda dada excede el largo permitido que es de 5 dijitos. {TotalLength}")
+                .Length(1, 10).WithMessage("La deuda dada excede el largo permitido que es de 10 dijitos. {TotalLength}")
                 .Must(Validations.BeAValidFloat).WithMessage("No es un número valido, tiene caracteres prohibidos.");
         }
     }
