@@ -35,7 +35,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files:
-            Mexty\bin\Release\net5.0-windows\win-x64\publish\*.exe
-            Mexty\bin\Release\net5.0-windows\win-x64\publish\*.config
+            Mexty\bin\Release\net5.0-windows\win-x64\publish\Mexty.exe
+            Mexty\bin\Release\net5.0-windows\win-x64\publish\log4net.config
           release-url: ${{ steps.create_release.outputs.upload_url }}
         
