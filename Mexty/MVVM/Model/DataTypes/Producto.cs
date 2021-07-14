@@ -12,19 +12,19 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Variable estatica que tiene los tipos de venta, sin id.
         /// </summary>
-        public static readonly string[] TiposVentaTexto = {"Mayoreo y Menudeo", "Mayoreo", "Menudeo"};
+        public static readonly string[] TiposVentaTexto = { "General","Mayoreo", "Menudeo"};
 
         /// <summary>
         /// Variable que obtiene los tipos de producto.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Agua", "Helado", "Otros", "Extras"};
+        private static readonly string[] _tipoProductoText = {"Paleta Agua", "Paleta Leche", "Paleta Fruta", "Helado", "Agua", "Extras", "Otros"};
 
         /// <summary>
         /// Variable que obtiene los tipos de medida.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposMedida = {"pieza", "gramos", "litro", "plato"};
+        private static readonly string[] TiposMedida = {"pieza", "bolsa", "caja", "tarro", "0.5 litros", "litro", "3 litros", "12 litros"};
 
         
         /// <summary>
@@ -65,15 +65,24 @@ namespace Mexty.MVVM.Model.DataTypes {
         }
 
         /// <summary>
+        /// Cantidad del producto
+        /// </summary>
+        public int CantidadProducto { get; set; }
+
+        /// <summary>
+        /// Cantidad de piezas del producto.
+        /// </summary>
+        public int Piezas { get; set; } 
+
+        /// <summary>
         /// Tipo de producto.
         /// </summary>
-        public string TipoProducto { get; set; } //TODO: Probablemente leerlos del ini.
+        public string TipoProducto { get; set; }
 
         /// <summary>
         /// Clave del tipo de venta.
         /// </summary>
         public int TipoVenta { get; set; }
-
 
         /// <summary>
         /// Obtiene el tipo de venta en formato leible de la instancia.
@@ -83,12 +92,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Precio del producto en venta mayoreo.
         /// </summary>
-        public int PrecioMayoreo { get; set; }
+        public float PrecioMayoreo { get; set; }
 
         /// <summary>
         /// Precio del producto en venta menudeo.
         /// </summary>
-        public int PrecioMenudeo { get; set; }
+        public float PrecioMenudeo { get; set; }
 
         /// <summary>
         /// Detalles/descripción del producto.
@@ -109,7 +118,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Buffer de lista de sucursales.
         /// </summary>
         private static List<Sucursal> ListaSucursal { get; set; }
-        
+
         /// <summary>
         /// Obtiene la sucursal por medio del nombre.
         /// </summary>

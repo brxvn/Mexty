@@ -16,7 +16,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(usuario => usuario.Nombre)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre no puede estar vacío.")
-                .Length(3, 50).WithMessage("El nombre debe de tener entre 30 y 50 carácteres.")
+                .Length(3, 50).WithMessage("El nombre debe de tener entre 3 y 50 carácteres.")
                 .Must(Validations.BeAValidName).WithMessage("No es un nombre válido.");
 
             RuleFor(usuario => usuario.ApPaterno)
@@ -35,19 +35,20 @@ namespace Mexty.MVVM.Model.Validations {
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El número de teléfono no puede esar vacío.")
                 .Length(10).WithMessage("El número de teléfono debe de ser de 10 dígitos.")
-                .Must(Validations.BeAValidNumber).WithMessage("No es un número de teléfono válido.");
+                .Must(Validations.BeAValidNumber).WithMessage("No es un número de teléfono válido.")
+                .NotEqual("0000000000").WithMessage("No es un número de teléfono válido");
 
             RuleFor(usuario => usuario.Domicilio)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El domicilio no puede estar vacio.")
                 .Length(5, 90).WithMessage("El domicilio debe de tener entre 3 y 50 carácteres.")
-                .Must(Validations.BeAValidText).WithMessage("El domicio no es valido o tiene caracteres prohibidos.");
+                .Must(Validations.BeAValidText).WithMessage("El domicilio no es válido o tiene caracteres prohibidos.");
 
             RuleFor(usuario => usuario.Contraseña)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("La contraseña no puede estar vacia.")
+                .NotEmpty().WithMessage("La contraseña no puede estar vacía.")
                 .Length(4, 8).WithMessage("La contraseña debe tener entre 4 y 8 carácteres.")
-                .Must(Validations.BeAValidText).WithMessage("La contraseña debe tiene carácteres prohibidos.");
+                .Must(Validations.BeAValidText).WithMessage("La contraseña no debe tiene carácteres prohibidos.");
         }
 
     }

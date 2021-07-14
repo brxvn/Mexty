@@ -94,7 +94,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, EventArgs e) {
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
 
             txtNombreCliente.IsReadOnly = true;
@@ -116,7 +116,6 @@ namespace Mexty.MVVM.View.AdminViews {
             SearchBox.Text = "";
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Cliente.";
-
             Guardar.IsEnabled = true;
         }
 
@@ -124,6 +123,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
+            SelectedClient = null;
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccione un cliente para eliminar.";
@@ -134,9 +134,11 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = "";
             txtComentario.Text = "";
             txtDeuda.Text = "";
+            SearchBox.Text = "";
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
+            //DataClientes.SelectedItem = null;
             EnableGuardar();
             Log.Debug("Se han limpiado los campos de texto.");
         }
@@ -167,7 +169,10 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -239,10 +244,21 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private static void Alta(Cliente newClient) {
-            Log.Debug("Detectada alta de cliente.");
-            Database.NewClient(newClient);
-            var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
-            MessageBox.Show(msg, "Cliente Actualizado");
+            try {
+                Log.Debug("Detectada alta de cliente.");
+                
+                var res = Database.NewClient(newClient);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
+                MessageBox.Show(msg, "Cliente Actualizado");
+                Log.Debug("Se ha actualizado el cliente exitosamente.");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al actualizar el cliente.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -250,14 +266,23 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private void Edit(Cliente newClient) {
-            Log.Debug("Detectada edición de un cliente.");
-            Database.UpdateData(newClient);
-            newClient.IdCliente = SelectedClient.IdCliente;
-            newClient.Activo = 1;
-            Database.UpdateData(newClient);
-
-            var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-            MessageBox.Show(msg, "Cliente Actualizado");
+            try {
+                Log.Debug("Detectada edición de un cliente.");
+                Database.UpdateData(newClient);
+                newClient.IdCliente = SelectedClient.IdCliente;
+                newClient.Activo = 1;
+                
+                var res = Database.UpdateData(newClient);
+                if (res == 0) return;
+                
+                var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                MessageBox.Show(msg, "Cliente Actualizado");
+                Log.Debug("Se ha editado el cliente exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al editar el cliente.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -265,19 +290,29 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newClient"></param>
         private void Activar(Cliente newClient, ref bool alta) {
-            for (var index = 0; index < ListaClientes.Count; index++) {
-                var cliente = ListaClientes[index];
+            try {
+                for (var index = 0; index < ListaClientes.Count; index++) {
+                    var cliente = ListaClientes[index];
 
-                if (newClient != cliente || cliente.Activo != 0) continue;
-                Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                newClient.IdCliente = cliente.IdCliente;
-                newClient.Activo = 1;
-                Database.UpdateData(newClient);
-                alta = false;
-                var msg =
-                    $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                MessageBox.Show(msg, "Cliente Actualizado");
-                break;
+                    if (newClient != cliente || cliente.Activo != 0) continue;
+                    Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
+                    newClient.IdCliente = cliente.IdCliente;
+                    newClient.Activo = 1;
+                    alta = false;
+                    var res = Database.UpdateData(newClient);
+                    if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                        MessageBox.Show(msg, "Cliente Actualizado");
+                        Log.Debug("Se ha activado el cliente de manera exitosa.");
+                    }
+                    break;
+                }
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al activar el cliente.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
@@ -399,13 +434,9 @@ namespace Mexty.MVVM.View.AdminViews {
 
         //TODO: CHECAR POR QUE DEUDA LO LEE COMO CADENA VACÍA
         private void EnableGuardar() {
-            if (txtNombreCliente.Text.Length > 3 &&
-                txtApPaternoCliente.Text.Length > 3 &&
-                txtApMaternoCliente.Text.Length > 3 &&
-                //txtDeuda.Text != "" && 
-                txtTelefono.Text.Length == 10 &&
-                txtDireccion.Text.Length > 3 &&
-                txtComentario.Text.Length > 3) {
+            if (txtNombreCliente.Text.Length >= 3 &&
+                txtApPaternoCliente.Text.Length >= 3 &&
+                txtApMaternoCliente.Text.Length >= 3) {
 
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios";
@@ -413,7 +444,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los campos deben de tener al menos 4 carácteres.\nEl número debe de ser de 10 dígitos.\nLa deuda no debe de estar vacía.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nEl cliente debe de tener al menos Nombre y Apellidos para poder guardar";
             }
 
         }
@@ -433,5 +464,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
+
     }
 }

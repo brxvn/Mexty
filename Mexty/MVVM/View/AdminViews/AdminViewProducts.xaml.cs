@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -55,6 +56,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 FillData();
                 FillSucursales();
                 ClearFields();
+
                 Log.Debug("Se han inicializado los campos del modulo Productos exitosamente.");
             }
             catch (Exception e) {
@@ -101,6 +103,8 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
+
+
         }
 
         /// <summary>
@@ -121,7 +125,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
-            
+
             ClearFields();
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
@@ -133,15 +137,16 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
             ComboTipo.SelectedItem = producto.TipoProducto;
-            txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
-            txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
+            txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture);
+            txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
+            txtCantidad.Text = producto.CantidadProducto.ToString();
+            txtPiezas.Text = producto.Piezas.ToString();
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
-            SearchBox.Text = "";
         }
 
         /// <summary>
@@ -156,7 +161,10 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
+            txtCantidad.Text = "";
+            txtPiezas.Text = "";
             txtDetalle.Text = "";
+            SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
             ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
@@ -188,10 +196,14 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (producto == null) return false;
                     return ((Producto)producto).Activo == 1;
                 });
+                
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -223,12 +235,16 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 var newProduct = new Producto();
                 newProduct.NombreProducto = txtNombreProducto.Text;
+                
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
+                newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
+                newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+                
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMayoreo.Text);
-                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : int.Parse(txtPrecioMenudeo.Text);
+                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMayoreo.Text);
+                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
                 newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
@@ -265,10 +281,20 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newProduct"></param>
         private static void Alta(Producto newProduct) {
-            Log.Debug("Detectada alta de producto.");
-            Database.NewProduct(newProduct);
-            var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-            MessageBox.Show(msg, "Producto Actualizado");
+            try {
+                Log.Debug("Detectada alta de producto.");
+                
+                var res = Database.NewProduct(newProduct);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+                Log.Debug("Se ha dado de alta el producto de manera exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta el producto.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -276,13 +302,21 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newProduct"></param>
         private void Edit(Producto newProduct) {
-            Log.Debug("Detectada actualización de producto.");
-            newProduct.IdProducto = SelectedProduct.IdProducto;
-            newProduct.Activo = SelectedProduct.Activo;
-            Database.UpdateData(newProduct);
+            try {
+                Log.Debug("Detectada actualización de producto.");
+                newProduct.IdProducto = SelectedProduct.IdProducto;
+                newProduct.Activo = SelectedProduct.Activo;
+                var result = Database.UpdateData(newProduct);
 
-            var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-            MessageBox.Show(msg, "Producto Actualizado");
+                if (result <= 0) return;
+                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                MessageBox.Show(msg, "Producto Actualizado");
+                Log.Debug("Se ha editado el producto de manera exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al editar el producto.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -291,18 +325,31 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newProduct"></param>
         /// <param name="alta"></param>
         private void Activar(Producto newProduct, ref bool alta) {
-            for (var index = 0; index < ListaProductos.Count; index++) {
-                var producto = ListaProductos[index];
-                if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
-                // actualizamos y activamos.
-                newProduct.IdProducto = producto.IdProducto;
-                newProduct.Activo = 1;
-                Database.UpdateData(newProduct);
-                alta = false;
-                var msg =
-                    $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Producto Actualizado");
+            try {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var producto = ListaProductos[index];
+                    
+                    if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
+                    Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
+                    // actualizamos y activamos.
+                    newProduct.IdProducto = producto.IdProducto;
+                    newProduct.Activo = 1;
+                    alta = false;
+                    
+                    var res = Database.UpdateData(newProduct);
+                    if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                        MessageBox.Show(msg, "Producto Actualizado");
+                        Log.Debug("Se ha activado el producto de manera exitosa.");
+                    }
+                    
+                    break;
+                }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al activar un producto.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
@@ -320,10 +367,10 @@ namespace Mexty.MVVM.View.AdminViews {
                         MessageBox.Show(error.ErrorMessage);
                         Log.Warn(error.ErrorMessage);
                     }
-                    
+
                     return false;
                 }
-                
+
                 return true;
 
             }
@@ -416,17 +463,28 @@ namespace Mexty.MVVM.View.AdminViews {
             EnableGuardar();
         }
 
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtCantidad.Text = textbox.Text;
+
+        }
+
+        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtPiezas.Text = textbox.Text;
+        }
+
+        /// <summary>
+        /// Método que habilita el botón de "GUARDAR"
+        /// </summary>
         private void EnableGuardar() {
-            if (txtNombreProducto.Text.Length > 3 &&
-                txtPrecioMenudeo.Text != "" &&
-                txtPrecioMayoreo.Text != "" &&
-                txtDetalle.Text != "") {
+            if (txtNombreProducto.Text.Length > 3) {
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios.";
             }
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nLos campos deben de tener al menos 3 carácteres.\nLos precios no deben estar vacíos.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nDebe de tener al menos el nombre para dar de alta el producto.";
 
             }
         }
@@ -444,7 +502,65 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x) || '.'.Equals(x));
+        }
+
+
+        /// <summary>
+        /// Habilita los campos para dar de alta el precio del producto.
+        /// </summary>
+        private void HabilitarInputPrecios(object sender, SelectionChangedEventArgs e) {
+            switch (ComboVenta.SelectedIndex) {
+                case 1:
+                    txtPrecioMenudeo.IsReadOnly = true;
+                    txtPrecioMenudeo.Text = "0";
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    break;
+                case 2:
+                    txtPrecioMayoreo.IsReadOnly = true;
+                    txtPrecioMayoreo.Text = "0";
+                    txtPrecioMenudeo.Text = "";
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    break;
+                default:
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMenudeo.Text = "";
+                    break;
+            }
+              
+        }
+
+        private void HabilitarPiezas(object sender, SelectionChangedEventArgs e) {
+            switch (ComboMedida.SelectedIndex) {
+                case 1:
+                case 2:
+                case 3:
+                    txtPiezas.Visibility = Visibility.Visible;
+                    txtCantidad.Visibility = Visibility.Visible;
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Auto);
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
+                    break;
+                default:
+                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
+                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    break;
+
+
+            }
         }
 
     }

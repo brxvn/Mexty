@@ -48,7 +48,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-                Guardar.IsEnabled = true;
+                ClearFields();
                 Log.Debug("Se han inicializado los campos del modulo de establecimiento.");
             }
             catch (Exception e) {
@@ -57,7 +57,7 @@ namespace Mexty.MVVM.View.AdminViews {
             }
 
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -77,13 +77,11 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillData() {
             var data = Database.GetTablesFromSucursales();
             ListaSucursales = data;
-            // TODO: preguntar si va a haber sucursales inacitvas o activas.
-            // var collectionView = new ListCollectionView(data) {
-            //     Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
-            // };
-            // CollectionView = collectionView;
-            // DataEstablecimientos.ItemsSource = collectionView;
-            DataEstablecimientos.ItemsSource = data;
+            var collectionView = new ListCollectionView(data) {
+                Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
+            };
+            CollectionView = collectionView;
+            DataEstablecimientos.ItemsSource = collectionView;
             Log.Debug("Se ha llenado datagrid de sucursales.");
 
             var tipos = new[] { "Matriz", "Sucursal" };
@@ -100,19 +98,23 @@ namespace Mexty.MVVM.View.AdminViews {
             ClearFields();
             txtNombreEstablecimiento.IsReadOnly = true;
             Eliminar.IsEnabled = true;
+            Eliminar.ToolTip = "Eliminar registro";
+            Guardar.IsEnabled = true;
+            SearchBox.Text = "";
 
             if (DataEstablecimientos.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Se ha selecionado un establecimiento.");
-            var sucursal = (Sucursal)DataEstablecimientos.SelectedItem;
+            var sucursal = (Sucursal) DataEstablecimientos.SelectedItem;
 
-            sucursal.NombreTienda = txtNombreEstablecimiento.Text;
-            sucursal.Rfc = txtRFC.Text;
-            sucursal.Dirección = txtDirección.Text;
-            sucursal.Instagram = txtInstagram.Text;
-            sucursal.Facebook = txtFacebook.Text;
-            sucursal.Telefono = txtTelefono.Text;
-            sucursal.TipoTienda = ComboTipo.SelectedItem.ToString();
-
+            SelectedSucursal = sucursal;
+            txtNombreEstablecimiento.Text = sucursal.NombreTienda;
+            txtRFC.Text = sucursal.Rfc;
+            txtDirección.Text = sucursal.Dirección;
+            txtInstagram.Text = sucursal.Instagram;
+            txtFacebook.Text = sucursal.Facebook;
+            txtTelefono.Text = sucursal.Telefono;
+            ComboTipo.SelectedItem = sucursal.TipoTienda;
+            Log.Debug("Se ha seleccionado el elemento.");
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void ClearFields() {
             txtNombreEstablecimiento.IsReadOnly = false;
-
+            SearchBox.Text = "";
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
             txtDirección.Text = "";
@@ -131,6 +133,9 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se han limpiado los campos de texto.");
 
             Eliminar.IsEnabled = false;
+            Eliminar.ToolTip = "Seleccionar un registro para eliminar.";
+            Guardar.IsEnabled = false;
+            EnableGuardar();
         }
 
         /// <summary>
@@ -151,15 +156,17 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(cliente =>
+                var noNull = new Predicate<object>(sucursal =>
                 {
-                    if (cliente == null) return false;
-                    return ((Cliente)cliente).Activo == 1;
+                    if (sucursal == null) return false;
+                    return ((Sucursal)sucursal).Activo == 1;
                 });
                 collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -174,7 +181,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (sucursal.NombreTienda.Contains(text) ||
                 sucursal.Dirección.Contains(text) ||
                 sucursal.Rfc.Contains(text)) {
-                //return cliente.Activo == 1;
+                    //return cliente.Activo == 1;
                 return true;
             }
             return false;
@@ -199,7 +206,8 @@ namespace Mexty.MVVM.View.AdminViews {
                     Rfc = txtRFC.Text,
                     Facebook = txtFacebook.Text,
                     Instagram = txtInstagram.Text,
-                    TipoTienda = ComboTipo.SelectedItem.ToString()
+                    TipoTienda = ComboTipo.SelectedItem.ToString(),
+                    Mensaje = "" // TODO agregar campo mensaje.
                 };
                 Log.Debug("Se ha creado el objeto sucursal con los campos te de texto.");
 
@@ -236,10 +244,20 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newSucursal"></param>
         private static void Alta(Sucursal newSucursal) {
-            Log.Debug("Detectada alta de sucursal.");
-            Database.NewSucursal(newSucursal);
-            var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
-            MessageBox.Show(msg, "Sucursal Actualizada");
+            try {
+                Log.Debug("Detectada alta de sucursal.");
+                
+                var res = Database.NewSucursal(newSucursal);
+                if (res == 0) return;
+                
+                var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
+                MessageBox.Show(msg, "Sucursal Actualizada");
+                Log.Debug("Alta exitosa de sucursal");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -247,12 +265,22 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         /// <param name="newSucursal"></param>
         private void Edit(Sucursal newSucursal) {
-            Log.Debug("Detectada edición de una sucursal.");
-            Database.UpdateData(newSucursal);
+            try {
+                Log.Debug("Detectada edición de una sucursal.");
+                newSucursal.Activo = SelectedSucursal.Activo;
+                newSucursal.IdTienda = SelectedSucursal.IdTienda;
+                
+                var res = Database.UpdateData(newSucursal);
+                if (res == 0) return;
 
-            var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
-            MessageBox.Show(msg, "Sucursal Actualizada");
-
+                var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                MessageBox.Show(msg, "Sucursal Actualizada");
+                Log.Debug("Edición de sucursal exitosa.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta la sucurzal.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -261,20 +289,31 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newSucursal"></param>
         /// <param name="alta"></param>
         private void Activar(Sucursal newSucursal, ref bool alta) {
-            for (var index = 0; index < ListaSucursales.Count; index++) {
-                var sucursal = ListaSucursales[index];
+            try {
+                for (var index = 0; index < ListaSucursales.Count; index++) {
+                    var sucursal = ListaSucursales[index];
 
-                //TODO: ver que onda con los activos y definir el operador == en sucursal.
-                //if (newSucursal != cliente || cliente.Activo != 0) continue;
-                // Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                // newClient.IdCliente = cliente.IdCliente;
-                // newClient.Activo = 1;
-                // Database.UpdateData(newClient);
-                // alta = false;
-                // var msg =
-                //     $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
-                // MessageBox.Show(msg, "Cliente Actualizado");
-                // break;
+                    if (newSucursal != sucursal || sucursal.Activo != 0) continue;
+                    
+                     Log.Debug("Detectada sucursal equivalente no activa, actualizando y activando.");
+                     newSucursal.IdTienda = sucursal.IdTienda;
+                     newSucursal.Activo = 1;
+                     alta = false;
+                     
+                     var res = Database.UpdateData(newSucursal);
+                     if (res != 0) {
+                        var msg =
+                            $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                        MessageBox.Show(msg, "Cliente Actualizado");
+                        Log.Debug("Se ha activado la sucursal de manera exitosa.");
+                     }
+                     
+                     break;
+                }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrrido un error al activar la sucursal.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
@@ -306,41 +345,60 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
+        /// <summary>
+        /// Lógica detras del boton de eliminar sucursal.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EliminarEstablecimiento(object sender, RoutedEventArgs e) {
+            Log.Debug("Presionado eliminar establecimiento.");
+            var sucursal = SelectedSucursal;
+            var mensaje = $"¿Seguro quiere eliminar la sucursal {sucursal.NombreTienda}?";
+            const MessageBoxButton buttons = MessageBoxButton.OKCancel;
+            const MessageBoxImage icon = MessageBoxImage.Warning;
+
+            if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
+            sucursal.Activo = 0;
+            Database.UpdateData(sucursal);
+            Log.Debug("Sucursal eliminada.");
+            ClearFields();
+            FillData();
 
         }
 
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtNombreEstablecimiento.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateTelefono(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtTelefono.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateInstagram(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtInstagram.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateFacebook(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtFacebook.Text = textbox.Text;
+            EnableGuardar();
         }
 
         private void txtUpdateDescripcion(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtDirección.Text = textbox.Text;
+            EnableGuardar();
         }
         private void txtUpdateRFC(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtRFC.Text = textbox.Text;
-        }
-
-        private void ComboTipo_SelectionChanged() {
-
+            EnableGuardar();
         }
 
         /// <summary>
@@ -364,6 +422,19 @@ namespace Mexty.MVVM.View.AdminViews {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
+        private void EnableGuardar() {
+            if (txtNombreEstablecimiento.Text.Length >= 3) {
 
+                Guardar.IsEnabled = true;
+                Guardar.ToolTip = "Guardar Cambios";
+            }
+
+            else {
+                Guardar.IsEnabled = false;
+                Guardar.ToolTip = "Verificar los datos para guardar.\nEl establecimineto al menos debe contar con un nombre.";
+            }
+
+
+        }
     }
 }

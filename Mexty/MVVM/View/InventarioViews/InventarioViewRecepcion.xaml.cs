@@ -35,5 +35,13 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
+
+        private void LimpiarCampos(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void RegistrarProducto(object sender, RoutedEventArgs e) {
+
+        }
     }
 }
