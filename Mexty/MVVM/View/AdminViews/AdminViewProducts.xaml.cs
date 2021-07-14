@@ -146,8 +146,6 @@ namespace Mexty.MVVM.View.AdminViews {
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
-            SearchBox.Text = "";
-
         }
 
         /// <summary>
@@ -165,6 +163,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtCantidad.Text = "";
             txtPiezas.Text = "";
             txtDetalle.Text = "";
+            SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
             ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
@@ -199,7 +198,10 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -326,7 +328,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     var producto = ListaProductos[index];
                     
                     if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                    Log.Debug("Detectado producto equivalente no activo, actualizando y activando.");
+                    Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
                     // actualizamos y activamos.
                     newProduct.IdProducto = producto.IdProducto;
                     newProduct.Activo = 1;
@@ -335,7 +337,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     var res = Database.UpdateData(newProduct);
                     if (res != 0) {
                         var msg =
-                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                            $"Se ha activado y actualizado el producto {newProduct.IdProducto} {newProduct.NombreProducto}.";
                         MessageBox.Show(msg, "Producto Actualizado");
                         Log.Debug("Se ha activado el producto de manera exitosa.");
                     }
@@ -470,8 +472,11 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPiezas.Text = textbox.Text;
         }
 
+        /// <summary>
+        /// Método que habilita el botón de "GUARDAR"
+        /// </summary>
         private void EnableGuardar() {
-            if (txtNombreProducto.Text.Length >= 3) {
+            if (txtNombreProducto.Text.Length > 3) {
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios.";
             }

@@ -116,7 +116,6 @@ namespace Mexty.MVVM.View.AdminViews {
             SearchBox.Text = "";
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Cliente.";
-
             Guardar.IsEnabled = true;
         }
 
@@ -135,6 +134,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = "";
             txtComentario.Text = "";
             txtDeuda.Text = "";
+            SearchBox.Text = "";
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
@@ -169,7 +169,10 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -431,13 +434,9 @@ namespace Mexty.MVVM.View.AdminViews {
 
         //TODO: CHECAR POR QUE DEUDA LO LEE COMO CADENA VACÍA
         private void EnableGuardar() {
-            if (txtNombreCliente.Text.Length > 3 &&
-                txtApPaternoCliente.Text.Length > 3 &&
-                txtApMaternoCliente.Text.Length > 3 &&
-                //txtDeuda.Text != "" && 
-                txtTelefono.Text.Length == 10 &&
-                txtDireccion.Text.Length > 3 &&
-                txtComentario.Text.Length > 3) {
+            if (txtNombreCliente.Text.Length >= 3 &&
+                txtApPaternoCliente.Text.Length >= 3 &&
+                txtApMaternoCliente.Text.Length >= 3) {
 
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios";
@@ -445,7 +444,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nTodos los campos deben de tener al menos 4 carácteres.\nEl número debe de ser de 10 dígitos.\nLa deuda no debe de estar vacía.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nEl cliente debe de tener al menos Nombre y Apellidos para poder guardar";
             }
 
         }

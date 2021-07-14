@@ -27,6 +27,8 @@
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
                      Grid.Column="1"
+                     x:Name="SearchBox"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
@@ -46,8 +48,8 @@
                                                      Foreground="DarkGray"
                                                      FontSize="18"
                                                      x:Name="txtBusqueda"
-                                                     TextChanged="FilterSearch"
-                                                     >
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
+                                                     TextChanged="FilterSearch">
 
                                                 </TextBox>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"
@@ -180,7 +182,7 @@
 
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2.5*"/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
@@ -189,6 +191,9 @@
                 <!--txtNombreProducto-->
                 <TextBox Background="Beige"
                      x:Name="txtNombreProducto"
+                     CharacterCasing="Upper"
+                     MaxLength="15"
+                     PreviewTextInput="OnlyLettersValidation"
                      Grid.Column="0"
                      Margin="10 0">
                     <TextBox.Style>
@@ -208,13 +213,11 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
+                                                     CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyLettersValidation"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
-                                                     TextChanged="TextUpdateNombre"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Nombre del Producto"
@@ -270,7 +273,10 @@
                 <TextBox Background="Beige"
                      x:Name="txtCantidad"
                      Grid.Column="1"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Margin="10 0">
+
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -290,11 +296,9 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
-                                                     TextChanged="txtUpdateDisponible"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
+                                                     CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyNumbersValidation"
+                                                     TextChanged="txtUpdateDisponible"/>
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Cantidad Disponible"
@@ -349,6 +353,8 @@
                 <!--txtPrecioMayoreo-->
                 <TextBox Background="Beige"
                      x:Name="txtPrecioMayoreo"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Grid.Column="2"
                      Margin="10 0">
                     <TextBox.Style>
@@ -370,6 +376,8 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
+                                                     CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyNumbersValidation"
                                                      TextChanged="txtUpdateMayoreo"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -429,6 +437,8 @@
                 <!--txtPrecio Menudeo-->
                 <TextBox Background="Beige"
                      x:Name="txtPrecioMenudeo"
+                     CharacterCasing="Upper"
+                     PreviewTextInput="OnlyNumbersValidation"
                      Grid.Column="3"
                      Margin="10 0">
                     <TextBox.Style>
@@ -450,6 +460,8 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="15"
+                                                     CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyNumbersValidation"
                                                      TextChanged="txtUpdateMenudeo"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->

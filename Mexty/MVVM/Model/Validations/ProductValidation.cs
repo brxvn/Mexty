@@ -12,25 +12,25 @@ namespace Mexty.MVVM.Model.Validations {
             
             RuleFor(producto => producto.NombreProducto)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("El Nombre del producto no puede estar vacio.")
-                .Length(4, 15).WithMessage("El Nombre del producto debe de tener entre 4 y 15 caracteres")
-                .Must(Validations.BeAValidName).WithMessage("El Nombre del producto no puede tener caracteres prohibidos");
+                .NotEmpty().WithMessage("El nombre del producto no puede estar vacío.")
+                .Length(4, 15).WithMessage("El nombre del producto debe de tener entre 4 y 15 caracteres")
+                .Must(Validations.BeAValidName).WithMessage("El nombre del producto no puede tener caracteres prohibidos");
 
             RuleFor(producto => producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture))
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage(
-                    "El {ProertyName} No puede estar vacio, puede tener un 0 en el caso de que no exista")
+                    "El {ProertyName} No puede estar vacío, puede tener un 0 en el caso de que no exista")
                 .Length(1, 10)
-                .WithMessage("El {PropertyName} tiene {TotalLength} y debe de tener entre 1 y 10 caracteres")
-                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} Debe de contener solo números.");
+                .WithMessage("El {PropertyName} debe de tener entre 1 y 10 caracteres")
+                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} debe de contener sólo números.");
 
             RuleFor(producto => producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture))
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage(
-                    "El {ProertyName} No puede estar vacio, puede tener un 0 en el caso de que no exista")
+                    "El {ProertyName} no puede estar vacío, puede tener un 0 en el caso de que no exista")
                 .Length(1, 10)
-                .WithMessage("El {PropertyName} tiene {TotalLength} y debe de tener entre 1 y 10 caracteres")
-                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} Debe de contener solo números.");
+                .WithMessage("El {PropertyName} debe de tener entre 1 y 10 caracteres")
+                .Must(Validations.BeAValidFloat).WithMessage("El {PropertyName} debe de contener sólo números.");
 
             RuleFor(producto => producto.DetallesProducto)
                 .Cascade(CascadeMode.Stop)
@@ -41,7 +41,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(producto => producto.CantidadProducto.ToString())
                 .Cascade(CascadeMode.Stop)
                 .Length(0, 6)
-                .WithMessage("La cantidad del produto tiene {TotalLength} y debe de tener entre 0 y 6 caracteres.")
+                .WithMessage("La cantidad del producto no puede ser demasiado grande.")
                 .Must(Validations.BeAValidNumber).WithMessage("La cantidad del producto tiene caracteres prohibidos.");
 
             RuleFor(producto => producto.Piezas.ToString())

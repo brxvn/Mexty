@@ -122,7 +122,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void ClearFields() {
             txtNombreEstablecimiento.IsReadOnly = false;
-
+            SearchBox.Text = "";
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
             txtDirección.Text = "";
@@ -164,7 +164,9 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
                 CollectionView = collection;
+                ClearFields();
             }
+            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -421,10 +423,7 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void EnableGuardar() {
-            if (txtNombreEstablecimiento.Text.Length >= 3 &&
-                txtTelefono.Text.Length == 10 &&
-                txtRFC.Text.Length >= 12 &&
-                txtDirección.Text.Length >= 5) {
+            if (txtNombreEstablecimiento.Text.Length >= 3) {
 
                 Guardar.IsEnabled = true;
                 Guardar.ToolTip = "Guardar Cambios";
@@ -432,9 +431,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             else {
                 Guardar.IsEnabled = false;
-                Guardar.ToolTip = "Verificar los datos para guardar.\nEl nombre del establecimiento debe de tener más de 3 carácteres." +
-                    "\nEl teléfono debe de ser de 10 dígitos.\nRFC debe ser válido.\nLa dirección debe de tener más de 5 carácteres." +
-                    "\nFacebook e Instagram pueden estar vacíos.";
+                Guardar.ToolTip = "Verificar los datos para guardar.\nEl establecimineto al menos debe contar con un nombre.";
             }
 
 
