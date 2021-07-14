@@ -84,6 +84,8 @@ namespace Mexty.MVVM.Model {
             catch (Exception e) {
                 log.Error($"Error al leer del ini {e.Message}");
                 return "";
+                //throw;
+                // TODO: probablemente sacar un anuncio de error diciendo que algo anda mal con el ini.
             }
         }
 

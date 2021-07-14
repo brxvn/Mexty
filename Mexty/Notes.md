@@ -32,6 +32,7 @@
   
 ### Notas sig reunión
 - Preguntar si poner el tipo sincroniza en boolean.
+- Quitar el campo blob de cat-tienda en favor de buscar todo en c:\Mexty\Media\
 - Preguntar si debemos de poner avisos de error cuando algo salga mal y que deben de decir.
   - Ejemplo cuando una query sale mal por alguna razón mandar una advertencia o algo.
   - Si si, agregar un trow en los catch de database.

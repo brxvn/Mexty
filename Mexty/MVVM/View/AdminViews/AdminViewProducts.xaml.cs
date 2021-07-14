@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -136,8 +137,8 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
             ComboTipo.SelectedItem = producto.TipoProducto;
-            txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString();
-            txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString();
+            txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture);
+            txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
             txtCantidad.Text = producto.CantidadProducto.ToString();
@@ -195,6 +196,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (producto == null) return false;
                     return ((Producto)producto).Activo == 1;
                 });
+                
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
@@ -337,7 +339,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     var res = Database.UpdateData(newProduct);
                     if (res != 0) {
                         var msg =
-                            $"Se ha activado y actualizado el producto {newProduct.IdProducto} {newProduct.NombreProducto}.";
+                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
                         MessageBox.Show(msg, "Producto Actualizado");
                         Log.Debug("Se ha activado el producto de manera exitosa.");
                     }
