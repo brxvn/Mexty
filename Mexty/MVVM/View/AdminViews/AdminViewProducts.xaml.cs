@@ -231,9 +231,11 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 var newProduct = new Producto();
                 newProduct.NombreProducto = txtNombreProducto.Text;
+                
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
                 newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
                 newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+                
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
