@@ -18,7 +18,7 @@ namespace Mexty {
                         
             DataContext = new MainViewModel();
             
-            if (Database.GetRol().Equals(3)) {
+            if (Database.GetRol().Equals(2)) {
                 Admn.Visibility = Visibility.Collapsed;
             }
             activeUser.Text = Database.GetUsername();

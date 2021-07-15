@@ -249,8 +249,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 
                 var res = Database.NewClient(newClient);
                 if (res == 0) return;
-                
-                var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
+                var name = char.ToUpper(newClient.Nombre[0]) + newClient.Nombre[1..] + " " + char.ToUpper(newClient.ApPaterno[0]) + newClient.ApPaterno[1..];
+                var msg = $"Se ha dado de alta el cliente {name}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
                 Log.Debug("Se ha actualizado el cliente exitosamente.");
 
