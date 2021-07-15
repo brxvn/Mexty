@@ -52,6 +52,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             try {
                 InitializeComponent();
+                FillData();
 
                 Log.Debug("Se han inicializado los campos del modulo de inventario exitosamente.");
             }
@@ -61,7 +62,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
 
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(UpdateTimerTick);
+            timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
         }
@@ -82,7 +83,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             // TODO: hacer querrys por sucursal.
             
         }
-        
+
         private void FilterSearch(object sender, TextChangedEventArgs e) {
 
         }
