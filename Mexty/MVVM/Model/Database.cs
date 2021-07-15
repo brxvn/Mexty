@@ -36,6 +36,11 @@ namespace Mexty.MVVM.Model {
         private static int Rol { get; set; }
 
         /// <summary>
+        /// ID de la tienda actual.
+        /// </summary>
+        private static int IdTienda { get; set; }
+
+        /// <summary>
         /// <c>Bool</c> que guarda si el log-in fue exitoso.
         /// </summary>
         private static bool ConnectionSuccess { get; set; }
@@ -86,6 +91,38 @@ namespace Mexty.MVVM.Model {
                 return "";
                 //throw;
                 // TODO: probablemente sacar un anuncio de error diciendo que algo anda mal con el ini.
+            }
+        }
+
+        /// <summary>
+        /// Método que obtiene el Id de la tienda en la que se ejecuta el programa.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetIdTiendaActual() {
+            try {
+                var myIni = new IniFile(@"C:\Mexty\Settings.ini");
+                var sucursal = myIni.Read("IdTienda");
+                IdTienda = int.Parse(sucursal);
+                log.Info("Se ha leido exitosamente el id de la tienda del ini.");
+                
+                var connObj = new MySqlConnection(ConnectionInfo());
+                connObj.Open();
+                var query = new MySqlCommand() {
+                    Connection = connObj,
+                    CommandText = "select nombre_tienda from cat_tienda where ID_TIENDA=@id"
+                };
+                query.Parameters.AddWithValue("@id", sucursal);
+                var res = query.ExecuteReader();
+                if (res.Read().ToString().ToLower() == "false") {
+                    log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
+                    throw new Exception();
+                } 
+                return IdTienda;
+            }
+            catch (Exception e) {
+                log.Error("Ha ocurrido un error al leer el Id de la tienda en el ini.");
+                log.Error($"Error: {e.Message}");
+                throw;
             }
         }
 
@@ -813,18 +850,18 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla de inventario_general.
         /// </summary>
         /// <returns></returns>
-        public static List<Inventario> GetTablesFromInventario() {
+        public static List<ItemInventario> GetTablesFromInventario() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = "select * from inventario_general"
             };
-            var items = new List<Inventario>();
+            var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
                 while (reader.Read()) {
-                    var item = new Inventario() {
+                    var item = new ItemInventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
@@ -858,7 +895,7 @@ namespace Mexty.MVVM.Model {
         /// Método para actualizar los datos de la tabla inventario-general.
         /// </summary>
         /// <param name="item"></param>
-        public static int UpdateData(Inventario item) {
+        public static int UpdateData(ItemInventario item) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -902,7 +939,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
-        public static int NewItem(Inventario newItem) {
+        public static int NewItem(ItemInventario newItem) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 

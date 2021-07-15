@@ -14,14 +14,51 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
+using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.InventarioViews {
+    
     /// <summary>
     /// Interaction logic for InventarioViewInvent.xaml
     /// </summary>
     public partial class InventarioViewInvent : UserControl {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+        
+        /// <summary>
+        /// La lista que contiene el catalogo de productos de la sucursal actual.
+        /// </summary>
+        // Esto es lo que va a haber en la data grid.
+        private List<Producto> CatalogoProductos { get; set; }
+        
+        /// <summary>
+        /// Lista que contiene la cantidad y el comentario de cada item del modulo de inventario.
+        /// </summary>
+        private List<ItemInventario> ItemsInventario { get; set; }
+        
+        /// <summary>
+        /// Collection view actual de la datagrid.
+        /// </summary>
+        private CollectionView CollectionView { get; set; }
+
+        /// <summary>
+        /// El último producto seleccionado de la datagrid.
+        /// </summary>
+        private ItemInventario SelectedItem { get; set; }
+        
         public InventarioViewInvent() {
-            InitializeComponent();
+
+            try {
+                InitializeComponent();
+
+                Log.Debug("Se han inicializado los campos del modulo de inventario exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos del modulo de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -37,6 +74,15 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
+
+        /// <summary>
+        /// Método que llena el datagrid y los combobox.
+        /// </summary>
+        private void FillData() {
+            // TODO: hacer querrys por sucursal.
+            
+        }
+        
         private void FilterSearch(object sender, TextChangedEventArgs e) {
 
         }
@@ -82,7 +128,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
-
+                // var lol = Database.GetIdTiendaActual();
+                // MessageBox.Show(lol.ToString());
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {

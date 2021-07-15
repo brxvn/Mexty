@@ -2,7 +2,7 @@
     /// <summary>
     /// Clase principal los items del inventario.
     /// </summary>
-    public class Inventario {
+    public class ItemInventario {
 
         /// <summary>
         /// Id del item del inventario.
