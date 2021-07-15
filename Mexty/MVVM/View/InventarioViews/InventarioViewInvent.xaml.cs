@@ -81,6 +81,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private void FillData() {
             // TODO: hacer querrys por sucursal.
+            // var idTienda = Database.GetIdTiendaActual();
+            // MessageBox.Show(lol.ToString());
             
         }
 
@@ -129,8 +131,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
-                // var lol = Database.GetIdTiendaActual();
-                // MessageBox.Show(lol.ToString());
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {

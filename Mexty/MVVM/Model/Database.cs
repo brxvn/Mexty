@@ -17,7 +17,7 @@ namespace Mexty.MVVM.Model {
     /// </summary>
     // TODO: Hacer la clase Database estacica y re implementar login.
     public class Database {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         private static MySqlDataReader _firstQuery;
         private static MySqlConnection _sqlSession;
 
@@ -639,6 +639,14 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
             query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
             
+            //TODO: IF activo == 0, editar inventario y poner activo == 0
+            if (producto.Activo == 0) {
+                var item = new ItemInventario();
+                // TODO: agregar campo activo en inventario.
+                // item.activo = 0;
+                UpdateData(item);
+            }
+            
             try {
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de producto exitosamente.");
@@ -686,6 +694,10 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
             query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
+            
+            // TODO: checar que esto no de problemas.
+            var item = new ItemInventario {IdProducto = newProduct.IdProducto, Cantidad = 0, Comentario = ""};
+            NewItem(item);
 
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
@@ -851,13 +863,15 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla de inventario_general.
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetTablesFromInventario() {
+        public static List<ItemInventario> GetTablesFromInventario(int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "select * from inventario_general"
+                CommandText = "select * from inventario_general where ID_TIENDA=@id"
             };
+            query.Parameters.AddWithValue("@id", idTienda.ToString());
+
             var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
@@ -944,6 +958,7 @@ namespace Mexty.MVVM.Model {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
+            // TODO: modificar querry y modificar esquema de bd.
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
@@ -1004,8 +1019,6 @@ namespace Mexty.MVVM.Model {
             //     }
             // }
         }
-        
-
 
 
         // ============================================
