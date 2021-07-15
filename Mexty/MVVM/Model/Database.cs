@@ -17,7 +17,7 @@ namespace Mexty.MVVM.Model {
     /// </summary>
     // TODO: Hacer la clase Database estacica y re implementar login.
     public class Database {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         private static MySqlDataReader _firstQuery;
         private static MySqlConnection _sqlSession;
 
@@ -25,6 +25,7 @@ namespace Mexty.MVVM.Model {
         /// Campo con el nombre de usuario de la persona logeada.
         /// </summary>
         private static string Username { get; set; }
+
         /// <summary>
         /// Campo con el password de la persona logeada.
         /// </summary>
@@ -34,6 +35,11 @@ namespace Mexty.MVVM.Model {
         /// ID del Rol de la persona logeada.
         /// </summary>
         private static int Rol { get; set; }
+
+        /// <summary>
+        /// ID de la tienda actual.
+        /// </summary>
+        private static int IdTienda { get; set; }
 
         /// <summary>
         /// <c>Bool</c> que guarda si el log-in fue exitoso.
@@ -78,14 +84,46 @@ namespace Mexty.MVVM.Model {
                 var user = myIni.Read("DbUser");
                 var pass = myIni.Read("DbPass");
                 var connString = $"server=localhost; database = mexty; Uid={user}; pwd ={pass}";
-                log.Debug("Se han leido las credenciales del ini exitosamente.");
+                Log.Debug("Se han leido las credenciales del ini exitosamente.");
                 return connString;
             }
             catch (Exception e) {
-                log.Error($"Error al leer del ini {e.Message}");
+                Log.Error($"Error al leer del ini {e.Message}");
                 return "";
                 //throw;
                 // TODO: probablemente sacar un anuncio de error diciendo que algo anda mal con el ini.
+            }
+        }
+
+        /// <summary>
+        /// Método que obtiene el Id de la tienda en la que se ejecuta el programa.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetIdTiendaActual() {
+            try {
+                var myIni = new IniFile(@"C:\Mexty\Settings.ini");
+                var sucursal = myIni.Read("IdTienda");
+                IdTienda = int.Parse(sucursal);
+                Log.Info("Se ha leido exitosamente el id de la tienda del ini.");
+                
+                var connObj = new MySqlConnection(ConnectionInfo());
+                connObj.Open();
+                var query = new MySqlCommand() {
+                    Connection = connObj,
+                    CommandText = "select nombre_tienda from cat_tienda where ID_TIENDA=@id"
+                };
+                query.Parameters.AddWithValue("@id", sucursal);
+                var res = query.ExecuteReader();
+                if (res.Read().ToString().ToLower() == "false") {
+                    Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
+                    throw new Exception();
+                } 
+                return IdTienda;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al leer el Id de la tienda en el ini.");
+                Log.Error($"Error: {e.Message}");
+                throw;
             }
         }
 
@@ -99,12 +137,12 @@ namespace Mexty.MVVM.Model {
                 Rol = int.Parse(_firstQuery.GetString("id_rol"));
                 Password = _firstQuery.GetString("contrasenia");
                 if (Username != "" && Password != "") {
-                    log.Debug("Campos estaticos de database inicializados con exito.");
+                    Log.Debug("Campos estaticos de database inicializados con exito.");
                     ConnectionSuccess = true;
                 }
             }
             catch (Exception e) {
-                log.Error($"No se han podido inicializar los los campos necesarios para el logIn {e.Message}");
+                Log.Error($"No se han podido inicializar los los campos necesarios para el logIn {e.Message}");
             }
         }
 
@@ -146,11 +184,11 @@ namespace Mexty.MVVM.Model {
                 Password = null;
                 Rol = 0;
                 ConnectionSuccess = false;
-                log.Info("Conección con base de datos cerrada con exito.");
+                Log.Info("Conección con base de datos cerrada con exito.");
             }
             catch (Exception e) {
-                log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
-                log.Error($"Excepción: {e.Message}");
+                Log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
+                Log.Error($"Excepción: {e.Message}");
             }
         }
 
@@ -194,12 +232,12 @@ namespace Mexty.MVVM.Model {
                     };
                     users.Add(usuario);
                 }
-                log.Debug("Se han obtenido con exito los datos de la tabla usuarios");
+                Log.Debug("Se han obtenido con exito los datos de la tabla usuarios");
                 connObj.Close();
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un problema al obtener los datos de la tabla usuarios.");
-                log.Error($"Excepción: {e.Message}");
+                Log.Error("Ha ocurrido un problema al obtener los datos de la tabla usuarios.");
+                Log.Error($"Excepción: {e.Message}");
             }
 
             return users;
@@ -243,12 +281,12 @@ namespace Mexty.MVVM.Model {
 
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se ha actualizado el usuario exitosamente.");
+                Log.Info("Se ha actualizado el usuario exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al actualizar el usuario");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al actualizar el usuario");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -301,12 +339,12 @@ namespace Mexty.MVVM.Model {
 
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se ha creado un nuevo usuario exitosamente.");
+                Log.Info("Se ha creado un nuevo usuario exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al dar de alta un un nuevo usuario.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al dar de alta un un nuevo usuario.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -349,12 +387,12 @@ namespace Mexty.MVVM.Model {
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo")
                     };
                     sucursales.Add(sucursal);
-                    log.Debug("Se han obtenido con exito las tablas de sucursales.");
+                    Log.Debug("Se han obtenido con exito las tablas de sucursales.");
                 }
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al obtener las tablas de surcursales.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al obtener las tablas de surcursales.");
+                Log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -403,12 +441,12 @@ namespace Mexty.MVVM.Model {
             
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se ha actualizado la sucursal exitosamente.");
+                Log.Info("Se ha actualizado la sucursal exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al actualizar la sucursal.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al actualizar la sucursal.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -454,12 +492,12 @@ namespace Mexty.MVVM.Model {
             
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
-                log.Info("Se ha creado una nueva sucursal exitosamente.");
+                Log.Info("Se ha creado una nueva sucursal exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -498,11 +536,11 @@ namespace Mexty.MVVM.Model {
                     roles.Add(rol);
                 }
 
-                log.Debug("Se han obtenido con exito las tablas de roles.");
+                Log.Debug("Se han obtenido con exito las tablas de roles.");
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al obtener las tablas de roles.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al obtener las tablas de roles.");
+                Log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -550,11 +588,11 @@ namespace Mexty.MVVM.Model {
                     productos.Add(producto);
                 }
 
-                log.Debug("Se han obtenido con exito las tablas de productos.");
+                Log.Debug("Se han obtenido con exito las tablas de productos.");
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al obtener las tablas de productos.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al obtener las tablas de productos.");
+                Log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -601,14 +639,22 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
             query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
             
+            //TODO: IF activo == 0, editar inventario y poner activo == 0
+            if (producto.Activo == 0) {
+                var item = new ItemInventario();
+                // TODO: agregar campo activo en inventario.
+                // item.activo = 0;
+                UpdateData(item);
+            }
+            
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se han actualizado los datos de producto exitosamente.");
+                Log.Info("Se han actualizado los datos de producto exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al actualizar los datos en la tabla producto.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al actualizar los datos en la tabla producto.");
+                Log.Error($"Error: {e.Message}");
                 throw;
             }
             finally {
@@ -648,15 +694,19 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
             query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
+            
+            // TODO: checar que esto no de problemas.
+            var item = new ItemInventario {IdProducto = newProduct.IdProducto, Cantidad = 0, Comentario = ""};
+            NewItem(item);
 
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
-                log.Info("Se ha dado de alta un nuevo produto exitosamente.");
+                Log.Info("Se ha dado de alta un nuevo produto exitosamente.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al dar de alta un nuevo producto.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo producto.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -701,11 +751,11 @@ namespace Mexty.MVVM.Model {
                     };
                     clientes.Add(cliente);
                 }
-                log.Debug("Se han obtenido con exito las tablas de clientes.");
+                Log.Debug("Se han obtenido con exito las tablas de clientes.");
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al obtener las tablas de clientes.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al obtener las tablas de clientes.");
+                Log.Error($"Error: {e.Message}");
             }
             finally{
                 connObj.Close();
@@ -743,12 +793,12 @@ namespace Mexty.MVVM.Model {
 
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se han actualizado los datos de cliente de manera exitosa.");
+                Log.Info("Se han actualizado los datos de cliente de manera exitosa.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al actualizar los datos de cliente.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al actualizar los datos de cliente.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -792,12 +842,12 @@ namespace Mexty.MVVM.Model {
             
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
-                log.Info("Se ha dado de alta un nuevo cliente de manera exitosa.");
+                Log.Info("Se ha dado de alta un nuevo cliente de manera exitosa.");
                 return res;
             }
             catch (MySqlException e) {
-                log.Error("Ha ocurrido un error al dar de alta un nuevo cliente.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo cliente.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -813,18 +863,20 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla de inventario_general.
         /// </summary>
         /// <returns></returns>
-        public static List<Inventario> GetTablesFromInventario() {
+        public static List<ItemInventario> GetTablesFromInventario(int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "select * from inventario_general"
+                CommandText = "select * from inventario_general where ID_TIENDA=@id"
             };
-            var items = new List<Inventario>();
+            query.Parameters.AddWithValue("@id", idTienda.ToString());
+
+            var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
                 while (reader.Read()) {
-                    var item = new Inventario() {
+                    var item = new ItemInventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
@@ -841,11 +893,11 @@ namespace Mexty.MVVM.Model {
                     items.Add(item);
                 }
 
-                log.Debug("Se han obtenido con exito las tablas de inventario_general.");
+                Log.Debug("Se han obtenido con exito las tablas de inventario_general.");
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al obtener las tablas de inventario-general.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario-general.");
+                Log.Error($"Error: {e.Message}");
             }
             finally {
                 connObj.Close();
@@ -858,7 +910,7 @@ namespace Mexty.MVVM.Model {
         /// Método para actualizar los datos de la tabla inventario-general.
         /// </summary>
         /// <param name="item"></param>
-        public static int UpdateData(Inventario item) {
+        public static int UpdateData(ItemInventario item) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -885,12 +937,12 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
+                Log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
                 return res;
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al actualizar los datos de inventario-general.");
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al actualizar los datos de inventario-general.");
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -902,10 +954,11 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
-        public static int NewItem(Inventario newItem) {
+        public static int NewItem(ItemInventario newItem) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
+            // TODO: modificar querry y modificar esquema de bd.
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
@@ -932,12 +985,12 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usMod", GetUsername());
             try {
                 var res = query.ExecuteNonQuery();
-                log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
+                Log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
                 return res;
             }
             catch (Exception e) {
-                log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario-general."); 
-                log.Error($"Error: {e.Message}");
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario-general."); 
+                Log.Error($"Error: {e.Message}");
                 return 0;
             }
             finally {
@@ -966,8 +1019,6 @@ namespace Mexty.MVVM.Model {
             //     }
             // }
         }
-        
-
 
 
         // ============================================
