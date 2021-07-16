@@ -263,7 +263,8 @@ namespace Mexty.MVVM.Model {
                         ACTIVO=@act, 
                         ID_ROL=@idRo, 
                         USUARIO_MODIFICA=@uMod, 
-                        FECHA_MODIFICA=sysdate() 
+                        FECHA_MODIFICA=sysdate(),
+                        SINCRONZA=1
                     where ID_USUARIO=@ID"
             };
 
@@ -379,7 +380,6 @@ namespace Mexty.MVVM.Model {
                         Dirección = reader.IsDBNull("direccion") ? "" : reader.GetString("direccion"),
                         Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
                         Rfc = reader.IsDBNull("rfc") ? "" : reader.GetString("rfc"),
-                        // Logo = reader.GetBytes(5);  TODO: ver como hacerle con el logo.
                         Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
                         Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
                         Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
@@ -417,7 +417,6 @@ namespace Mexty.MVVM.Model {
                     DIRECCION=@dir, 
                     TELEFONO=@tel, 
                     RFC=@rfc, 
-                    -- LOGO=@logo, 
                     MENSAJE=@msg, 
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
@@ -431,7 +430,6 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@dir", sucursal.Dirección);
             query.Parameters.AddWithValue("@tel", sucursal.Telefono);
             query.Parameters.AddWithValue("@rfc", sucursal.Rfc);
-            //query.Parameters.AddWithValue("@logo", sucursal.Logo); TODO ver que onda con el logo.
             query.Parameters.AddWithValue("@msg", sucursal.Mensaje);
             query.Parameters.AddWithValue("@face", sucursal.Facebook);
             query.Parameters.AddWithValue("@inst", sucursal.Instagram);
@@ -468,13 +466,11 @@ namespace Mexty.MVVM.Model {
                 insert into cat_tienda 
                     (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
                      RFC, 
-                     -- LOGO, 
                      MENSAJE, 
                      FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO,
                      SINCRONZA) 
                 values (default, @nom, @dir, @tel, 
                         @rfc, 
-                        -- @logo, 
                         @msg, 
                         @face, @insta, @tTienda, @act,
                         1)"
@@ -622,7 +618,8 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@act,
-                    ID_TIENDA=@suc
+                    ID_TIENDA=@suc,
+                    SINCRONZA=1
                 where ID_PRODUCTO=@id"
             };
 
@@ -639,13 +636,6 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
             query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
             
-            //TODO: IF activo == 0, editar inventario y poner activo == 0
-            if (producto.Activo == 0) {
-                var item = new ItemInventario();
-                // TODO: agregar campo activo en inventario.
-                // item.activo = 0;
-                UpdateData(item);
-            }
             
             try {
                 var res = query.ExecuteNonQuery();
@@ -695,10 +685,6 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", 1.ToString());
             query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
             
-            // TODO: checar que esto no de problemas.
-            var item = new ItemInventario {IdProducto = newProduct.IdProducto, Cantidad = 0, Comentario = ""};
-            NewItem(item);
-
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha dado de alta un nuevo produto exitosamente.");
@@ -858,6 +844,8 @@ namespace Mexty.MVVM.Model {
         // ==============================================
         // ------- Querrys de Inventario  ---------------
         // ==============================================
+        // TODO: cambiar tablas de inventario y dejarle solo los campos que se ocupan.
+        // TODO: modificar querrys de inventario.
 
         /// <summary>
         /// Método para obtener todos los datos de la tabla de inventario_general.

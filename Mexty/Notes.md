@@ -36,3 +36,4 @@
 - Preguntar si debemos de poner avisos de error cuando algo salga mal y que deben de decir.
   - Ejemplo cuando una query sale mal por alguna razón mandar una advertencia o algo.
   - Si si, agregar un trow en los catch de database.
+  
