@@ -114,7 +114,9 @@ namespace Mexty.MVVM.View.AdminViews {
             var sucursales = Database.GetTablesFromSucursales();
             ListaSucursales = sucursales;
             foreach (var sucursal in sucursales) {
-                ComboSucursal.Items.Add(sucursal.NombreTienda);
+                if (sucursal.Activo == 1) {
+                    ComboSucursal.Items.Add(sucursal.NombreTienda);
+                }
             }
             Log.Debug("Se ha llenado el combo box de sucursales.");
         }
@@ -196,7 +198,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     if (producto == null) return false;
                     return ((Producto)producto).Activo == 1;
                 });
-                
+
                 collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
@@ -235,11 +237,11 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 var newProduct = new Producto();
                 newProduct.NombreProducto = txtNombreProducto.Text;
-                
+
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
                 newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
                 newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
-                
+
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
@@ -283,10 +285,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private static void Alta(Producto newProduct) {
             try {
                 Log.Debug("Detectada alta de producto.");
-                
+
                 var res = Database.NewProduct(newProduct);
                 if (res == 0) return;
-                
+
                 var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha dado de alta el producto de manera exitosa.");
@@ -328,14 +330,14 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 for (var index = 0; index < ListaProductos.Count; index++) {
                     var producto = ListaProductos[index];
-                    
+
                     if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
                     Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
                     // actualizamos y activamos.
                     newProduct.IdProducto = producto.IdProducto;
                     newProduct.Activo = 1;
                     alta = false;
-                    
+
                     var res = Database.UpdateData(newProduct);
                     if (res != 0) {
                         var msg =
@@ -343,7 +345,7 @@ namespace Mexty.MVVM.View.AdminViews {
                         MessageBox.Show(msg, "Producto Actualizado");
                         Log.Debug("Se ha activado el producto de manera exitosa.");
                     }
-                    
+
                     break;
                 }
             }
@@ -408,6 +410,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+        }
+
+        private void OnlyNumbersValidationCantidad(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x));
         }
 
         /// <summary>
@@ -530,38 +536,109 @@ namespace Mexty.MVVM.View.AdminViews {
                     txtPrecioMenudeo.Text = "";
                     break;
             }
-              
+
         }
 
-        private void HabilitarPiezas(object sender, SelectionChangedEventArgs e) {
-            switch (ComboMedida.SelectedIndex) {
+        /// <summary>
+        /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
+        /// </summary>
+        private void HablitarMedidas(object sender, SelectionChangedEventArgs e) {
+            switch (ComboTipo.SelectedIndex) {
+                case 0:
                 case 1:
                 case 2:
-                case 3:
-                    txtPiezas.Visibility = Visibility.Visible;
-                    txtCantidad.Visibility = Visibility.Visible;
-                    ColPiezas.Width = new GridLength(1, GridUnitType.Star);
-                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 1);
+                    ComboMedida.SelectedIndex = 0;
                     break;
+                case 3:
                 case 4:
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant: 4);
+                    ComboMedida.SelectedIndex = 0;
+                    break;
                 case 5:
                 case 6:
-                case 7:
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Collapsed;
-                    ColCantidad.Width = new GridLength(1, GridUnitType.Auto);
-                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 4);
+                    ComboMedida.SelectedIndex = 0;
                     break;
                 default:
-                    ColPiezas.Width = new GridLength(1, GridUnitType.Auto);
-                    ColCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Collapsed;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida();
+                    ComboMedida.SelectedIndex = 0;
                     break;
-
 
             }
         }
 
+        private void HabililtarCantidades(object sender, SelectionChangedEventArgs e) {
+            
+            switch (ComboMedida.SelectedIndex) {
+                case 0:
+                    switch (ComboMedida.SelectedItem.ToString()){
+                        case "pieza":
+                            txtCantidad.Visibility = Visibility.Collapsed;
+                            txtPiezas.Visibility = Visibility.Visible;
+                            ColPiezas.Width = new GridLength(.5, GridUnitType.Star);
+                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+                            break;
+
+                        default:
+                            txtCantidad.Visibility = Visibility.Collapsed;
+                            txtPiezas.Visibility = Visibility.Collapsed;
+                            ColPiezas.Width = new GridLength(0, GridUnitType.Star);
+                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+                            break;
+                    }
+                    break;
+                case 1:
+                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
+                        txtCantidad.Visibility = Visibility.Collapsed;
+                        txtPiezas.Visibility = Visibility.Collapsed;
+                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    }
+                    else {
+                        txtCantidad.Visibility = Visibility.Visible;
+                        txtPiezas.Visibility = Visibility.Visible;
+                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
+                    }
+
+                    break;
+                case 2:
+                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
+                        txtCantidad.Visibility = Visibility.Collapsed;
+                        txtPiezas.Visibility = Visibility.Collapsed;
+                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    }
+                    else {
+                        txtCantidad.Visibility = Visibility.Visible;
+                        txtPiezas.Visibility = Visibility.Visible;
+                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
+                    }
+                    break;
+                case 3:
+                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
+                        txtCantidad.Visibility = Visibility.Collapsed;
+                        txtPiezas.Visibility = Visibility.Collapsed;
+                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    }
+                    else {
+                        txtCantidad.Visibility = Visibility.Visible;
+                        txtPiezas.Visibility = Visibility.Visible;
+                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
+                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
+                    }
+                    break;
+                default:
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
+                    ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
+                    break;
+
+            }
+        }
     }
 }
