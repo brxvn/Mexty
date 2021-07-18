@@ -570,7 +570,6 @@ namespace Mexty.MVVM.Model {
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
-                        CantidadProducto = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
@@ -611,7 +610,6 @@ namespace Mexty.MVVM.Model {
                 set NOMBRE_PRODUCTO=@nom, 
                     TIPO_PRODUCTO=@tipoP, 
                     MEDIDA=@med,
-                    CANTIDAD=@cant,
                     PIEZAS=@piezas,
                     TIPO_VENTA=@tipoV, 
                     PRECIO_MAYOREO=@pMayo, 
@@ -626,7 +624,6 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@nom", producto.NombreProducto);
             query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
-            query.Parameters.AddWithValue("@cant", producto.CantidadProducto.ToString());
             query.Parameters.AddWithValue("@piezas", producto.Piezas.ToString());
             query.Parameters.AddWithValue("@tipoV", producto.TipoVenta.ToString());
             query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
@@ -664,18 +661,17 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = @"
                 insert into cat_producto 
-                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, CANTIDAD, TIPO_PRODUCTO, PIEZAS,
+                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS,
                      TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
                      ESPECIFICACION_PRODUCTO, ACTIVO, ID_TIENDA,
                      SINCRONZA) 
-                values (default, @nom, @medida, @cantidad, @tipoP, @piezas,
+                values (default, @nom, @medida, @tipoP, @piezas,
                         @tipoV, @pMayo, @pMenu, 
                         @esp, @act, @suc,
                         1)"
             }; 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
-            query.Parameters.AddWithValue("@cantidad", newProduct.CantidadProducto.ToString());
             query.Parameters.AddWithValue("@piezas", newProduct.Piezas.ToString());
             query.Parameters.AddWithValue("@tipoP", newProduct.TipoProducto);
             query.Parameters.AddWithValue("@tipoV", newProduct.TipoVenta.ToString());

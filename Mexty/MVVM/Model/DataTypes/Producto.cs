@@ -69,11 +69,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         }
 
         /// <summary>
-        /// Cantidad del producto
-        /// </summary>
-        public int CantidadProducto { get; set; }
-
-        /// <summary>
         /// Cantidad de piezas del producto.
         /// </summary>
         public int Piezas { get; set; }

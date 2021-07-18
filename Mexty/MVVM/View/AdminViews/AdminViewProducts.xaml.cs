@@ -143,7 +143,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
-            txtCantidad.Text = producto.CantidadProducto.ToString();
             txtPiezas.Text = producto.Piezas.ToString();
             ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
             Eliminar.IsEnabled = true;
@@ -239,7 +238,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.NombreProducto = txtNombreProducto.Text;
 
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-                newProduct.CantidadProducto = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
                 newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
 
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
