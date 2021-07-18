@@ -72,6 +72,7 @@ namespace Mexty.MVVM.Model {
                 InitializeFields();
             }
 
+            GetIdTiendaActual();
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene el Id de la tienda en la que se ejecuta el programa.
         /// </summary>
         /// <returns></returns>
-        public static int GetIdTiendaActual() {
+        private static void GetIdTiendaActual() {
             try {
                 var myIni = new IniFile(@"C:\Mexty\Settings.ini");
                 var sucursal = myIni.Read("IdTienda");
@@ -118,12 +119,12 @@ namespace Mexty.MVVM.Model {
                     Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
                     throw new Exception();
                 } 
-                return IdTienda;
             }
+
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al leer el Id de la tienda en el ini.");
                 Log.Error($"Error: {e.Message}");
-                throw;
+                // TODO: manerjar mejor el error.
             }
         }
 
@@ -840,7 +841,6 @@ namespace Mexty.MVVM.Model {
         // ==============================================
         // ------- Querrys de Inventario  ---------------
         // ==============================================
-        // TODO: modificar querrys de inventario.
 
         /// <summary>
         /// Método para obtener todos los datos de la tabla de inventario_general.
