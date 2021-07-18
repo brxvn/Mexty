@@ -840,19 +840,19 @@ namespace Mexty.MVVM.Model {
         // ==============================================
         // ------- Querrys de Inventario  ---------------
         // ==============================================
-        // TODO: cambiar tablas de inventario y dejarle solo los campos que se ocupan.
         // TODO: modificar querrys de inventario.
 
         /// <summary>
         /// Método para obtener todos los datos de la tabla de inventario_general.
         /// </summary>
         /// <returns></returns>
+        // TODO: quiza manerjar el id tienda de manera diferente.
         public static List<ItemInventario> GetTablesFromInventario(int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "select * from inventario_general where ID_TIENDA=@id"
+                CommandText = "select * from inventario where ID_TIENDA=@id"
             };
             query.Parameters.AddWithValue("@id", idTienda.ToString());
 
@@ -900,14 +900,16 @@ namespace Mexty.MVVM.Model {
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = @"
-                update inventario_general
-                set ID_PRODUCTO=@idP, TIPO_PRODUCTO=@tipo,
-                    MEDIDA=@med, CANTIDAD=@can, PIEZAS=@pieza,
+                update inventario
+                set ID_PRODUCTO=@idP,
+                    CANTIDAD=@can, PIEZAS=@pieza,
                     COMENTARIO=@comentario, ID_TIENDA=@idT,
                     USUARIO_REGISTRA=@usrR, FECHA_REGISTRO=@fecR, 
-                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=sysdate()
+                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=sysdate(),
+                    SINCRONZA=1
                 where ID_REGISTRO=@idR"
             };
+
             query.Parameters.AddWithValue("@idR", item.IdRegistro.ToString());
             query.Parameters.AddWithValue("@idP", item.IdProducto.ToString());
             query.Parameters.AddWithValue("@tipo", item.TipoProducto);
@@ -919,6 +921,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
             query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
+
             try {
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
@@ -942,22 +945,24 @@ namespace Mexty.MVVM.Model {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
-            // TODO: modificar querry y modificar esquema de bd.
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
-                insert into inventario_general
-                    (ID_REGISTRO, ID_PRODUCTO, TIPO_PRODUCTO,
-                     MEDIDA, CANTIDAD, PIEZAS,
+                insert into inventario
+                    (ID_REGISTRO, ID_PRODUCTO,
+                     CANTIDAD, PIEZAS,
                      COMENTARIO, ID_TIENDA,
                      usuario_registra, fecha_registro, 
-                     usuario_modifica, fecha_modifica) 
-                values (default, @idP, @tipo,
-                        @med, @cant, @piezas,
+                     usuario_modifica, fecha_modifica,
+                     SINCRONZA) 
+                values (default, @idP,
+                        @cant, @piezas,
                         @comentario, @idT,
                         @usReg, sysdate(), 
-                        @usMod, sysdate())"
+                        @usMod, sysdate(),
+                        1)"
             };
+
             query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
             query.Parameters.AddWithValue("@tipo", newItem.TipoProducto);
             query.Parameters.AddWithValue("@med", newItem.Medida);
@@ -967,6 +972,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@idT", newItem.IdTienda.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
+
             try {
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
