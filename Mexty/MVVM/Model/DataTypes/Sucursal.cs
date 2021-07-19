@@ -39,12 +39,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         public string Rfc { get; set; }
 
         /// <summary>
-        /// Logo de la tienda.
-        /// </summary>
-        // TODO: Ver que onda con el objeto blob que viene de la base de datos.
-        public List<byte> Logo { get; set; }
-
-        /// <summary>
         /// Mensaje de la tienda.
         /// </summary>
         public string Mensaje { get; set; }

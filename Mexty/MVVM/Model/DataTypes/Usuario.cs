@@ -18,7 +18,6 @@ namespace Mexty.MVVM.Model.DataTypes
         private string _apPaterno;
         private string _apMaterno;
         private string _domicilio;
-        private string _username;
 
         /// <summary>
         /// Id del empleado.
@@ -132,6 +131,13 @@ namespace Mexty.MVVM.Model.DataTypes
         /// Lista estatica que contiene la lista de sucursales para más rapido acceso.
         /// </summary>
         private static List<Sucursal> ListaSucursal { get; set; }
+
+        /// <summary>
+        /// Actualiza la lista de sucursales.
+        /// </summary>
+        public void UpdateListaSucursal() {
+            ListaSucursal = Database.GetTablesFromSucursales();
+        }
 
         /// <summary>
         /// Campo que da el nombre de la tienda en letra, Solo Get.

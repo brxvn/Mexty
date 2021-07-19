@@ -852,6 +852,7 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
+                //TODO: Probablemente cambiar esta query para que me de los campos de cat tienda e inventario.
                 CommandText = "select * from inventario where ID_TIENDA=@id"
             };
             query.Parameters.AddWithValue("@id", idTienda.ToString());
@@ -1008,7 +1009,7 @@ namespace Mexty.MVVM.Model {
             //         }
             //     }
             // }
-        }
+                }
 
 
         // ============================================

@@ -119,6 +119,13 @@ namespace Mexty.MVVM.Model.DataTypes {
         private static List<Sucursal> ListaSucursal { get; set; }
 
         /// <summary>
+        /// Actualiza la lista de sucursales.
+        /// </summary>
+        public void UpdateListaSucursal() {
+            ListaSucursal = Database.GetTablesFromSucursales();
+        }
+
+        /// <summary>
         /// Obtiene la sucursal por medio del nombre.
         /// </summary>
         public string GetSucursalNombre {
