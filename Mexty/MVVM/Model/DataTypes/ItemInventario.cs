@@ -27,7 +27,6 @@
         /// <summary>
         /// EL nombre del producto.
         /// </summary>
-        //TODO: agregarlo a database.
         public string NombreProducto { get; set; }
 
         /// <summary>
@@ -41,9 +40,15 @@
         public int Piezas { get;set; }
 
         /// <summary>
+        /// Cantidad maxima de piezas en el producto (definida en mod producto).
+        /// </summary>
+        public int MaxPiezas { get; set; }
+
+        /// <summary>
         /// Cantidad en existencia del producto.
         /// </summary>
         public int Cantidad { get; set; }
+
 
         /// <summary>
         /// Comentario del producto.

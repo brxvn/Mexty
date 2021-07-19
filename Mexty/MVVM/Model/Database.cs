@@ -579,7 +579,6 @@ namespace Mexty.MVVM.Model {
                         DetallesProducto = 
                             reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
-                        IdSucursal = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
                     productos.Add(producto);
                 }
@@ -617,7 +616,6 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@act,
-                    ID_TIENDA=@suc,
                     SINCRONZA=1
                 where ID_PRODUCTO=@id"
             };
@@ -632,8 +630,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
-            query.Parameters.AddWithValue("@suc", producto.IdSucursal.ToString());
-            
+
             
             try {
                 var res = query.ExecuteNonQuery();
@@ -664,11 +661,11 @@ namespace Mexty.MVVM.Model {
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS,
                      TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO, ID_TIENDA,
+                     ESPECIFICACION_PRODUCTO, ACTIVO,
                      SINCRONZA) 
                 values (default, @nom, @medida, @tipoP, @piezas,
                         @tipoV, @pMayo, @pMenu, 
-                        @esp, @act, @suc,
+                        @esp, @act,
                         1)"
             }; 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
@@ -680,8 +677,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@act", 1.ToString());
-            query.Parameters.AddWithValue("@suc", newProduct.IdSucursal.ToString());
-            
+
             try {
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha dado de alta un nuevo produto exitosamente.");
@@ -852,10 +848,24 @@ namespace Mexty.MVVM.Model {
             connObj.Open();
             var query = new MySqlCommand() {
                 Connection = connObj,
-                //TODO: Probablemente cambiar esta query para que me de los campos de cat tienda e inventario.
-                CommandText = "select * from inventario where ID_TIENDA=@id"
+                CommandText = @"
+                SELECT p.id_producto,
+                       p.tipo_producto,
+                       p.nombre_producto,
+                       p.medida,
+                       p.piezas AS MAX_PIEZAS,
+                       i.ID_REGISTRO,
+                       i.piezas,
+                       i.cantidad,
+                       i.comentario,
+                       i.ID_TIENDA
+                FROM   cat_producto p,
+                       inventario i
+                WHERE  p.id_producto = i.id_producto
+                       AND p.id_producto = @id and i.ID_TIENDA=@idT"
             };
             query.Parameters.AddWithValue("@id", idTienda.ToString());
+            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
             var items = new List<ItemInventario>();
             try {
@@ -865,11 +875,13 @@ namespace Mexty.MVVM.Model {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("canidad"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        MaxPiezas = reader.IsDBNull("max_piezas") ? 0 : reader.GetInt32("max_piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                         UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),

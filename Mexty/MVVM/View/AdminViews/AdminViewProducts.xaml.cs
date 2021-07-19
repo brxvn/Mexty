@@ -144,7 +144,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
             txtPiezas.Text = producto.Piezas.ToString();
-            ComboSucursal.SelectedIndex = producto.IdSucursal - 1;
+            //ComboSucursal.SelectedIndex = producto.IdSucursal - 1; TODO:
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
@@ -219,8 +219,9 @@ namespace Mexty.MVVM.View.AdminViews {
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
-                producto.TipoVentaNombre.ToLower().Contains(text) ||
-                producto.GetSucursalNombre.ToLower().Contains(text)) {
+                producto.TipoVentaNombre.ToLower().Contains(text) //||
+                //producto.GetSucursalNombre.ToLower().Contains(text) TODO:
+                ) {
                 return producto.Activo == 1;
             }
             return false;
@@ -246,7 +247,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
-                newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1;
+                //newProduct.IdSucursal = ComboSucursal.SelectedIndex + 1; TODO:
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
                 if (!Validar(newProduct)) {
