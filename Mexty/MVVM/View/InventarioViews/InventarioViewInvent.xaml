@@ -25,11 +25,7 @@
                Padding="0,20"/>
 
             <!--El nombre es searchBox-->
-            <TextBox Background="WhiteSmoke"
-                     Grid.Column="1"
-                     x:Name="SearchBox"
-                     PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     HorizontalAlignment="Right">
+            <TextBox Background="WhiteSmoke" Grid.Column="1" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Style.Setters>

@@ -43,5 +43,32 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
 
         }
+
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+        }
+
+        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) {
+
+        }
     }
 }
