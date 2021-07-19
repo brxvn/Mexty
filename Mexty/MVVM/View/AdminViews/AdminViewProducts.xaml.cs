@@ -156,6 +156,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ClearFields() {
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
+            //PrecioGeneral.IsChecked = false;
             Eliminar.ToolTip = "Seleccione al menos un producto para eliminar.";
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
@@ -515,22 +516,33 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void HabilitarInputPrecios(object sender, SelectionChangedEventArgs e) {
             switch (ComboVenta.SelectedIndex) {
-                case 1:
-                    txtPrecioMenudeo.IsReadOnly = true;
-                    txtPrecioMenudeo.Text = "0";
-                    txtPrecioMayoreo.Text = "";
-                    txtPrecioMayoreo.IsReadOnly = false;
+                case 0:
+                    txtPrecioMayoreo.Visibility = Visibility.Collapsed;
+                    txtPrecioMenudeo.Visibility = Visibility.Collapsed;
+
+                    txtPrecioMatriz.Visibility = Visibility.Visible;
+                    txtPrecioSucursal.Visibility = Visibility.Visible;
                     break;
-                case 2:
-                    txtPrecioMayoreo.IsReadOnly = true;
-                    txtPrecioMayoreo.Text = "0";
-                    txtPrecioMenudeo.Text = "";
-                    txtPrecioMenudeo.IsReadOnly = false;
+                case 1:
+                    txtPrecioMayoreo.Visibility = Visibility.Visible;
+                    txtPrecioMenudeo.Visibility = Visibility.Visible;
+
+                    txtPrecioMatriz.Visibility = Visibility.Collapsed;
+                    txtPrecioSucursal.Visibility = Visibility.Collapsed;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMenudeo.Text = "0";
+                    txtPrecioMenudeo.IsReadOnly = true;
                     break;
                 default:
-                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMayoreo.Visibility = Visibility.Visible;
+                    txtPrecioMenudeo.Visibility = Visibility.Visible;
+
+                    txtPrecioMatriz.Visibility = Visibility.Collapsed;
+                    txtPrecioSucursal.Visibility = Visibility.Collapsed;
+                    txtPrecioMayoreo.IsReadOnly = true;
                     txtPrecioMenudeo.IsReadOnly = false;
-                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMayoreo.Text = "0";
                     txtPrecioMenudeo.Text = "";
                     break;
             }
@@ -566,6 +578,9 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
+        /// <summary>
+        /// Método de la lógica para filtrar cantidades.
+        /// </summary>
         private void HabililtarCantidades(object sender, SelectionChangedEventArgs e) {
             
             switch (ComboMedida.SelectedIndex) {
@@ -637,6 +652,22 @@ namespace Mexty.MVVM.View.AdminViews {
                     break;
 
             }
+        }
+
+        private void PreciosGenerales(object sender, RoutedEventArgs e) {
+            txtPrecioMayoreo.Visibility = Visibility.Collapsed;
+            txtPrecioMenudeo.Visibility = Visibility.Collapsed;
+
+            txtPrecioMatriz.Visibility = Visibility.Visible;
+            txtPrecioSucursal.Visibility = Visibility.Visible;
+        }
+
+        private void PrecioNormal(object sender, RoutedEventArgs e) {
+            txtPrecioMayoreo.Visibility = Visibility.Visible;
+            txtPrecioMenudeo.Visibility = Visibility.Visible;
+
+            txtPrecioMatriz.Visibility = Visibility.Collapsed;
+            txtPrecioSucursal.Visibility = Visibility.Collapsed;
         }
     }
 }
