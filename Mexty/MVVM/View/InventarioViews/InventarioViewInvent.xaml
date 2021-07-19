@@ -18,11 +18,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Inventario"
-               FontSize="40"
-               VerticalContentAlignment="Center"
-               Foreground="AntiqueWhite"
-               Padding="0,20"/>
+            <Label Content="Inventario" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20"/>
 
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke" Grid.Column="1" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">

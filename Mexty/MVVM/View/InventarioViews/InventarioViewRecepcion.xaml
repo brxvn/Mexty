@@ -114,7 +114,7 @@
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Nombre" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Grid.Row="0"/>
+                <Label Content="Nombre" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Grid.Row="0"/>
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.5*"/>
@@ -207,7 +207,7 @@
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Label Content="Detalles" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Grid.Row="0"/>
+                <Label Content="Detalles" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Grid.Row="0"/>
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
@@ -393,7 +393,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Content="Comentario" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,66,0"/>
+                <Label Content="Comentario" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,66,0"/>
 
                 <!--txtDetalle-->
                 <TextBox Background="Beige"
