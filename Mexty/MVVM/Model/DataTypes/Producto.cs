@@ -108,40 +108,5 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public int Activo { get; set; }
 
-        /// <summary>
-        /// Sucursal en la que se va a vender el producto.
-        /// </summary>
-        public int IdSucursal { get; set; }
-
-        /// <summary>
-        /// Buffer de lista de sucursales.
-        /// </summary>
-        private static List<Sucursal> ListaSucursal { get; set; }
-
-        /// <summary>
-        /// Actualiza la lista de sucursales.
-        /// </summary>
-        public void UpdateListaSucursal() {
-            ListaSucursal = Database.GetTablesFromSucursales();
-        }
-
-        /// <summary>
-        /// Obtiene la sucursal por medio del nombre.
-        /// </summary>
-        public string GetSucursalNombre {
-            get {
-                ListaSucursal ??= Database.GetTablesFromSucursales();
-                var nombre = "";
-                for (var index = 0; index < ListaSucursal.Count; index++) {
-                    var sucursal = ListaSucursal[index];
-                    if (IdSucursal == sucursal.IdTienda) {
-                        nombre = sucursal.NombreTienda;
-                    }
-                }
-
-                return nombre;
-            }
-        }
-
     }
 }
