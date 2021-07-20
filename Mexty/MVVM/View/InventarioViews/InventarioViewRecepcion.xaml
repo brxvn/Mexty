@@ -123,7 +123,7 @@
 
                     <!--ComboNomnre-->
                     <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboNombre" Grid.Column="1" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre" SelectionChanged="ItemSelected"/>
 
                     <!--txtID-->
                     <TextBox Background="Beige"

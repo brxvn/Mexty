@@ -28,15 +28,9 @@ namespace Mexty.MVVM.View.InventarioViews {
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
-        /// La lista que contiene el catalogo de productos de la sucursal actual.
-        /// </summary>
-        // Esto es lo que va a haber en la data grid.
-        private List<Producto> CatalogoProductos { get; set; }
-
-        /// <summary>
         /// Lista que contiene la cantidad y el comentario de cada item del modulo de inventario.
         /// </summary>
-        private List<ItemInventario> ItemsInventario { get; set; }
+        private List<ItemInventario> ListaItems { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -81,6 +75,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private void FillData() {
             // TODO: hacer querrys por sucursal.
+            var data = Database.GetItemsFromInventario();
+            ListaItems = data;
             // var idTienda = Database.GetIdTiendaActual();
             // MessageBox.Show(lol.ToString());
 
