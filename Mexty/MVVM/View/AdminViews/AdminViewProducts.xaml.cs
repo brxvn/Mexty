@@ -221,7 +221,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
                 producto.TipoVentaNombre.ToLower().Contains(text) //||
-                //producto.GetSucursalNombre.ToLower().Contains(text) TODO:
+                                                                  //producto.GetSucursalNombre.ToLower().Contains(text) TODO:
                 ) {
                 return producto.Activo == 1;
             }
@@ -518,18 +518,16 @@ namespace Mexty.MVVM.View.AdminViews {
         private void HabilitarInputPrecios(object sender, SelectionChangedEventArgs e) {
             switch (ComboVenta.SelectedIndex) {
                 case 0:
-                    txtPrecioMayoreo.Visibility = Visibility.Collapsed;
-                    txtPrecioMenudeo.Visibility = Visibility.Collapsed;
+                    txtPrecioMayoreo.Text = "";
+                    txtPrecioMenudeo.Text = "";
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
 
-                    txtPrecioMatriz.Visibility = Visibility.Visible;
-                    txtPrecioSucursal.Visibility = Visibility.Visible;
                     break;
                 case 1:
                     txtPrecioMayoreo.Visibility = Visibility.Visible;
                     txtPrecioMenudeo.Visibility = Visibility.Visible;
 
-                    txtPrecioMatriz.Visibility = Visibility.Collapsed;
-                    txtPrecioSucursal.Visibility = Visibility.Collapsed;
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "";
                     txtPrecioMenudeo.Text = "0";
@@ -539,8 +537,6 @@ namespace Mexty.MVVM.View.AdminViews {
                     txtPrecioMayoreo.Visibility = Visibility.Visible;
                     txtPrecioMenudeo.Visibility = Visibility.Visible;
 
-                    txtPrecioMatriz.Visibility = Visibility.Collapsed;
-                    txtPrecioSucursal.Visibility = Visibility.Collapsed;
                     txtPrecioMayoreo.IsReadOnly = true;
                     txtPrecioMenudeo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "0";
@@ -583,10 +579,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método de la lógica para filtrar cantidades.
         /// </summary>
         private void HabililtarCantidades(object sender, SelectionChangedEventArgs e) {
-            
+
             switch (ComboMedida.SelectedIndex) {
                 case 0:
-                    switch (ComboMedida.SelectedItem.ToString()){
+                    switch (ComboMedida.SelectedItem.ToString()) {
                         case "pieza":
                             txtCantidad.Visibility = Visibility.Collapsed;
                             txtPiezas.Visibility = Visibility.Visible;
@@ -655,20 +651,5 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
-        private void PreciosGenerales(object sender, RoutedEventArgs e) {
-            txtPrecioMayoreo.Visibility = Visibility.Collapsed;
-            txtPrecioMenudeo.Visibility = Visibility.Collapsed;
-
-            txtPrecioMatriz.Visibility = Visibility.Visible;
-            txtPrecioSucursal.Visibility = Visibility.Visible;
-        }
-
-        private void PrecioNormal(object sender, RoutedEventArgs e) {
-            txtPrecioMayoreo.Visibility = Visibility.Visible;
-            txtPrecioMenudeo.Visibility = Visibility.Visible;
-
-            txtPrecioMatriz.Visibility = Visibility.Collapsed;
-            txtPrecioSucursal.Visibility = Visibility.Collapsed;
-        }
     }
 }
