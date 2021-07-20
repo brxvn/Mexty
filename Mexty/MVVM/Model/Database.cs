@@ -839,11 +839,11 @@ namespace Mexty.MVVM.Model {
         // ==============================================
 
         /// <summary>
-        /// Método para obtener todos los datos de la tabla de inventario_general.
+        /// Método para obtener la información conjunta de inventario y de cat_producto.
         /// </summary>
         /// <returns></returns>
         // TODO: quiza manerjar el id tienda de manera diferente.
-        public static List<ItemInventario> GetTablesFromInventario(int idTienda) {
+        public static List<ItemInventario> GetItemsFromInventario() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -862,9 +862,11 @@ namespace Mexty.MVVM.Model {
                 FROM   cat_producto p,
                        inventario i
                 WHERE  p.id_producto = i.id_producto
-                       AND p.id_producto = @id and i.ID_TIENDA=@idT"
+                       -- AND p.id_producto = @id 
+                       and i.ID_TIENDA=@idT"
             };
-            query.Parameters.AddWithValue("@id", idTienda.ToString());
+            // TODO: Fix this
+            //query.Parameters.AddWithValue("@id", );
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
             var items = new List<ItemInventario>();
