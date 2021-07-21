@@ -176,6 +176,14 @@ namespace Mexty.MVVM.Model {
         }
 
         /// <summary>
+        /// Método que retorna el Id de la tienda actual, leido por el ini.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetIdTienda() {
+            return IdTienda;
+        }
+
+        /// <summary>
         /// Método que cierra la conección con la base de datos.
         /// </summary>
         public static void CloseConnection() {
@@ -838,11 +846,57 @@ namespace Mexty.MVVM.Model {
         // ------- Querrys de Inventario  ---------------
         // ==============================================
 
+
+        /// <summary>
+        /// Método para optener las tablas de inventario.
+        /// </summary>
+        /// <returns></returns>
+        public static List<ItemInventario> GetTablesFromInventario() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"select * from inventario where ID_TIENDA=@id"
+            };
+            query.Parameters.AddWithValue("@id", IdTienda.ToString());
+
+            var items = new List<ItemInventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new ItemInventario() {
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
+                        Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
+                    };
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return items;
+        }
+
         /// <summary>
         /// Método para obtener la información conjunta de inventario y de cat_producto.
         /// </summary>
         /// <returns></returns>
-        // TODO: quiza manerjar el id tienda de manera diferente.
         public static List<ItemInventario> GetItemsFromInventario() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -879,23 +933,19 @@ namespace Mexty.MVVM.Model {
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
-                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("canidad"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         MaxPiezas = reader.IsDBNull("max_piezas") ? 0 : reader.GetInt32("max_piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
-                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
-                        FechaModifica = reader.IsDBNull("fehca_modifica") ? "" : reader.GetString("fecha_modifica")
                     };
                     items.Add(item);
                 }
 
-                Log.Debug("Se han obtenido con exito las tablas de inventario_general.");
+                Log.Debug("Se han obtenido con exito las tablas de inventario-productos.");
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al obtener las tablas de inventario-general.");
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario-productos.");
                 Log.Error($"Error: {e.Message}");
             }
             finally {
@@ -979,12 +1029,10 @@ namespace Mexty.MVVM.Model {
             };
 
             query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
-            query.Parameters.AddWithValue("@tipo", newItem.TipoProducto);
-            query.Parameters.AddWithValue("@med", newItem.Medida);
             query.Parameters.AddWithValue("@cant", newItem.Cantidad.ToString());
             query.Parameters.AddWithValue("@piezas", newItem.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", newItem.Comentario);
-            query.Parameters.AddWithValue("@idT", newItem.IdTienda.ToString());
+            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
 
