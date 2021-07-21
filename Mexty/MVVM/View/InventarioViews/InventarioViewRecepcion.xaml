@@ -168,7 +168,6 @@
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
-                                                            TextChanged="txtUpdateCantidad"
                                                             PreviewTextInput="OnlyNumbersValidation"
                                                             MaxLength="15"/>
 
@@ -246,7 +245,6 @@
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
-                                                            TextChanged="txtUpdateCantidad"
                                                             PreviewTextInput="OnlyNumbersValidation"
                                                             MaxLength="15"/>
 
@@ -559,7 +557,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTip="Guardar Cambios"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios"/>
 
             </Grid>
 
