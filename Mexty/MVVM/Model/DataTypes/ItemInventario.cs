@@ -49,7 +49,6 @@
         /// </summary>
         public int Cantidad { get; set; }
 
-
         /// <summary>
         /// Comentario del producto.
         /// </summary>

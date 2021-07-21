@@ -74,23 +74,97 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena el datagrid y los combobox.
         /// </summary>
         private void FillData() {
-            // TODO: hacer querrys por sucursal.
             var data = Database.GetItemsFromInventario();
             ListaItems = data;
-            // var idTienda = Database.GetIdTiendaActual();
-            // MessageBox.Show(lol.ToString());
+            DataProducts.ItemsSource = data;
+            // TODO: ver que onda con la collectionView.
+            Log.Debug("Se ha llenado la datagrid de manera exitosa.");
 
+        }
+
+        /// <summary>
+        /// Método que reaciona al evento SelectionChanged del datagrid.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+
+            ClearFields();
+            if (DataProducts.SelectedItem == null) return;
+            Log.Debug("Producto seleccionado.");
+            var item = (ItemInventario) DataProducts.SelectedItem;
+
+            SelectedItem = item;
+            txtComentario.Text = item.Comentario;
+            txtCantidad.Text = item.Cantidad.ToString();
+            txtPiezas.Text = item.Piezas.ToString();
+
+            Guardar.IsEnabled = true;
+        }
+
+        /// <summary>
+        /// Método que limpia los campos de texto.
+        /// </summary>
+        private void ClearFields() {
+            Guardar.IsEnabled = false;
+            txtComentario.Text = "";
+            txtCantidad.Text = "";
+            txtPiezas.Text = "";
+            Log.Debug("Se han limpiado los campos de inventario.");
         }
 
         private void FilterSearch(object sender, TextChangedEventArgs e) {
+            TextBox tbx = sender as TextBox;
+            var collection = CollectionView;
+            if (tbx != null && tbx.Text != "") {
+                var newText = tbx.Text;
+                var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
+
+                collection.Filter = customFilter;
+                DataProducts.ItemsSource = collection;
+                CollectionView = collection;
+            }
+            else {
+                collection.Filter = null;
+                var noNull = new Predicate<object>(producto =>
+                {
+                    //if (producto == null) return false;
+                    //return ((ItemInventario)producto).Activo == 1;
+                    return false;
+                });
+
+                collection.Filter += noNull;
+                DataProducts.ItemsSource = collection;
+                CollectionView = collection;
+                ClearFields();
+            }
+
+            SearchBox.Text = tbx.Text;
 
         }
 
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        /// <summary>
+        /// Lógica de la busqueda.
+        /// </summary>
+        /// <returns></returns>
+        private static bool FilterLogic(object obj, string text) {
+            text = text.ToLower();
+            var producto = (ItemInventario)obj;
+            if (producto.NombreProducto.Contains(text) ||
+                producto.IdProducto.ToString().Contains(text) ||
+                producto.TipoProducto.ToLower().Contains(text) ||
+                producto.Medida.ToLower().Contains(text) //||
+                ) {
+                //return producto.Activo == 1;
+                return true;
+            }
+            return false;
 
         }
+
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            ClearFields();
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
