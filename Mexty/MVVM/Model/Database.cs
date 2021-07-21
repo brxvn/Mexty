@@ -982,10 +982,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@can", item.Cantidad.ToString());
             query.Parameters.AddWithValue("@pieza", item.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", item.Comentario);
-            query.Parameters.AddWithValue("@idT", item.IdTienda.ToString());
+            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
             query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
             query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
+
 
             try {
                 var res = query.ExecuteNonQuery();
