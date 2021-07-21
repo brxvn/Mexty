@@ -923,6 +923,13 @@ namespace Mexty.MVVM.Model {
             //query.Parameters.AddWithValue("@id", );
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
+            var cmd = query.CommandText;
+            for (var index = 0; index < query.Parameters.Count; index++) {
+                var queryParameter = query.Parameters[index];
+                cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value.ToString());
+            }
+            Log.Info(cmd);
+
             var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
