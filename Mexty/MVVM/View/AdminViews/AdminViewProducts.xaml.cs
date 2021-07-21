@@ -54,7 +54,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
-                FillSucursales();
+                //FillSucursales();
                 ClearFields();
 
                 Log.Debug("Se han inicializado los campos del modulo Productos exitosamente.");
@@ -110,16 +110,16 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Método que llena la lista de sucursales.
         /// </summary>
-        private void FillSucursales() {
-            var sucursales = Database.GetTablesFromSucursales();
-            ListaSucursales = sucursales;
-            foreach (var sucursal in sucursales) {
-                if (sucursal.Activo == 1) {
-                    ComboSucursal.Items.Add(sucursal.NombreTienda);
-                }
-            }
-            Log.Debug("Se ha llenado el combo box de sucursales.");
-        }
+        //private void FillSucursales() {
+        //    var sucursales = Database.GetTablesFromSucursales();
+        //    ListaSucursales = sucursales;
+        //    foreach (var sucursal in sucursales) {
+        //        if (sucursal.Activo == 1) {
+        //            ComboSucursal.Items.Add(sucursal.NombreTienda);
+        //        }
+        //    }
+        //    Log.Debug("Se ha llenado el combo box de sucursales.");
+        //}
 
         /// <summary>
         /// Método que reacciona al evento SelectionChanged del datagrid.
@@ -167,7 +167,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDetalle.Text = "";
             SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
-            ComboSucursal.SelectedIndex = 0;
+            //ComboSucursal.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
             EnableGuardar();
