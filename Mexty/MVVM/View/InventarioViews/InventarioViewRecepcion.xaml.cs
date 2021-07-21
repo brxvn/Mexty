@@ -128,8 +128,10 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             try {
                 var row = Database.NewItem(newItem);
-                MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
-                Log.Debug("Se ha dado de alta un producto en el inventario.");
+                if (row > 0) {
+                    MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
+                    Log.Debug("Se ha dado de alta un producto en el inventario.");
+                }
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al dar de alta un producto en el inventario.");

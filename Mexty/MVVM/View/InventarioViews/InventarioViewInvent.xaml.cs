@@ -17,6 +17,7 @@ using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
+using Mexty.MVVM.Model.Validations;
 
 namespace Mexty.MVVM.View.InventarioViews {
 
@@ -76,8 +77,13 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void FillData() {
             var data = Database.GetItemsFromInventario();
             ListaItems = data;
-            DataProducts.ItemsSource = data;
-            // TODO: ver que onda con la collectionView.
+
+            var collectionView = new ListCollectionView(data) {
+                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
+            };
+
+            CollectionView = collectionView;
+            DataProducts.ItemsSource = collectionView;
             Log.Debug("Se ha llenado la datagrid de manera exitosa.");
 
         }
@@ -91,7 +97,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             ClearFields();
             if (DataProducts.SelectedItem == null) return;
-            Log.Debug("Producto seleccionado.");
+            Log.Debug("Item seleccionado.");
             var item = (ItemInventario) DataProducts.SelectedItem;
 
             SelectedItem = item;
@@ -128,9 +134,10 @@ namespace Mexty.MVVM.View.InventarioViews {
                 collection.Filter = null;
                 var noNull = new Predicate<object>(producto =>
                 {
-                    //if (producto == null) return false;
+                    if (producto == null) return false;
+                    return true;
                     //return ((ItemInventario)producto).Activo == 1;
-                    return false;
+                    //return false;
                 });
 
                 collection.Filter += noNull;
@@ -168,7 +175,57 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado el boton de guardar.");
 
+            var newItem = new ItemInventario {
+                Comentario = txtComentario.Text,
+                Cantidad = int.Parse(txtCantidad.Text),
+                Piezas = int.Parse(txtPiezas.Text)
+            };
+
+            if (!Validar(newItem)) {
+                Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");
+                return;
+            }
+            Log.Debug("El objeto tipo ItemInventario ha pasado las validaciones.");
+
+            newItem.NombreProducto = SelectedItem.NombreProducto;
+            newItem.TipoProducto = SelectedItem.TipoProducto;
+            newItem.IdProducto = SelectedItem.IdProducto;
+            newItem.IdRegistro = SelectedItem.IdRegistro;
+            var res = Database.UpdateData(newItem);
+            if (res > 0) {
+                Log.Debug("Se ha editado un producto.");
+                MessageBox.Show($"Se ha editado el producto {newItem.IdProducto.ToString()} {newItem.TipoProducto} {newItem.NombreProducto}");
+            }
+        }
+
+
+        /// <summary>
+        /// Valida un objeto tipo ItemInventario.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        /// <returns></returns>
+        private static bool Validar(ItemInventario newItem) {
+            try {
+                var validator = new ItemValidation();
+                var results = validator.Validate(newItem);
+                if (!results.IsValid) {
+                    foreach (var error in results.Errors) {
+                        MessageBox.Show(error.ErrorMessage);
+                        Log.Warn(error.ErrorMessage);
+                    }
+
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {e.Message}");
+                return false;
+            }
         }
 
         private void txtUpdateDisponible(object sender, TextChangedEventArgs e) {
