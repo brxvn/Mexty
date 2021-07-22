@@ -923,6 +923,13 @@ namespace Mexty.MVVM.Model {
             //query.Parameters.AddWithValue("@id", );
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
+            var cmd = query.CommandText;
+            for (var index = 0; index < query.Parameters.Count; index++) {
+                var queryParameter = query.Parameters[index];
+                cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value.ToString());
+            }
+            Log.Info(cmd);
+
             var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
@@ -982,10 +989,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@can", item.Cantidad.ToString());
             query.Parameters.AddWithValue("@pieza", item.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", item.Comentario);
-            query.Parameters.AddWithValue("@idT", item.IdTienda.ToString());
+            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
             query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
             query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
             query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
+
 
             try {
                 var res = query.ExecuteNonQuery();
