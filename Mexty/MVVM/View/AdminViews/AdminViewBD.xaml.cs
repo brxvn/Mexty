@@ -13,15 +13,28 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
 using Mexty.MVVM.Model;
+using Microsoft.Win32;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminViewBD.xaml
     /// </summary>
     public partial class AdminViewBD : UserControl {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
         public AdminViewBD() {
-            InitializeComponent();
+            try {
+                InitializeComponent();
+                Log.Debug("Se han inicializado los campos de Adm Base de datos exitosamente.");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de Adm Base de datos.");
+                Log.Error($"Error: {e.Message}");
+            }
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
@@ -40,13 +53,41 @@ namespace Mexty.MVVM.View.AdminViews {
 
 
         /// <summary>
-        /// Lógica del boton de exportar
+        /// Lógica del botón de exportar
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void Export(object sender, RoutedEventArgs e) {
-            Database.backUp();
+            Log.Debug("Se ha presionado el boton de Exportar");
+            try {
+                Database.backUp();
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al exportar la base de datos.");
+                Log.Error($"Error: {exception.Message}");
+            }
         }
 
+
+        /// <summary>
+        /// Lógica del botón de importar datos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Import(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado el boton de importar datos.");
+            try {
+                OpenFileDialog dialog = new OpenFileDialog();
+                // TODO: probablemente solo abrir .sql
+                dialog.Filter = "Text files (*.sql;*.txt)|*.sql;*.txt";
+                if (dialog.ShowDialog() == true) {
+                    Database.Import(dialog.FileName);
+                }
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al importar la base de datos.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
     }
 }

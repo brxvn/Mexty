@@ -1066,35 +1066,49 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
         public static void backUp() {
-            const string file = @"C:\\Mexty\BackupDB.sql";
-            using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
-                using (MySqlCommand cmd = new MySqlCommand()) {
-                    using (MySqlBackup mb = new MySqlBackup(cmd)) {
-                        cmd.Connection = conn;
-                        conn.Open();
-                        mb.ExportToFile(file);
-                        mb.ExportInfo.ExportTableStructure = true;
-                        //mb.ExportInfo.ExcludeTables = new List<string>() {"hola", "tabla"};
-                        conn.Close();
+            Log.Info("Se ha empezado el backUp de la base de datos.");
+            try {
+                const string file = @"C:\Mexty\BackupDB.sql";
+                using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                    using (MySqlCommand cmd = new MySqlCommand()) {
+                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                            cmd.Connection = conn;
+                            conn.Open();
+                            //mb.ExportInfo.ExcludeTables = new List<string>() {"inventario", "export"};
+                            mb.ExportToFile(file);
+                            Log.Debug("Se ha exportado el archivo exitosamente.");
+                            conn.Close();
+                        }
                     }
                 }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al intentar exportar la base de datos.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
         /// <summary>
         /// Importa un archivo SQL para ejecutarlo
         /// </summary>
-        public void Restore() {
-            string file = "C:\\backup.sql";
-            using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
-                using (MySqlCommand cmd = new MySqlCommand()) {
-                    using (MySqlBackup mb = new MySqlBackup(cmd)) {
-                        cmd.Connection = conn;
-                        conn.Open();
-                        mb.ImportFromFile(file);
-                        conn.Close();
+        public static void Import(string file) {
+            Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
+            try {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                    using (MySqlCommand cmd = new MySqlCommand()) {
+                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                            cmd.Connection = conn;
+                            conn.Open();
+                            mb.ImportFromFile(file);
+                            Log.Debug("Se ha importado el archivo Exitosamente.");
+                            conn.Close();
+                        }
                     }
                 }
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al intentar importar y ejecutar el archivo SQL.");
+                Log.Error($"Error: {e.Message}");
             }
         }
 
