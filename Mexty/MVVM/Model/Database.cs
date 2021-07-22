@@ -916,11 +916,8 @@ namespace Mexty.MVVM.Model {
                 FROM   cat_producto p,
                        inventario i
                 WHERE  p.id_producto = i.id_producto
-                       -- AND p.id_producto = @id 
                        and i.ID_TIENDA=@idT"
             };
-            // TODO: Fix this
-            //query.Parameters.AddWithValue("@id", );
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
             var cmd = query.CommandText;
@@ -1065,21 +1062,41 @@ namespace Mexty.MVVM.Model {
         // =========================================================
 
         /// <summary>
-        /// 
+        /// Metodo a usar para exportar
         /// </summary>
-        private static void backUp() {
-            // const string file = @"C:\\backup.sql";
-            // using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
-            //     using (MySqlCommand cmd = new MySqlCommand()) {
-            //         using (MySqlBackup mb = new MySqlBackup(cmd)) {
-            //             cmd.Connection = conn;
-            //             conn.Open();
-            //             mb.ExportToFile(file);
-            //             conn.Close();
-            //         }
-            //     }
-            // }
+        // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
+        public static void backUp() {
+            const string file = @"C:\\Mexty\BackupDB.sql";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                using (MySqlCommand cmd = new MySqlCommand()) {
+                    using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                        cmd.Connection = conn;
+                        conn.Open();
+                        mb.ExportToFile(file);
+                        mb.ExportInfo.ExportTableStructure = true;
+                        //mb.ExportInfo.ExcludeTables = new List<string>() {"hola", "tabla"};
+                        conn.Close();
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Importa un archivo SQL para ejecutarlo
+        /// </summary>
+        public void Restore() {
+            string file = "C:\\backup.sql";
+            using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                using (MySqlCommand cmd = new MySqlCommand()) {
+                    using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                        cmd.Connection = conn;
+                        conn.Open();
+                        mb.ImportFromFile(file);
+                        conn.Close();
+                    }
+                }
+            }
+        }
 
 
         // ============================================

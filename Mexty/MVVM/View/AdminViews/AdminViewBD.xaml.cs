@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Mexty.MVVM.Model;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -35,6 +36,16 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
+        }
+
+
+        /// <summary>
+        /// Lógica del boton de exportar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Export(object sender, RoutedEventArgs e) {
+            Database.backUp();
         }
 
     }
