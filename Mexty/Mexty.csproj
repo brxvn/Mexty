@@ -13,6 +13,7 @@
     <None Remove="log4net.config" />
     <None Remove="logo.png" />
     <None Remove="Resource\brand.png" />
+    <None Remove="Resource\LogoReportes.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +37,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\LogoReportes.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

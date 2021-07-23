@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using Mexty.MVVM.Model;
+using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Mexty.MVVM.View.ReportesViews {
@@ -19,8 +13,11 @@ namespace Mexty.MVVM.View.ReportesViews {
     /// Interaction logic for ReportesViewInventario.xaml
     /// </summary>
     public partial class ReportesViewInventario : UserControl {
+        Reports report = new Reports();
         public ReportesViewInventario() {
             InitializeComponent();
+
+            
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);

@@ -5,7 +5,7 @@ namespace Mexty.MVVM.Model.DataTypes {
     public class Sucursal {
         private string _nombreTienda;
         private string _dirección;
-        private int _telefono;
+        //private int _telefono;
 
         /// <summary>
         /// Id De la tienda.

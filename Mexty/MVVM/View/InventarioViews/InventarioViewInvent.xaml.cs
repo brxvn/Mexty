@@ -255,5 +255,10 @@ namespace Mexty.MVVM.View.InventarioViews {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
 
+        private void ReporteInventario(object sender, RoutedEventArgs e) {
+
+            Reports reports = new();
+            reports.PDFReportInventario();
+        }
     }
 }
