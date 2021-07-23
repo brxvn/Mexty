@@ -36,6 +36,5 @@ namespace Mexty.MVVM.View.ReportesViews {
             time.Content = DateTime.Now.ToString("G");
         }
 
-
     }
 }

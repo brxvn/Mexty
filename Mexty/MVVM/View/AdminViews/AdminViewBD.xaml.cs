@@ -94,5 +94,9 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error($"Error: {exception.Message}");
             }
         }
+
+        private void ExportData(object sender, RoutedEventArgs e) {
+
+        }
     }
 }

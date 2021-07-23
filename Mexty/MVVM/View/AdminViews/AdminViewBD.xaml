@@ -27,7 +27,9 @@
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="50 0">
             <Label Margin="50,25,10,25" Content="Fecha:" FontSize="25" Foreground="AntiqueWhite"/>
             <DatePicker Style="{StaticResource DatePickerStyle}" CalendarStyle="{StaticResource CalendarStyle}" FontSize="25" VerticalAlignment="Center" BorderThickness="0" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsTodayHighlighted="True" Cursor="Arrow" />
-            <Button x:Name="Exportar" Height="40" Grid.Column="0" Content="Exportar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="Export"/>
+            <Button x:Name="ExportarBD" Height="40" Grid.Column="0" Content="Exportar BD" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="Export"/>
+            <Button x:Name="ExportarDatos" Height="40" Grid.Column="0" Content="Exportar Datos" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="ExportData"/>
+
         </StackPanel>
 
         <Label Content="Importar a Base de Datos" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="2" Margin="50 0"/>
