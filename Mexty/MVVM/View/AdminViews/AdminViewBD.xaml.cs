@@ -60,14 +60,16 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Export(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
-                Database.backUp();
+                if (Database.backUp()) {
+                    Log.Info("Se ha exportado la base de datos de manera exitosa.");
+                    MessageBox.Show("Se ha exportado la base de datos con exito.");
+                }
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al exportar la base de datos.");
                 Log.Error($"Error: {exception.Message}");
             }
         }
-
 
         /// <summary>
         /// Lógica del botón de importar datos.
@@ -81,7 +83,10 @@ namespace Mexty.MVVM.View.AdminViews {
                 // TODO: probablemente solo abrir .sql
                 dialog.Filter = "Text files (*.sql;*.txt)|*.sql;*.txt";
                 if (dialog.ShowDialog() == true) {
-                    Database.Import(dialog.FileName);
+                    if (Database.Import(dialog.FileName)) {
+                        Log.Info("Se ha importado a la base de datos de manera exitosa.");
+                        MessageBox.Show("Se ha importado a la base de datos con exito.");
+                    }
                 }
             }
             catch (Exception exception) {

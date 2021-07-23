@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
@@ -1065,33 +1066,41 @@ namespace Mexty.MVVM.Model {
         /// Metodo a usar para exportar
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
-        public static void backUp() {
+        public static bool backUp() {
             Log.Info("Se ha empezado el backUp de la base de datos.");
             try {
-                const string file = @"C:\Mexty\BackupDB.sql";
+                DateTime time = DateTime.Today;
+                var fileName = $"FullBackupBD{time:dd-MM-yy}.sql";
+                const string path = @"C:\Mexty\Backups\";
+                Directory.CreateDirectory(path);
+                var file = $"{path}{fileName}";
                 using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
                     using (MySqlCommand cmd = new MySqlCommand()) {
                         using (MySqlBackup mb = new MySqlBackup(cmd)) {
                             cmd.Connection = conn;
                             conn.Open();
                             //mb.ExportInfo.ExcludeTables = new List<string>() {"inventario", "export"};
+                            //mb.ExportInfo.ExportRows = false; // Exporta solo la estructura.
                             mb.ExportToFile(file);
                             Log.Debug("Se ha exportado el archivo exitosamente.");
                             conn.Close();
                         }
                     }
                 }
+
+                return true;
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al intentar exportar la base de datos.");
                 Log.Error($"Error: {e.Message}");
+                throw;
             }
         }
 
         /// <summary>
         /// Importa un archivo SQL para ejecutarlo
         /// </summary>
-        public static void Import(string file) {
+        public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
             try {
                 using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
@@ -1105,10 +1114,13 @@ namespace Mexty.MVVM.Model {
                         }
                     }
                 }
+
+                return true;
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al intentar importar y ejecutar el archivo SQL.");
                 Log.Error($"Error: {e.Message}");
+                throw;
             }
         }
 
@@ -1117,6 +1129,5 @@ namespace Mexty.MVVM.Model {
         // ------- Métodos De la clase ----------------
         // ============================================
 
-        
     }
 }
