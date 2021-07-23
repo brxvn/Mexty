@@ -35,5 +35,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
         }
+
+
     }
 }

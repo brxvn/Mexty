@@ -28,7 +28,7 @@
                      Grid.Column="1"
                      x:Name="SearchBox"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     HorizontalAlignment="Right" TextChanged="SearchBox_TextChanged">
+                     HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Style.Setters>
@@ -474,6 +474,7 @@
                      Grid.Column="1"
                      MaxLength="100"
                      TextWrapping="Wrap"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10,25,10,25" Grid.ColumnSpan="2"
                      >
                     <TextBox.Style>
@@ -495,6 +496,7 @@
                                                             FontSize="15"
                                                             x:Name="SearchBox"
                                                             MaxLength="100"
+                                                            PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                             TextChanged="txtUpdateComentario"
                                                             TextWrapping="Wrap"/>
 

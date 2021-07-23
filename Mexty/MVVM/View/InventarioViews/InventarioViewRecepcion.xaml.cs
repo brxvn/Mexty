@@ -39,6 +39,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             try {
                 InitializeComponent();
                 FillData();
+                ClearFields();
 
             }
             catch (Exception e) {
@@ -92,10 +93,16 @@ namespace Mexty.MVVM.View.InventarioViews {
             var index = ComboNombre.SelectedIndex;
             txtMedida.Text = ListaProductos[index].MedidaProducto;
             txtTipo.Text = ListaProductos[index].TipoProducto;
+
+        }
+
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
-
+            ClearFields();
         }
 
         /// <summary>
@@ -107,8 +114,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             var newItem = new ItemInventario {
                 IdProducto = ComboNombre.SelectedIndex + 1,
                 Comentario = txtComentario.Text,
-                Cantidad = int.Parse(txtCantidad.Text),
-                Piezas = int.Parse(txtPiezas.Text)
+                Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
+                Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
 
             if (!Validar(newItem)) {
@@ -168,6 +175,15 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
         }
 
+        private void ClearFields() {
+            txtTipo.Text = "";
+            txtMedida.Text = "";
+            txtMedida.Text = "";
+            txtComentario.Text = "";
+            txtCantidad.Text = "";
+            ComboNombre.SelectedIndex = 0;
+        }
+
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtCantidad.Text = textbox.Text;
@@ -184,20 +200,23 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtComentario.Text = textbox.Text;
         }
 
-        private void FilterSearch(object sender, TextChangedEventArgs e) {
-
-        }
-
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x));
         }
 
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
-        private void SearchBox_TextChanged(object sender, TextChangedEventArgs e) {
-
-        }
     }
 }
