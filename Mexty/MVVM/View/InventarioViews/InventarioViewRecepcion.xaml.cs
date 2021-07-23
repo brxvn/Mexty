@@ -144,7 +144,6 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error("Ha ocurrido un error al dar de alta un producto en el inventario.");
                 Log.Error($"Error: {exception.Message}");
             }
-
         }
 
         /// <summary>

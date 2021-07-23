@@ -27,13 +27,13 @@
         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="50 0">
             <Label Margin="50,25,10,25" Content="Fecha:" FontSize="25" Foreground="AntiqueWhite"/>
             <DatePicker Style="{StaticResource DatePickerStyle}" CalendarStyle="{StaticResource CalendarStyle}" FontSize="25" VerticalAlignment="Center" BorderThickness="0" Padding="0" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" IsTodayHighlighted="True" Cursor="Arrow" />
-            <Button x:Name="Exportar" Height="40" Grid.Column="0" Content="Exportar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+            <Button x:Name="Exportar" Height="40" Grid.Column="0" Content="Exportar" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="Export"/>
         </StackPanel>
 
         <Label Content="Importar a Base de Datos" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="2" Margin="50 0"/>
         <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0"
                BorderBrush="AntiqueWhite"/>
-        <Button x:Name="Imporatr" Height="40" Grid.Column="0" Content="Importar" FontSize="25" HorizontalAlignment="Left" Background="Beige" BorderThickness="0" Padding="30 0" Margin="100,25,50,25" VerticalContentAlignment="Center" Grid.Row="3" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+        <Button x:Name="Importar" Height="40" Grid.Column="0" Content="Importar" FontSize="25" HorizontalAlignment="Left" Background="Beige" BorderThickness="0" Padding="30 0" Margin="100,25,50,25" VerticalContentAlignment="Center" Grid.Row="3" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="Import"/>
 
         <Label Name="time" 
                 Grid.Row="4"

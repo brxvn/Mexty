@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
+using System.IO;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
@@ -916,11 +917,8 @@ namespace Mexty.MVVM.Model {
                 FROM   cat_producto p,
                        inventario i
                 WHERE  p.id_producto = i.id_producto
-                       -- AND p.id_producto = @id 
                        and i.ID_TIENDA=@idT"
             };
-            // TODO: Fix this
-            //query.Parameters.AddWithValue("@id", );
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
             var cmd = query.CommandText;
@@ -1065,27 +1063,71 @@ namespace Mexty.MVVM.Model {
         // =========================================================
 
         /// <summary>
-        /// 
+        /// Metodo a usar para exportar
         /// </summary>
-        private static void backUp() {
-            // const string file = @"C:\\backup.sql";
-            // using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
-            //     using (MySqlCommand cmd = new MySqlCommand()) {
-            //         using (MySqlBackup mb = new MySqlBackup(cmd)) {
-            //             cmd.Connection = conn;
-            //             conn.Open();
-            //             mb.ExportToFile(file);
-            //             conn.Close();
-            //         }
-            //     }
-            // }
+        // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
+        public static bool backUp() {
+            Log.Info("Se ha empezado el backUp de la base de datos.");
+            try {
+                DateTime time = DateTime.Today;
+                var fileName = $"FullBackupBD{time:dd-MM-yy}.sql";
+                const string path = @"C:\Mexty\Backups\";
+                Directory.CreateDirectory(path);
+                var file = $"{path}{fileName}";
+                using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                    using (MySqlCommand cmd = new MySqlCommand()) {
+                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                            cmd.Connection = conn;
+                            conn.Open();
+                            //mb.ExportInfo.ExcludeTables = new List<string>() {"inventario", "export"};
+                            //mb.ExportInfo.ExportRows = false; // Exporta solo la estructura.
+                            mb.ExportToFile(file);
+                            Log.Debug("Se ha exportado el archivo exitosamente.");
+                            conn.Close();
+                        }
+                    }
                 }
+
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al intentar exportar la base de datos.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Importa un archivo SQL para ejecutarlo
+        /// </summary>
+        public static bool Import(string file) {
+            Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
+            try {
+                using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                    using (MySqlCommand cmd = new MySqlCommand()) {
+                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                            cmd.Connection = conn;
+                            conn.Open();
+                            mb.ImportFromFile(file);
+                            Log.Debug("Se ha importado el archivo Exitosamente.");
+                            conn.Close();
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al intentar importar y ejecutar el archivo SQL.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+        }
 
 
         // ============================================
         // ------- Métodos De la clase ----------------
         // ============================================
 
-        
     }
 }

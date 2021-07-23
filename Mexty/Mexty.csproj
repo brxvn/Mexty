@@ -28,6 +28,7 @@
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
+    <PackageReference Include="MySqlBackup.NET" Version="2.3.4.1" />
   </ItemGroup>
 
   <ItemGroup>
