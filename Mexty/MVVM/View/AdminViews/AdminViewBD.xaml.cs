@@ -51,13 +51,12 @@ namespace Mexty.MVVM.View.AdminViews {
             time.Content = DateTime.Now.ToString("G");
         }
 
-
         /// <summary>
-        /// Lógica del botón de exportar
+        /// Lógica del botón de exportar BD
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Export(object sender, RoutedEventArgs e) {
+        private void ExportBd(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
                 if (Database.BackUp()) {
@@ -69,6 +68,24 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al exportar la base de datos.");
                 Log.Error($"Error: {exception.Message}");
             }
+        }
+
+        /// <summary>
+        /// Lógica del boton de exportar datos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExportData(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado el boton de Exportar datos.");
+            try {
+                Database.DumpDeltas();
+
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al exportar los deltas");
+                Log.Error($"Error: {exception.Message}");
+            }
+
         }
 
         /// <summary>
@@ -93,10 +110,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al importar la base de datos.");
                 Log.Error($"Error: {exception.Message}");
             }
-        }
-
-        private void ExportData(object sender, RoutedEventArgs e) {
-
         }
     }
 }

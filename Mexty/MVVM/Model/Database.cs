@@ -7,6 +7,7 @@ using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
 using System.Windows.Documents;
+using Google.Protobuf.WellKnownTypes;
 using log4net;
 using Org.BouncyCastle.Ocsp;
 using MySql.Data.MySqlClient; 
@@ -188,9 +189,14 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene la hora actual en formato Msql friendly
         /// </summary>
         /// <returns></returns>
-        private static string GetCurrentTimeNDate() {
+        private static string GetCurrentTimeNDate(bool allDate=true) {
             var currentTime = DateTime.Now;
-            return currentTime.ToString("yyyy-MM-dd HH:mm:ss");
+            if (allDate) {
+                return currentTime.ToString("yyyy-MM-dd HH:mm:ss");
+            }
+            else {
+                return currentTime.ToString("yyyy-MM-dd_HH-mm-ss");
+            }
         }
 
         /// <summary>
@@ -1098,21 +1104,21 @@ namespace Mexty.MVVM.Model {
         // =========================================================
 
         /// <summary>
+        /// Struct que contiene la querry y la fecha en la que se hizo.
+        /// </summary>
+        private struct Deltas {
+            public string Query;
+            public DateTime Date;
+        }
+
+        /// <summary>
         /// Método que vacia los contenidos de la tabla control_sincbd a un script sql para ser aplicados en otra base de datos.
         /// </summary>
         public static void DumpDeltas() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
-            // Obtenemos la fecha del primer cambio guardado
-            // Igual y no es necesaria
-            MySqlCommand query0 = new() {
-                Connection = connObj,
-                CommandText = @"select fecha_sinc from control_sincbd where ID_REGISTRO=1;"
-            };
-
             // Obtenemos las querys y las fechas de cada una
-            // La idea es crear una lista de objetos tipo dump e ir escribiendo.
             MySqlCommand query1 = new() {
                 Connection = connObj,
                 CommandText = @"select QUERY, fecha_sinc from control_sincbd;"
@@ -1130,13 +1136,60 @@ namespace Mexty.MVVM.Model {
                 CommandText = @"ALTER TABLE control_sincbd AUTO_INCREMENT = 1"
             };
 
-            var time = DateTime.Today;
-            //TODO: agregar la fecha del dia del dump y la fecha de la primera sincronizacion;
-            var fileName = $"DBChangesFrom{time:dd-MM-yy}.sql";
-            const string path = @"C:\Mexty\Backups\";
-            Directory.CreateDirectory(path);
-            var file = $"{path}{fileName}";
+            try {
+                var data = new List<Deltas>();
+                using var reader = query1.ExecuteReader();
+                while (reader.Read()) {
+                    var delta = new Deltas {
+                        Query = reader.GetString("query"),
+                        Date = reader.GetDateTime("fecha_sinc")
+                    };
+                    data.Add(delta);
+                }
+                Log.Debug("Se ha creado la lista de deltas con exito.");
 
+                if (data.Count == 0) {
+                    MessageBox.Show("Error: La lista de cambios esta vacia, intenta después de hacer algunos cambios.");
+                    Log.Warn("Se ha intentado hacer un export de los cambios con la tabla de control_sincbd vacia.");
+                    return;
+                }
+
+                var date = DateTime.Today;
+                var fileName = $"DBChangesFrom_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{GetCurrentTimeNDate(false)}.sql";
+                var path = $@"C:\Mexty\Backups\{date:yyyy-MMMM}\";
+                Directory.CreateDirectory(path);
+                var file = $"{path}{fileName}";
+                if (!File.Exists(file)) {
+                    using (var streamWriter = File.CreateText(file)) {
+                        for (var index = 0; index < data.Count; index++) {
+                            var delta = data[index];
+                            var line = $"{delta.Query} -- {delta.Date}";
+                            streamWriter.WriteLine(line);
+                        }
+                    }
+                }
+                Log.Info("Se ha creado y escrito el archivo con los deltas con exito.");
+                MessageBox.Show($"Se han exportado los cambios exitosamente al archivo {file}");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener y escribir los deltas en el archivo.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+
+            try {
+                query2.ExecuteNonQuery();
+                Log.Info("Se ha vaciado la tabla de control_sincbd con exito.");
+                query3.ExecuteNonQuery();
+                Log.Info("Se ha reseteado el id de contorl_sincbd con exito.");
+                MessageBox.Show("Se han terminado de exportar los cambios exitosamente.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al vaciar y resetear el id de la tabla control_sincbd.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
         }
 
 
@@ -1222,7 +1275,7 @@ namespace Mexty.MVVM.Model {
             try {
                 var time = DateTime.Today;
                 var fileName = $"FullBackupBD{time:dd-MM-yy}.sql";
-                const string path = @"C:\Mexty\Backups\FullBackUp";
+                const string path = @"C:\Mexty\Backups\FullBackUp\";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
                 using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
@@ -1259,6 +1312,7 @@ namespace Mexty.MVVM.Model {
                         using (MySqlBackup mb = new MySqlBackup(cmd)) {
                             cmd.Connection = conn;
                             conn.Open();
+                            mb.ImportInfo.ErrorLogFile = @"C:\Mexty\Backups\ErroLog\errors.log";
                             mb.ImportFromFile(file);
                             Log.Debug("Se ha importado el archivo Exitosamente.");
                             conn.Close();
@@ -1274,7 +1328,6 @@ namespace Mexty.MVVM.Model {
                 throw;
             }
         }
-
 
         // ============================================
         // ------- Métodos De la clase ----------------
