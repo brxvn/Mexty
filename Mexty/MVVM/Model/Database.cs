@@ -185,6 +185,15 @@ namespace Mexty.MVVM.Model {
         }
 
         /// <summary>
+        /// Método que obtiene la hora actual en formato Msql friendly
+        /// </summary>
+        /// <returns></returns>
+        private static string GetCurrentTimeNDate() {
+            var currentTime = DateTime.Now;
+            return currentTime.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
         /// Método que cierra la conección con la base de datos.
         /// </summary>
         public static void CloseConnection() {
@@ -273,8 +282,7 @@ namespace Mexty.MVVM.Model {
                         ACTIVO=@act, 
                         ID_ROL=@idRo, 
                         USUARIO_MODIFICA=@uMod, 
-                        FECHA_MODIFICA=sysdate(),
-                        SINCRONZA=1
+                        FECHA_MODIFICA=@date
                     where ID_USUARIO=@ID"
             };
 
@@ -289,8 +297,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
             query.Parameters.AddWithValue("@uMod", GetUsername());
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se ha actualizado el usuario exitosamente.");
                 return res;
@@ -323,16 +334,14 @@ namespace Mexty.MVVM.Model {
                          USUARIO_REGISTRA, 
                          FECHA_REGISTRO, 
                          USUARIO_MODIFICA, 
-                         FECHA_MODIFICA,
-                         SINCRONZA) 
+                         FECHA_MODIFICA) 
                     values (default, @nombre, @apPat, @apMat, 
                             @usr, @pass, @dom, @tel, 
                             @act, @idT, @idR, 
                             @usrReg, 
-                            sysdate(), 
+                            @date, 
                             @usrMod, 
-                            sysdate(),
-                            1)"
+                            @date)"
             };
 
             query.Parameters.AddWithValue("@nombre", newUser.Nombre);
@@ -347,8 +356,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
             query.Parameters.AddWithValue("@usrReg", GetUsername());
             query.Parameters.AddWithValue("@usrMod", GetUsername());
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se ha creado un nuevo usuario exitosamente.");
                 return res;
@@ -431,8 +443,7 @@ namespace Mexty.MVVM.Model {
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
                     TIPO_TIENDA=@suc,
-                    ACTIVO=@act,
-                    SINCRONZA=1
+                    ACTIVO=@act
                 where ID_TIENDA=@id"
             };
             
@@ -448,6 +459,8 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@id", sucursal.IdTienda.ToString());
             
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se ha actualizado la sucursal exitosamente.");
                 return res;
@@ -477,26 +490,25 @@ namespace Mexty.MVVM.Model {
                     (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
                      RFC, 
                      MENSAJE, 
-                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO,
-                     SINCRONZA) 
+                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
                 values (default, @nom, @dir, @tel, 
                         @rfc, 
                         @msg, 
-                        @face, @insta, @tTienda, @act,
-                        1)"
+                        @face, @insta, @tTienda, @act)"
             };
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
             query.Parameters.AddWithValue("@tel", newSucursal.Telefono);
             query.Parameters.AddWithValue("@rfc", newSucursal.Rfc);
-            //query.Parameters.AddWithValue("@logo", newSucursal.Logo); 
             query.Parameters.AddWithValue("@msg", newSucursal.Mensaje);
             query.Parameters.AddWithValue("@face", newSucursal.Facebook);
             query.Parameters.AddWithValue("@insta", newSucursal.Instagram);
             query.Parameters.AddWithValue("@tTienda", newSucursal.TipoTienda);
             query.Parameters.AddWithValue("@act", 1.ToString());
-            
+
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha creado una nueva sucursal exitosamente.");
                 return res;
@@ -624,8 +636,7 @@ namespace Mexty.MVVM.Model {
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
-                    ACTIVO=@act,
-                    SINCRONZA=1
+                    ACTIVO=@act
                 where ID_PRODUCTO=@id"
             };
 
@@ -640,8 +651,10 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
 
-            
             try {
+                //TODO: implementar que guarde los precios como 0
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de producto exitosamente.");
                 return res;
@@ -669,14 +682,15 @@ namespace Mexty.MVVM.Model {
                 CommandText = @"
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS,
-                     TIPO_VENTA, PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO,
-                     SINCRONZA) 
+                     TIPO_VENTA, 
+                     PRECIO_MAYOREO, PRECIO_MENUDEO, 
+                     ESPECIFICACION_PRODUCTO, ACTIVO) 
                 values (default, @nom, @medida, @tipoP, @piezas,
-                        @tipoV, @pMayo, @pMenu, 
-                        @esp, @act,
-                        1)"
-            }; 
+                        @tipoV, 
+                        @pMayo, @pMenu, 
+                        @esp, @act)"
+            };
+
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
             query.Parameters.AddWithValue("@piezas", newProduct.Piezas.ToString());
@@ -688,6 +702,9 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", 1.ToString());
 
             try {
+                //TODO: implementar que guarde los precios como 0
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha dado de alta un nuevo produto exitosamente.");
                 return res;
@@ -764,7 +781,7 @@ namespace Mexty.MVVM.Model {
                 update cliente_mayoreo 
                 set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
                     DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, 
-                    USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=sysdate(), 
+                    USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=@date, 
                     COMENTARIO=@com, DEBE=@debe
                 where ID_CLIENTE=@id"
             };
@@ -778,8 +795,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
             query.Parameters.AddWithValue("@com", cliente.Comentario);
             query.Parameters.AddWithValue("@debe", cliente.Debe.ToString(CultureInfo.InvariantCulture));
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de cliente de manera exitosa.");
                 return res;
@@ -813,8 +833,8 @@ namespace Mexty.MVVM.Model {
                      comentario, DEBE) 
                 values (default, @nom, @apP, @apM, 
                         @dom, @tel, @act, 
-                        @usReg, sysdate(), 
-                        @usMod, sysdate(), 
+                        @usReg, @date, 
+                        @usMod, @date, 
                         @com, @debe)"
             };
             query.Parameters.AddWithValue("@nom", newClient.Nombre);
@@ -827,8 +847,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@com", newClient.Comentario);
             query.Parameters.AddWithValue("@debe", newClient.Debe.ToString(CultureInfo.InvariantCulture));
-            
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
+
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha dado de alta un nuevo cliente de manera exitosa.");
                 return res;
@@ -921,13 +944,6 @@ namespace Mexty.MVVM.Model {
             };
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
 
-            var cmd = query.CommandText;
-            for (var index = 0; index < query.Parameters.Count; index++) {
-                var queryParameter = query.Parameters[index];
-                cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value.ToString());
-            }
-            Log.Info(cmd);
-
             var items = new List<ItemInventario>();
             try {
                 using var reader = query.ExecuteReader();
@@ -974,9 +990,7 @@ namespace Mexty.MVVM.Model {
                 set ID_PRODUCTO=@idP,
                     CANTIDAD=@can, PIEZAS=@pieza,
                     COMENTARIO=@comentario, ID_TIENDA=@idT,
-                    USUARIO_REGISTRA=@usrR, FECHA_REGISTRO=@fecR, 
-                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=sysdate(),
-                    SINCRONZA=1
+                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date
                 where ID_REGISTRO=@idR"
             };
 
@@ -988,12 +1002,12 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pieza", item.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", item.Comentario);
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
-            query.Parameters.AddWithValue("@usrR", item.UsuarioRegistra);
-            query.Parameters.AddWithValue("@fecR", item.FechaRegistro);
-            query.Parameters.AddWithValue("@usrM", item.UsuarioModifica);
-
+            query.Parameters.AddWithValue("@usrM", GetUsername());
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
                 return res;
@@ -1024,14 +1038,12 @@ namespace Mexty.MVVM.Model {
                      CANTIDAD, PIEZAS,
                      COMENTARIO, ID_TIENDA,
                      usuario_registra, fecha_registro, 
-                     usuario_modifica, fecha_modifica,
-                     SINCRONZA) 
+                     usuario_modifica, fecha_modifica) 
                 values (default, @idP,
                         @cant, @piezas,
                         @comentario, @idT,
-                        @usReg, sysdate(), 
-                        @usMod, sysdate(),
-                        1)"
+                        @usReg, @date, 
+                        @usMod, @date)"
             };
 
             query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
@@ -1041,8 +1053,11 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@idT", IdTienda.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
+                ProcessQuery(query);
+
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
                 return res;
@@ -1061,6 +1076,78 @@ namespace Mexty.MVVM.Model {
         // =========================================================
         // ------- Querrys De modulo Base de datos  ---------------
         // =========================================================
+
+        /// <summary>
+        /// Método que recibe un objeto tipo MySqlCommand, obtiene la querry y remplaza los parametros para guardarse.
+        /// </summary>
+        /// <param name="query">Objeto tipo <c>MySqlCommand</c>.</param>
+        /// <exception cref="Exception"></exception>
+        private static void ProcessQuery(MySqlCommand query) {
+            try {
+                var cmd = query.CommandText;
+                for (var index = 0; index < query.Parameters.Count; index++) {
+                    var queryParameter = query.Parameters[index];
+                    cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value?.ToString());
+                }
+                Log.Debug("Se ha obtenido la querry.");
+
+                var exit = SaveQuery(cmd);
+                if (exit == 0) throw new Exception();
+                Log.Debug("Se ha guardado la querry en sincroniza.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener la querry y replazar los parametros de esta.");
+                Log.Error($"Error: {e.Message}");
+            }
+        }
+
+
+        /// <summary>
+        /// Método que guarda la querry dada en la tabla de control_sincbd
+        /// </summary>
+        /// <returns></returns>
+        private static int SaveQuery(string cmd) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"insert into control_sincbd
+                                values (default, @query, @date);"
+            };
+
+            // String sanitization
+            var strReader = new StringReader(cmd);
+            var cmdNew = "";
+            while (true) {
+                var line = strReader.ReadLine();
+                if (line != null) {
+                    cmdNew = $"{cmdNew}{line.TrimStart()}";
+                }
+                else {
+                    cmdNew = $"{cmdNew};";
+                    break;
+                }
+            }
+
+            query.Parameters.AddWithValue("@query", cmdNew);
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
+
+            try {
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha guardado la query exitosamente.");
+                return res;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al guardar la query.");
+                Log.Error($"Error: {e.Message}");
+                return 0;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
 
         /// <summary>
         /// Metodo a usar para exportar
