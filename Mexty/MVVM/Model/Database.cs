@@ -652,8 +652,18 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", producto.Activo.ToString());
 
             try {
-                //TODO: implementar que guarde los precios como 0
-                ProcessQuery(query);
+                var cmd = query.CommandText;
+                for (var index = 0; index < query.Parameters.Count; index++) {
+                    var queryParameter = query.Parameters[index];
+                    cmd = cmd.Replace(
+                        queryParameter.ParameterName,
+                        queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                }
+                Log.Debug("Se ha obtenido la querry.");
+
+                var exit = SaveQuery(cmd);
+                if (exit == 0) throw new Exception();
+                Log.Debug("Se ha guardado la querry en sincroniza.");
 
                 var res = query.ExecuteNonQuery();
                 Log.Info("Se han actualizado los datos de producto exitosamente.");
@@ -702,8 +712,18 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@act", 1.ToString());
 
             try {
-                //TODO: implementar que guarde los precios como 0
-                ProcessQuery(query);
+                var cmd = query.CommandText;
+                for (var index = 0; index < query.Parameters.Count; index++) {
+                    var queryParameter = query.Parameters[index];
+                    cmd = cmd.Replace(
+                        queryParameter.ParameterName,
+                        queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                }
+                Log.Debug("Se ha obtenido la querry.");
+
+                var exit = SaveQuery(cmd);
+                if (exit == 0) throw new Exception();
+                Log.Debug("Se ha guardado la querry en sincroniza.");
 
                 var res = query.ExecuteNonQuery(); // retorna el número de columnas cambiadas.
                 Log.Info("Se ha dado de alta un nuevo produto exitosamente.");
@@ -1113,7 +1133,7 @@ namespace Mexty.MVVM.Model {
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"insert into control_sincbd
-                                values (default, @query, @date);"
+                                values (default, @query, @date)"
             };
 
             // String sanitization
