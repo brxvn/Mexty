@@ -1098,6 +1098,49 @@ namespace Mexty.MVVM.Model {
         // =========================================================
 
         /// <summary>
+        /// Método que vacia los contenidos de la tabla control_sincbd a un script sql para ser aplicados en otra base de datos.
+        /// </summary>
+        public static void DumpDeltas() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            // Obtenemos la fecha del primer cambio guardado
+            // Igual y no es necesaria
+            MySqlCommand query0 = new() {
+                Connection = connObj,
+                CommandText = @"select fecha_sinc from control_sincbd where ID_REGISTRO=1;"
+            };
+
+            // Obtenemos las querys y las fechas de cada una
+            // La idea es crear una lista de objetos tipo dump e ir escribiendo.
+            MySqlCommand query1 = new() {
+                Connection = connObj,
+                CommandText = @"select QUERY, fecha_sinc from control_sincbd;"
+            };
+
+            // Vaciamos la tabla.
+            MySqlCommand query2 = new() {
+                Connection = connObj,
+                CommandText = @"truncate table control_sincbd;"
+            };
+
+            // Reseteamos el auto increment del id
+            MySqlCommand query3 = new() {
+                Connection = connObj,
+                CommandText = @"ALTER TABLE control_sincbd AUTO_INCREMENT = 1"
+            };
+
+            var time = DateTime.Today;
+            //TODO: agregar la fecha del dia del dump y la fecha de la primera sincronizacion;
+            var fileName = $"DBChangesFrom{time:dd-MM-yy}.sql";
+            const string path = @"C:\Mexty\Backups\";
+            Directory.CreateDirectory(path);
+            var file = $"{path}{fileName}";
+
+        }
+
+
+        /// <summary>
         /// Método que recibe un objeto tipo MySqlCommand, obtiene la querry y remplaza los parametros para guardarse.
         /// </summary>
         /// <param name="query">Objeto tipo <c>MySqlCommand</c>.</param>
@@ -1170,15 +1213,16 @@ namespace Mexty.MVVM.Model {
 
 
         /// <summary>
-        /// Metodo a usar para exportar
+        /// Metodo a usar para exportar toda la base de datos.
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
-        public static bool backUp() {
+        // TODO: quizá agregar un combo para controlar si exportar toda la base de datos o solo la estructura.
+        public static bool BackUp() {
             Log.Info("Se ha empezado el backUp de la base de datos.");
             try {
-                DateTime time = DateTime.Today;
+                var time = DateTime.Today;
                 var fileName = $"FullBackupBD{time:dd-MM-yy}.sql";
-                const string path = @"C:\Mexty\Backups\";
+                const string path = @"C:\Mexty\Backups\FullBackUp";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
                 using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {

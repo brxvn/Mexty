@@ -60,7 +60,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Export(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
-                if (Database.backUp()) {
+                if (Database.BackUp()) {
                     Log.Info("Se ha exportado la base de datos de manera exitosa.");
                     MessageBox.Show("Se ha exportado la base de datos con exito.");
                 }
