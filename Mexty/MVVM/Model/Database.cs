@@ -1327,7 +1327,7 @@ namespace Mexty.MVVM.Model {
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
             try {
-                if (file.Contains("FullBackupBD")) {
+                if (file.Contains("FullBackupBD")) { // solo BackUps de toda la base de datos.
                     using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
                         using (MySqlCommand cmd = new MySqlCommand()) {
                             using (MySqlBackup mb = new MySqlBackup(cmd)) {
@@ -1343,26 +1343,7 @@ namespace Mexty.MVVM.Model {
                     return true;
                 }
                 else {
-                    var connObj = new MySqlConnection(ConnectionInfo());
-                    connObj.Open();
-
-                    var script = new StreamReader(file);
-
-                    while (true) {
-                        var line = script.ReadLine();
-                        if (line != null) {
-                            MySqlCommand query = new() {
-                                Connection = connObj,
-                                CommandText = line
-                            };
-                            query.ExecuteNonQuery();
-                        }
-                        else {
-                            break;
-                        }
-                    }
-
-                    return true;
+                    return ExecFromScript(file);
                 }
             }
             catch (Exception e) {
@@ -1370,6 +1351,41 @@ namespace Mexty.MVVM.Model {
                 Log.Error($"Error: {e.Message}");
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Funcion que lee y ejecuta comandos sql de un script.
+        /// </summary>
+        /// <param name="file">Ruta al archivo .sql a ejecutar.</param>
+        /// <returns></returns>
+        private static bool ExecFromScript(string file) {
+            try {
+                var connObj = new MySqlConnection(ConnectionInfo());
+                connObj.Open();
+
+                var script = new StreamReader(file);
+
+                while (true) {
+                    var line = script.ReadLine();
+                    if (line != null) {
+                        MySqlCommand query = new() {
+                            Connection = connObj,
+                            CommandText = line
+                        };
+                        query.ExecuteNonQuery();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha cocurrido un error al ejecutar el script sql.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+
         }
 
         // ============================================
