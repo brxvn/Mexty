@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using MySql.Data.MySqlClient;
 using Mexty.MVVM.Model.DataTypes;
 using System.Windows;
 using System.Windows.Documents;
 using Google.Protobuf.WellKnownTypes;
+using iText.StyledXmlParser.Jsoup.Select;
 using log4net;
 using Org.BouncyCastle.Ocsp;
 using MySql.Data.MySqlClient; 
@@ -113,9 +115,9 @@ namespace Mexty.MVVM.Model {
                 connObj.Open();
                 var query = new MySqlCommand() {
                     Connection = connObj,
-                    CommandText = "select nombre_tienda from cat_tienda where ID_TIENDA=@id"
+                    CommandText = "select nombre_tienda from cat_tienda where ID_TIENDA=@idX"
                 };
-                query.Parameters.AddWithValue("@id", sucursal);
+                query.Parameters.AddWithValue("@idX", sucursal);
                 var res = query.ExecuteReader();
                 if (res.Read().ToString().ToLower() == "false") {
                     Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
@@ -281,27 +283,27 @@ namespace Mexty.MVVM.Model {
                     set NOMBRE_USUARIO=@nomUsr, 
                         AP_PATERNO=@apPat, 
                         AP_MATERNO=@apMat, 
-                        ID_TIENDA=@idTi, 
+                        ID_TIENDA=@idTX, 
                         DOMICILIO=@dom, 
                         CONTRASENIA=@pass, 
-                        TELEFONO=@tel, 
-                        ACTIVO=@act, 
-                        ID_ROL=@idRo, 
+                        TELEFONO=@telX, 
+                        ACTIVO=@actX, 
+                        ID_ROL=@idRX, 
                         USUARIO_MODIFICA=@uMod, 
-                        FECHA_MODIFICA=@date
-                    where ID_USUARIO=@ID"
+                        FECHA_MODIFICA=@date 
+                    where ID_USUARIO=@idX"
             };
 
             query.Parameters.AddWithValue("@nomUsr", usuario.Nombre);
             query.Parameters.AddWithValue("@apPat", usuario.ApPaterno);
             query.Parameters.AddWithValue("@apMat", usuario.ApMaterno);
-            query.Parameters.AddWithValue("@idTi",usuario.IdTienda.ToString()); // evitamos boxing//evitamos boxing.
+            query.Parameters.AddWithValue("@idTX",usuario.IdTienda.ToString()); // evitamos boxing//evitamos boxing.
             query.Parameters.AddWithValue("@dom", usuario.Domicilio);
             query.Parameters.AddWithValue("@pass", usuario.Contraseña);
-            query.Parameters.AddWithValue("@tel", usuario.Telefono);
-            query.Parameters.AddWithValue("@ID", usuario.Id.ToString());
-            query.Parameters.AddWithValue("@act", usuario.Activo.ToString());
-            query.Parameters.AddWithValue("@idRo",usuario.IdRol.ToString());
+            query.Parameters.AddWithValue("@telX", usuario.Telefono);
+            query.Parameters.AddWithValue("@idX", usuario.Id.ToString());
+            query.Parameters.AddWithValue("@actX", usuario.Activo.ToString());
+            query.Parameters.AddWithValue("@idRX",usuario.IdRol.ToString());
             query.Parameters.AddWithValue("@uMod", GetUsername());
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
@@ -342,8 +344,8 @@ namespace Mexty.MVVM.Model {
                          USUARIO_MODIFICA, 
                          FECHA_MODIFICA) 
                     values (default, @nombre, @apPat, @apMat, 
-                            @usr, @pass, @dom, @tel, 
-                            @act, @idT, @idR, 
+                            @usuario, @pass, @dom, @telX, 
+                            @actX, @idTX, @idRX, 
                             @usrReg, 
                             @date, 
                             @usrMod, 
@@ -353,13 +355,13 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@nombre", newUser.Nombre);
             query.Parameters.AddWithValue("@apPat", newUser.ApPaterno);
             query.Parameters.AddWithValue("@apMat", newUser.ApMaterno);
-            query.Parameters.AddWithValue("@usr", newUser.Username);
+            query.Parameters.AddWithValue("@usuario", newUser.Username);
             query.Parameters.AddWithValue("@pass", newUser.Contraseña);
             query.Parameters.AddWithValue("@dom", newUser.Domicilio);
-            query.Parameters.AddWithValue("@tel", newUser.Telefono);
-            query.Parameters.AddWithValue("@act", newUser.Activo.ToString());//evitamos boxing
-            query.Parameters.AddWithValue("@idT", newUser.IdTienda.ToString());
-            query.Parameters.AddWithValue("@idR", newUser.IdRol.ToString());
+            query.Parameters.AddWithValue("@telX", newUser.Telefono);
+            query.Parameters.AddWithValue("@actX", newUser.Activo.ToString());//evitamos boxing
+            query.Parameters.AddWithValue("@idTX", newUser.IdTienda.ToString());
+            query.Parameters.AddWithValue("@idRX", newUser.IdRol.ToString());
             query.Parameters.AddWithValue("@usrReg", GetUsername());
             query.Parameters.AddWithValue("@usrMod", GetUsername());
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
@@ -443,26 +445,26 @@ namespace Mexty.MVVM.Model {
                 update cat_tienda 
                 set NOMBRE_TIENDA=@nom, 
                     DIRECCION=@dir, 
-                    TELEFONO=@tel, 
+                    TELEFONO=@telX, 
                     RFC=@rfc, 
                     MENSAJE=@msg, 
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
                     TIPO_TIENDA=@suc,
-                    ACTIVO=@act
-                where ID_TIENDA=@id"
+                    ACTIVO=@actX 
+                where ID_TIENDA=@idX"
             };
             
             query.Parameters.AddWithValue("@nom", sucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", sucursal.Dirección);
-            query.Parameters.AddWithValue("@tel", sucursal.Telefono);
+            query.Parameters.AddWithValue("@telX", sucursal.Telefono);
             query.Parameters.AddWithValue("@rfc", sucursal.Rfc);
             query.Parameters.AddWithValue("@msg", sucursal.Mensaje);
             query.Parameters.AddWithValue("@face", sucursal.Facebook);
             query.Parameters.AddWithValue("@inst", sucursal.Instagram);
             query.Parameters.AddWithValue("@suc", sucursal.TipoTienda);
-            query.Parameters.AddWithValue("@act", sucursal.Activo.ToString());
-            query.Parameters.AddWithValue("@id", sucursal.IdTienda.ToString());
+            query.Parameters.AddWithValue("@actX", sucursal.Activo.ToString());
+            query.Parameters.AddWithValue("@idX", sucursal.IdTienda.ToString());
             
             try {
                 ProcessQuery(query);
@@ -497,20 +499,20 @@ namespace Mexty.MVVM.Model {
                      RFC, 
                      MENSAJE, 
                      FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
-                values (default, @nom, @dir, @tel, 
+                values (default, @nom, @dir, @telX, 
                         @rfc, 
                         @msg, 
-                        @face, @insta, @tTienda, @act)"
+                        @face, @insta, @tTienda, @actX)"
             };
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
-            query.Parameters.AddWithValue("@tel", newSucursal.Telefono);
+            query.Parameters.AddWithValue("@telX", newSucursal.Telefono);
             query.Parameters.AddWithValue("@rfc", newSucursal.Rfc);
             query.Parameters.AddWithValue("@msg", newSucursal.Mensaje);
             query.Parameters.AddWithValue("@face", newSucursal.Facebook);
             query.Parameters.AddWithValue("@insta", newSucursal.Instagram);
             query.Parameters.AddWithValue("@tTienda", newSucursal.TipoTienda);
-            query.Parameters.AddWithValue("@act", 1.ToString());
+            query.Parameters.AddWithValue("@actX", 1.ToString());
 
             try {
                 ProcessQuery(query);
@@ -636,34 +638,40 @@ namespace Mexty.MVVM.Model {
                 update cat_producto 
                 set NOMBRE_PRODUCTO=@nom, 
                     TIPO_PRODUCTO=@tipoP, 
-                    MEDIDA=@med,
-                    PIEZAS=@piezas,
+                    MEDIDA=@med, 
+                    PIEZAS=@piezasX, 
                     TIPO_VENTA=@tipoV, 
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
-                    ACTIVO=@act
-                where ID_PRODUCTO=@id"
+                    ACTIVO=@actX 
+                where ID_PRODUCTO=@idX"
             };
 
             query.Parameters.AddWithValue("@nom", producto.NombreProducto);
             query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
-            query.Parameters.AddWithValue("@piezas", producto.Piezas.ToString());
+            query.Parameters.AddWithValue("@piezasX", producto.Piezas.ToString());
             query.Parameters.AddWithValue("@tipoV", producto.TipoVenta.ToString());
             query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
-            query.Parameters.AddWithValue("@id", producto.IdProducto.ToString());
-            query.Parameters.AddWithValue("@act", producto.Activo.ToString());
+            query.Parameters.AddWithValue("@idX", producto.IdProducto.ToString());
+            query.Parameters.AddWithValue("@actX", producto.Activo.ToString());
 
             try {
                 var cmd = query.CommandText;
                 for (var index = 0; index < query.Parameters.Count; index++) {
                     var queryParameter = query.Parameters[index];
-                    cmd = cmd.Replace(
-                        queryParameter.ParameterName,
-                        queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                    if (queryParameter.ParameterName.Contains("X")) {
+                        cmd = cmd.Replace(
+                            queryParameter.ParameterName,
+                            queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                    }
+                    else {
+                        cmd = cmd.Replace(queryParameter.ParameterName, $"'{queryParameter.Value}'");
+                    }
+
                 }
                 Log.Debug("Se ha obtenido la querry.");
 
@@ -697,33 +705,38 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = @"
                 insert into cat_producto 
-                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS,
+                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS, 
                      TIPO_VENTA, 
                      PRECIO_MAYOREO, PRECIO_MENUDEO, 
                      ESPECIFICACION_PRODUCTO, ACTIVO) 
-                values (default, @nom, @medida, @tipoP, @piezas,
+                values (default, @nom, @medida, @tipoP, @piezasX, 
                         @tipoV, 
                         @pMayo, @pMenu, 
-                        @esp, @act)"
+                        @esp, @actX)"
             };
 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
             query.Parameters.AddWithValue("@medida", newProduct.MedidaProducto);
-            query.Parameters.AddWithValue("@piezas", newProduct.Piezas.ToString());
+            query.Parameters.AddWithValue("@piezasX", newProduct.Piezas.ToString());
             query.Parameters.AddWithValue("@tipoP", newProduct.TipoProducto);
             query.Parameters.AddWithValue("@tipoV", newProduct.TipoVenta.ToString());
             query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
-            query.Parameters.AddWithValue("@act", 1.ToString());
+            query.Parameters.AddWithValue("@actX", 1.ToString());
 
             try {
                 var cmd = query.CommandText;
                 for (var index = 0; index < query.Parameters.Count; index++) {
                     var queryParameter = query.Parameters[index];
-                    cmd = cmd.Replace(
-                        queryParameter.ParameterName,
-                        queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                    if (queryParameter.ParameterName.Contains("X")) {
+                        cmd = cmd.Replace(
+                            queryParameter.ParameterName,
+                            queryParameter.ParameterName is "@pMayo" or "@pMenu" ? "0" : queryParameter.Value?.ToString());
+                    }
+                    else {
+                        cmd = cmd.Replace(queryParameter.ParameterName, $"'{queryParameter.Value}'");
+                    }
                 }
                 Log.Debug("Se ha obtenido la querry.");
 
@@ -806,21 +819,21 @@ namespace Mexty.MVVM.Model {
                 CommandText = @"
                 update cliente_mayoreo 
                 set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
-                    DOMICILIO=@dom, TELEFONO=@tel, ACTIVO=@act, 
+                    DOMICILIO=@dom, TELEFONO=@telX, ACTIVO=@actX, 
                     USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=@date, 
-                    COMENTARIO=@com, DEBE=@debe
-                where ID_CLIENTE=@id"
+                    COMENTARIO=@com, DEBE=@debeX
+                where ID_CLIENTE=@idX"
             };
             query.Parameters.AddWithValue("@nom", cliente.Nombre);
             query.Parameters.AddWithValue("@apP", cliente.ApPaterno);
             query.Parameters.AddWithValue("@apM", cliente.ApMaterno);
             query.Parameters.AddWithValue("@dom", cliente.Domicilio);
-            query.Parameters.AddWithValue("@tel", cliente.Telefono);
-            query.Parameters.AddWithValue("@act", cliente.Activo.ToString());
+            query.Parameters.AddWithValue("@telX", cliente.Telefono);
+            query.Parameters.AddWithValue("@actX", cliente.Activo.ToString());
             query.Parameters.AddWithValue("@usMod", GetUsername());
-            query.Parameters.AddWithValue("@id", cliente.IdCliente.ToString());
+            query.Parameters.AddWithValue("@idX", cliente.IdCliente.ToString());
             query.Parameters.AddWithValue("@com", cliente.Comentario);
-            query.Parameters.AddWithValue("@debe", cliente.Debe.ToString(CultureInfo.InvariantCulture));
+            query.Parameters.AddWithValue("@debeX", cliente.Debe.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
@@ -858,21 +871,21 @@ namespace Mexty.MVVM.Model {
                      usuario_modifica, fecha_modifica, 
                      comentario, DEBE) 
                 values (default, @nom, @apP, @apM, 
-                        @dom, @tel, @act, 
+                        @dom, @telX, @actX, 
                         @usReg, @date, 
                         @usMod, @date, 
-                        @com, @debe)"
+                        @com, @debeX)"
             };
             query.Parameters.AddWithValue("@nom", newClient.Nombre);
             query.Parameters.AddWithValue("@apP", newClient.ApPaterno);
             query.Parameters.AddWithValue("@apM", newClient.ApMaterno);
             query.Parameters.AddWithValue("@dom", newClient.Domicilio);
-            query.Parameters.AddWithValue("@tel", newClient.Telefono);
-            query.Parameters.AddWithValue("@act", 1.ToString());
+            query.Parameters.AddWithValue("@telX", newClient.Telefono);
+            query.Parameters.AddWithValue("@actX", 1.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@com", newClient.Comentario);
-            query.Parameters.AddWithValue("@debe", newClient.Debe.ToString(CultureInfo.InvariantCulture));
+            query.Parameters.AddWithValue("@debeX", newClient.Debe.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
             try {
@@ -907,9 +920,9 @@ namespace Mexty.MVVM.Model {
 
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = @"select * from inventario where ID_TIENDA=@id"
+                CommandText = @"select * from inventario where ID_TIENDA=@idX"
             };
-            query.Parameters.AddWithValue("@id", IdTienda.ToString());
+            query.Parameters.AddWithValue("@idX", IdTienda.ToString());
 
             var items = new List<ItemInventario>();
             try {
@@ -953,22 +966,22 @@ namespace Mexty.MVVM.Model {
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = @"
-                SELECT p.id_producto,
-                       p.tipo_producto,
-                       p.nombre_producto,
-                       p.medida,
-                       p.piezas AS MAX_PIEZAS,
-                       i.ID_REGISTRO,
-                       i.piezas,
-                       i.cantidad,
-                       i.comentario,
-                       i.ID_TIENDA
-                FROM   cat_producto p,
-                       inventario i
-                WHERE  p.id_producto = i.id_producto
-                       and i.ID_TIENDA=@idT"
+                SELECT p.id_producto, 
+                       p.tipo_producto, 
+                       p.nombre_producto, 
+                       p.medida, 
+                       p.piezas AS MAX_PIEZAS, 
+                       i.ID_REGISTRO, 
+                       i.piezas, 
+                       i.cantidad, 
+                       i.comentario, 
+                       i.ID_TIENDA 
+                FROM   cat_producto p, 
+                       inventario i 
+                WHERE  p.id_producto = i.id_producto 
+                       and i.ID_TIENDA=@idTX"
             };
-            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
+            query.Parameters.AddWithValue("@idTX", IdTienda.ToString());
 
             var items = new List<ItemInventario>();
             try {
@@ -1012,22 +1025,22 @@ namespace Mexty.MVVM.Model {
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = @"
-                update inventario
-                set ID_PRODUCTO=@idP,
-                    CANTIDAD=@can, PIEZAS=@pieza,
-                    COMENTARIO=@comentario, ID_TIENDA=@idT,
-                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date
-                where ID_REGISTRO=@idR"
+                update inventario 
+                set ID_PRODUCTO=@idPX, 
+                    CANTIDAD=@cantidadX, PIEZAS=@piezasX, 
+                    COMENTARIO=@comentario, ID_TIENDA=@idTX, 
+                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date 
+                where ID_REGISTRO=@idRX"
             };
 
-            query.Parameters.AddWithValue("@idR", item.IdRegistro.ToString());
-            query.Parameters.AddWithValue("@idP", item.IdProducto.ToString());
+            query.Parameters.AddWithValue("@idRX", item.IdRegistro.ToString());
+            query.Parameters.AddWithValue("@idPX", item.IdProducto.ToString());
             query.Parameters.AddWithValue("@tipo", item.TipoProducto);
             query.Parameters.AddWithValue("@med", item.Medida);
-            query.Parameters.AddWithValue("@can", item.Cantidad.ToString());
-            query.Parameters.AddWithValue("@pieza", item.Piezas.ToString());
+            query.Parameters.AddWithValue("@cantidadX", item.Cantidad.ToString());
+            query.Parameters.AddWithValue("@piezasX", item.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", item.Comentario);
-            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
+            query.Parameters.AddWithValue("@idTX", IdTienda.ToString());
             query.Parameters.AddWithValue("@usrM", GetUsername());
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
 
@@ -1059,24 +1072,24 @@ namespace Mexty.MVVM.Model {
             MySqlCommand query = new() {
                 Connection = connObj,
                 CommandText = @"
-                insert into inventario
+                insert into inventario 
                     (ID_REGISTRO, ID_PRODUCTO,
-                     CANTIDAD, PIEZAS,
-                     COMENTARIO, ID_TIENDA,
+                     CANTIDAD, PIEZAS, 
+                     COMENTARIO, ID_TIENDA, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
-                values (default, @idP,
-                        @cant, @piezas,
-                        @comentario, @idT,
+                values (default, @idPX,
+                        @cantidadX, @piezasX,
+                        @comentario, @idTX,
                         @usReg, @date, 
                         @usMod, @date)"
             };
 
-            query.Parameters.AddWithValue("@idP", newItem.IdProducto.ToString());
-            query.Parameters.AddWithValue("@cant", newItem.Cantidad.ToString());
-            query.Parameters.AddWithValue("@piezas", newItem.Piezas.ToString());
+            query.Parameters.AddWithValue("@idPX", newItem.IdProducto.ToString());
+            query.Parameters.AddWithValue("@cantidadX", newItem.Cantidad.ToString());
+            query.Parameters.AddWithValue("@piezasX", newItem.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", newItem.Comentario);
-            query.Parameters.AddWithValue("@idT", IdTienda.ToString());
+            query.Parameters.AddWithValue("@idTX", IdTienda.ToString());
             query.Parameters.AddWithValue("@usReg", GetUsername());
             query.Parameters.AddWithValue("@usMod", GetUsername());
             query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
@@ -1203,7 +1216,13 @@ namespace Mexty.MVVM.Model {
                 var cmd = query.CommandText;
                 for (var index = 0; index < query.Parameters.Count; index++) {
                     var queryParameter = query.Parameters[index];
-                    cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value?.ToString());
+                    // Campos numericos
+                    if (queryParameter.ParameterName.Contains("X")) {
+                        cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value?.ToString());
+                    }
+                    else {
+                        cmd = cmd.Replace(queryParameter.ParameterName, $"'{queryParameter.Value}'");
+                    }
                 }
                 Log.Debug("Se ha obtenido la querry.");
 
