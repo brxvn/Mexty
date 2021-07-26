@@ -402,6 +402,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             Log.Debug("Precionado boton limpiar en modulo usuario.");
+            DataUsuarios.SelectedItem = null;
             ClearFields();
             DesactivarBotones();
         }

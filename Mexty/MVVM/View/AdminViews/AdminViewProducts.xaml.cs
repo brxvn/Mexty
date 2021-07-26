@@ -404,6 +404,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            DataProductos.SelectedItem = null;
             ClearFields();
         }
 

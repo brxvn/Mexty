@@ -133,7 +133,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtMensaje.Text = "";
             ComboTipo.SelectedIndex = 0;
             Log.Debug("Se han limpiado los campos de texto.");
-
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccionar un registro para eliminar.";
             Guardar.IsEnabled = false;
@@ -190,6 +189,7 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            DataEstablecimientos.SelectedItem = null;
             ClearFields();
         }
 

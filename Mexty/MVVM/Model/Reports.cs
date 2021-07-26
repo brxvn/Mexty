@@ -24,12 +24,11 @@ namespace Mexty.MVVM.Model {
 
         public void PDFReportInventario() {
 
+            var ListaSucursales = Database.GetTablesFromSucursales();
+
+            var nombres = ListaSucursales[0].NombreTienda;
+
             var data = Database.GetItemsFromInventario();
-
-            var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
-            };
-
 
             // TODO
             Directory.CreateDirectory(@"C:\Mexty\Reportes\");
@@ -67,7 +66,7 @@ namespace Mexty.MVVM.Model {
                 table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString())));
             }
 
-           
+
 
             document.Add(table);
             document.Close();

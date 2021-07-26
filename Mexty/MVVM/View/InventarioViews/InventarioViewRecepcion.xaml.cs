@@ -217,5 +217,37 @@ namespace Mexty.MVVM.View.InventarioViews {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
+        /// <summary>
+        /// Método para habilitar cambios en la GUI depende del tipo de medidida del producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CantidadGUIChanges(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtMedida.Text = textBox.Text;
+            switch (textBox.Text) {
+                case "pieza":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                case "0.5 litros":
+                case "litro":
+                case "3 litros":
+                case "12 litros":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Collapsed;    
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    break;
+                default:
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
+        }
     }
 }

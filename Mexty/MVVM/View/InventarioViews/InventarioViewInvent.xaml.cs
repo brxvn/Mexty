@@ -172,6 +172,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
+            InitializeComponent();
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
