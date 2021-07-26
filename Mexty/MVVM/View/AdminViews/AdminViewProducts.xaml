@@ -204,7 +204,7 @@
                     <ColumnDefinition Width=".5*" x:Name="ColCantidad"/>
                     <ColumnDefinition Width="auto" x:Name="ColPiezas"/>
                 </Grid.ColumnDefinitions>
-                   
+
                 <!--ComboTipo-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto" SelectionChanged="HablitarMedidas"/>
@@ -533,7 +533,7 @@
                         </Style>
                     </TextBox.Style>
                 </TextBox>
-                
+
                 <!--txtPrecioMenudeo-->
                 <TextBox Background="Beige"
                      x:Name="txtPrecioMenudeo"

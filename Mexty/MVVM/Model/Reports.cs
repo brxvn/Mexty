@@ -66,8 +66,6 @@ namespace Mexty.MVVM.Model {
                 table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString())));
             }
 
-
-
             document.Add(table);
             document.Close();
 
