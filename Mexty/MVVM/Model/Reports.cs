@@ -20,7 +20,6 @@ namespace Mexty.MVVM.Model {
         private static readonly ILog Log =
            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-
         private string _date = DateTime.UtcNow.ToString("dd-MM-yy");
 
         public void PDFReportInventario() {
@@ -32,6 +31,8 @@ namespace Mexty.MVVM.Model {
             };
 
 
+            // TODO
+            Directory.CreateDirectory(@"C:\Mexty\Reportes\");
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileStream($@"C:\Mexty\Reportes\Reporte-{_date}.pdf", FileMode.Create, FileAccess.Write)));
             Document document = new Document(pdfDocument);
 
@@ -39,7 +40,7 @@ namespace Mexty.MVVM.Model {
             ImageData imageData = ImageDataFactory.Create(@"C:\Mexty\Brand\LogoReportes.png");
             // Create layout image object and provide parameters. Page number = 1
             Image image = new Image(imageData).ScaleAbsolute(150, 50);
-                // This adds the image to the page
+            // This adds the image to the page
             document.Add(image);
 
             string titulo = "Reporte de inventario de Sucursal";

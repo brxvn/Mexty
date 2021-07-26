@@ -1172,6 +1172,7 @@ namespace Mexty.MVVM.Model {
                 var path = $@"C:\Mexty\Backups\{date:yyyy-MMMM}\";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
+
                 if (!File.Exists(file)) {
                     using (var streamWriter = File.CreateText(file)) {
                         for (var index = 0; index < data.Count; index++) {
@@ -1326,20 +1327,43 @@ namespace Mexty.MVVM.Model {
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
             try {
-                using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
-                    using (MySqlCommand cmd = new MySqlCommand()) {
-                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
-                            cmd.Connection = conn;
-                            conn.Open();
-                            mb.ImportInfo.ErrorLogFile = @"C:\Mexty\Backups\ErroLog\errors.log";
-                            mb.ImportFromFile(file);
-                            Log.Debug("Se ha importado el archivo Exitosamente.");
-                            conn.Close();
+                if (file.Contains("FullBackupBD")) {
+                    using (MySqlConnection conn = new MySqlConnection(ConnectionInfo())) {
+                        using (MySqlCommand cmd = new MySqlCommand()) {
+                            using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                                cmd.Connection = conn;
+                                conn.Open();
+                                mb.ImportInfo.ErrorLogFile = @"C:\Mexty\Backups\ErroLog\errors.log";
+                                mb.ImportFromFile(file);
+                                Log.Debug("Se ha importado el archivo Exitosamente.");
+                                conn.Close();
+                            }
                         }
                     }
+                    return true;
                 }
+                else {
+                    var connObj = new MySqlConnection(ConnectionInfo());
+                    connObj.Open();
 
-                return true;
+                    var script = new StreamReader(file);
+
+                    while (true) {
+                        var line = script.ReadLine();
+                        if (line != null) {
+                            MySqlCommand query = new() {
+                                Connection = connObj,
+                                CommandText = line
+                            };
+                            query.ExecuteNonQuery();
+                        }
+                        else {
+                            break;
+                        }
+                    }
+
+                    return true;
+                }
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al intentar importar y ejecutar el archivo SQL.");
