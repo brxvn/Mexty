@@ -210,7 +210,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void RegistrarUsuario(object sender, RoutedEventArgs e) {
-            Log.Debug("Precionado boton guardar.");
+            Log.Debug("Presionado boton guardar.");
             try {
                 var newUsuario = new Usuario {
                     Nombre = nombreUsuario.Text,
@@ -402,6 +402,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             Log.Debug("Precionado boton limpiar en modulo usuario.");
+            DataUsuarios.SelectedItem = null;
             ClearFields();
             DesactivarBotones();
         }

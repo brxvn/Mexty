@@ -13,14 +13,41 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using log4net;
+using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DataTypes;
+using Mexty.MVVM.Model.Validations;
 
 namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
     /// Interaction logic for InventarioViewRecepcion.xaml
     /// </summary>
     public partial class InventarioViewRecepcion : UserControl {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
+
+        /// <summary>
+        /// Lista de productos dada por la base de datos.
+        /// </summary>
+        private List<Producto> ListaProductos { get; set; }
+
+        private List<ItemInventario> ListaFromInventario { get; set; }
+
         public InventarioViewRecepcion() {
-            InitializeComponent();
+
+            try {
+                InitializeComponent();
+                FillData();
+                ClearFields();
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de Recepción de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
+
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -36,12 +63,191 @@ namespace Mexty.MVVM.View.InventarioViews {
             time.Content = DateTime.Now.ToString("G");
         }
 
-        private void LimpiarCampos(object sender, RoutedEventArgs e) {
+        /// <summary>
+        /// Método que llena los campos con la información necesaria.
+        /// </summary>
+        private void FillData() {
+            var productosDisponibles = Database.GetTablesFromProductos();
+            ListaProductos = productosDisponibles;
+            var listaProductos = new List<string>();
+            for (var index = 0; index < productosDisponibles.Count; index++) {
+                var producto = productosDisponibles[index];
+                listaProductos.Add(
+                    $"{producto.IdProducto.ToString()} {producto.TipoProducto} {producto.NombreProducto}");
+            }
+
+            ComboNombre.ItemsSource = listaProductos;
+            Log.Debug("Se ha llenado el combo box con los productos de manera exitosa.");
+
+            var enInventario = Database.GetTablesFromInventario();
+            ListaFromInventario = enInventario;
+            Log.Debug("Se han obtenido los prodcutos de manera exitosa.");
+        }
+
+        /// <summary>
+        /// Metodo que actua cuando se cambia la selección en ComboNombre.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ItemSelected(object sender, EventArgs e) {
+            var index = ComboNombre.SelectedIndex;
+            txtMedida.Text = ListaProductos[index].MedidaProducto;
+            txtTipo.Text = ListaProductos[index].TipoProducto;
 
         }
 
-        private void RegistrarProducto(object sender, RoutedEventArgs e) {
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
 
+        }
+
+        private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            ClearFields();
+        }
+
+        /// <summary>
+        /// Método que maneja la lógica del boton de guardar.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RegistrarProducto(object sender, RoutedEventArgs e) {
+            var newItem = new ItemInventario {
+                IdProducto = ComboNombre.SelectedIndex + 1,
+                Comentario = txtComentario.Text,
+                Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
+                Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
+            };
+
+            if (!Validar(newItem)) {
+                Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");
+                return;
+            }
+            Log.Debug("El objeto tipo ItemInventario ha pasado las validaciones.");
+
+            for (var index = 0; index < ListaFromInventario.Count; index++) {
+                var item = ListaFromInventario[index];
+                if (item.IdProducto != newItem.IdProducto) continue;
+                MessageBox.Show(
+                    "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes ir a la pantalla de Inventario.",
+                    "Producto duplicado");
+                return;
+            }
+
+            try {
+                var row = Database.NewItem(newItem);
+                if (row > 0) {
+                    MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
+                    Log.Debug("Se ha dado de alta un producto en el inventario.");
+                }
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al dar de alta un producto en el inventario.");
+                Log.Error($"Error: {exception.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Valida un objeto tipo ItemInventario.
+        /// </summary>
+        /// <param name="newProduct"></param>
+        /// <returns></returns>
+        private static bool Validar(ItemInventario newItem) {
+            try {
+                var validator = new ItemValidation();
+                var results = validator.Validate(newItem);
+                if (!results.IsValid) {
+                    foreach (var error in results.Errors) {
+                        MessageBox.Show(error.ErrorMessage);
+                        Log.Warn(error.ErrorMessage);
+                    }
+
+                    return false;
+                }
+
+                return true;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer la validación.");
+                Log.Error($"Error: {e.Message}");
+                return false;
+            }
+        }
+
+        private void ClearFields() {
+            txtTipo.Text = "";
+            txtMedida.Text = "";
+            txtMedida.Text = "";
+            txtComentario.Text = "";
+            txtCantidad.Text = "";
+            ComboNombre.SelectedIndex = 0;
+        }
+
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtCantidad.Text = textbox.Text;
+        }
+
+        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtPiezas.Text = textbox.Text;
+
+        }
+
+        private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtComentario.Text = textbox.Text;
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x));
+        }
+
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+        }
+
+        /// <summary>
+        /// Método para habilitar cambios en la GUI depende del tipo de medidida del producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CantidadGUIChanges(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtMedida.Text = textBox.Text;
+            switch (textBox.Text) {
+                case "pieza":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                case "0.5 litros":
+                case "litro":
+                case "3 litros":
+                case "12 litros":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Collapsed;    
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    break;
+                default:
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
         }
     }
 }

@@ -123,7 +123,6 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que limpia los campos de datos.
         /// </summary>
         private void ClearFields() {
-            SelectedClient = null;
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccione un cliente para eliminar.";
@@ -138,7 +137,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
-            //DataClientes.SelectedItem = null;
             EnableGuardar();
             Log.Debug("Se han limpiado los campos de texto.");
         }
@@ -249,8 +247,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 
                 var res = Database.NewClient(newClient);
                 if (res == 0) return;
-                
-                var msg = $"Se ha dado de alta el cliente {newClient.Nombre}.";
+                var name = char.ToUpper(newClient.Nombre[0]) + newClient.Nombre[1..] + " " + char.ToUpper(newClient.ApPaterno[0]) + newClient.ApPaterno[1..];
+                var msg = $"Se ha dado de alta el cliente {name}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
                 Log.Debug("Se ha actualizado el cliente exitosamente.");
 
@@ -376,9 +374,9 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            DataClientes.SelectedItem = null;
             ClearFields();
         }
-
 
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;

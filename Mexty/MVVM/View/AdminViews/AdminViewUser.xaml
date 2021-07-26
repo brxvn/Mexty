@@ -123,7 +123,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Apellido" Binding="{Binding ApPaterno}" Width="0.25*">
+                <DataGridTextColumn Header="Apellido Paterno" Binding="{Binding ApPaterno}" Width="0.25*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />

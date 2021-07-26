@@ -38,12 +38,6 @@ namespace Mexty.MVVM.Model.Validations {
                 .WithMessage("La descripción del produto tiene {TotalLength} y debe de tener entre 0 y 50 caracteres.")
                 .Must(Validations.BeAValidText).WithMessage("La descripción del producto tiene caracteres prohibidos.");
 
-            RuleFor(producto => producto.CantidadProducto.ToString())
-                .Cascade(CascadeMode.Stop)
-                .Length(0, 6)
-                .WithMessage("La cantidad del producto no puede ser demasiado grande.")
-                .Must(Validations.BeAValidNumber).WithMessage("La cantidad del producto tiene caracteres prohibidos.");
-
             RuleFor(producto => producto.Piezas.ToString())
                 .Cascade(CascadeMode.Stop)
                 .Length(0, 6)

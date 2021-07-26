@@ -5,7 +5,7 @@ namespace Mexty.MVVM.Model.DataTypes {
     public class Sucursal {
         private string _nombreTienda;
         private string _dirección;
-        private int _telefono;
+        //private int _telefono;
 
         /// <summary>
         /// Id De la tienda.
@@ -37,12 +37,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// RFC de la tienda.
         /// </summary>
         public string Rfc { get; set; }
-
-        /// <summary>
-        /// Logo de la tienda.
-        /// </summary>
-        // TODO: Ver que onda con el objeto blob que viene de la base de datos.
-        public List<byte> Logo { get; set; }
 
         /// <summary>
         /// Mensaje de la tienda.

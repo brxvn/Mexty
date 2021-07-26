@@ -15,9 +15,19 @@
         public int IdProducto { get; set; }
 
         /// <summary>
+        /// ID de la tienda en donde esta este producto.
+        /// </summary>
+        public int IdTienda { get; set; }
+
+        /// <summary>
         /// Tipo de producto.
         /// </summary>
         public string TipoProducto { get; set; }
+
+        /// <summary>
+        /// EL nombre del producto.
+        /// </summary>
+        public string NombreProducto { get; set; }
 
         /// <summary>
         /// Medida del producto.
@@ -25,24 +35,24 @@
         public string Medida { get; set; } 
 
         /// <summary>
-        /// Cantidad en existencia del producto.
-        /// </summary>
-        public int Cantidad { get; set; }
-
-        /// <summary>
         /// Cantidad de piezas del producto.
         /// </summary>
         public int Piezas { get;set; }
 
         /// <summary>
+        /// Cantidad maxima de piezas en el producto (definida en mod producto).
+        /// </summary>
+        public int MaxPiezas { get; set; }
+
+        /// <summary>
+        /// Cantidad en existencia del producto.
+        /// </summary>
+        public int Cantidad { get; set; }
+
+        /// <summary>
         /// Comentario del producto.
         /// </summary>
         public string Comentario { get; set; }
-
-        /// <summary>
-        /// ID de la tienda en donde esta este producto.
-        /// </summary>
-        public int IdTienda { get; set; }
 
         /// <summary>
         /// Usuario que registro este item.

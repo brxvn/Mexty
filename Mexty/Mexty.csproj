@@ -13,6 +13,7 @@
     <None Remove="log4net.config" />
     <None Remove="logo.png" />
     <None Remove="Resource\brand.png" />
+    <None Remove="Resource\LogoReportes.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,9 +25,11 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="10.2.3" />
+    <PackageReference Include="itext7" Version="7.1.16" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
+    <PackageReference Include="MySqlBackup.NET" Version="2.3.4.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +37,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resource\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resource\LogoReportes.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

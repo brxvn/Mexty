@@ -113,6 +113,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtInstagram.Text = sucursal.Instagram;
             txtFacebook.Text = sucursal.Facebook;
             txtTelefono.Text = sucursal.Telefono;
+            txtMensaje.Text = sucursal.Mensaje;
             ComboTipo.SelectedItem = sucursal.TipoTienda;
             Log.Debug("Se ha seleccionado el elemento.");
         }
@@ -129,9 +130,9 @@ namespace Mexty.MVVM.View.AdminViews {
             txtInstagram.Text = "";
             txtFacebook.Text = "";
             txtTelefono.Text = "";
+            txtMensaje.Text = "";
             ComboTipo.SelectedIndex = 0;
             Log.Debug("Se han limpiado los campos de texto.");
-
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccionar un registro para eliminar.";
             Guardar.IsEnabled = false;
@@ -188,6 +189,7 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            DataEstablecimientos.SelectedItem = null;
             ClearFields();
         }
 
@@ -207,7 +209,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Facebook = txtFacebook.Text,
                     Instagram = txtInstagram.Text,
                     TipoTienda = ComboTipo.SelectedItem.ToString(),
-                    Mensaje = "" // TODO agregar campo mensaje.
+                    Mensaje = txtMensaje.Text
                 };
                 Log.Debug("Se ha creado el objeto sucursal con los campos te de texto.");
 
@@ -395,6 +397,11 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDirección.Text = textbox.Text;
             EnableGuardar();
         }
+
+        private void txtUpdateMsg(object sender, TextChangedEventArgs e) {
+            TextBox textbox = sender as TextBox;
+            txtMensaje.Text = textbox.Text;
+        }
         private void txtUpdateRFC(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtRFC.Text = textbox.Text;
@@ -436,5 +443,6 @@ namespace Mexty.MVVM.View.AdminViews {
 
 
         }
+
     }
 }
