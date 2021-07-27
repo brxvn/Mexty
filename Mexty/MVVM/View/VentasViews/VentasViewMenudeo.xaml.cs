@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Mexty.MVVM.View.VentasViews {
     /// <summary>
@@ -20,6 +21,36 @@ namespace Mexty.MVVM.View.VentasViews {
     public partial class VentasViewMenudeo : UserControl {
         public VentasViewMenudeo() {
             InitializeComponent();
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += UpdateTimerTick;
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Start();
+        }
+
+        /// <summary>
+        /// Actualiza la hora.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UpdateTimerTick(object sender, EventArgs e) {
+            time.Content = DateTime.Now.ToString("G");
+        }
+
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+
+        }
+
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void SeleccionarProducto(object sender, RoutedEventArgs e) {
+
         }
     }
 }

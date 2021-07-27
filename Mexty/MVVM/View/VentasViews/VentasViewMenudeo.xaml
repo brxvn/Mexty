@@ -4,9 +4,213 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mexty.MVVM.View.VentasViews"
+             xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Label Content="Menudeo" FontSize="50"/>
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <Grid Background="#7f233a">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"  Margin="50 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Label Content="Elige los Productos"
+               FontSize="40"
+               VerticalContentAlignment="Center"
+               Foreground="AntiqueWhite"
+               Padding="0,20"/>
+            
+        </Grid>
+        <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="AntiqueWhite"/>
+
+        <Grid Grid.Row="1" Margin="50,0,50,75" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                
+                <!--ComboItem-->
+                <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboNombre" Grid.Column="0" Margin="0,30,30,0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre" SelectionChanged="ItemSelected"/>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Content="Cantidad" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Grid.Column="0" Margin="0"/>
+
+                    <!--txtCantidad-->
+                    <TextBox Background="Beige"
+                     x:Name="txtCantidad"
+                     Grid.Column="1"
+                     PreviewTextInput="OnlyNumbersValidation"
+                     Margin="30 0">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type TextBox}">
+                                                <Border ToolTip="Cantidad" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
+                                                    <Grid>
+                                                        <Rectangle StrokeThickness="1"/>
+                                                        <TextBox Margin="1"
+                                                            Text="{TemplateBinding Text}"
+                                                            BorderThickness="0"
+                                                            Background="Transparent"
+                                                            VerticalContentAlignment="Center"
+                                                            Padding="5"
+                                                            Foreground="Gray"
+                                                            FontSize="15"
+                                                            x:Name="SearchBox"
+                                                            TextChanged="txtUpdateCantidad"
+                                                            PreviewTextInput="OnlyNumbersValidation"
+                                                            MaxLength="15"/>
+
+                                                        <TextBlock IsHitTestVisible="False"
+                                                            Text="Cantidad"
+                                                            VerticalAlignment="Center"
+                                                            HorizontalAlignment="Left"
+                                                            Margin="10,0,0,0"
+                                                            FontSize="15"
+                                                            Foreground="gray"
+                                                            Grid.Column="1">
+
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="{x:Type TextBlock}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsReadOnly" Value="True">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                        <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                        <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                        <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
+
+                <Button x:Name="Guardar" Grid.Row="2" Content="Seleccionar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="SeleccionarProducto" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" Margin="0,0,30,0"/>
+
+            </Grid>
+
+
+            <Border Grid.Column="1" Background="Beige" BorderThickness="0" CornerRadius="30" Margin="15,30,15,50">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition  Height="auto"/>
+                        <RowDefinition  Height="auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Resumen" FontSize="25" VerticalContentAlignment="Top" Foreground="Black" HorizontalAlignment="Center"/>
+                    <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+
+                    <!--DataPedido-->
+                    <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataPedido" Grid.Row="1" Margin="10"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="True" ItemsSource="{Binding Source=Usuario}" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Row" IsHitTestVisible="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Cantidad" Binding="{Binding Nombre}" Width="0.25*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Margin" Value="5" />
+                                        <Setter Property="HorizontalAlignment" Value="Center" />
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontSize" Value="15"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Producto" Binding="{Binding ApPaterno}" Width="1*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Margin" Value="5" />
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontSize" Value="15"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Precio" Binding="{Binding Username}" Width="0.25*">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Margin" Value="5" />
+                                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                                        <Setter Property="VerticalAlignment" Value="Center"/>
+                                        <Setter Property="FontSize" Value="15"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Separator BorderThickness="1" Grid.Row="1" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+                    
+                    <!--txtTotal-->
+                    <Label Content="Total:" Grid.Row="2" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                    <TextBox x:Name="txtTotal" Grid.Row="2" HorizontalAlignment="Right" Margin="50 0" Width="70" FontSize="15"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8"/>
+                    
+                    <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+                    <!--txtRecibido-->
+                    <Label Content="Recibido:" Grid.Row="3" FontSize="20" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                    <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="50 0" Width="70" FontSize="15"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8"/>
+
+                    <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+
+                    <!--txtCambio-->
+                    <Label Content="Cambio:" Grid.Row="4" FontSize="20" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                    <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="50 0" Width="70" FontSize="15"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8"/>
+
+
+
+                </Grid>
+            </Border>
+            
+            <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="SeleccionarProducto" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+
+        </Grid>
+        
+        <Label Name="time" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
     </Grid>
 </UserControl>
