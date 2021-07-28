@@ -197,13 +197,11 @@
                     <ColumnDefinition Width=".5*"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width=".5*"/>
-                    <ColumnDefinition Width=".5*" x:Name="ColCantidad"/>
-                    <ColumnDefinition Width="auto" x:Name="ColPiezas"/>
                 </Grid.ColumnDefinitions>
 
                 <!--ComboTipo-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto" SelectionChanged="HablitarMedidas"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto"/>
 
                 <!--ComboVenta-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboVenta" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
@@ -291,9 +289,9 @@
 
                 <!--ComboMedida-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboMedida" Grid.Column="3" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida" SelectionChanged="HabililtarCantidades" />
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida" />
 
-                <!--txtCantidad-->
+                <!--txtCantidad--><!--
                 <TextBox Background="Beige"
                      x:Name="txtCantidad"
                      Grid.Column="4"
@@ -324,7 +322,7 @@
                                                      x:Name="SearchBox"
                                                      TextChanged="txtUpdateCantidad"
                                                      >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
+                                                        --><!--TextChanged="SearchBox_TextChanged"--><!--
 
                                                     </TextBox>
 
@@ -369,7 +367,7 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <!--txtPiezas-->
+                --><!--txtPiezas--><!--
                 <TextBox Background="Beige"
                      x:Name="txtPiezas"
                      Grid.Column="5"
@@ -440,15 +438,14 @@
                             </Style.Setters>
                         </Style>
                     </TextBox.Style>
-                </TextBox>
-
+                </TextBox>-->
 
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="2.0*"/>
+                    <ColumnDefinition Width="1.5*"/>
                 </Grid.ColumnDefinitions>
 
                 <!--txtPrecioMayoreo-->

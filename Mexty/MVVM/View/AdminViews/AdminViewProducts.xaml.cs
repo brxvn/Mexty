@@ -129,7 +129,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
-            txtPiezas.Text = producto.Piezas.ToString();
+            //txtPiezas.Text = producto.Piezas.ToString();
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
@@ -148,8 +148,8 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
-            txtCantidad.Text = "";
-            txtPiezas.Text = "";
+            //txtCantidad.Text = "";
+            //txtPiezas.Text = "";
             txtDetalle.Text = "";
             SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
@@ -223,7 +223,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.NombreProducto = txtNombreProducto.Text;
 
                 newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-                newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+                //newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
 
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.TipoVenta = ComboVenta.SelectedIndex;
@@ -452,16 +452,16 @@ namespace Mexty.MVVM.View.AdminViews {
             EnableGuardar();
         }
 
-        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtCantidad.Text = textbox.Text;
+        //private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+        //    TextBox textbox = sender as TextBox;
+        //    txtCantidad.Text = textbox.Text;
 
-        }
+        //}
 
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
-        }
+        //private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+        //    TextBox textbox = sender as TextBox;
+        //    txtPiezas.Text = textbox.Text;
+        //}
 
         /// <summary>
         /// Método que habilita el botón de "GUARDAR"
@@ -532,112 +532,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
         /// </summary>
-        private void HablitarMedidas(object sender, SelectionChangedEventArgs e) {
-            switch (ComboTipo.SelectedIndex) {
-                case 0:
-                case 1:
-                case 2:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 1);
-                    ComboMedida.SelectedIndex = 0;
-                    break;
-                case 3:
-                case 4:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant: 4);
-                    ComboMedida.SelectedIndex = 0;
-                    break;
-                case 5:
-                case 6:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 4);
-                    ComboMedida.SelectedIndex = 0;
-                    break;
-                default:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida();
-                    ComboMedida.SelectedIndex = 0;
-                    break;
-
-            }
-        }
-
-        /// <summary>
-        /// Método de la lógica para filtrar cantidades.
-        /// </summary>
-        private void HabililtarCantidades(object sender, SelectionChangedEventArgs e) {
-
-            switch (ComboMedida.SelectedIndex) {
-                case 0:
-                    switch (ComboMedida.SelectedItem.ToString()) {
-                        case "pieza":
-                            txtCantidad.Visibility = Visibility.Collapsed;
-                            txtPiezas.Visibility = Visibility.Visible;
-                            ColPiezas.Width = new GridLength(.5, GridUnitType.Star);
-                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                            break;
-
-                        default:
-                            txtCantidad.Visibility = Visibility.Collapsed;
-                            txtPiezas.Visibility = Visibility.Collapsed;
-                            ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                            break;
-                    }
-                    break;
-                case 1:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-
-                    break;
-                case 2:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-                    break;
-                case 3:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-                    break;
-                default:
-                    txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
-                    ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                    ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    break;
-
-            }
-        }
-
         private void DependenciaProductos(object sender, RoutedEventArgs e) {
             AdminViewProductDependency dependency = new();
             dependency.ShowDialog();
-            
+
         }
     }
 }
