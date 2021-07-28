@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Mexty.MVVM.View.AdminViews"
         xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
         mc:Ignorable="d"
-        Title="Productos Compuestos" Height="450" Width="1000"
+        Title="Productos Compuestos" Height="450" Width="850"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         ResizeMode="NoResize"
