@@ -634,5 +634,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
         }
 
+        private void DependenciaProductos(object sender, RoutedEventArgs e) {
+            AdminViewProductDependency dependency = new();
+            dependency.ShowDialog();
+            
+        }
     }
 }
