@@ -33,10 +33,6 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
-        /// <summary>
-        /// Lista de todas las sucursales dada por la Base de datos
-        /// </summary>
-        private List<Sucursal> ListaSucursales { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -533,9 +529,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
         /// </summary>
         private void DependenciaProductos(object sender, RoutedEventArgs e) {
-            AdminViewProductDependency dependency = new();
+            if (SelectedProduct == null) {
+                MessageBox.Show("Seleccione un producto de la tabla primero.");
+                return;
+            }
+            AdminViewProductDependency dependency = new(SelectedProduct);
             dependency.ShowDialog();
-
         }
     }
 }

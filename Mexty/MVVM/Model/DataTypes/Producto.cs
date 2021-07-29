@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Mexty.MVVM.Model.DataTypes {
     /// <summary>
@@ -108,5 +109,23 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public int Activo { get; set; }
 
+        /// <summary>
+        /// Canitdad de cada dependencia (solo para uso en control de dependencias).
+        /// </summary>
+        public int CantidadDependencia { get; set; }
+
+        /// <summary>
+        /// Struct que representa cada tipo tipo dependencia.
+        /// </summary>
+        public struct Dependency {
+            public int Id;
+            public int Cantidad;
+        }
+
+        /// <summary>
+        /// Lista que contiene todas las dependencias
+        /// </summary>
+        public List<Dependency> Dependencias { get; set; }
     }
+
 }

@@ -14,27 +14,48 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Common.Logging;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminViewProductDependency.xaml
     /// </summary>
     public partial class AdminViewProductDependency : Window {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
-        private List<Producto> ListaProductos = new();
+        private List<Producto> ListaDependecias = new();
+
+        /// <summary>
+        /// Producto seleccionado, viniendo de la pantalla de adm productos.
+        /// </summary>
+        private Producto SelectedProducuct { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
         /// </summary>
         private CollectionView CollectionView { get; set; }
-        public AdminViewProductDependency() {
-            InitializeComponent();
-            FillData();
+        public AdminViewProductDependency(Producto selectedProduct) {
+            try {
+                InitializeComponent();
+                FillData();
+                Log.Debug("Se han inicializado los campos de Dependecia de productos.");
+                MessageBox.Show(
+                    $"{selectedProduct.IdProducto.ToString()} {selectedProduct.TipoProducto} {selectedProduct.NombreProducto}");
+                SelectedProducuct = selectedProduct;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de Dependencia de productos.");
+                Log.Error($"Error {e.Message}");
+            }
+
         }
 
+        /// <summary>
+        /// Método que se encarga de inicializar los campos.
+        /// </summary>
         private void FillData() {
             var data = Database.GetTablesFromProductos();
             var collectionView = new ListCollectionView(data) {
@@ -42,14 +63,21 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
+            Log.Debug("Se ha llendado el datagrid de productos.");
         }
 
         private void CloseWindow(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha precionado el boton de cerrar ventana.");
             Close();
         }
 
+        /// <summary>
+        /// Método que valida el imput solo de letras.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
         }
 
         private void TextUpdateNombre(object sender, TextChangedEventArgs e) {
@@ -60,20 +88,38 @@ namespace Mexty.MVVM.View.AdminViews {
             Close();
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de agregar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
             Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
-            ListaProductos.Add(producto);
+
+            ListaDependecias.Add(producto);
+
+            var stru = new Producto.Dependency {Cantidad = producto.CantidadDependencia, Id = producto.IdProducto};
+
+            SelectedProducuct.Dependencias.Add(stru);
             DataActual.ItemsSource = null;
-            DataActual.ItemsSource = ListaProductos;
+            DataActual.ItemsSource = ListaDependecias;
+
+            Log.Debug("Se ha agregado una dependecia al producto.");
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de eliminar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
             var index = DataActual.Items.IndexOf(DataActual.CurrentItem);
             Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
             
-            ListaProductos.RemoveAt(index);
+            ListaDependecias.RemoveAt(index);
             DataActual.ItemsSource = null;
-            DataActual.ItemsSource = ListaProductos;
+            DataActual.ItemsSource = ListaDependecias;
+            Log.Debug("Se ha eliminado una dependecia al producto.");
         }
     }
 }
