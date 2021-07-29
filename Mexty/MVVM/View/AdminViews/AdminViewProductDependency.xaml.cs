@@ -64,8 +64,13 @@ namespace Mexty.MVVM.View.AdminViews {
             Close();
         }
 
+        /// <summary>
+        /// Método que valida el imput solo de letras.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(c => char.IsLetter(c));
         }
 
         private void TextUpdateNombre(object sender, TextChangedEventArgs e) {

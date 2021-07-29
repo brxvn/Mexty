@@ -59,9 +59,9 @@ namespace Mexty.MVVM.Model {
 
             foreach (var item in data) {
                 table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString())));
-                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString())));
-                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString())));
-                table.AddCell(new Cell().Add(new Paragraph(item.Medida.ToString())));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto)));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Medida)));
                 table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString())));
                 table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString())));
             }
