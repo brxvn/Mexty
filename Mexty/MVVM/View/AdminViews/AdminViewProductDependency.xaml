@@ -155,6 +155,20 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding CantidadDependencia}" Width="1*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center" />
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="15"/>
+                                    <Setter Property="IsHitTestVisible" Value="False"/>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
                         <DataGridTemplateColumn Width=".25*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -205,6 +219,7 @@
                      MaxLength="15"
                      CharacterCasing="Upper"
                      HorizontalAlignment="Center"
+                     IsReadOnly="True"
                      PreviewTextInput="OnlyLettersValidation">
                 <TextBox.Style>
                     <Style TargetType="TextBox">

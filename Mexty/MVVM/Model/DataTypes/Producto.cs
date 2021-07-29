@@ -25,7 +25,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Variable que obtiene los tipos de medida.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposMedida = { "pieza", "bolsa", "caja", "tarro", "0.5 litros", "litro", "3 litros", "12 litros" };
+        private static readonly string[] TiposMedida = { "pieza", "bolsa", "caja", "tarro", "litro", };
 
 
         /// <summary>

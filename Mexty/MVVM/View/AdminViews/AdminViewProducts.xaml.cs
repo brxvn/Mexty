@@ -526,6 +526,25 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
+        /// Mostrar solo litros para Agua y Helado
+        /// </summary>
+        private void MonstrarLitros(object sender, SelectionChangedEventArgs e) {
+            switch (ComboTipo.SelectedItem.ToString()) {
+                case "Agua":
+                case "Helado":
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant:1);
+                    ComboMedida.SelectedIndex = 0;
+                    break;
+                default:
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida();
+                    ComboMedida.SelectedIndex = 0;
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
         /// </summary>
         private void DependenciaProductos(object sender, RoutedEventArgs e) {
