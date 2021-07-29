@@ -14,12 +14,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Common.Logging;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
     /// Interaction logic for AdminViewProductDependency.xaml
     /// </summary>
     public partial class AdminViewProductDependency : Window {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
@@ -31,8 +33,17 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private CollectionView CollectionView { get; set; }
         public AdminViewProductDependency() {
-            InitializeComponent();
-            FillData();
+            try {
+                InitializeComponent();
+                FillData();
+                Log.Debug("Se han inicializado los campos de Dependecia de productos.");
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de Dependencia de productos.");
+                Log.Error($"Error {e.Message}");
+            }
+
         }
 
         /// <summary>
@@ -45,9 +56,11 @@ namespace Mexty.MVVM.View.AdminViews {
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
+            Log.Debug("Se ha llendado el datagrid de productos.");
         }
 
         private void CloseWindow(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha precionado el boton de cerrar ventana.");
             Close();
         }
 
@@ -73,6 +86,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ListaProductos.Add(producto);
             DataActual.ItemsSource = null;
             DataActual.ItemsSource = ListaProductos;
+            Log.Debug("Se ha agregado una dependecia al producto.");
         }
 
         /// <summary>
@@ -87,6 +101,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ListaProductos.RemoveAt(index);
             DataActual.ItemsSource = null;
             DataActual.ItemsSource = ListaProductos;
+            Log.Debug("Se ha eliminado una dependecia al producto.");
         }
     }
 }
