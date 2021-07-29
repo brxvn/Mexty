@@ -35,6 +35,9 @@ namespace Mexty.MVVM.View.AdminViews {
             FillData();
         }
 
+        /// <summary>
+        /// Método que se encarga de inicializar los campos.
+        /// </summary>
         private void FillData() {
             var data = Database.GetTablesFromProductos();
             var collectionView = new ListCollectionView(data) {
@@ -60,6 +63,11 @@ namespace Mexty.MVVM.View.AdminViews {
             Close();
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de agregar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
             Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
             ListaProductos.Add(producto);
@@ -67,6 +75,11 @@ namespace Mexty.MVVM.View.AdminViews {
             DataActual.ItemsSource = ListaProductos;
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de eliminar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
             var index = DataActual.Items.IndexOf(DataActual.CurrentItem);
             Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto

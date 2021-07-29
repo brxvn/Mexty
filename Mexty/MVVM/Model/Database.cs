@@ -94,9 +94,10 @@ namespace Mexty.MVVM.Model {
             }
             catch (Exception e) {
                 Log.Error($"Error al leer del ini {e.Message}");
-                return "";
-                //throw;
-                // TODO: probablemente sacar un anuncio de error diciendo que algo anda mal con el ini.
+                const MessageBoxButton buttons = MessageBoxButton.OK;
+                MessageBox.Show("Error 11: ha ocurrido un error al leer las credenciales de la base de datos en el archivo de configuración.",
+                    "Error", buttons, MessageBoxImage.Error);
+                throw;
             }
         }
 
@@ -121,8 +122,10 @@ namespace Mexty.MVVM.Model {
                 var res = query.ExecuteReader();
                 if (res.Read().ToString().ToLower() == "false") {
                     Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
-                    throw new Exception();
-                } 
+                    const MessageBoxButton buttons = MessageBoxButton.OK;
+                    MessageBox.Show("Error 10: ha ocurrido un error al leer la sucursal del archivo de configuración.",
+                        "Error", buttons, MessageBoxImage.Error);
+                }
             }
 
             catch (Exception e) {

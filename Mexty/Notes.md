@@ -25,6 +25,23 @@
 ## Códigos de error
 > Deben tener, código, descripción, razones por las que puede suceder y como arreglarlas.
 
+### Error 10
+Es un error causado cuando el programa no puede leer el campo de IdTienda del archivo de configuración Settings.ini ubicado en C:\Mexty\Settings.ini.
+El archivo debe de tener el campo declarado de la siguiente manera.
+> IdTienda=ID
+
+Donde ID es el Id de la tienda con la cual fue dada de alta y corresponde a la ubicación actual del programa.
+
+### Error 11
+Es un error causado cuando el programa no puede leer las credenciales de acceso a la base de datos del archivo de configuración Settings.ini ubicado en C:\Mexty\Settings.ini.
+Estas son importantes ya que sin ellas no podremos acceder a los datos guardados.
+El archivo de configuración las debe de tener declaradas de la siguiente manera.
+> DbUser=usuario
+> DbPass=contraseña
+
+Donde usuario corresponde a el usuario dado de alta para conectarse a la base de datos y la contraseña su respectiva contraseña.
+
+
 ## Notas
 - Que busque las imágenes en c:\Mexty\Logos\
   - Debe de haber un Chico.png, Mediano.png, Grande.png.
@@ -32,8 +49,6 @@
   - Campo de fecha_sincroniza en string.
   
 ### Notas sig reunión
-- Preguntar si poner el tipo sincroniza en boolean. (si)
-- Quitar el campo blob de cat-tienda en favor de buscar todo en c:\Mexty\Media\
 - Preguntar si debemos de poner avisos de error cuando algo salga mal y que deben de decir.
   - Ejemplo cuando una query sale mal por alguna razón mandar una advertencia o algo.
   - Si si, agregar un trow en los catch de database.

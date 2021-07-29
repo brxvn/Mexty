@@ -73,7 +73,6 @@ namespace Mexty.MVVM.Model.DataTypes {
             if (a is null || b is null) return false;
             return a.NombreTienda == b.NombreTienda &&
                    a.Dirección == b.Dirección;
-
         }
 
         public static bool operator !=(Sucursal a, Sucursal b) {
