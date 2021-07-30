@@ -1,6 +1,7 @@
 ﻿using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DataTypes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -21,8 +22,6 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminViewProductDependency.xaml
     /// </summary>
     public partial class AdminViewProductDependency : Window {
-
-
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
         /// </summary>
-        private Producto SelectedProducuct { get; set; }
+        private Producto SelectedProduct { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -43,9 +42,18 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
+                SelectedProduct = selectedProduct;
+                if (selectedProduct.DependenciasText == "") {
+                    selectedProduct.Dependencias ??= new List<Producto>();
+                    ListaDependecias = selectedProduct.Dependencias;
+                    Log.Debug("No se han encontrado dependencias, generando lista.");
+                }
+                else {
+                    ProcessData(SelectedProduct);
+                }
+
+                txtNombreProducto.Text = $"{selectedProduct.IdProducto.ToString()} {selectedProduct.TipoProducto} {selectedProduct.NombreProducto}";
                 Log.Debug("Se han inicializado los campos de Dependecia de productos.");
-                txtNombreProducto.Text = $"{selectedProduct.IdProducto} {selectedProduct.TipoProducto} {selectedProduct.NombreProducto}";
-                SelectedProducuct = selectedProduct;
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de Dependencia de productos.");
@@ -67,6 +75,29 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se ha llendado el datagrid de productos.");
         }
 
+        /// <summary>
+        /// Método que prosesa la lista de dependencias.
+        /// </summary>
+        /// <param name="selectedProduct"></param>
+        // TODO: Ver que onda cuando un producto se elimina.
+        private void ProcessData(Producto selectedProduct) {
+            ListaDependecias = Producto.DependenciasToList(SelectedProduct.DependenciasText);
+
+            var data = DataProductos.ItemsSource;
+            for (var index = 0; index < ListaDependecias.Count; index++) {
+                var dependecia = ListaDependecias[index];
+                foreach (Producto producto in data) {
+                    if (dependecia.IdProducto == producto.IdProducto) {
+                        dependecia.NombreProducto = producto.NombreProducto;
+                        dependecia.TipoProducto = producto.TipoProducto;
+                    }
+                }
+            }
+            DataActual.ItemsSource = ListaDependecias;
+
+            Log.Debug("Se han leido las dependencias de manera exitosa.");
+        }
+
         private void CloseWindow(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha precionado el boton de cerrar ventana.");
             Close();
@@ -86,7 +117,21 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void SaveProduct(object sender, RoutedEventArgs e) {
-            Close();
+            try {
+                Log.Debug("Se ha precionado el boton de guardar dependencias.");
+                SelectedProduct.Dependencias = ListaDependecias;
+                SelectedProduct.DependenciasText = Producto.DependenciasToString(SelectedProduct.Dependencias);
+                Log.Debug("Se ha convertido el producto a texto de manera exitosa.");
+                Database.UpdateData(SelectedProduct);
+                Log.Debug("Se ha actualizado el producto en la base de datos.");
+
+                Close();
+
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al guardar las dependencias.");
+                Log.Error($"Error: {exception.Message}");
+            }
         }
 
         /// <summary>
@@ -95,13 +140,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
 
-            Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
-
-            var stru = new Producto.Dependency { Cantidad = producto.CantidadDependencia, Id = producto.IdProducto };
-
-            //SelectedProducuct.Dependencias.Add(stru);
             if (!ListaDependecias.Contains(producto)) ListaDependecias.Add(producto);
+
             if (ListaDependecias.Contains(producto)) producto.CantidadDependencia += 1;
 
             DataActual.ItemsSource = null;
@@ -116,8 +158,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            //var index = DataActual.Items.IndexOf(DataActual.CurrentItem);
-            Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
 
             if (ListaDependecias.Contains(producto)) producto.CantidadDependencia -= 1;
 
