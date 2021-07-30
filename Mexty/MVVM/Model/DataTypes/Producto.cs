@@ -115,8 +115,51 @@ namespace Mexty.MVVM.Model.DataTypes {
         public int CantidadDependencia { get; set; }
 
         /// <summary>
+        /// La lista de dependencias codificada que se guarda en la base de datos.
+        /// </summary>
+        public string DependenciasText { get; set; }
+
+        /// <summary>
         /// Lista que contiene todas las dependencias
         /// </summary>
         public List<Producto> Dependencias { get; set; }
+
+        /// <summary>
+        /// Método que convierte una lista de dependencias a string para ser guardada en la base de datos.
+        /// </summary>
+        /// <param name="listaDepend"> Una lista de objetos tipo <c>Producto</c>.</param>
+        /// <returns>Un diccionario tipo string codificado donde : separa al id y la cantidad y , separa los elementos.</returns>
+        public static string DependenciasToString(List<Producto> listaDepend) {
+            var cadena = "";
+            for (var index = 0; index < listaDepend.Count; index++) {
+                var producto = listaDepend[index];
+                cadena += $"{producto.IdProducto.ToString()}:{producto.CantidadDependencia.ToString()},";
+            }
+
+            return cadena.TrimEnd(',');
+        }
+
+        /// <summary>
+        /// Método que recibe un string codificaddo con la información de las dependencias
+        /// </summary>
+        /// <param name="depend"><c>string</c> codificado con <c>DepenendciasToString</c>.</param>
+        /// <returns>Lista de Objetos tipo Producto con solo los campos IdProducto y CantidadDependencia llenos.</returns>
+        public static List<Producto> DependenciasToList(string depend) {
+            var items = depend.Split(',');
+            var dependencias = new List<Producto>();
+
+            for (var index = 0; index < items.Length; index++) {
+                var dependencia = items[index];
+                var valores = dependencia.Split(':');
+
+                var producto = new Producto {
+                    IdProducto = int.Parse(valores[0]),
+                    CantidadDependencia = int.Parse(valores[1])
+                };
+                dependencias.Add(producto);
+            }
+
+            return dependencias;
+        }
     }
 }

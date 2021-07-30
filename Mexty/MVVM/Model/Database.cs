@@ -611,6 +611,7 @@ namespace Mexty.MVVM.Model {
                         DetallesProducto = 
                             reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
+                        DependenciasText = reader.IsDBNull("dependencias") ? "" : reader.GetString("dependencias")
                     };
                     productos.Add(producto);
                 }
@@ -643,6 +644,7 @@ namespace Mexty.MVVM.Model {
                     TIPO_PRODUCTO=@tipoP, 
                     MEDIDA=@med, 
                     PIEZAS=@piezasX, 
+                    DEPENDENCIAS=@dependencias,
                     TIPO_VENTA=@tipoV, 
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
@@ -661,6 +663,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@idX", producto.IdProducto.ToString());
             query.Parameters.AddWithValue("@actX", producto.Activo.ToString());
+            query.Parameters.AddWithValue("@dependencias", producto.DependenciasText);
 
             try {
                 var cmd = query.CommandText;
@@ -709,11 +712,11 @@ namespace Mexty.MVVM.Model {
                 CommandText = @"
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS, 
-                     TIPO_VENTA, 
+                     TIPO_VENTA, DEPENDENCIAS,
                      PRECIO_MAYOREO, PRECIO_MENUDEO, 
                      ESPECIFICACION_PRODUCTO, ACTIVO) 
                 values (default, @nom, @medida, @tipoP, @piezasX, 
-                        @tipoV, 
+                        @tipoV, @dependencias,
                         @pMayo, @pMenu, 
                         @esp, @actX)"
             };
@@ -727,6 +730,7 @@ namespace Mexty.MVVM.Model {
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
             query.Parameters.AddWithValue("@actX", 1.ToString());
+            query.Parameters.AddWithValue("@dependencias", newProduct.DependenciasText);
 
             try {
                 var cmd = query.CommandText;
