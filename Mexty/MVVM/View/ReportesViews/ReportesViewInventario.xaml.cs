@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Common.Logging;
+using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.ReportesViews {
     /// <summary>
@@ -18,6 +19,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         Reports report = new Reports();
+        List<Sucursal> dataSucursal = Database.GetTablesFromSucursales();
         public ReportesViewInventario() {
             try {
                 InitializeComponent();
@@ -30,7 +32,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                 Log.Error($"Error {e.Message}");
             }
 
-            
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -51,16 +53,15 @@ namespace Mexty.MVVM.View.ReportesViews {
         /// </summary>
         private void FillData() {
             try {
-                var dataSucursal = Database.GetTablesFromSucursales();
                 foreach (var sucu in dataSucursal) {
                     ComboSucursal.Items.Add(sucu.NombreTienda);
                 }
                 Log.Debug("Se ha llenado el combo de sucursal");
 
-                var dataProductos = Database.GetTablesFromProductos();
-                foreach (var pro in dataProductos) {
-                    ComboTipo.Items.Add($"{pro.TipoProducto} {pro.NombreProducto}");
-                }
+                //var dataProductos = Database.GetTablesFromProductos();
+                //foreach (var pro in dataProductos) {
+                //    ComboTipo.Items.Add($"{pro.TipoProducto} {pro.NombreProducto}");
+                //}
                 Log.Debug("Se ha llenado el combo de productos.");
 
             }
@@ -69,5 +70,19 @@ namespace Mexty.MVVM.View.ReportesViews {
                 Log.Error($"Error {e.Message}");
             }
         }
+        /// <summary>
+        /// Lógica para generar el reporte por sucursal seleccionada.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GenerarReporteXSucursal(object sender, RoutedEventArgs e ) {
+            var _ = ComboSucursal.SelectedIndex;
+            var nombre = dataSucursal[_].NombreTienda;
+            var id = dataSucursal[_].IdTienda;
+            var direccion = dataSucursal[_].Dirección;
+            report.ReportXSucursal(id,nombre, direccion);
+        }
+
+
     }
 }

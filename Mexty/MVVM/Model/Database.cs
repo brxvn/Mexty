@@ -968,15 +968,28 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene el inventario de una tienda en especifico.
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetInventarioByIdTienda(int idTienda) {
+        public static List<ItemInventario> GetItemsFromInventarioByID( int IdTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = @"select * from inventario where ID_TIENDA=@idX"
+                CommandText = @"
+                SELECT p.id_producto, 
+                       p.tipo_producto, 
+                       p.nombre_producto, 
+                       p.medida, 
+                       p.piezas AS MAX_PIEZAS, 
+                       i.ID_REGISTRO, 
+                       i.piezas, 
+                       i.cantidad, 
+                       i.comentario, 
+                       i.ID_TIENDA 
+                FROM   cat_producto p, 
+                       inventario i 
+                WHERE  p.id_producto = i.id_producto 
+                       and i.ID_TIENDA=@idTX"
             };
-            query.Parameters.AddWithValue("@idX", idTienda.ToString());
+            query.Parameters.AddWithValue("@idTX", IdTienda.ToString());
 
             var items = new List<ItemInventario>();
             try {
@@ -985,22 +998,22 @@ namespace Mexty.MVVM.Model {
                     var item = new ItemInventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
-                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
+                        Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        MaxPiezas = reader.IsDBNull("max_piezas") ? 0 : reader.GetInt32("max_piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
-                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
-                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
-                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
                     items.Add(item);
                 }
 
-                Log.Debug("Se han obtenido con exito las tablas de inventario.");
+                Log.Debug("Se han obtenido con exito las tablas de inventario-productos.");
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario-productos.");
                 Log.Error($"Error: {e.Message}");
             }
             finally {

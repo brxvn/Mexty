@@ -21,35 +21,33 @@ using TextAlignment = iText.Layout.Properties.TextAlignment;
 namespace Mexty.MVVM.Model {
     public class Reports {
 
+        public Reports() {
+            Directory.CreateDirectory(_mainPath);
+            Directory.CreateDirectory(_inventarioPath);
+            Directory.CreateDirectory(_SucursalesInventarioPath);
+        }
+
         private static readonly ILog Log =
            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private readonly string _date = DateTime.Now.ToString("dd-MM-yy");
         private readonly string _dateNow = DateTime.Now.ToString("G");
 
-        string nombre = "";
-        string direccion = "";
-        int idTienda = Database.GetIdTienda();
-        string usuarioActivo = Database.GetUsername();
-        List<Sucursal> ListaSucursales = Database.GetTablesFromSucursales();
-        List<ItemInventario> data = Database.GetItemsFromInventario();
+        private string sucursal = "";
+        private string direccion = "";
+        private readonly string _mainPath = @"C:\Mexty\Reportes\";
+        private readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
+        private readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
+        private readonly string usuarioActivo = Database.GetUsername();
 
-        public void PDFReportInventario() {
+        
+        private Document CreateDocument(string nombreDocumento, Paragraph metaData, string titulo, string path) {
+            
             Cell cell;
-            
-            foreach (Sucursal tienda in ListaSucursales) {
-                if (tienda.IdTienda == idTienda) {
-                    nombre = tienda.NombreTienda;
-                    direccion = tienda.Dirección;
-                }
-            }
-
-            var nombreReporte = $"Reporte-{nombre}-{_date}";
-            
-            Directory.CreateDirectory(@"C:\Mexty\Reportes\");
-            PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileStream($@"C:\Mexty\Reportes\{nombreReporte}.pdf", FileMode.Create, FileAccess.Write)));
+            PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileStream($"{path}{nombreDocumento}.pdf", FileMode.Create, FileAccess.Write)));
             Document document = new Document(pdfDocument, PageSize.A7);
-            document.SetMargins(5,5,5,5);
+            document.SetMargins(5, 5, 5, 5);
+            
 
             Table header = new Table(2)
                 .UseAllAvailableWidth()
@@ -66,30 +64,48 @@ namespace Mexty.MVVM.Model {
             cell.Add(image).SetBorder(iText.Layout.Borders.Border.NO_BORDER);
             header.AddCell(cell);
 
+            metaData
+               .SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.RIGHT)
+               .SetTextAlignment(TextAlignment.RIGHT)
+               .SetFontSize(6);
+
             cell = new();
             cell.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
-
-            var texto = $"{nombre} - {direccion} \n" +
-                $"{_dateNow} \n" +
-                $"{usuarioActivo}";
-            
-            Paragraph p = new Paragraph()
-                .Add(texto)
-                .SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.RIGHT)
-                .SetTextAlignment(TextAlignment.RIGHT)
-                .SetFontSize(6);
-
-            cell.Add(p);
+            cell.Add(metaData);
             header.AddCell(cell);
 
             document.Add(header);
 
-            string titulo = $"Reporte de Inventario de {nombre}";
-
             document.Add(new Paragraph(titulo)
-                .SetTextAlignment(TextAlignment.CENTER)
-                .SetFontSize(8));
+               .SetTextAlignment(TextAlignment.CENTER)
+               .SetFontSize(8));
 
+            return document;
+        }
+
+        public void ReporteInventario() {
+            int idTienda = Database.GetIdTienda();
+
+            var ListaSucursales = Database.GetTablesFromSucursales();
+            var data = Database.GetItemsFromInventario();
+
+            foreach (Sucursal tienda in ListaSucursales) {
+                if (tienda.IdTienda == idTienda) {
+                    sucursal = tienda.NombreTienda;
+                    direccion = tienda.Dirección;
+                }
+            }
+
+            string path = $"{_inventarioPath}";
+            string nombreReporte = $"Reporte-{sucursal}-{_date}";
+            string tituloReporte = $"Reporte de Inventario de {sucursal}";
+
+            var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
+
+            Paragraph p = new Paragraph().Add(texto);
+            
+
+            var document = CreateDocument(nombreReporte, p, tituloReporte, path);
 
             string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Piezas", "Cantidad" };
             float[] tamaños = { 1, 3, 3, 1, 1 };
@@ -112,10 +128,51 @@ namespace Mexty.MVVM.Model {
             document.Add(table);
             document.Close();
 
-            var msg = $@"Se ha creado {nombreReporte}.pdf en la ruta C:\Mexty\Reportes\";
+            var msg = $"Se ha creado {nombreReporte}.pdf en la ruta {path}";
             MessageBox.Show(msg, "Reporte Creado");
 
             Log.Debug("Reporte de inventario creado");
+        }
+
+        public void ReportXSucursal(int idTienda, string nombreTienda, string direccion) {
+            var data = Database.GetItemsFromInventarioByID(idTienda);
+            
+
+            string path = $"{_SucursalesInventarioPath}";
+            string nombreReporte = $"Reporte-{nombreTienda}-{_date}";
+            string tituloReporte = $"Reporte de Inventario de {nombreTienda}";
+            string texto = $"{nombreTienda} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
+            Paragraph p = new Paragraph().Add(texto);
+
+            var document = CreateDocument(nombreReporte, p, tituloReporte, path);
+
+            string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Piezas", "Cantidad" };
+            float[] tamaños = { 1, 3, 3, 1, 1 };
+
+            Table table = new Table(UnitValue.CreatePercentArray(tamaños));
+            table.SetWidth(UnitValue.CreatePercentValue(100));
+
+            foreach (string columa in columnas) {
+                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(8)));
+            }
+
+            foreach (var item in data) {
+                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+            }
+
+            document.Add(table);
+            document.Close();
+
+            var msg = $"Se ha creado {nombreReporte}.pdf en la ruta {path}";
+            MessageBox.Show(msg, "Reporte de sucursal Creado");
+
+            Log.Debug("Reporte de inventario por sucursal creado");
+
+
         }
     }
 }
