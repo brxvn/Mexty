@@ -33,7 +33,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
         /// </summary>
-        private Producto SelectedProducuct { get; set; }
+        private Producto SelectedProduct { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -43,9 +43,11 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 InitializeComponent();
                 FillData();
+                SelectedProduct = selectedProduct;
+                selectedProduct.Dependencias ??= new List<Producto>();
+                ListaDependecias = selectedProduct.Dependencias;
+                txtNombreProducto.Text = $"{selectedProduct.IdProducto.ToString()} {selectedProduct.TipoProducto} {selectedProduct.NombreProducto}";
                 Log.Debug("Se han inicializado los campos de Dependecia de productos.");
-                txtNombreProducto.Text = $"{selectedProduct.IdProducto} {selectedProduct.TipoProducto} {selectedProduct.NombreProducto}";
-                SelectedProducuct = selectedProduct;
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de Dependencia de productos.");
@@ -86,6 +88,8 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         private void SaveProduct(object sender, RoutedEventArgs e) {
+            SelectedProduct.Dependencias = ListaDependecias;
+            //todo: convertirlo a string
             Close();
         }
 
@@ -95,13 +99,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
 
-            Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
-
-            var stru = new Producto.Dependency { Cantidad = producto.CantidadDependencia, Id = producto.IdProducto };
-
-            //SelectedProducuct.Dependencias.Add(stru);
             if (!ListaDependecias.Contains(producto)) ListaDependecias.Add(producto);
+
             if (ListaDependecias.Contains(producto)) producto.CantidadDependencia += 1;
 
             DataActual.ItemsSource = null;
@@ -116,8 +117,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            //var index = DataActual.Items.IndexOf(DataActual.CurrentItem);
-            Producto producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
 
             if (ListaDependecias.Contains(producto)) producto.CantidadDependencia -= 1;
 

@@ -115,17 +115,8 @@ namespace Mexty.MVVM.Model.DataTypes {
         public int CantidadDependencia { get; set; }
 
         /// <summary>
-        /// Struct que representa cada tipo tipo dependencia.
-        /// </summary>
-        public struct Dependency {
-            public int Id;
-            public int Cantidad;
-        }
-
-        /// <summary>
         /// Lista que contiene todas las dependencias
         /// </summary>
-        public List<Dependency> Dependencias { get; set; }
+        public List<Producto> Dependencias { get; set; }
     }
-
 }
