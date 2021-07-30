@@ -963,6 +963,53 @@ namespace Mexty.MVVM.Model {
             return items;
         }
 
+
+        /// <summary>
+        /// Método que obtiene el inventario de una tienda en especifico.
+        /// </summary>
+        /// <returns></returns>
+        public static List<ItemInventario> GetInventarioByIdTienda(int idTienda) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"select * from inventario where ID_TIENDA=@idX"
+            };
+            query.Parameters.AddWithValue("@idX", idTienda.ToString());
+
+            var items = new List<ItemInventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new ItemInventario() {
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
+                        Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
+                    };
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return items;
+        }
+
         /// <summary>
         /// Método para obtener la información conjunta de inventario y de cat_producto.
         /// </summary>
