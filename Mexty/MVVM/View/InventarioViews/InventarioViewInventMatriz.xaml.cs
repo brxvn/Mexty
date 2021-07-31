@@ -24,7 +24,7 @@ namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
     /// Interaction logic for InventarioViewInvent.xaml
     /// </summary>
-    public partial class InventarioViewInvent : UserControl {
+    public partial class InventarioViewInventMatriz : UserControl {
         private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -43,7 +43,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private ItemInventario SelectedItem { get; set; }
 
-        public InventarioViewInvent() {
+        public InventarioViewInventMatriz() {
 
             try {
                 InitializeComponent();

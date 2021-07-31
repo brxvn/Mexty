@@ -17,6 +17,13 @@
                 </TabItem.Content>
             </TabItem>
 
+            <TabItem Header="Inventario Matriz" Background="#710a24" BorderBrush="Transparent"
+                     Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content>
+                    <inventViews:InventarioViewInventMatriz/>
+                </TabItem.Content>
+            </TabItem>
+
             <TabItem Header="Recepción de Producto" Background="#710a24" BorderBrush="Transparent"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>

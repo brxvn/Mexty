@@ -49,4 +49,17 @@
     <Folder Include="bin\Debug" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="MVVM\View\InventarioViews\InventarioViewInventMatriz.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MVVM\View\InventarioViews\InventarioViewInventMatriz.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>
