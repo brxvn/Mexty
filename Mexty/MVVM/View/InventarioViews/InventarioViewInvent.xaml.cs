@@ -169,7 +169,6 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         }
 
-
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             ClearFields();
             InitializeComponent();
@@ -199,6 +198,8 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Debug("Se ha editado un producto.");
                 MessageBox.Show($"Se ha editado el producto {newItem.IdProducto.ToString()} {newItem.TipoProducto} {newItem.NombreProducto}");
             }
+
+            FillData();
         }
 
 
