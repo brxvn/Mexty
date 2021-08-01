@@ -1167,19 +1167,30 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método para actualizar los datos de la tabla inventario-general.
         /// </summary>
-        /// <param name="item"></param>
-        public static int UpdateData(ItemInventario item) {
+        /// <param name="item">El objeto tipo <c>ItemInventario</c> a guardar.</param>
+        /// <param name="matriz">Bandera para guardar a inventario de matriz if <c>true</c> guarda a matriz.</param>
+        public static int UpdateData(ItemInventario item, bool matriz=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
-            var query = new MySqlCommand() {
-                Connection = connObj,
-                CommandText = @"
+
+            var cmd = matriz ? @"
+                update inventario_matriz 
+                set ID_PRODUCTO=@idPX, 
+                    CANTIDAD=@cantidadX, PIEZAS=@piezasX, 
+                    COMENTARIO=@comentario,
+                    USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date 
+                where ID_REGISTRO=@idRX"
+                :
+                @"
                 update inventario 
                 set ID_PRODUCTO=@idPX, 
                     CANTIDAD=@cantidadX, PIEZAS=@piezasX, 
                     COMENTARIO=@comentario, ID_TIENDA=@idTX, 
                     USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date 
-                where ID_REGISTRO=@idRX"
+                where ID_REGISTRO=@idRX";
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = cmd
             };
 
             query.Parameters.AddWithValue("@idRX", item.IdRegistro.ToString());
@@ -1197,11 +1208,13 @@ namespace Mexty.MVVM.Model {
                 ProcessQuery(query);
 
                 var res = query.ExecuteNonQuery();
-                Log.Info("Se han actualizado los datos de la tabla inventario-general de manera exitosa.");
+                var msg = matriz ? "inventario_matriz" : "inventario-general";
+                Log.Info($"Se han actualizado los datos de la tabla {msg} de manera exitosa.");
                 return res;
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al actualizar los datos de inventario-general.");
+                var msg = matriz ? "inventario_matriz" : "inventario-general";
+                Log.Error($"Ha ocurrido un error al actualizar los datos de {msg}.");
                 Log.Error($"Error: {e.Message}");
                 return 0;
             }
