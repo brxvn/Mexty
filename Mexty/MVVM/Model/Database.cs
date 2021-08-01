@@ -963,12 +963,94 @@ namespace Mexty.MVVM.Model {
             return items;
         }
 
+        /// <summary>
+        /// Método para optener las tablas de inventario_matriz.
+        /// </summary>
+        /// <returns></returns>
+        public static List<ItemInventario> GetTablesFromInventarioMatrix() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"select * from inventario_matriz"
+            };
+
+            var items = new List<ItemInventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new ItemInventario() {
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
+                        Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
+                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
+                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
+                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
+                    };
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return items;
+        }
+
+        /// <summary>
+        /// Función que obtiene
+        /// </summary>
+        /// <returns></returns>
+        public static List<LogInventario> GetTablesFromMovimientos() {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"select * from movimientos_inventario"
+            };
+
+            var logs = new List<LogInventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new LogInventario() {
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
+                        FehcaRegistro = reader.GetDateTime("fecha_registro"),
+                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
+                    };
+                    logs.Add(item);
+                }
+                Log.Debug("Se han obtenido los movimientos del inventario de matriz.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de movimientos_inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return logs;
+        }
 
         /// <summary>
         /// Método que obtiene el inventario de una tienda en especifico.
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetItemsFromInventarioByID( int IdTienda) {
+        public static List<ItemInventario> GetItemsFromInventarioById( int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -989,7 +1071,7 @@ namespace Mexty.MVVM.Model {
                 WHERE  p.id_producto = i.id_producto 
                        and i.ID_TIENDA=@idTX"
             };
-            query.Parameters.AddWithValue("@idTX", IdTienda.ToString());
+            query.Parameters.AddWithValue("@idTX", idTienda.ToString());
 
             var items = new List<ItemInventario>();
             try {
@@ -1178,6 +1260,45 @@ namespace Mexty.MVVM.Model {
             }
         }
 
+        /// <summary>
+        /// Método que guarda un nuevo registro de movimientos.
+        /// </summary>
+        /// <param name="newItem"> Un objeto tipo <c>LogInventario</c>.</param>
+        /// <returns>La cantidad de columnas modificadas.</returns>
+        public static int NewLog(LogInventario newItem) {
+            var connObj = new MySqlConnection(ConnectionInfo());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"
+                insert into movimientos_inventario 
+                    (ID_REGISTRO, MENSAJE,
+                     USUARIO_REGISTRA, FECHA_REGISTRO) 
+                values (default, @mensaje,
+                        @usMod, @date)"
+            };
+
+            query.Parameters.AddWithValue("@mensaje", newItem.Mensaje);
+            query.Parameters.AddWithValue("@usMod", GetUsername());
+            query.Parameters.AddWithValue("@date", GetCurrentTimeNDate());
+
+            try {
+                ProcessQuery(query);
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha dado de alta un nuevo item en movimientos_inventario de manera exitosa.");
+                return res;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo item en el movimientos_inventario.");
+                Log.Error($"Error: {e.Message}");
+                return 0;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
 
         // =========================================================
         // ------- Querrys De modulo Base de datos  ---------------

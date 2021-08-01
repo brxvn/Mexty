@@ -135,7 +135,7 @@ namespace Mexty.MVVM.Model {
         }
 
         public void ReportXSucursal(int idTienda, string nombreTienda, string direccion) {
-            var data = Database.GetItemsFromInventarioByID(idTienda);
+            var data = Database.GetItemsFromInventarioById(idTienda);
             
 
             string path = $"{_SucursalesInventarioPath}";

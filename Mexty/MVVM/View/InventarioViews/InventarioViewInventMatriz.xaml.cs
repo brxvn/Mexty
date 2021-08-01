@@ -75,7 +75,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena el datagrid y los combobox.
         /// </summary>
         private void FillData() {
-            var data = Database.GetItemsFromInventario();
+            var data = Database.GetTablesFromInventarioMatrix();
             ListaItems = data;
 
             var collectionView = new ListCollectionView(data) {
