@@ -306,14 +306,13 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 for (var index = 0; index < UsuariosList.Count; index++) {
                     var usuario = UsuariosList[index];
-                    
+
                     if (usuario != newUsuario || usuario.Activo != 0) continue;
-                    
                     Log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
                     newUsuario += usuario;
                     newUsuario.Activo = 1;
                     flag = false;
-                    
+
                     var res = Database.UpdateData(newUsuario);
                     if (res != 0) {
                         var msg =
@@ -321,7 +320,7 @@ namespace Mexty.MVVM.View.AdminViews {
                         MessageBox.Show(msg, "Nuevo Usuario registrado.");
                         Log.Debug("Se ha activado el usuario exitosamente.");
                     }
-                    
+
                     break;
                 }
 
@@ -382,6 +381,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al eliminar el usuario.");
                 Log.Error($"Error: {exception.Message}");
             }
+            SelectedUser = null;
             FillDataGrid();
             ClearFields();
         }

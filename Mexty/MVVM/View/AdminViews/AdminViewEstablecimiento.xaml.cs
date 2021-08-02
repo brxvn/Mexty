@@ -363,6 +363,7 @@ namespace Mexty.MVVM.View.AdminViews {
             sucursal.Activo = 0;
             Database.UpdateData(sucursal);
             Log.Debug("Sucursal eliminada.");
+            SelectedSucursal = null;
             ClearFields();
             FillData();
 

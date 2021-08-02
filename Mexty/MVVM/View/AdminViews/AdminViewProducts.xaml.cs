@@ -200,7 +200,9 @@ namespace Mexty.MVVM.View.AdminViews {
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
-                producto.TipoVentaNombre.ToLower().Contains(text) //||
+                producto.TipoVentaNombre.ToLower().Contains(text) ||
+                producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
+                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)
                 ) {
                 return producto.Activo == 1;
             }
@@ -215,14 +217,13 @@ namespace Mexty.MVVM.View.AdminViews {
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de guardar.");
             try {
-                var newProduct = new Producto();
-                newProduct.NombreProducto = txtNombreProducto.Text;
+                var newProduct = new Producto {
+                    NombreProducto = txtNombreProducto.Text,
+                    MedidaProducto = ComboMedida.SelectedItem.ToString(),
+                    TipoProducto = ComboTipo.SelectedItem.ToString(),
+                    TipoVenta = ComboVenta.SelectedIndex
+                };
 
-                newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-                //newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
-
-                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-                newProduct.TipoVenta = ComboVenta.SelectedIndex;
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMenudeo.Text);
@@ -235,7 +236,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 }
                 Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
 
-                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
+                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto && SelectedProduct.TipoProducto == newProduct.TipoProducto) {
                     Edit(newProduct);
                 }
                 else {
@@ -267,7 +268,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = Database.NewProduct(newProduct);
                 if (res == 0) return;
 
-                var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
+                var msg = $"Se ha dado de alta el producto {newProduct.TipoProducto} {newProduct.NombreProducto}.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha dado de alta el producto de manera exitosa.");
             }
@@ -289,7 +290,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var result = Database.UpdateData(newProduct);
 
                 if (result <= 0) return;
-                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha editado el producto de manera exitosa.");
             }
@@ -309,22 +310,25 @@ namespace Mexty.MVVM.View.AdminViews {
                 for (var index = 0; index < ListaProductos.Count; index++) {
                     var producto = ListaProductos[index];
 
-                    if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                    Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
-                    // actualizamos y activamos.
-                    newProduct.IdProducto = producto.IdProducto;
-                    newProduct.Activo = 1;
-                    alta = false;
+                    if (newProduct.NombreProducto == producto.NombreProducto &&
+                        newProduct.TipoProducto == producto.TipoProducto && producto.Activo == 0) {
 
-                    var res = Database.UpdateData(newProduct);
-                    if (res != 0) {
-                        var msg =
-                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Producto Actualizado");
-                        Log.Debug("Se ha activado el producto de manera exitosa.");
+                        Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
+                        // actualizamos y activamos.
+                        newProduct.IdProducto = producto.IdProducto;
+                        newProduct.Activo = 1;
+                        alta = false;
+
+                        var res = Database.UpdateData(newProduct);
+                        if (res != 0) {
+                            var msg =
+                                $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
+                            MessageBox.Show(msg, "Producto Actualizado");
+                            Log.Debug("Se ha activado el producto de manera exitosa.");
+                        }
+
+                        break;
                     }
-
-                    break;
                 }
             }
             catch (Exception e) {
@@ -369,7 +373,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Presionado eliminar producto.");
             var producto = SelectedProduct;
-            var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
+            var mensaje = $"¿Seguro quiere eliminar el producto {producto.TipoProducto} {producto.NombreProducto}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
@@ -377,6 +381,7 @@ namespace Mexty.MVVM.View.AdminViews {
             producto.Activo = 0;
             Database.UpdateData(producto);
             Log.Debug("Producto eliminado.");
+            SelectedProduct = null;
             ClearFields();
             FillData();
         }

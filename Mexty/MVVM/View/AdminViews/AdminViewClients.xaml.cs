@@ -358,6 +358,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             cliente.Activo = 0;
             Database.UpdateData(cliente);
+            SelectedClient = null;
             ClearFields();
             FillData();
         }
