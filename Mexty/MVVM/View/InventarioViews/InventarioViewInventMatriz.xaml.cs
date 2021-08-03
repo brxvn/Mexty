@@ -262,5 +262,21 @@ namespace Mexty.MVVM.View.InventarioViews {
             Reports reports = new();
             reports.ReporteInventario();
         }
+
+        private void AltaInventario(object sender, RoutedEventArgs e) {
+            AltaInventario altaInventario = new AltaInventario();
+            altaInventario.ShowDialog();
+        }
+
+        private void AsingInventario(object sender, RoutedEventArgs e) {
+            AsignacionInventario asignacionInventario = new AsignacionInventario();
+            asignacionInventario.ShowDialog();
+        }
+
+
+        private void MovimInventario(object sender, RoutedEventArgs e) {
+            MovimientosInventario movimientosInventario = new MovimientosInventario();
+            movimientosInventario.ShowDialog();
+        }
     }
 }

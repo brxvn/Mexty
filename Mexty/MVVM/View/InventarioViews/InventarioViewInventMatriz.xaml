@@ -427,17 +427,39 @@
 
             </Grid>
 
-           <Grid Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Height="auto" Width="auto">
+           <Grid Grid.Row="2" Margin="10" Height="auto" Width="auto">
+
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTip="Guardar Cambios"/>
-                <Button x:Name="Reporte" Grid.Column="2" Content="Imprimir" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="ReporteInventario"  ToolTip="Imprimir Inventario"/>
+                <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Button x:Name="AltInventario" Grid.Column="0" Content="Alta Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AltaInventario" ToolTip="Alta de Inventario" FontSize="20"/>
+                    <Button x:Name="AsignInventario" Grid.Column="1" Content="Asign. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AsingInventario" ToolTip="Asignación de Inventario" FontSize="20"/>
+                    <Button x:Name="MovInventario" Grid.Column="2" Content="Mov. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="MovimInventario" ToolTip="Movimientos Invenario" FontSize="20"/>
+
+
+                </Grid>
+
+                <Grid Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20"/>
+                    <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTip="Guardar Cambios" FontSize="20"/>
+                    <Button x:Name="Reporte" Grid.Column="2" Content="Imprimir" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="ReporteInventario"  ToolTip="Imprimir Inventario" FontSize="20"/>
+                </Grid>
+               
 
             </Grid>
 

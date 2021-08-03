@@ -16,7 +16,7 @@
         >
 
     <Border BorderThickness="2" BorderBrush="#F78b37" >
-        <Grid Background="#7f233a" Margin="15" >
+        <Grid Margin="15" >
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="auto"/>
