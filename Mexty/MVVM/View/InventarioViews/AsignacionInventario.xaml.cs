@@ -20,5 +20,44 @@ namespace Mexty.MVVM.View.InventarioViews {
         public AsignacionInventario() {
             InitializeComponent();
         }
+        private void CerrarVentana(object sender, RoutedEventArgs e) {
+            Close();
+        }
+
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+
+        }
+
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void CantidadGUIChanges(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+
+        }
+
+        private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void LimpiarCampos(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void RegistrarProducto(object sender, RoutedEventArgs e) {
+
+        }
     }
 }

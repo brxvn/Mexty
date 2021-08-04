@@ -14,14 +14,18 @@
 
     <Border BorderThickness="2" BorderBrush="#F78b37">
         <Grid Margin="15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <!--Nombre-->
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
@@ -39,7 +43,7 @@
             </Grid>
 
             <!--Cantidad-->
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition/>
@@ -365,14 +369,14 @@
 
                 </Grid>
             </Grid>
-            
+
             <!--Detalle-->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                            <Label Content="Comentario" FontSize="20" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="0" VerticalAlignment="Top" Grid.ColumnSpan="2" Margin="0,0,66,0"/>
+                <Label Content="Comentario" FontSize="20" VerticalContentAlignment="Top" Foreground="AntiqueWhite" Padding="0 20" Grid.Row="0" VerticalAlignment="Stretch"/>
 
                 <!--txtDetalle-->
                 <TextBox Background="Beige"
@@ -457,16 +461,16 @@
 
             </Grid>
 
-            <Grid Grid.Row="3" HorizontalAlignment="Right">
+            <Grid Grid.Row="3" HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20" Height="30"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios" FontSize="20" Height="30"/>
-                <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Height="30"/>
+                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20" Height="30" Padding="20 0"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios" FontSize="20" Height="30" Padding="20 0"/>
+                <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Height="30" Padding="20 0"/>
             </Grid>
         </Grid>
     </Border>

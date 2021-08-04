@@ -20,5 +20,17 @@ namespace Mexty.MVVM.View.InventarioViews {
         public MovimientosInventario() {
             InitializeComponent();
         }
+
+        private void CerrarVentana(object sender, RoutedEventArgs e) {
+            Close();
+        }
+
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+
+        }
+
+        private void ImprimirTxt(object sender, RoutedEventArgs e) {
+
+        }
     }
 }
