@@ -10,7 +10,9 @@
   - Debe de haber un Chico.png, Mediano.png, Grande.png.
   
 ### Notas sig reunión
-
+- Preguntar por el campo de DEBE en Venta-Mayoreo.
+- Preguntar porque en venta menudeo Fecha-registro esta como llave primaria (y porque?) y en menudeo no.
+- Preguntar por usuario-modifica y fecha modifica en venta mayoreo.
 
 ## Entradas al log.
 - Error: para manejar excepciones, dando una descripción de lo que sucede y donde.
