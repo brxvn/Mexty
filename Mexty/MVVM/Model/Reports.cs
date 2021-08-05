@@ -21,14 +21,8 @@ using TextAlignment = iText.Layout.Properties.TextAlignment;
 namespace Mexty.MVVM.Model {
     public class Reports {
 
-        public Reports() {
-            Directory.CreateDirectory(_mainPath);
-            Directory.CreateDirectory(_inventarioPath);
-            Directory.CreateDirectory(_SucursalesInventarioPath);
-        }
-
         private static readonly ILog Log =
-           LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+          LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private readonly string _date = DateTime.Now.ToString("dd-MM-yy");
         private readonly string _dateNow = DateTime.Now.ToString("G");
@@ -39,6 +33,14 @@ namespace Mexty.MVVM.Model {
         private readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
         private readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
         private readonly string usuarioActivo = Database.GetUsername();
+
+        public Reports() {
+            Directory.CreateDirectory(_mainPath);
+            Directory.CreateDirectory(_inventarioPath);
+            Directory.CreateDirectory(_SucursalesInventarioPath);
+        }
+
+       
 
         
         private Document CreateDocument(string nombreDocumento, Paragraph metaData, string titulo, string path) {
