@@ -32,6 +32,9 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
+        /// <summary>
+        /// Lista de items en el inventario.
+        /// </summary>
         private List<ItemInventario> ListaFromInventario { get; set; }
 
         public InventarioViewRecepcion() {
@@ -93,7 +96,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var index = ComboNombre.SelectedIndex;
             txtMedida.Text = ListaProductos[index].MedidaProducto;
             txtTipo.Text = ListaProductos[index].TipoProducto;
-
         }
 
         private void FilterSearch(object sender, TextChangedEventArgs e) {
@@ -112,7 +114,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newItem = new ItemInventario {
-                IdProducto = ComboNombre.SelectedIndex + 1,
+                IdProducto = ComboNombre.SelectedIndex + 1, // TODO probar jalar el id de el texto.
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
                 Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)

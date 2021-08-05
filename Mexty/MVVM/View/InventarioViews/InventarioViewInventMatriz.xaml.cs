@@ -85,7 +85,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
             Log.Debug("Se ha llenado la datagrid de manera exitosa.");
-
         }
 
         /// <summary>
@@ -257,23 +256,42 @@ namespace Mexty.MVVM.View.InventarioViews {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de Reporte inventario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReporteInventario(object sender, RoutedEventArgs e) {
-
             Reports reports = new();
             reports.ReporteInventario();
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de alta inventario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AltaInventario(object sender, RoutedEventArgs e) {
             AltaInventario altaInventario = new AltaInventario();
             altaInventario.ShowDialog();
+            FillData();
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de Asignar inventario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AsingInventario(object sender, RoutedEventArgs e) {
             AsignacionInventario asignacionInventario = new AsignacionInventario();
             asignacionInventario.ShowDialog();
         }
 
-
+        /// <summary>
+        /// Lógica detrás del boton de Movimientos de inventario.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MovimInventario(object sender, RoutedEventArgs e) {
             MovimientosInventario movimientosInventario = new MovimientosInventario();
             movimientosInventario.ShowDialog();

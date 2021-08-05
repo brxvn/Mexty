@@ -603,7 +603,6 @@ namespace Mexty.MVVM.Model {
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
                         PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetFloat("precio_mayoreo"),
@@ -643,7 +642,6 @@ namespace Mexty.MVVM.Model {
                 set NOMBRE_PRODUCTO=@nom, 
                     TIPO_PRODUCTO=@tipoP, 
                     MEDIDA=@med, 
-                    PIEZAS=@piezasX, 
                     DEPENDENCIAS=@dependencias,
                     TIPO_VENTA=@tipoV, 
                     PRECIO_MAYOREO=@pMayo, 
@@ -711,11 +709,11 @@ namespace Mexty.MVVM.Model {
                 Connection = connObj,
                 CommandText = @"
                 insert into cat_producto 
-                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, PIEZAS, 
+                    (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
                      TIPO_VENTA, DEPENDENCIAS,
                      PRECIO_MAYOREO, PRECIO_MENUDEO, 
                      ESPECIFICACION_PRODUCTO, ACTIVO) 
-                values (default, @nom, @medida, @tipoP, @piezasX, 
+                values (default, @nom, @medida, @tipoP, 
                         @tipoV, @dependencias,
                         @pMayo, @pMenu, 
                         @esp, @actX)"
@@ -942,7 +940,7 @@ namespace Mexty.MVVM.Model {
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
-                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                         UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
                         FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
@@ -973,7 +971,18 @@ namespace Mexty.MVVM.Model {
 
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = @"select * from inventario_matriz"
+                CommandText = @"
+                SELECT p.id_producto, 
+                       p.tipo_producto, 
+                       p.nombre_producto, 
+                       p.medida, 
+                       i.ID_REGISTRO, 
+                       i.piezas, 
+                       i.cantidad, 
+                       i.comentario 
+                FROM   cat_producto p, 
+                       inventario_matriz i 
+                WHERE  p.id_producto = i.id_producto"
             };
 
             var items = new List<ItemInventario>();
@@ -983,22 +992,20 @@ namespace Mexty.MVVM.Model {
                     var item = new ItemInventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
-                        IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
+                        TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
+                        Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
-                        UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
-                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
-                        UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
-                        FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica")
                     };
                     items.Add(item);
                 }
 
-                Log.Debug("Se han obtenido con exito las tablas de inventario.");
+                Log.Debug("Se han obtenido con exito las tablas de inventario-producto matriz.");
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario-producto matriz.");
                 Log.Error($"Error: {e.Message}");
             }
             finally {
@@ -1060,7 +1067,6 @@ namespace Mexty.MVVM.Model {
                        p.tipo_producto, 
                        p.nombre_producto, 
                        p.medida, 
-                       p.piezas AS MAX_PIEZAS, 
                        i.ID_REGISTRO, 
                        i.piezas, 
                        i.cantidad, 
@@ -1119,7 +1125,6 @@ namespace Mexty.MVVM.Model {
                        p.tipo_producto, 
                        p.nombre_producto, 
                        p.medida, 
-                       p.piezas AS MAX_PIEZAS, 
                        i.ID_REGISTRO, 
                        i.piezas, 
                        i.cantidad, 
@@ -1144,7 +1149,6 @@ namespace Mexty.MVVM.Model {
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
-                        MaxPiezas = reader.IsDBNull("max_piezas") ? 0 : reader.GetInt32("max_piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
@@ -1228,24 +1232,39 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
-        public static int NewItem(ItemInventario newItem) {
+        public static int NewItem(ItemInventario newItem, bool matriz=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
 
-            MySqlCommand query = new() {
-                Connection = connObj,
-                CommandText = @"
-                insert into inventario 
+            var cmd = matriz
+                ? @"
+                insert into inventario_matriz 
                     (ID_REGISTRO, ID_PRODUCTO,
                      CANTIDAD, PIEZAS, 
-                     COMENTARIO, ID_TIENDA, 
+                     COMENTARIO, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
                 values (default, @idPX,
                         @cantidadX, @piezasX,
-                        @comentario, @idTX,
+                        @comentario, 
                         @usReg, @date, 
                         @usMod, @date)"
+                : @"
+                insert into inventario 
+                    (ID_REGISTRO, ID_PRODUCTO, 
+                     CANTIDAD, PIEZAS, 
+                     COMENTARIO, ID_TIENDA, 
+                     usuario_registra, fecha_registro, 
+                     usuario_modifica, fecha_modifica) 
+                values (default, @idPX, 
+                        @cantidadX, @piezasX,
+                        @comentario, @idTX,
+                        @usReg, @date, 
+                        @usMod, @date)";
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = cmd
             };
 
             query.Parameters.AddWithValue("@idPX", newItem.IdProducto.ToString());
@@ -1261,11 +1280,11 @@ namespace Mexty.MVVM.Model {
                 ProcessQuery(query);
 
                 var res = query.ExecuteNonQuery();
-                Log.Info("Se ha dado de alta un nuevo item en el inventario-general de manera exitosa.");
+                Log.Info("Se ha dado de alta un nuevo item en el inventario de manera exitosa.");
                 return res;
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario-general."); 
+                Log.Error("Ha ocurrido un error al dar de alta un nuevo item en el inventario.");
                 Log.Error($"Error: {e.Message}");
                 return 0;
             }
@@ -1369,7 +1388,7 @@ namespace Mexty.MVVM.Model {
                 Log.Debug("Se han obtenido con exito las tablas de ventas");
             }
             catch (Exception e) {
-                Log.Error("Ha ocurrido un error al obtener las tablas de inventario.");
+                Log.Error("Ha ocurrido un error al obtener las tablas de ventas.");
                 Log.Error($"Error: {e.Message}");
             }
             finally {
@@ -1462,14 +1481,14 @@ namespace Mexty.MVVM.Model {
                         @comentarios, @idTX, 
                         @usrRegistra, @fechaRegistro)"
                 : @"
-                insert into venta_menudeo
-                    (ID_VENTA_MENUDEO, DETALLE_VENTA,
-                     TOTAL_VENTA, PAGO, CAMBIO,
-                     ID_TIENDA,
-                     USUARIO_REGISTRA, FECHA_REGISTRO)
-                values (default, @detalle,
-                        @totalX, @pagoX, @cambioX,
-                        @idTX,
+                insert into venta_menudeo 
+                    (ID_VENTA_MENUDEO, DETALLE_VENTA, 
+                     TOTAL_VENTA, PAGO, CAMBIO, 
+                     ID_TIENDA, 
+                     USUARIO_REGISTRA, FECHA_REGISTRO) 
+                values (default, @detalle, 
+                        @totalX, @pagoX, @cambioX, 
+                        @idTX, 
                         @usrRegistra, @fechaRegistro)";
 
             var query = new MySqlCommand() {
@@ -1610,8 +1629,8 @@ namespace Mexty.MVVM.Model {
                 var cmd = query.CommandText;
                 for (var index = 0; index < query.Parameters.Count; index++) {
                     var queryParameter = query.Parameters[index];
-                    // Campos numericos
-                    if (queryParameter.ParameterName.Contains("X")) {
+
+                    if (queryParameter.ParameterName.Contains("X")) { // Campos numericos no llevan comillas y llevan X en el nombre.
                         cmd = cmd.Replace(queryParameter.ParameterName, queryParameter.Value?.ToString());
                     }
                     else {

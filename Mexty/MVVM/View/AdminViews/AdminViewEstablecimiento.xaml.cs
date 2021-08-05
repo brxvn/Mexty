@@ -366,7 +366,6 @@ namespace Mexty.MVVM.View.AdminViews {
             SelectedSucursal = null;
             ClearFields();
             FillData();
-
         }
 
         private void txtUpdateNombre(object sender, TextChangedEventArgs e) {
