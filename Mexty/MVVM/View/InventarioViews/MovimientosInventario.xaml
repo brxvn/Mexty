@@ -61,8 +61,8 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Imprimir" Grid.Column="0" Content="Imprimir" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="ImprimirTxt" ToolTip="Imprimir" FontSize="20" Height="30" Padding="20 0"/>
-               <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Height="30" Padding="20 0"/>
+                <Button x:Name="Imprimir" Grid.Column="0" Content="Imprimir" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="ImprimirTxt" ToolTip="Imprimir" FontSize="20" Padding="20 0"/>
+               <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Padding="20 0"/>
             </Grid>
         </Grid>
     </Border>

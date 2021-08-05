@@ -78,7 +78,7 @@
                                                             BorderThickness="0"
                                                             Background="Transparent"
                                                             VerticalContentAlignment="Center"
-                                                            Padding="5"
+                                                            Padding="5 0"
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
@@ -156,7 +156,7 @@
                                                             BorderThickness="0"
                                                             Background="Transparent"
                                                             VerticalContentAlignment="Center"
-                                                            Padding="5"
+                                                            Padding="5 0"
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
@@ -233,7 +233,7 @@
                                                             BorderThickness="0"
                                                             Background="Transparent"
                                                             VerticalContentAlignment="Center"
-                                                            Padding="5"
+                                                            Padding="5 0"
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
@@ -310,7 +310,7 @@
                                                             BorderThickness="0"
                                                             Background="Transparent"
                                                             VerticalContentAlignment="Center"
-                                                            Padding="5"
+                                                            Padding="5 0"
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
@@ -468,9 +468,9 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20" Height="30" Padding="20 0"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios" FontSize="20" Height="30" Padding="20 0"/>
-                <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Height="30" Padding="20 0"/>
+                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20" Padding="20 0"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios" FontSize="20" Padding="20 0"/>
+                <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Padding="20 0"/>
             </Grid>
         </Grid>
     </Border>
