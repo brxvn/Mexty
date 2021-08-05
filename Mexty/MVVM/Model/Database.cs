@@ -643,9 +643,9 @@ namespace Mexty.MVVM.Model {
                     TIPO_PRODUCTO=@tipoP, 
                     MEDIDA=@med, 
                     DEPENDENCIAS=@dependencias,
-                    TIPO_VENTA=@tipoV, 
-                    PRECIO_MAYOREO=@pMayo, 
-                    PRECIO_MENUDEO=@pMenu, 
+                    TIPO_VENTA=@tipoVX, 
+                    PRECIO_MAYOREO=@pMayoX, 
+                    PRECIO_MENUDEO=@pMenuX, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@actX 
                 where ID_PRODUCTO=@idX"
@@ -1239,13 +1239,13 @@ namespace Mexty.MVVM.Model {
             var cmd = matriz
                 ? @"
                 insert into inventario_matriz 
-                    (ID_REGISTRO, ID_PRODUCTO,
+                    (ID_REGISTRO, ID_PRODUCTO, 
                      CANTIDAD, PIEZAS, 
                      COMENTARIO, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
-                values (default, @idPX,
-                        @cantidadX, @piezasX,
+                values (default, @idPX, 
+                        @cantidadX, @piezasX, 
                         @comentario, 
                         @usReg, @date, 
                         @usMod, @date)"
@@ -1257,8 +1257,8 @@ namespace Mexty.MVVM.Model {
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
                 values (default, @idPX, 
-                        @cantidadX, @piezasX,
-                        @comentario, @idTX,
+                        @cantidadX, @piezasX, 
+                        @comentario, @idTX, 
                         @usReg, @date, 
                         @usMod, @date)";
 
