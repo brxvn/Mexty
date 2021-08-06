@@ -240,6 +240,7 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla usuario.
         /// </summary>
         /// <returns>Un objeto tipo <c>MySqlReader</c> con la informació con la información.</returns>
+        /// DONE
         public static List<Usuario> GetTablesFromUsuarios() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -286,6 +287,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método para actualziar los datos de Usuario
         /// </summary>
+        /// DONE
         public static int UpdateData(Usuario usuario) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -341,6 +343,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo usuario.
         /// </summary>
         /// <param name="newUser">Objeto tipo <c>Usuario</c> que tiene la información del usuario nuevo.</param>
+        /// DONE
         public static int NewUser(Usuario newUser) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -404,6 +407,7 @@ namespace Mexty.MVVM.Model {
         /// Función que obtiene las tablas de las Sucursales.
         /// </summary>
         /// <returns>Una lista de objetos tipo <c>Sucursal</c>.</returns>
+        /// DONE
         public static List<Sucursal> GetTablesFromSucursales() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -449,6 +453,7 @@ namespace Mexty.MVVM.Model {
         /// Método que actualiza una sucursal en la base de datos
         /// </summary>
         /// <param name="sucursal"></param>
+        /// DONE.
         public static int UpdateData(Sucursal sucursal) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -500,6 +505,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra una nueva sucursal.
         /// </summary>
         /// <param name="newSucursal"></param>
+        /// DONE
         public static int NewSucursal(Sucursal newSucursal) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -554,6 +560,7 @@ namespace Mexty.MVVM.Model {
         /// Función que obtiene las tablas de los Roles.
         /// </summary>
         /// <returns>Una lista con objetos tipo <c>Rol</c>.</returns>
+        /// DONE.
         public static List<Rol> GetTablesFromRoles() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -642,6 +649,7 @@ namespace Mexty.MVVM.Model {
         /// Método que actualiza un producto en la base de datos.
         /// </summary>
         /// <param name="producto"></param>
+        /// DONE
         public static int UpdateData(Producto producto) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -711,6 +719,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo producto.
         /// </summary>
         /// <param name="newProduct">Objeto tipo <c>Producto</c>.</param>
+        /// DONE
         public static int NewProduct(Producto newProduct) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1541,6 +1550,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Struct que contiene la querry y la fecha en la que se hizo.
         /// </summary>
+        /// DONE
         private struct Deltas {
             public string Query;
             public DateTime Date;
@@ -1549,6 +1559,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método que vacia los contenidos de la tabla control_sincbd a un script sql para ser aplicados en otra base de datos.
         /// </summary>
+        /// DONE
         public static void DumpDeltas() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1634,6 +1645,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="query">Objeto tipo <c>MySqlCommand</c>.</param>
         /// <exception cref="Exception"></exception>
+        /// DONE
         private static void ProcessQuery(MySqlCommand query) {
             try {
                 var cmd = query.CommandText;
@@ -1664,6 +1676,7 @@ namespace Mexty.MVVM.Model {
         /// Método que guarda la querry dada en la tabla de control_sincbd
         /// </summary>
         /// <returns></returns>
+        /// DONE
         private static int SaveQuery(string cmd) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1712,6 +1725,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
         // TODO: quizá agregar un combo para controlar si exportar toda la base de datos o solo la estructura.
+        // DONE
         public static bool BackUp() {
             Log.Info("Se ha empezado el backUp de la base de datos.");
             try {
@@ -1746,6 +1760,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Importa un archivo SQL para ejecutarlo
         /// </summary>
+        /// DONE
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
             try {

@@ -7,8 +7,7 @@ using MySql.Data.MySqlClient;
 
 namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
-    /// Clase principal de Base de datos.
-    /// Se encarga de hacer el proceso de login y obtener los datos iniciales.
+    /// Clase principal de Base de datos, se encarga de hacer el proceso de login y obtener los datos iniciales.
     /// </summary>
     public static class DatabaseInit {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
