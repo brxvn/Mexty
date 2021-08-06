@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.InventarioViews {
@@ -24,7 +25,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
-        /// Lista de productos dada por la base de datos.
+        /// Lista de productos en inventario dada por la base de datos.
         /// </summary>
         private List<ItemInventario> ListaItems { get; set; }
 
@@ -92,9 +93,43 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtPiezas.Text = "";
         }
 
+        /// <summary>
+        /// Lógica detrás del boton de guardar.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado guardar.");
 
+            // Validar que la cantidad asignada <= cantidad actual.
+            Validar(int.Parse(txtCantidad.Text), int.Parse(txtPiezas.Text));
+
+            // hacerl el update.
+
+            // Escribir en moviemientos inventario.
+            var newLog = new LogInventario() {
+                Mensaje = $"Asignada Cantidad: {txtCantidad.Text} Piezas: {txtPiezas.Text} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
+                UsuarioRegistra = Database.GetUsername(),
+                FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate()),
+            };
+
+        }
+
+        /// <summary>
+        /// Método que valida que las cantidades y piezas sean validas.
+        /// </summary>
+        /// <returns><c>true</c> si las cantidades son validas, <c>false</c> si no.</returns>
+        private bool Validar(int cantidad, int piezas) {
+            var id = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
+
+            for (var index = 0; index < ListaItems.Count; index++) {
+                var item = ListaItems[index];
+                if (item.IdProducto != id) {
+                    return item.Cantidad - cantidad >= 0 && item.Piezas - piezas >= 0;
+                }
+            }
+
+            return false;
         }
     }
 }

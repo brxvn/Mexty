@@ -59,7 +59,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 var myIni = new IniFile(@"C:\Mexty\Settings.ini");
                 var sucursal = myIni.Read("IdTienda");
                 var idTienda = int.Parse(sucursal);
-                if (idTienda == 0) throw new Exception(); // No puede existir el id 0
+                if (idTienda == 0) throw new Exception(); // No puede existir el id 0, something went wrong!!
                 Log.Info("Se ha leido exitosamente el id de la tienda del ini.");
 
                 return idTienda;

@@ -129,6 +129,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
 
+            // Obtenemos el id el producto del string del combobox
             newProduct.IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
 
             if (!Validar(newProduct)) {

@@ -10,7 +10,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// Clase principal de Base de datos.
     /// Se encarga de hacer el proceso de login y obtener los datos iniciales.
     /// </summary>
-    public class DatabaseInit {
+    public static class DatabaseInit {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
@@ -39,11 +39,12 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static bool ConnectionSuccess { get; set; }
 
         /// <summary>
-        /// Constructor inicial para el login.
+        /// Método que se encarga del inicio de sesión al programa.
         /// </summary>
-        /// <param name="username">String que contiene el nombre de usuario.</param>
-        /// <param name="password">String que contiene la contraseña.</param>
-        public DatabaseInit(string username, string password) {
+        /// <param name="username"><c>string</c> conteniendo el nombre de usuario.</param>
+        /// <param name="password"><c>string</c> conteniendo la contraseña del usuario.</param>
+        /// <returns><c>true</c> si el inicio de sesión fue exitoso.</returns>
+        public static bool UserLogIn(string username, string password) {
             var connObj = new MySqlConnection(IniFields.ReadConnectionInfo());
             connObj.Open();
 
@@ -59,11 +60,20 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
                 InitializeFields(fistQuery);
                 ValidateIdTienda();
-                Log.Info("Se ha iniciado sesión de manera exitosa.");
+                if (ConnectionSuccess) {
+                    Log.Info("Se ha iniciado sesión de manera exitosa.");
+                    return true;
+                }
+                else {
+                    Log.Info("Las credenciales de inicio de sesión no son correctas.");
+                    return false;
+                }
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al hacer la consulta para iniciar sesión.");
                 Log.Error($"Error: {e.Message}");
+                // TODO: ver que pedo con este manejo de error.
+                throw;
             }
             finally {
                 connObj.Close();

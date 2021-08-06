@@ -1045,7 +1045,7 @@ namespace Mexty.MVVM.Model {
                     var item = new LogInventario() {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         Mensaje = reader.IsDBNull("mensaje") ? "" : reader.GetString("mensaje"),
-                        FehcaRegistro = reader.GetDateTime("fecha_registro"),
+                        FechaRegistro = reader.GetDateTime("fecha_registro"),
                         UsuarioRegistra = reader.IsDBNull("USUARIO_REGISTRA") ? "" : reader.GetString("USUARIO_REGISTRA"),
                     };
                     logs.Add(item);
