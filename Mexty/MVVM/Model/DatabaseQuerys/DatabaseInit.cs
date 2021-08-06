@@ -44,7 +44,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <param name="username">String que contiene el nombre de usuario.</param>
         /// <param name="password">String que contiene la contraseña.</param>
         public DatabaseInit(string username, string password) {
-            var connObj = new MySqlConnection(IniFields.ConnectionInfo());
+            var connObj = new MySqlConnection(IniFields.ReadConnectionInfo());
             connObj.Open();
 
             var login = new MySqlCommand {
@@ -64,6 +64,9 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al hacer la consulta para iniciar sesión.");
                 Log.Error($"Error: {e.Message}");
+            }
+            finally {
+                connObj.Close();
             }
         }
 
@@ -102,7 +105,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que valida que el id de tienda leido del ini sea válido.
         /// </summary>
         private static void ValidateIdTienda() {
-            var connObj = new MySqlConnection(IniFields.ConnectionInfo());
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
             var query = new MySqlCommand() {
@@ -132,12 +135,32 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 MessageBox.Show("Error 13: ha ocurrido un error al validar la sucursal del archivo de configuración.",
                     "Error", buttons, MessageBoxImage.Error);
             }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que limpia todos los datos obtenidos de la base de datos.
+        /// </summary>
+        public static void CloseConnection() {
+            try {
+                Username = null;
+                Password = null;
+                IdRol = 0;
+                ConnectionSuccess = false;
+                Log.Info("Conección con base de datos cerrada con exito.");
+            }
+            catch (Exception e) {
+                Log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
+                Log.Error($"Excepción: {e.Message}");
+            }
         }
 
         /// <summary>
         /// Método para obtener el username del usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>string</c> con el username.</returns>
         public static string GetUsername() {
             return Username;
         }
@@ -145,7 +168,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <summary>
         /// Método para obtener el Id de rol del usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>int</c> con el Id del rol de usuario.</returns>
         public static int GetIdRol() {
             return IdRol;
         }
@@ -153,7 +176,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <summary>
         /// Método para obtener el Id de tienda asignado a el usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>int</c> con el Id de tienda.</returns>
         public static int GetIdTienda() {
             return IdTienda;
         }

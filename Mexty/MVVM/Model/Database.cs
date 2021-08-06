@@ -56,6 +56,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="username">Nombre de usuario</param>
         /// <param name="password">Contraseña del usuario</param>
+        /// Done
         public Database(string username, string password) {
             var connObj =
                 new MySqlConnection(ConnectionInfo());
@@ -106,6 +107,7 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene el Id de la tienda en la que se ejecuta el programa.
         /// </summary>
         /// <returns></returns>
+        /// Done
         private static void GetIdTiendaActual() {
             try {
                 var myIni = new IniFile(@"C:\Mexty\Settings.ini");
@@ -139,6 +141,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Inicializa los campos estaticos de la clase.
         /// </summary>
+        /// Done
         private static void InitializeFields() {
             try {
                 _firstQuery.Read();
@@ -163,6 +166,7 @@ namespace Mexty.MVVM.Model {
         /// <returns>
         /// <c>true</c> si la conección fue exitosa, <c>false</c> si no.
         /// </returns>
+        /// Done
         public static bool IsConnected() {
             return ConnectionSuccess;
         }
@@ -171,6 +175,7 @@ namespace Mexty.MVVM.Model {
         /// Método que retorna el username de la persona conectada.
         /// </summary>
         /// <returns><c>string</c> con el username de la persona logeada.</returns>
+        /// Done
         public static string GetUsername() {
             return Username;
         }
@@ -179,6 +184,7 @@ namespace Mexty.MVVM.Model {
         /// Método que retorna el ID del rol del usuario connectado.
         /// </summary>
         /// <returns>ID <c>int</c> del usuario conectado </returns>
+        /// Done
         public static int GetRol() {
             return Rol;
         }
@@ -187,6 +193,7 @@ namespace Mexty.MVVM.Model {
         /// Método que retorna el Id de la tienda actual, leido por el ini.
         /// </summary>
         /// <returns></returns>
+        /// Done
         public static int GetIdTienda() {
             return IdTienda;
         }
@@ -195,6 +202,7 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene la hora actual en formato Msql friendly
         /// </summary>
         /// <returns></returns>
+        /// Done
         private static string GetCurrentTimeNDate(bool allDate=true) {
             var currentTime = DateTime.Now;
             if (allDate) {
@@ -208,6 +216,7 @@ namespace Mexty.MVVM.Model {
         /// <summary>
         /// Método que cierra la conección con la base de datos.
         /// </summary>
+        /// done
         public static void CloseConnection() {
             try {
                 _sqlSession.Close();
@@ -1798,7 +1807,6 @@ namespace Mexty.MVVM.Model {
                 Log.Error($"Error: {e.Message}");
                 throw;
             }
-
         }
 
 

@@ -10,17 +10,23 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
+        /// String de conección para acceder a la base de datos.
+        /// </summary>
+        private static string ConnectionString { get; set; }
+
+        /// <summary>
         /// Método que Lee el contenido del archivo ini para la connección.
         /// </summary>
         /// <returns>String con la información de log-in a la base de datos</returns>
-        public static string ConnectionInfo() {
+        public static string ReadConnectionInfo() {
             try {
                 var myIni = new IniFile(@"C:\Mexty\Settings.ini");
                 var user = myIni.Read("DbUser");
                 var pass = myIni.Read("DbPass");
-                var connString = $"server=localhost; database = mexty; Uid={user}; pwd ={pass}";
+                var connString = $"server=localhost; database=mexty; Uid={user}; pwd={pass}";
 
                 Log.Debug("Se han leido las credenciales del ini exitosamente.");
+                ConnectionString = connString;
                 return connString;
             }
             catch (Exception e) {
@@ -34,6 +40,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     MessageBoxImage.Error);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Método que retorna el string de conección una vez este se ha leido del ini.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetConnectionString() {
+            return ConnectionString;
         }
 
         /// <summary>
