@@ -129,9 +129,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
 
-            // TODO hacerlo en una linea?
-            var id = ComboNombre.SelectedItem.ToString().Split(" ");
-            newProduct.IdProducto = int.Parse(id[0]);
+            newProduct.IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
 
             if (!Validar(newProduct)) {
                 Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");

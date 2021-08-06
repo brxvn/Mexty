@@ -11,25 +11,66 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using log4net;
+using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
     /// Interaction logic for AsignacionInventario.xaml
     /// </summary>
     public partial class AsignacionInventario : Window {
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+
+        /// <summary>
+        /// Lista de productos dada por la base de datos.
+        /// </summary>
+        private List<ItemInventario> ListaItems { get; set; }
+
         public AsignacionInventario() {
-            InitializeComponent();
+            try {
+                InitializeComponent();
+                FillData();
+                Log.Debug("Se han inicializado los campos de Asignación de inventario.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de Asignación de inventario.");
+                Log.Error($"Error: {e.Message}");
+            }
         }
+
+        /// <summary>
+        /// Método que llena los combobox.
+        /// </summary>
+        private void FillData() {
+            var data = Database.GetTablesFromInventarioMatrix();
+            ListaItems = data;
+            foreach (var item in data) {
+                ComboNombre.Items.Add($"{item.IdProducto.ToString()} {item.TipoProducto} {item.NombreProducto}");
+            }
+            Log.Debug("Se ha llenado el combo de item inventario.");
+
+            var sucursales = Database.GetTablesFromSucursales();
+            foreach (var sucursal in sucursales) {
+                ComboSucursal.Items.Add($"{sucursal.IdTienda.ToString()} {sucursal.NombreTienda}");
+            }
+            Log.Debug("Se ha llenado el combo de sucursales.");
+        }
+
         private void CerrarVentana(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha pulsado cerrar ventana.");
             Close();
         }
 
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-
+            var index = ComboNombre.SelectedIndex;
+            txtMedida.Text = ListaItems[index].Medida;
+            txtTipo.Text = ListaItems[index].TipoProducto;
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(char.IsDigit);
         }
 
         private void CantidadGUIChanges(object sender, TextChangedEventArgs e) {
@@ -37,26 +78,22 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtCantidad.Text = textbox.Text;
         }
 
         private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-
-        }
-
-        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-
-        }
-
-        private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
-
+            TextBox textbox = sender as TextBox;
+            txtPiezas.Text = textbox.Text;
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
-
+            txtCantidad.Text = "";
+            txtPiezas.Text = "";
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha presionado guardar.");
 
         }
     }

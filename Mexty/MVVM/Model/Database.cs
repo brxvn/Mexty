@@ -83,6 +83,7 @@ namespace Mexty.MVVM.Model {
         /// Método que Lee el contenido del archivo ini para la connección.
         /// </summary>
         /// <returns>String con la información de log-in a la base de datos</returns>
+        // DONE:
         private static string ConnectionInfo() {
             try {
                 var myIni = new IniFile(@"C:\Mexty\Settings.ini");

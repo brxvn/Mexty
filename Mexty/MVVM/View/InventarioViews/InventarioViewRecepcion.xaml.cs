@@ -114,11 +114,13 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newItem = new ItemInventario {
-                IdProducto = ComboNombre.SelectedIndex + 1, // TODO probar jalar el id de el texto.
+                //IdProducto = ComboNombre.SelectedIndex + 1,
+                IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]), // Checar si no da problemas. <--
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
                 Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
+
 
             if (!Validar(newItem)) {
                 Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");

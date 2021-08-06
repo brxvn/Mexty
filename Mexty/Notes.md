@@ -28,7 +28,7 @@ Es un error causado cuando el programa no puede leer el campo de IdTienda del ar
 El archivo debe de tener el campo declarado de la siguiente manera.
 > IdTienda=ID
 
-Donde ID es el Id de la tienda con la cual fue dada de alta y corresponde a la ubicación actual del programa.
+Donde ID es el Id numérico de la tienda con la cual fue dada de alta y corresponde a la ubicación actual del programa.
 
 ### Error 11
 Es un error causado cuando el programa no puede leer las credenciales de acceso a la base de datos del archivo de configuración Settings.ini ubicado en C:\Mexty\Settings.ini.
@@ -38,3 +38,14 @@ El archivo de configuración las debe de tener declaradas de la siguiente manera
 > DbPass=contraseña
 
 Donde usuario corresponde a el usuario dado de alta para conectarse a la base de datos y la contraseña su respectiva contraseña.
+
+### Error 12
+Es un error en el que el programa ha fallado al validar la primera consulta para iniciar sesión en el programa.
+
+Recomendamos contactar a los administradores del programa o hacer una restauración de la base de datos ya que esta podría estar comprometida.
+
+### Error 13
+Es un error causado cuando el programa no puede validar que el Id de sucursal dado en el archivo de configuración exista.
+
+Revise el archivo de configuración Settings.ini ubicado en C:\Mexty\Settings.ini en el campo llamado `IdTienda=` y verifique que es un id valido de una tienda 
+previamente dada de alta en la base de datos.
