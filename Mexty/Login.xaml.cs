@@ -6,20 +6,20 @@ using Mexty.MVVM.Model;
 using log4net;
 using log4net.Config;
 using System.Windows.Controls;
+using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty {
     /// <summary>
     /// Lógica para <c>Login.xaml</c>.
     /// </summary>
     public partial class Login : Window {
-        private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public Login() {
-            
-            
             log4net.Config.XmlConfigurator.Configure();
-            log.Info("Iniciado login");
-            
+            Log.Info("Iniciado login");
+
             InitializeComponent();
+
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -30,18 +30,7 @@ namespace Mexty {
         /// Lógica de el botón de Log-in.
         /// </summary>
         private void PasswordKeyDown(object sender, RoutedEventArgs e) {
-            _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
-            if (Database.IsConnected()) {
-                log.Info("Login exitoso");
-                MainWindow win = new();
-                win.Show();
-                Close();
-            }
-            else {
-                log.Info("Login fallido, Usuario o contraseña incorrectos.");
-                MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
-            }
-            
+            LogIn();
         }
 
         /// <summary>
@@ -55,8 +44,31 @@ namespace Mexty {
         /// Logica del boton para salir de la aplicación.
         /// </summary>
         private void LogOut(object sender, RoutedEventArgs e) {
-            log.Debug("Presionado boton de Salir en el login.");
+            Log.Debug("Presionado boton de Salir en el login.");
             Application.Current.Shutdown();
+        }
+
+        /// <summary>
+        /// Método de logIn.
+        /// </summary>
+        private void LogIn() {
+            try {
+                if (DatabaseInit.UserLogIn(txtUsuario.Text, pswrdUsuario.Password)) {
+                    Log.Info("Login exitoso");
+                    MainWindow win = new();
+                    win.Show();
+                    Close();
+                }
+                else {
+                    Log.Info("Login fallido, Usuario o contraseña incorrectos.");
+                    MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
+                }
+            }
+            catch (Exception e) {
+                Log.Error("Proceso de inicio de sesión Fallido.");
+                Log.Error($"Error: {e.Message}");
+                //throw; // Descomentar si queremos que si ocurre un error se cierre la aplicación.
+            }
         }
 
         /// <summary>
@@ -65,17 +77,7 @@ namespace Mexty {
         //TODO: juntarlo con el login o hacer función de login
         private void EnterKeyPassword(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
-                _ = new Database(txtUsuario.Text, pswrdUsuario.Password);
-                if (Database.IsConnected()) {
-                    log.Info("Login exitoso");
-                    MainWindow win = new();
-                    win.Show();
-                    Close();
-                }
-                else {
-                    log.Info("Login fallido, Usuario o contraseña incorrectos.");
-                    MessageBox.Show("Usuario o contraseña incorrectos, intente de nuevo");
-                }
+                LogIn();
             }
         }
 

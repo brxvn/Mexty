@@ -45,14 +45,14 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena los combobox.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromInventarioMatrix();
+            var data = QuerysInventario.GetTablesFromInventarioMatrix();
             ListaItems = data;
             foreach (var item in data) {
                 ComboNombre.Items.Add($"{item.IdProducto.ToString()} {item.TipoProducto} {item.NombreProducto}");
             }
             Log.Debug("Se ha llenado el combo de item inventario.");
 
-            var sucursales = Database.GetTablesFromSucursales();
+            var sucursales = QuerysSucursales.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add($"{sucursal.IdTienda.ToString()} {sucursal.NombreTienda}");
             }
@@ -109,7 +109,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             // Escribir en moviemientos inventario.
             var newLog = new LogInventario() {
                 Mensaje = $"Asignada Cantidad: {txtCantidad.Text} Piezas: {txtPiezas.Text} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
-                UsuarioRegistra = Database.GetUsername(),
+                UsuarioRegistra = DatabaseInit.GetUsername(),
                 FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate()),
             };
 

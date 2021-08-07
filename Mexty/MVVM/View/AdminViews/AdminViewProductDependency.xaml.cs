@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using log4net;
+using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty.MVVM.View.AdminViews {
     /// <summary>
@@ -66,7 +67,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que se encarga de inicializar los campos.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos();
             var collectionView = new ListCollectionView(data) {
                 Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
             };
@@ -122,7 +123,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 SelectedProduct.Dependencias = ListaDependecias;
                 SelectedProduct.DependenciasText = Producto.DependenciasToString(SelectedProduct.Dependencias);
                 Log.Debug("Se ha convertido el producto a texto de manera exitosa.");
-                Database.UpdateData(SelectedProduct);
+                QuerysProductos.UpdateData(SelectedProduct);
                 Log.Debug("Se ha actualizado el producto en la base de datos.");
 
                 Close();

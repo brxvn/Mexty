@@ -18,6 +18,7 @@ using System.Windows.Threading;
 using FluentValidation;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 using MySqlX.XDevAPI;
@@ -79,7 +80,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la datagrid con los Clientes.
         /// </summary>
         private void FillData() {
-            var dataClientes = Database.GetTablesFromClientes();
+            var dataClientes = QuerysClientes.GetTablesFromClientes();
             ListaClientes = dataClientes;
             var collectionView = new ListCollectionView(dataClientes) {
                 Filter = e => e is Cliente cliente && cliente.Activo != 0
@@ -245,7 +246,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada alta de cliente.");
                 
-                var res = Database.NewClient(newClient);
+                var res = QuerysClientes.NewClient(newClient);
                 if (res == 0) return;
                 var name = char.ToUpper(newClient.Nombre[0]) + newClient.Nombre[1..] + " " + char.ToUpper(newClient.ApPaterno[0]) + newClient.ApPaterno[1..];
                 var msg = $"Se ha dado de alta el cliente {name}.";
@@ -266,11 +267,11 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Cliente newClient) {
             try {
                 Log.Debug("Detectada edición de un cliente.");
-                Database.UpdateData(newClient);
+                QuerysClientes.UpdateData(newClient);
                 newClient.IdCliente = SelectedClient.IdCliente;
                 newClient.Activo = 1;
                 
-                var res = Database.UpdateData(newClient);
+                var res = QuerysClientes.UpdateData(newClient);
                 if (res == 0) return;
                 
                 var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
@@ -297,7 +298,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     newClient.IdCliente = cliente.IdCliente;
                     newClient.Activo = 1;
                     alta = false;
-                    var res = Database.UpdateData(newClient);
+                    var res = QuerysClientes.UpdateData(newClient);
                     if (res != 0) {
                         var msg =
                             $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
@@ -357,7 +358,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             cliente.Activo = 0;
-            Database.UpdateData(cliente);
+            QuerysClientes.UpdateData(cliente);
             SelectedClient = null;
             ClearFields();
             FillData();

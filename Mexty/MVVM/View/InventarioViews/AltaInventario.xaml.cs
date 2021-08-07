@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -52,7 +53,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         // TODO: hacer que los campos de cantidad y piezas aparezcan y desaparezcan de la ui dependiendo del tipo.
         private void FillData() {
-            var data = Database.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
             for (var index = 0; index < data.Count; index++) {
                 var producto = data[index];
@@ -61,7 +62,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
             Log.Debug("Se ha llenado el combo box de producto.");
 
-            var dataInventario = Database.GetTablesFromInventarioMatrix();
+            var dataInventario = QuerysInventario.GetTablesFromInventarioMatrix();
             ListaFromInventario = dataInventario;
         }
 
@@ -149,7 +150,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
 
             try {
-                var row = Database.NewItem(newProduct, true);
+                var row = QuerysInventario.NewItem(newProduct, true);
                 if (row > 0) {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");

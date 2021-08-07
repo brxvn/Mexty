@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -70,7 +71,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena los campos con la información necesaria.
         /// </summary>
         private void FillData() {
-            var productosDisponibles = Database.GetTablesFromProductos();
+            var productosDisponibles = QuerysProductos.GetTablesFromProductos();
             ListaProductos = productosDisponibles;
             var listaProductos = new List<string>();
             for (var index = 0; index < productosDisponibles.Count; index++) {
@@ -82,7 +83,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             ComboNombre.ItemsSource = listaProductos;
             Log.Debug("Se ha llenado el combo box con los productos de manera exitosa.");
 
-            var enInventario = Database.GetTablesFromInventario();
+            var enInventario = QuerysInventario.GetTablesFromInventario();
             ListaFromInventario = enInventario;
             Log.Debug("Se han obtenido los prodcutos de manera exitosa.");
         }
@@ -138,7 +139,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
 
             try {
-                var row = Database.NewItem(newItem);
+                var row = QuerysInventario.NewItem(newItem);
                 if (row > 0) {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");

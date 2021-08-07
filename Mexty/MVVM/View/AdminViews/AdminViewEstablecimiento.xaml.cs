@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -75,7 +76,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena el data grid de clientes.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromSucursales();
+            var data = QuerysSucursales.GetTablesFromSucursales();
             ListaSucursales = data;
             var collectionView = new ListCollectionView(data) {
                 Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
@@ -249,7 +250,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada alta de sucursal.");
                 
-                var res = Database.NewSucursal(newSucursal);
+                var res = QuerysSucursales.NewSucursal(newSucursal);
                 if (res == 0) return;
                 
                 var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
@@ -272,7 +273,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newSucursal.Activo = SelectedSucursal.Activo;
                 newSucursal.IdTienda = SelectedSucursal.IdTienda;
                 
-                var res = Database.UpdateData(newSucursal);
+                var res = QuerysSucursales.UpdateData(newSucursal);
                 if (res == 0) return;
 
                 var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
@@ -302,7 +303,7 @@ namespace Mexty.MVVM.View.AdminViews {
                      newSucursal.Activo = 1;
                      alta = false;
                      
-                     var res = Database.UpdateData(newSucursal);
+                     var res = QuerysSucursales.UpdateData(newSucursal);
                      if (res != 0) {
                         var msg =
                             $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
@@ -361,7 +362,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             sucursal.Activo = 0;
-            Database.UpdateData(sucursal);
+            QuerysSucursales.UpdateData(sucursal);
             Log.Debug("Sucursal eliminada.");
             SelectedSucursal = null;
             ClearFields();

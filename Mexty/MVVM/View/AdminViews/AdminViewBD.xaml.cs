@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Microsoft.Win32;
 
 namespace Mexty.MVVM.View.AdminViews {
@@ -59,7 +60,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ExportBd(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
-                if (Database.BackUp()) {
+                if (QuerysDatabase.BackUp()) {
                     Log.Info("Se ha exportado la base de datos de manera exitosa.");
                     MessageBox.Show("Se ha exportado la base de datos con exito.");
                 }
@@ -78,8 +79,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ExportData(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar datos.");
             try {
-                Database.DumpDeltas();
-
+                QuerysDatabase.DumpDeltas();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al exportar los deltas");
@@ -100,7 +100,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 // TODO: probablemente solo abrir .sql
                 dialog.Filter = "Text files (*.sql;*.txt)|*.sql;*.txt";
                 if (dialog.ShowDialog() == true) {
-                    if (Database.Import(dialog.FileName)) {
+                    if (QuerysDatabase.Import(dialog.FileName)) {
                         Log.Info("Se ha importado a la base de datos de manera exitosa.");
                         MessageBox.Show("Se ha importado a la base de datos con exito.");
                     }

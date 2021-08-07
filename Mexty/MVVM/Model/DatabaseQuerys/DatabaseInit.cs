@@ -57,9 +57,9 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             try {
                 var fistQuery = login.ExecuteReader();
 
-                InitializeFields(fistQuery);
-                ValidateIdTienda();
-                if (ConnectionSuccess) {
+                if (fistQuery.HasRows) {
+                    InitializeFields(fistQuery);
+                    ValidateIdTienda();
                     Log.Info("Se ha iniciado sesión de manera exitosa.");
                     return true;
                 }
@@ -103,7 +103,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Log.Error("Ha ocurrido un error al obtener los datos para el log-in.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
-                    "Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación.",
+                    $"Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación. {e.Message}",
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -124,11 +124,12 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             try {
                 var idTienda = IniFields.GetIdTiendaActual();
+
                 query.Parameters.AddWithValue("@idX", idTienda.ToString());
 
                 var res = query.ExecuteReader();
 
-                if (res.Read().ToString().ToLower() == "false") {
+                if (!res.HasRows) {
                     Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
                     throw new Exception("Valor de IdTienda en ini invalido.");
                 }
@@ -143,6 +144,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 const MessageBoxButton buttons = MessageBoxButton.OK;
                 MessageBox.Show("Error 13: ha ocurrido un error al validar la sucursal del archivo de configuración.",
                     "Error", buttons, MessageBoxImage.Error);
+                throw;
             }
             finally {
                 connObj.Close();
@@ -158,11 +160,12 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Password = null;
                 IdRol = 0;
                 ConnectionSuccess = false;
-                Log.Info("Conección con base de datos cerrada con exito.");
+                Log.Info("Conexión con base de datos cerrada con exito.");
             }
             catch (Exception e) {
                 Log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
                 Log.Error($"Excepción: {e.Message}");
+                throw;
             }
         }
 

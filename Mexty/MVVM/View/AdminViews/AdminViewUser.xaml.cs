@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -70,7 +71,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la tabla con los datos de la tabla usuarios.
         /// </summary>
         private void FillDataGrid() {
-            var query = Database.GetTablesFromUsuarios();
+            var query = QuerysUsuario.GetTablesFromUsuarios();
             UsuariosList = query;
             var collectionView = new ListCollectionView(query) {
                 Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
@@ -84,7 +85,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Función que llena el ComboBox de Rol.
         /// </summary>
         private void FillRol() {
-            var roles = Database.GetTablesFromRoles();
+            var roles = QuerysRol.GetTablesFromRoles();
             foreach (var rol in roles) {
                 ComboRol.Items.Add(rol.RolDescription.ToUpper());
             }
@@ -95,7 +96,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Función que llena el Combobox de Sucursales.
         /// </summary>
         private void FillSucursales() {
-            var sucursales = Database.GetTablesFromSucursales();
+            var sucursales = QuerysSucursales.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add(sucursal.NombreTienda.ToUpper());
             }
@@ -262,7 +263,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
                 Log.Debug("Detectado nuevo usuario, dando de alta.");
                 
-                var res = Database.NewUser(newUsuario);
+                var res = QuerysUsuario.NewUser(newUsuario);
                 if (res == 0) return;
                 
                 var msg = $"Se ha creado el usuario {newUsuario.Username}.";
@@ -284,7 +285,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Debug("Detectada edición de usuario.");
                 newUsuario -= SelectedUser;
 
-                var res = Database.UpdateData(newUsuario);
+                var res = QuerysUsuario.UpdateData(newUsuario);
                 if (res == 0) return;
                 
                 var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
@@ -313,7 +314,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     newUsuario.Activo = 1;
                     flag = false;
 
-                    var res = Database.UpdateData(newUsuario);
+                    var res = QuerysUsuario.UpdateData(newUsuario);
                     if (res != 0) {
                         var msg =
                             $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
@@ -374,7 +375,7 @@ namespace Mexty.MVVM.View.AdminViews {
             if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
             usuario.Activo = 0;
             try {
-                Database.UpdateData(usuario);
+                QuerysUsuario.UpdateData(usuario);
                 Log.Info("Usuario eliminado.");
             }
             catch (Exception exception) {

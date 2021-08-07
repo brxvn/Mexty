@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using TextAlignment = iText.Layout.Properties.TextAlignment;
 
 namespace Mexty.MVVM.Model {
@@ -32,7 +33,7 @@ namespace Mexty.MVVM.Model {
         private readonly string _mainPath = @"C:\Mexty\Reportes\";
         private readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
         private readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
-        private readonly string usuarioActivo = Database.GetUsername();
+        private readonly string usuarioActivo = DatabaseInit.GetUsername();
 
         public Reports() {
             Directory.CreateDirectory(_mainPath);
@@ -86,10 +87,10 @@ namespace Mexty.MVVM.Model {
         }
 
         public void ReporteInventario() {
-            int idTienda = Database.GetIdTienda();
+            int idTienda = DatabaseInit.GetIdTienda();
 
-            var ListaSucursales = Database.GetTablesFromSucursales();
-            var data = Database.GetItemsFromInventario();
+            var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
+            var data = QuerysInventario.GetItemsFromInventario();
 
             foreach (Sucursal tienda in ListaSucursales) {
                 if (tienda.IdTienda == idTienda) {
@@ -137,7 +138,7 @@ namespace Mexty.MVVM.Model {
         }
 
         public void ReportXSucursal(int idTienda, string nombreTienda, string direccion) {
-            var data = Database.GetItemsFromInventarioById(idTienda);
+            var data = QuerysInventario.GetItemsFromInventarioById(idTienda);
             
 
             string path = $"{_SucursalesInventarioPath}";
