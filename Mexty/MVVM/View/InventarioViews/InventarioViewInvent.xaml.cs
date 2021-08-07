@@ -45,10 +45,10 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private ItemInventario SelectedItem { get; set; }
 
-        private int idTienda = Database.GetIdTienda();
+        private int idTienda = DatabaseInit.GetIdTienda();
 
 
-        List<Sucursal> dataSucursal = Database.GetTablesFromSucursales();
+        List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
 
         public InventarioViewInvent() {
 
@@ -105,7 +105,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena el datagrid y los combobox.
         /// </summary>
         private void FillData(int idSucursal) {
-            var data = Database.GetItemsFromInventarioById(idSucursal);
+            var data = QuerysInventario.GetItemsFromInventarioById(idSucursal);
             ListaItems = data;
 
             var collectionView = new ListCollectionView(data) {
