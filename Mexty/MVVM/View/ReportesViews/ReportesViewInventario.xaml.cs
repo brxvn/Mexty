@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Common.Logging;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.ReportesViews {
@@ -19,7 +20,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         Reports report = new Reports();
-        List<Sucursal> dataSucursal = Database.GetTablesFromSucursales();
+        List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
         public ReportesViewInventario() {
             try {
                 InitializeComponent();

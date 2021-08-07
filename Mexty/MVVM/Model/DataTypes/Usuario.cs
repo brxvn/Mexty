@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using Google.Protobuf.WellKnownTypes;
+using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty.MVVM.Model.DataTypes
 {
@@ -136,7 +137,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// Actualiza la lista de sucursales.
         /// </summary>
         public void UpdateListaSucursal() {
-            ListaSucursal = Database.GetTablesFromSucursales();
+            ListaSucursal = QuerysSucursales.GetTablesFromSucursales();
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string SucursalNombre {
             get {
-                ListaSucursal ??= Database.GetTablesFromSucursales();
+                ListaSucursal ??= QuerysSucursales.GetTablesFromSucursales();
                 var nombre = "";
                 for (var index = 0; index < ListaSucursal.Count; index++) {
                     var sucursal = ListaSucursal[index];

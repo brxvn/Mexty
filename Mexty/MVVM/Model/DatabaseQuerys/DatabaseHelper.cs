@@ -13,7 +13,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que obtiene la hora actual en formato Msql friendly
         /// </summary>
         /// <returns></returns>
-        private static string GetCurrentTimeNDate(bool allDate=true) {
+        public static string GetCurrentTimeNDate(bool allDate=true) {
             var currentTime = DateTime.Now;
             if (allDate) {
                 return currentTime.ToString("yyyy-MM-dd HH:mm:ss");

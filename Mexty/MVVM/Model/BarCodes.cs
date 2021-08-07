@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty.MVVM.Model {
     class BarCodes {
@@ -30,7 +31,7 @@ namespace Mexty.MVVM.Model {
             Paragraph titulo = new Paragraph().Add("Codigos de Productos").SetTextAlignment(TextAlignment.CENTER);
             doc.Add(titulo);
 
-            var data = Database.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos();
 
             foreach (var item in data) {
                 Paragraph p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");

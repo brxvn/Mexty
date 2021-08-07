@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -78,7 +79,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la datadrid con los productos.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
                 Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
@@ -265,7 +266,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada alta de producto.");
 
-                var res = Database.NewProduct(newProduct);
+                var res = QuerysProductos.NewProduct(newProduct);
                 if (res == 0) return;
 
                 var msg = $"Se ha dado de alta el producto {newProduct.TipoProducto} {newProduct.NombreProducto}.";
@@ -287,7 +288,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Debug("Detectada actualización de producto.");
                 newProduct.IdProducto = SelectedProduct.IdProducto;
                 newProduct.Activo = SelectedProduct.Activo;
-                var result = Database.UpdateData(newProduct);
+                var result = QuerysProductos.UpdateData(newProduct);
 
                 if (result <= 0) return;
                 var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
@@ -319,7 +320,7 @@ namespace Mexty.MVVM.View.AdminViews {
                         newProduct.Activo = 1;
                         alta = false;
 
-                        var res = Database.UpdateData(newProduct);
+                        var res = QuerysProductos.UpdateData(newProduct);
                         if (res != 0) {
                             var msg =
                                 $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
@@ -379,7 +380,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             producto.Activo = 0;
-            Database.UpdateData(producto);
+            QuerysProductos.UpdateData(producto);
             Log.Debug("Producto eliminado.");
             SelectedProduct = null;
             ClearFields();

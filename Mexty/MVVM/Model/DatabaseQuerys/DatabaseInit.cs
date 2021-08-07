@@ -7,10 +7,9 @@ using MySql.Data.MySqlClient;
 
 namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
-    /// Clase principal de Base de datos.
-    /// Se encarga de hacer el proceso de login y obtener los datos iniciales.
+    /// Clase principal de Base de datos, se encarga de hacer el proceso de login y obtener los datos iniciales.
     /// </summary>
-    public class DatabaseInit {
+    public static class DatabaseInit {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
@@ -39,12 +38,13 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static bool ConnectionSuccess { get; set; }
 
         /// <summary>
-        /// Constructor inicial para el login.
+        /// Método que se encarga del inicio de sesión al programa.
         /// </summary>
-        /// <param name="username">String que contiene el nombre de usuario.</param>
-        /// <param name="password">String que contiene la contraseña.</param>
-        public DatabaseInit(string username, string password) {
-            var connObj = new MySqlConnection(IniFields.ConnectionInfo());
+        /// <param name="username"><c>string</c> conteniendo el nombre de usuario.</param>
+        /// <param name="password"><c>string</c> conteniendo la contraseña del usuario.</param>
+        /// <returns><c>true</c> si el inicio de sesión fue exitoso.</returns>
+        public static bool UserLogIn(string username, string password) {
+            var connObj = new MySqlConnection(IniFields.ReadConnectionInfo());
             connObj.Open();
 
             var login = new MySqlCommand {
@@ -57,13 +57,25 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             try {
                 var fistQuery = login.ExecuteReader();
 
-                InitializeFields(fistQuery);
-                ValidateIdTienda();
-                Log.Info("Se ha iniciado sesión de manera exitosa.");
+                if (fistQuery.HasRows) {
+                    InitializeFields(fistQuery);
+                    ValidateIdTienda();
+                    Log.Info("Se ha iniciado sesión de manera exitosa.");
+                    return true;
+                }
+                else {
+                    Log.Info("Las credenciales de inicio de sesión no son correctas.");
+                    return false;
+                }
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al hacer la consulta para iniciar sesión.");
                 Log.Error($"Error: {e.Message}");
+                // TODO: ver que pedo con este manejo de error.
+                throw;
+            }
+            finally {
+                connObj.Close();
             }
         }
 
@@ -91,7 +103,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Log.Error("Ha ocurrido un error al obtener los datos para el log-in.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
-                    "Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación.",
+                    $"Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación. {e.Message}",
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
@@ -102,7 +114,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que valida que el id de tienda leido del ini sea válido.
         /// </summary>
         private static void ValidateIdTienda() {
-            var connObj = new MySqlConnection(IniFields.ConnectionInfo());
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
             var query = new MySqlCommand() {
@@ -112,11 +124,12 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             try {
                 var idTienda = IniFields.GetIdTiendaActual();
+
                 query.Parameters.AddWithValue("@idX", idTienda.ToString());
 
                 var res = query.ExecuteReader();
 
-                if (res.Read().ToString().ToLower() == "false") {
+                if (!res.HasRows) {
                     Log.Error("No se ha podido validar el id de la tienda escrito en el ini.");
                     throw new Exception("Valor de IdTienda en ini invalido.");
                 }
@@ -131,13 +144,35 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 const MessageBoxButton buttons = MessageBoxButton.OK;
                 MessageBox.Show("Error 13: ha ocurrido un error al validar la sucursal del archivo de configuración.",
                     "Error", buttons, MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que limpia todos los datos obtenidos de la base de datos.
+        /// </summary>
+        public static void CloseConnection() {
+            try {
+                Username = null;
+                Password = null;
+                IdRol = 0;
+                ConnectionSuccess = false;
+                Log.Info("Conexión con base de datos cerrada con exito.");
+            }
+            catch (Exception e) {
+                Log.Error("Hubo un problema al cerrar la conección y borrar los campos estaticos de base de dato.");
+                Log.Error($"Excepción: {e.Message}");
+                throw;
             }
         }
 
         /// <summary>
         /// Método para obtener el username del usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>string</c> con el username.</returns>
         public static string GetUsername() {
             return Username;
         }
@@ -145,7 +180,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <summary>
         /// Método para obtener el Id de rol del usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>int</c> con el Id del rol de usuario.</returns>
         public static int GetIdRol() {
             return IdRol;
         }
@@ -153,7 +188,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <summary>
         /// Método para obtener el Id de tienda asignado a el usuario que ha iniciado sesión.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Un <c>int</c> con el Id de tienda.</returns>
         public static int GetIdTienda() {
             return IdTienda;
         }

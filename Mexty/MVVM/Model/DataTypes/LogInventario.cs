@@ -28,6 +28,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Fecha de registro de la entrada al log.
         /// </summary>
-        public DateTime FehcaRegistro { get; set; }
+        public DateTime FechaRegistro { get; set; }
     }
 }

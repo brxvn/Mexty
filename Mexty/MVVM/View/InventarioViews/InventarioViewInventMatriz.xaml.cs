@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -75,7 +76,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena el datagrid y los combobox.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromInventarioMatrix();
+            var data = QuerysInventario.GetTablesFromInventarioMatrix();
             ListaItems = data;
 
             var collectionView = new ListCollectionView(data) {
@@ -192,7 +193,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             newItem.TipoProducto = SelectedItem.TipoProducto;
             newItem.IdProducto = SelectedItem.IdProducto;
             newItem.IdRegistro = SelectedItem.IdRegistro;
-            var res = Database.UpdateData(newItem);
+            var res = QuerysInventario.UpdateData(newItem);
             if (res > 0) {
                 Log.Debug("Se ha editado un producto.");
                 MessageBox.Show($"Se ha editado el producto {newItem.IdProducto.ToString()} {newItem.TipoProducto} {newItem.NombreProducto}");
