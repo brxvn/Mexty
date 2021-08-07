@@ -85,4 +85,3 @@ Los cambios son un script SQL el cual es ejecutado secuencialmente, si uno de es
 No es recomendable manipular a mano el script SQL ya que al no saber la sintaxis de SQL podríamos tener errores y provocar este error.
 
 TODO: poner ejemplo de queries SQL.
-

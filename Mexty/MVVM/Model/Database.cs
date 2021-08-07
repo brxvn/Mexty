@@ -790,6 +790,7 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener todos los datos de la tabla de clientes Mayoreo.
         /// </summary>
         /// <returns>Una lista de elementos tipo <c>Cliente</c>.</returns>
+        /// DOne
         public static List<Cliente> GetTablesFromClientes() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -835,6 +836,7 @@ namespace Mexty.MVVM.Model {
         /// Método para actualizar los datos del Cliente.
         /// </summary>
         /// <param name="cliente"></param>
+        /// Done
         public static int UpdateData(Cliente cliente) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -938,6 +940,7 @@ namespace Mexty.MVVM.Model {
         /// Método para optener las tablas de inventario.
         /// </summary>
         /// <returns></returns>
+        /// DONE
         public static List<ItemInventario> GetTablesFromInventario() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -984,6 +987,7 @@ namespace Mexty.MVVM.Model {
         /// Método para optener las tablas de inventario_matriz.
         /// </summary>
         /// <returns></returns>
+        /// DONE
         public static List<ItemInventario> GetTablesFromInventarioMatrix() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1035,9 +1039,10 @@ namespace Mexty.MVVM.Model {
         }
 
         /// <summary>
-        /// Función que obtiene
+        /// Función que obtiene las tablas de el log de movimientos inventario matriz.
         /// </summary>
         /// <returns></returns>
+        /// DONE
         public static List<LogInventario> GetTablesFromMovimientos() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1076,6 +1081,7 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene el inventario de una tienda en especifico.
         /// </summary>
         /// <returns></returns>
+        /// DONE
         public static List<ItemInventario> GetItemsFromInventarioById( int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1134,6 +1140,7 @@ namespace Mexty.MVVM.Model {
         /// Método para obtener la información conjunta de inventario y de cat_producto.
         /// </summary>
         /// <returns></returns>
+        /// DONE
         public static List<ItemInventario> GetItemsFromInventario() {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1192,6 +1199,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="item">El objeto tipo <c>ItemInventario</c> a guardar.</param>
         /// <param name="matriz">Bandera para guardar a inventario de matriz if <c>true</c> guarda a matriz.</param>
+        /// DONE
         public static int UpdateData(ItemInventario item, bool matriz=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1251,6 +1259,7 @@ namespace Mexty.MVVM.Model {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
+        /// DOne
         public static int NewItem(ItemInventario newItem, bool matriz=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1317,6 +1326,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="newItem"> Un objeto tipo <c>LogInventario</c>.</param>
         /// <returns>La cantidad de columnas modificadas.</returns>
+        /// DOne
         public static int NewLog(LogInventario newItem) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1361,6 +1371,7 @@ namespace Mexty.MVVM.Model {
         /// </summary>
         /// <param name="mayoreo">Si <c>true</c> obtiene las tablas de ventas-mayoreo.</param>
         /// <returns> Una lista de objetos tipo <c>Venta</c>.</returns>
+        /// DONE
         public static List<Venta> GetTablesFromVentas(bool mayoreo=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1423,6 +1434,7 @@ namespace Mexty.MVVM.Model {
         /// <param name="venta">El objeto tipo <c>Venta</c> a guardar.</param>
         /// <param name="mayoreo">Bandera par guardar en inventario maoreo o menudeo if <c>true</c> guarda a mayoreo</param>
         /// <returns></returns>
+        /// DOne
         public static int UpdateData(Venta venta, bool mayoreo=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
@@ -1484,6 +1496,7 @@ namespace Mexty.MVVM.Model {
         /// <param name="newVenta">El objeto tipo <c>Venta</c> a dar de alta.</param>
         /// <param name="mayoreo">Bandera <c>true</c> para guardar en ventas mayoreo.</param>
         /// <returns>El numero de tablas afectadas.</returns>
+        /// DONE;
         public static int NewItem(Venta newVenta, bool mayoreo=false) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
