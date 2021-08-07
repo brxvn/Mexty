@@ -81,7 +81,36 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void CantidadGUIChanges(object sender, TextChangedEventArgs e) {
-
+            TextBox textBox = sender as TextBox;
+            txtMedida.Text = textBox.Text;
+            switch (textBox.Text) {
+                case "pieza":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+                case "0.5 litros":
+                case "3 litros":
+                case "12 litros":
+                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    break;
+                case "litro":
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Collapsed;
+                    GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    break;
+                default:
+                    txtCantidad.Visibility = Visibility.Visible;
+                    txtPiezas.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    break;
+            }
         }
 
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {

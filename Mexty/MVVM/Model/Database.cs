@@ -1058,7 +1058,7 @@ namespace Mexty.MVVM.Model {
         /// Método que obtiene el inventario de una tienda en especifico.
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetItemsFromInventarioById( int idTienda) {
+        public static List<ItemInventario> GetItemsFromInventarioById(int idTienda) {
             var connObj = new MySqlConnection(ConnectionInfo());
             connObj.Open();
             var query = new MySqlCommand() {

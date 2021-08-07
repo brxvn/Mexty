@@ -36,14 +36,13 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Lista de items en el inventario.
         /// </summary>
         private List<ItemInventario> ListaFromInventario { get; set; }
-
+        public ListCollectionView CollectionView { get; private set; }
         public InventarioViewRecepcion() {
 
             try {
                 InitializeComponent();
                 FillData();
                 ClearFields();
-
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de Recepción de inventario.");
@@ -140,6 +139,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             try {
                 var row = Database.NewItem(newItem);
                 if (row > 0) {
+                    //InventarioViewInvent invent = new();
+                    //invent.List.Add(newItem);
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");
                 }
@@ -148,6 +149,8 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error("Ha ocurrido un error al dar de alta un producto en el inventario.");
                 Log.Error($"Error: {exception.Message}");
             }
+
+            RefreshDataGrid();
         }
 
         /// <summary>
@@ -221,6 +224,19 @@ namespace Mexty.MVVM.View.InventarioViews {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
+        private void RefreshDataGrid() {
+            
+
+            //InventarioViewInvent inventario = new();
+            //inventario.DataProducts.ItemsSource = null;
+
+            //var data = Database.GetItemsFromInventario();
+
+            //inventario.DataProducts.ItemsSource = data;
+            //Log.Debug("Se ha llenado la datagrid de manera exitosa.");
+
+        }
+
         /// <summary>
         /// Método para habilitar cambios en la GUI depende del tipo de medidida del producto.
         /// </summary>
@@ -240,7 +256,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 case "3 litros":
                 case "12 litros":
                     txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Collapsed;    
+                    txtPiezas.Visibility = Visibility.Collapsed;
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
                     GridPiezas.Width = new GridLength(0, GridUnitType.Star);
                     break;

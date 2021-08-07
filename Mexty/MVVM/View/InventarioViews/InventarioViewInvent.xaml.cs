@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -43,11 +44,19 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private ItemInventario SelectedItem { get; set; }
 
+        private int idTienda = Database.GetIdTienda();
+
+
+        List<Sucursal> dataSucursal = Database.GetTablesFromSucursales();
+
         public InventarioViewInvent() {
 
             try {
                 InitializeComponent();
                 FillData();
+
+                FillSucursales();
+                ClearFields();
 
                 Log.Debug("Se han inicializado los campos del modulo de inventario exitosamente.");
             }
@@ -55,6 +64,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error("Ha ocurrido un error al inicializar los campos del modulo de inventario.");
                 Log.Error($"Error: {e.Message}");
             }
+
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
@@ -79,13 +89,58 @@ namespace Mexty.MVVM.View.InventarioViews {
             ListaItems = data;
 
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is ItemInventario producto //&& producto.IdTienda == idSucursal // Solo productos activos en la tabla.
+            };
+            //foreach (var item in collectionView) {
+            //    List.Add((ItemInventario)item);
+            //}
+            CollectionView = collectionView;
+            //DataProducts.ItemsSource = List;
+            DataProducts.ItemsSource = collectionView;
+            Log.Debug("Se ha llenado la datagrid de manera exitosa.");
+        }
+
+        /// <summary>
+        /// Método que llena el datagrid y los combobox.
+        /// </summary>
+        private void FillData(int idSucursal) {
+            var data = Database.GetItemsFromInventarioById(idSucursal);
+            ListaItems = data;
+
+            var collectionView = new ListCollectionView(data) {
+                Filter = (e) => e is ItemInventario producto // Solo productos activos en la tabla.
             };
 
             CollectionView = collectionView;
+            DataProducts.ItemsSource = null;
             DataProducts.ItemsSource = collectionView;
             Log.Debug("Se ha llenado la datagrid de manera exitosa.");
+        }
 
+        /// <summary>
+        /// Método para filtar la lista inventario
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SucursalSeleccionada(object sender, SelectionChangedEventArgs e) {
+            var newList = ComboSucursal.SelectedIndex + 1;
+            if (newList == idTienda) {
+                FillData();
+            }
+            else {
+                FillData(newList);
+            }
+        }
+
+        private void FillSucursales() {
+            foreach (var sucu in dataSucursal) {
+                ComboSucursal.Items.Add(sucu.NombreTienda);
+                if (sucu.IdTienda == idTienda) {
+                    ComboSucursal.SelectedIndex = idTienda - 1;
+                }
+            }
+
+            Log.Debug("Se ha llenado el combo de sucursal");
         }
 
         /// <summary>
@@ -93,12 +148,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        private void ItemSelected(object sender, EventArgs e) {
 
             ClearFields();
             if (DataProducts.SelectedItem == null) return;
             Log.Debug("Item seleccionado.");
-            var item = (ItemInventario) DataProducts.SelectedItem;
+            var item = (ItemInventario)DataProducts.SelectedItem;
 
             SelectedItem = item;
             txtComentario.Text = item.Comentario;
@@ -170,8 +225,9 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
+            DataProducts.SelectedItem = null;
             ClearFields();
-            InitializeComponent();
+
         }
 
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
@@ -258,9 +314,9 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void ReporteInventario(object sender, RoutedEventArgs e) {
-
             Reports reports = new();
             reports.ReporteInventario();
         }
+
     }
 }
