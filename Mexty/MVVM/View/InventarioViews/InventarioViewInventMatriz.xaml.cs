@@ -193,12 +193,12 @@ namespace Mexty.MVVM.View.InventarioViews {
             newItem.TipoProducto = SelectedItem.TipoProducto;
             newItem.IdProducto = SelectedItem.IdProducto;
             newItem.IdRegistro = SelectedItem.IdRegistro;
-            var res = QuerysInventario.UpdateData(newItem);
+            var res = QuerysInventario.UpdateData(newItem, true);
             if (res > 0) {
                 Log.Debug("Se ha editado un producto.");
                 MessageBox.Show($"Se ha editado el producto {newItem.IdProducto.ToString()} {newItem.TipoProducto} {newItem.NombreProducto}");
             }
-            DataProducts.ItemsSource = null;
+            //DataProducts.ItemsSource = null;
             FillData();
         }
 
@@ -286,6 +286,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void AsingInventario(object sender, RoutedEventArgs e) {
             AsignacionInventario asignacionInventario = new AsignacionInventario();
             asignacionInventario.ShowDialog();
+            FillData();
         }
 
         /// <summary>

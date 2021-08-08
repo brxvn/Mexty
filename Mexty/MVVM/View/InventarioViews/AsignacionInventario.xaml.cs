@@ -130,31 +130,63 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado guardar.");
 
-            // Validar que la cantidad asignada <= cantidad actual.
-            Validar(int.Parse(txtCantidad.Text), int.Parse(txtPiezas.Text));
+            try {
+                // Validar que la cantidad asignada <= cantidad actual.
+                var cantiadad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
+                var piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
 
-            // hacerl el update.
+                if (!Validar(cantiadad, piezas, out var cantiadadR, out var piezasR)) {
+                    Log.Debug("Se ha dado una cantidad no válida.");
+                    MessageBox.Show("Cantidad no valida."); // provicional.
+                    return;
+                }
 
-            // Escribir en moviemientos inventario.
-            var newLog = new LogInventario() {
-                Mensaje = $"Asignada Cantidad: {txtCantidad.Text} Piezas: {txtPiezas.Text} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
-                UsuarioRegistra = DatabaseInit.GetUsername(),
-                FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate()),
-            };
+                for (var index = 0; index < ListaItems.Count; index++) {
+                    var producto = ListaItems[index];
 
+                    if (producto.IdProducto != int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0])) continue;
+                    producto.Cantidad = cantiadadR;
+                    producto.Piezas = piezasR;
+
+                    var res = QuerysInventario.UpdateData(producto, true);
+                    if (res == 0) throw new Exception();
+                    Log.Debug("Se ha actualizado la cantidad/piezas en el inventario.");
+                }
+
+                // Escribir en moviemientos inventario.
+                var newLog = new LogInventario() {
+                    Mensaje = $"Asignada Cantidad: {cantiadad.ToString()} Piezas: {piezas.ToString()} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
+                    UsuarioRegistra = DatabaseInit.GetUsername(),
+                    FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate()),
+                };
+
+                var res1 = QuerysMovInvent.NewLogInventario(newLog);
+                if (res1 == 0) throw new Exception();
+                Log.Debug("Se ha actualizado el movimiento en movimientos inventario.");
+                MessageBox.Show("Se ha asignado producto de manera exitosa.");
+
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al hacer la asignación de producto.");
+                Log.Error($"Error: {exception.Message}");
+            }
         }
 
         /// <summary>
         /// Método que valida que las cantidades y piezas sean validas.
         /// </summary>
         /// <returns><c>true</c> si las cantidades son validas, <c>false</c> si no.</returns>
-        private bool Validar(int cantidad, int piezas) {
+        private bool Validar(int cantidad, int piezas, out int cantidatR, out int piezasR) {
             var id = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
+            cantidatR = -1;
+            piezasR = -1;
 
             for (var index = 0; index < ListaItems.Count; index++) {
                 var item = ListaItems[index];
-                if (item.IdProducto != id) {
-                    return item.Cantidad - cantidad >= 0 && item.Piezas - piezas >= 0;
+                if (item.IdProducto == id) {
+                    cantidatR = item.Cantidad - cantidad;
+                    piezasR = item.Piezas - piezas;
+                    return cantidatR >= 0 && piezasR >= 0;
                 }
             }
 

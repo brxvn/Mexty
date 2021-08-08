@@ -22,7 +22,7 @@
             
             <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="0" Margin="0"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="All">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Fecha" Binding="{Binding IdProducto}" Width=".25*">
+                    <DataGridTextColumn Header="Fecha" Binding="{Binding FechaRegistro}" Width=".25*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Margin" Value="5" />
@@ -32,7 +32,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Usuario" Binding="{Binding IdProducto}" Width=".25*">
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioRegistra}" Width=".25*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Margin" Value="5" />
@@ -42,7 +42,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Mensaje" Binding="{Binding IdProducto}" Width="*">
+                    <DataGridTextColumn Header="Mensaje" Binding="{Binding Mensaje}" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Margin" Value="5" />

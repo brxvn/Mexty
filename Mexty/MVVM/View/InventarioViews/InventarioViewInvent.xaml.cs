@@ -318,6 +318,5 @@ namespace Mexty.MVVM.View.InventarioViews {
             Reports reports = new();
             reports.ReporteInventario();
         }
-
     }
 }
