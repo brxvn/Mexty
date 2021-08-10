@@ -71,6 +71,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                 Log.Error($"Error {e.Message}");
             }
         }
+
         /// <summary>
         /// Lógica para generar el reporte por sucursal seleccionada.
         /// </summary>
@@ -83,7 +84,5 @@ namespace Mexty.MVVM.View.ReportesViews {
             var direccion = dataSucursal[_].Dirección;
             report.ReportXSucursal(id,nombre, direccion);
         }
-
-
     }
 }
