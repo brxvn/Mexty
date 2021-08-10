@@ -177,7 +177,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que obtiene el inventario de una tienda en especifico.
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetItemsFromInventarioById( int idTienda) {
+        public static List<ItemInventario> GetItemsFromInventarioById(int idTienda) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
             var query = new MySqlCommand() {
@@ -211,7 +211,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
-                        MaxPiezas = reader.IsDBNull("max_piezas") ? 0 : reader.GetInt32("max_piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
@@ -305,7 +304,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         /// <param name="item">El objeto tipo <c>ItemInventario</c> a guardar.</param>
         /// <param name="matriz">Bandera para guardar a inventario de matriz if <c>true</c> guarda a matriz.</param>
-        public static int UpdateData(ItemInventario item, bool matriz=false) {
+        public static int UpdateData(ItemInventario item, bool matriz = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
@@ -370,7 +369,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que registra un nuevo item en la tabla de inventario-general.
         /// </summary>
         /// <param name="newItem"></param>
-        public static int NewItem(ItemInventario newItem, bool matriz=false) {
+        public static int NewItem(ItemInventario newItem, bool matriz = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 

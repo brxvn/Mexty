@@ -98,6 +98,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             ClearFields();
             txtNombreEstablecimiento.IsReadOnly = true;
+            ComboTipo.IsEnabled = false;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar registro";
             Guardar.IsEnabled = true;
@@ -124,6 +125,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void ClearFields() {
             txtNombreEstablecimiento.IsReadOnly = false;
+            ComboTipo.IsEnabled = true;
             SearchBox.Text = "";
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
@@ -254,7 +256,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 if (res == 0) return;
                 
                 var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
-                MessageBox.Show(msg, "Sucursal Actualizada");
+                MessageBox.Show(msg, "Nueva Sucursal Guardada");
                 Log.Debug("Alta exitosa de sucursal");
             }
             catch (Exception e) {

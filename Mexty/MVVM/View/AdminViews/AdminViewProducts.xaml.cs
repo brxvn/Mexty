@@ -269,8 +269,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysProductos.NewProduct(newProduct);
                 if (res == 0) return;
 
-                var msg = $"Se ha dado de alta el producto {newProduct.TipoProducto} {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Producto Actualizado");
+                var msg = $"Se agregó el producto {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
+                MessageBox.Show(msg, "Producto Agregado");
                 Log.Debug("Se ha dado de alta el producto de manera exitosa.");
             }
             catch (Exception e) {
@@ -291,7 +291,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var result = QuerysProductos.UpdateData(newProduct);
 
                 if (result <= 0) return;
-                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
+                var msg = $"Se actualizó el producto {newProduct.IdProducto} {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha editado el producto de manera exitosa.");
             }
@@ -421,7 +421,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            //EnableGuardar();
             Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
             Match m = r.Match(txtPrecioMenudeo.Text);
             if (m.Success) {
@@ -429,14 +428,12 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMenudeo.Text = "";
-                //Keyboard.Focus(txtPrecioMenudeo);
             }
         }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            //EnableGuardar();
             Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
             Match m = r.Match(txtPrecioMayoreo.Text);
             if (m.Success) {
@@ -444,7 +441,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMayoreo.Text = "";
-                //Keyboard.Focus(txtPrecioMayoreo);
             }
         }
 
@@ -453,17 +449,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDetalle.Text = textbox.Text;
             EnableGuardar();
         }
-
-        //private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-        //    TextBox textbox = sender as TextBox;
-        //    txtCantidad.Text = textbox.Text;
-
-        //}
-
-        //private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-        //    TextBox textbox = sender as TextBox;
-        //    txtPiezas.Text = textbox.Text;
-        //}
 
         /// <summary>
         /// Método que habilita el botón de "GUARDAR"
@@ -510,18 +495,12 @@ namespace Mexty.MVVM.View.AdminViews {
 
                     break;
                 case 1:
-                    txtPrecioMayoreo.Visibility = Visibility.Visible;
-                    txtPrecioMenudeo.Visibility = Visibility.Visible;
-
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "";
                     txtPrecioMenudeo.Text = "0";
                     txtPrecioMenudeo.IsReadOnly = true;
                     break;
                 default:
-                    txtPrecioMayoreo.Visibility = Visibility.Visible;
-                    txtPrecioMenudeo.Visibility = Visibility.Visible;
-
                     txtPrecioMayoreo.IsReadOnly = true;
                     txtPrecioMenudeo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "0";
@@ -535,17 +514,33 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Mostrar solo litros para Agua y Helado
         /// </summary>
         private void MonstrarLitros(object sender, SelectionChangedEventArgs e) {
-            switch (ComboTipo.SelectedItem.ToString()) {
+            switch (ComboTipo.SelectedItem.ToString()) {    
+                case "Paleta Agua":
+                case "Paleta Leche":
+                case "Paleta Fruta":
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 1);
+                    ComboMedida.IsEnabled = false;
+                    ComboMedida.SelectedIndex = 0;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    break;
                 case "Agua":
                 case "Helado":
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant:1);
                     ComboMedida.SelectedIndex = 0;
+                    ComboMedida.IsEnabled = false;
+                    txtPrecioMayoreo.IsReadOnly = true;
+                    txtPrecioMenudeo.IsReadOnly = true;
                     break;
                 default:
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida();
                     ComboMedida.SelectedIndex = 0;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    ComboMedida.IsEnabled = true;
                     break;
             }
         }
