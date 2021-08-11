@@ -22,6 +22,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition />
             </Grid.RowDefinitions>
             <!--Nombre-->
@@ -310,7 +311,7 @@
                                                             BorderThickness="0"
                                                             Background="Transparent"
                                                             VerticalContentAlignment="Center"
-                                                            Padding="5 "
+                                                            Padding="5 0"
                                                             Foreground="Gray"
                                                             FontSize="15"
                                                             x:Name="SearchBox"
@@ -383,7 +384,32 @@
                           VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre"/>
             </Grid>
 
-            <Grid Grid.Row="3" HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Bottom">
+            <Grid Grid.Row="3" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="rowCantidad" Height="auto"/>
+                    <RowDefinition x:Name="rowPiezas" Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                
+                <Label Content="Cantidad actual:" FontSize="15" VerticalContentAlignment="Top" Foreground="AntiqueWhite" Padding="10" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" x:Name="lblCActual" Visibility="Collapsed"/>
+                <Label Content="Piezas actuales:" FontSize="15" VerticalContentAlignment="Top" Foreground="AntiqueWhite" Padding="10" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" x:Name="lblPActual" Visibility="Collapsed"/>
+
+                <TextBox Grid.Column="1" Background="Transparent" Foreground="AntiqueWhite" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="txtCantidadActual" Grid.Row="0" BorderThickness="0" IsEnabled="False" Visibility="Collapsed"/>
+                <TextBox Grid.Column="1" Background="Transparent" Foreground="AntiqueWhite" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="txtPiezasActuales" Grid.Row="1" BorderThickness="0" IsEnabled="False" Visibility="Collapsed"/>
+
+                <Label Content="Cantidad restante:" FontSize="15" VerticalContentAlignment="Top" Foreground="AntiqueWhite" Padding="10" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" x:Name="lblCRestante" Visibility="Collapsed"/>
+                <Label Content="Piezas restantes:" FontSize="15" VerticalContentAlignment="Top" Foreground="AntiqueWhite" Padding="10" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" x:Name="lblPRestante" Visibility="Collapsed"/>
+
+                <TextBox Grid.Column="3" Background="Transparent" Foreground="AntiqueWhite" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="txtCantidadPosterior" Grid.Row="0" BorderThickness="0" IsEnabled="False" Visibility="Collapsed"/>
+                <TextBox Grid.Column="3" Background="Transparent" Foreground="AntiqueWhite" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" x:Name="txtPiezasPosterior" Grid.Row="1" BorderThickness="0" IsEnabled="False" Visibility="Collapsed"/>
+            </Grid>
+
+            <Grid Grid.Row="4" HorizontalAlignment="Right" Grid.Column="1" VerticalAlignment="Bottom">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>

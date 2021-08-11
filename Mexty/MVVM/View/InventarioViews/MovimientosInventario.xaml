@@ -20,7 +20,7 @@
                 <RowDefinition Height=".25*"/>
             </Grid.RowDefinitions>
             
-            <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="0" Margin="0"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="All">
+            <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="0" Margin="0"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Fecha" Binding="{Binding FechaRegistro}" Width=".25*">
                         <DataGridTextColumn.ElementStyle>
@@ -28,7 +28,8 @@
                                 <Setter Property="Margin" Value="5" />
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="FontSize" Value="15"/>
+                                <Setter Property="TextWrapping" Value="Wrap"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -38,7 +39,7 @@
                                 <Setter Property="Margin" Value="5" />
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="FontSize" Value="15"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
@@ -48,7 +49,7 @@
                                 <Setter Property="Margin" Value="5" />
                                 <Setter Property="HorizontalAlignment" Value="Center"/>
                                 <Setter Property="VerticalAlignment" Value="Center"/>
-                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="FontSize" Value="15"/>
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>

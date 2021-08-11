@@ -66,8 +66,16 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
             var index = ComboNombre.SelectedIndex;
+            var cantidad = ListaItems[index].Cantidad.ToString();
+            var piezas = ListaItems[index].Piezas.ToString();
+
             txtMedida.Text = ListaItems[index].Medida;
             txtTipo.Text = ListaItems[index].TipoProducto;
+
+            txtCantidadActual.Text = cantidad;
+            txtCantidadPosterior.Text = cantidad;
+            txtPiezasActuales.Text = piezas;
+            txtPiezasPosterior.Text = piezas;
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
@@ -81,40 +89,107 @@ namespace Mexty.MVVM.View.InventarioViews {
                 case "pieza":
                     txtCantidad.Visibility = Visibility.Collapsed;
                     txtPiezas.Visibility = Visibility.Visible;
+
+                    txtCantidadActual.Visibility = Visibility.Collapsed;
+                    txtCantidadPosterior.Visibility = Visibility.Collapsed;
+                    lblCActual.Visibility = Visibility.Collapsed;
+                    lblCRestante.Visibility = Visibility.Collapsed;
+
+                    txtPiezasActuales.Visibility = Visibility.Visible;
+                    txtPiezasPosterior.Visibility = Visibility.Visible;
+                    lblPActual.Visibility = Visibility.Visible;
+                    lblPRestante.Visibility = Visibility.Visible;
+
+                    rowCantidad.Height = new GridLength(0, GridUnitType.Star);
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+
                     GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    rowPiezas.Height = new GridLength(1, GridUnitType.Star);
+
                     break;
                 case "0.5 litros":
                 case "3 litros":
                 case "12 litros":
-                    txtCantidad.Visibility = Visibility.Collapsed;
+                    txtCantidad.Visibility = Visibility.Visible;
                     txtPiezas.Visibility = Visibility.Collapsed;
+
+                    txtCantidadActual.Visibility = Visibility.Visible;
+                    txtCantidadPosterior.Visibility = Visibility.Visible;
+                    lblCActual.Visibility = Visibility.Visible;
+                    lblCRestante.Visibility = Visibility.Visible;
+
+                    txtPiezasActuales.Visibility = Visibility.Collapsed;
+                    txtPiezasPosterior.Visibility = Visibility.Collapsed;
+                    lblPActual.Visibility = Visibility.Collapsed;
+                    lblPRestante.Visibility = Visibility.Collapsed;
+
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
+                    rowCantidad.Height = new GridLength(0, GridUnitType.Star);
+
                     GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    rowPiezas.Height = new GridLength(0, GridUnitType.Star);
                     break;
                 case "litro":
                     txtCantidad.Visibility = Visibility.Visible;
                     txtPiezas.Visibility = Visibility.Collapsed;
+
+                    txtCantidadActual.Visibility = Visibility.Visible;
+                    txtCantidadPosterior.Visibility = Visibility.Visible;
+                    lblCActual.Visibility = Visibility.Visible;
+                    lblCRestante.Visibility = Visibility.Visible;
+
+                    txtPiezasActuales.Visibility = Visibility.Collapsed;
+                    txtPiezasPosterior.Visibility = Visibility.Collapsed;
+                    lblPActual.Visibility = Visibility.Collapsed;
+                    lblPRestante.Visibility = Visibility.Collapsed;
+
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    rowCantidad.Height = new GridLength(1, GridUnitType.Star);
+
                     GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    rowPiezas.Height = new GridLength(0, GridUnitType.Star);
                     break;
                 default:
                     txtCantidad.Visibility = Visibility.Visible;
                     txtPiezas.Visibility = Visibility.Visible;
+
+                    txtCantidadActual.Visibility = Visibility.Visible;
+                    txtCantidadPosterior.Visibility = Visibility.Visible;
+                    lblCActual.Visibility = Visibility.Visible;
+                    lblCRestante.Visibility = Visibility.Visible;
+
+                    txtPiezasActuales.Visibility = Visibility.Visible;
+                    txtPiezasPosterior.Visibility = Visibility.Visible;
+                    lblPActual.Visibility = Visibility.Visible;
+                    lblPRestante.Visibility = Visibility.Visible;
+
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
+                    rowCantidad.Height = new GridLength(0, GridUnitType.Star);
+
                     GridPiezas.Width = new GridLength(1, GridUnitType.Star);
+                    rowPiezas.Height = new GridLength(0, GridUnitType.Star);
                     break;
             }
         }
 
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+            var index = ComboNombre.SelectedIndex;
             TextBox textbox = sender as TextBox;
             txtCantidad.Text = textbox.Text;
+            int cantidadActual = ListaItems[index].Cantidad;
+            int cantidadRestar = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
+            int resultado = cantidadActual - cantidadRestar;
+            txtCantidadPosterior.Text = Math.Max(0, resultado).ToString();
         }
 
         private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
+            var index = ComboNombre.SelectedIndex;
             TextBox textbox = sender as TextBox;
             txtPiezas.Text = textbox.Text;
+            int piezasActual = ListaItems[index].Piezas;
+            int piezasRestantes = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+            int resultado = piezasActual - piezasRestantes;
+            txtPiezasPosterior.Text = Math.Max(0, resultado).ToString();
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
