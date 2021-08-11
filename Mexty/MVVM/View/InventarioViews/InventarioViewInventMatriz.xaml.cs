@@ -202,7 +202,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             FillData();
         }
 
-
         /// <summary>
         /// Valida un objeto tipo ItemInventario.
         /// </summary>

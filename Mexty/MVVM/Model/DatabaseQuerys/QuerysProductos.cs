@@ -83,8 +83,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     MEDIDA=@med, 
                     DEPENDENCIAS=@dependencias,
                     TIPO_VENTA=@tipoVX, 
-                    PRECIO_MAYOREO=@pMayoX, 
-                    PRECIO_MENUDEO=@pMenuX, 
+                    PRECIO_MAYOREO=@pMayo, 
+                    PRECIO_MENUDEO=@pMenu, 
                     ESPECIFICACION_PRODUCTO=@esp, 
                     ACTIVO=@actX 
                 where ID_PRODUCTO=@idX"
@@ -94,7 +94,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@tipoP", producto.TipoProducto);
             query.Parameters.AddWithValue("@med", producto.MedidaProducto);
             query.Parameters.AddWithValue("@piezasX", producto.Piezas.ToString());
-            query.Parameters.AddWithValue("@tipoV", producto.TipoVenta.ToString());
+            query.Parameters.AddWithValue("@tipoVX", producto.TipoVenta.ToString());
             query.Parameters.AddWithValue("@pMayo", producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);

@@ -13,7 +13,7 @@ namespace Mexty.MVVM.Model.Validations {
             RuleFor(producto => producto.NombreProducto)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("El nombre del producto no puede estar vacío.")
-                .Length(4, 15).WithMessage("El nombre del producto debe de tener entre 4 y 15 caracteres")
+                .Length(4, 30).WithMessage("El nombre del producto debe de tener entre 4 y 15 caracteres")
                 .Must(Validations.BeAValidName).WithMessage("El nombre del producto no puede tener caracteres prohibidos");
 
             RuleFor(producto => producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture))
@@ -44,6 +44,5 @@ namespace Mexty.MVVM.Model.Validations {
                 .WithMessage("La cantidad de piezas del produto tiene {TotalLength} y debe de tener entre 0 y 6 caracteres.")
                 .Must(Validations.BeAValidNumber).WithMessage("La cantidad del producto tiene caracteres prohibidos.");
         }
-
     }
 }
