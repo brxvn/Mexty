@@ -200,7 +200,7 @@
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
-                            <DataGridTextColumn Binding="{Binding PrecioMenudeo}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn Binding="{Binding PrecioVenta}" Width="*" CellStyle="{DynamicResource DisableSelection}">
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}">
                                         <Setter Property="Margin" Value="5" />

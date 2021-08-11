@@ -99,7 +99,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencia += 1;
-                producto.PrecioMenudeo += producto.PrecioMenudeo;
+                //producto.PrecioMenudeo += producto.PrecioMenudeo;
             }
 
 
@@ -118,12 +118,11 @@ namespace Mexty.MVVM.View.VentasViews {
         private void DelProduct(object sender, RoutedEventArgs e) {
             var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
 
-            if (ListaVenta.Contains(producto)){
-
+            if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencia -= 1;
-                producto.PrecioMenudeo -= producto.PrecioMenudeo;
+                //producto.PrecioMenudeo -= producto.PrecioMenudeo;
             }
-            
+
 
             if (producto.CantidadDependencia == 0) ListaVenta.Remove(producto);
 
