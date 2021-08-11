@@ -44,6 +44,5 @@ namespace Mexty.MVVM.Model.Validations {
                 .WithMessage("La cantidad de piezas del produto tiene {TotalLength} y debe de tener entre 0 y 6 caracteres.")
                 .Must(Validations.BeAValidNumber).WithMessage("La cantidad del producto tiene caracteres prohibidos.");
         }
-
     }
 }
