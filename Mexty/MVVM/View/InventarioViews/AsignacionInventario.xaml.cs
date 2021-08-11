@@ -54,10 +54,11 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             var sucursales = QuerysSucursales.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
-                ComboSucursal.Items.Add($"{sucursal.IdTienda.ToString()} {sucursal.NombreTienda}");
+                ComboSucursal.Items.Add($"{sucursal.IdTienda} {sucursal.NombreTienda}");
             }
             Log.Debug("Se ha llenado el combo de sucursales.");
         }
+
 
         private void CerrarVentana(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha pulsado cerrar ventana.");
@@ -71,11 +72,14 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             txtMedida.Text = ListaItems[index].Medida;
             txtTipo.Text = ListaItems[index].TipoProducto;
-
+                    
             txtCantidadActual.Text = cantidad;
             txtCantidadPosterior.Text = cantidad;
             txtPiezasActuales.Text = piezas;
             txtPiezasPosterior.Text = piezas;
+
+            txtPiezas.Text = "";
+            txtCantidad.Text = "";
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
