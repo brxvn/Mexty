@@ -114,6 +114,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public int CantidadDependencia { get; set; }
 
+
         /// <summary>
         /// La lista de dependencias codificada que se guarda en la base de datos.
         /// </summary>

@@ -37,7 +37,7 @@
                 <Label Content="Producto Actual" Grid.Row="0" Grid.Column="1" FontSize="20" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Margin="10 0"/>
 
                 <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="10" IsReadOnly="True" SelectionMode="Single" SelectionUnit="Cell" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="0.25*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
@@ -189,7 +189,7 @@
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
                                                                     <Setter Property="Background" Value="Transparent" TargetName="Border" />
-                                                                    <Setter Property="Foreground" Value="LightGreen"/>
+                                                                    <Setter Property="Foreground" Value="OrangeRed"/>
                                                                     <Setter Property="FontSize" Value="25"/>
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
