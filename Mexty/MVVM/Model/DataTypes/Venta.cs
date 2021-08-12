@@ -48,7 +48,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Debe. (solo mayoreo).
         /// </summary>
-        // TODO: ver para que es.
+        // TODO: Eliminarlo.
         public decimal Debe { get; set; }
 
         /// <summary>
@@ -78,11 +78,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Método que convierte una lista de productos a un string codificado.
         /// Contiene: IdProducto:CantidadProducto:TipoVenta:PrecioMayoreo:PrecioMenudeo,
         /// </summary>
-        /// <param name="ListaProductos">Lista de objetos tipo <c>Producto</c>.</param>
+        /// <param name="listaProductos">Lista de objetos tipo <c>Producto</c>.</param>
         /// <returns>Un <c>string</c> que contiene la lista codificada en un string</returns>
-        public static string ListProductosToString(List<Producto> ListaProductos) {
+        public static string ListProductosToString(List<Producto> listaProductos) {
             var lista = "";
-            foreach (var producto in ListaProductos) {
+            for (var index = 0; index < listaProductos.Count; index++) {
+                var producto = listaProductos[index];
                 lista +=
                     $"{producto.IdProducto.ToString()}:{producto.CantidadDependencia.ToString()}:{producto.TipoVenta.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
             }
@@ -90,6 +91,31 @@ namespace Mexty.MVVM.Model.DataTypes {
             return lista.TrimEnd(',');
         }
 
+        /// <summary>
+        /// Método que convierte un string codificado de una lista de productos y lo transforma a una lista de objetos producto.
+        /// </summary>
+        /// <param name="listaProductos"><c>string</c> codificado de productos.</param>
+        /// <returns>Una lista de objetos tipo producto.</returns>
+        public static List<Producto> StringProductosToList(string listaProductos) {
+            var items = listaProductos.Split(',');
+            var productos = new List<Producto>();
+
+            for (var index = 0; index < items.Length; index++) {
+                var item = items[index];
+                var valores = item.Split(':');
+
+                var producto = new Producto() {
+                    IdProducto = int.Parse(valores[0]),
+                    CantidadDependencia = int.Parse(valores[1]),
+                    TipoVenta = int.Parse(valores[2]),
+                    PrecioMayoreo = decimal.Parse(valores[3]),
+                    PrecioMenudeo = decimal.Parse(valores[4])
+                };
+                productos.Add(producto);
+            }
+
+            return productos;
+        }
 
     }
 }

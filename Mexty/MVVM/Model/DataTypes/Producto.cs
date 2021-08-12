@@ -131,6 +131,7 @@ namespace Mexty.MVVM.Model.DataTypes {
 
         /// <summary>
         /// Método que convierte una lista de dependencias a string para ser guardada en la base de datos.
+        /// IdProducto:CantidadDependencia
         /// </summary>
         /// <param name="listaDepend"> Una lista de objetos tipo <c>Producto</c>.</param>
         /// <returns>Un diccionario tipo string codificado donde : separa al id y la cantidad y , separa los elementos.</returns>

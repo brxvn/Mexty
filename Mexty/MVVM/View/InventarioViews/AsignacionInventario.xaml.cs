@@ -50,12 +50,16 @@ namespace Mexty.MVVM.View.InventarioViews {
             foreach (var item in data) {
                 ComboNombre.Items.Add($"{item.IdProducto.ToString()} {item.TipoProducto} {item.NombreProducto}");
             }
+
+            ComboNombre.SelectedIndex = 0;
             Log.Debug("Se ha llenado el combo de item inventario.");
 
             var sucursales = QuerysSucursales.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add($"{sucursal.IdTienda} {sucursal.NombreTienda}");
             }
+
+            ComboSucursal.SelectedIndex = 0;
             Log.Debug("Se ha llenado el combo de sucursales.");
         }
 
