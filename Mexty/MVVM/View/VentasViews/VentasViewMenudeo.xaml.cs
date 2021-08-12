@@ -169,11 +169,12 @@ namespace Mexty.MVVM.View.VentasViews {
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
 
-            // obtener la lista de productos.
+            VentaActual.DetalleVentaList = ListaVenta;
+            VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
+
             // obtener el total
             // Pedir la cantidad que se pago.
             // Calcular el cambio.
-            //
         }
 
         /// <summary>
@@ -186,6 +187,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 total += producto.PrecioVenta;
             }
 
+            VentaActual.TotalVenta = total;
             txtTotal.Text = total.ToString(CultureInfo.InvariantCulture);
         }
 

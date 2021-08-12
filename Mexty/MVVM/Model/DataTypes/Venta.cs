@@ -48,7 +48,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Debe. (solo mayoreo).
         /// </summary>
-        // TODO: ver para que es.
+        // TODO: Eliminarlo.
         public decimal Debe { get; set; }
 
         /// <summary>
