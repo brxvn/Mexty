@@ -186,7 +186,9 @@ namespace Mexty.MVVM.View.VentasViews {
                 total += producto.PrecioVenta;
             }
 
-            txtTotal.Text = total.ToString(CultureInfo.InvariantCulture);
+            string totalFormated = string.Format("{0:C}", total);
+
+            txtTotal.Text = totalFormated;
         }
 
         /// <summary>
@@ -207,7 +209,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
-
+            Keyboard.Focus(txtRecibido);
             Log.Debug("Se ha agregado un producto a venta.");
         }
 
@@ -221,7 +223,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencia -= 1;
-                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencia);
+                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencia;
             }
             TotalVenta();
 
@@ -263,6 +265,21 @@ namespace Mexty.MVVM.View.VentasViews {
         private void txtUpdateVenta(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
             txtTotal.Text = textBox.Text;
+        }
+
+        private void RecibidoUpdate(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtRecibido.Text = string.Format("{0:C}", textBox.Text);
+
+            CambioVenta();
+        }
+
+        private void CambioVenta() {
+            decimal total = Convert.ToDecimal(txtTotal.Text.Trim('$'));
+            decimal recibido = txtRecibido.Text == "" ? 0 : Convert.ToDecimal(txtRecibido.Text.Trim('$'));
+            decimal cambio = Math.Max(0, recibido - total);
+            string cambiFormated = string.Format("{0:C}", cambio);
+            txtCambio.Text = cambiFormated; 
         }
     }
 }

@@ -8,6 +8,8 @@
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>true</SelfContained>
 	<ApplicationIcon>icon.ico</ApplicationIcon>
+	<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
