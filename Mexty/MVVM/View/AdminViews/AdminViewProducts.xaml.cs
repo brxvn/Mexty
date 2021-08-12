@@ -27,7 +27,7 @@ namespace Mexty.MVVM.View.AdminViews {
     /// </summary>
     public partial class AdminViewProducts : UserControl {
         private static readonly ILog Log =
-            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
@@ -99,8 +99,6 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
-
-
         }
 
 
@@ -226,8 +224,8 @@ namespace Mexty.MVVM.View.AdminViews {
                 };
 
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMayoreo.Text);
-                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMenudeo.Text);
+                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
+                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 

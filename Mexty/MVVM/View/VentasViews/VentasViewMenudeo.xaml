@@ -319,7 +319,7 @@
                 </Grid>
             </Border>
             
-            <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="SeleccionarProducto" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+            <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
 
         </Grid>
         

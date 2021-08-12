@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Controls;
 
 namespace Mexty.MVVM.Model.DataTypes {
@@ -22,6 +24,11 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Detalle codificado de la venta hecha.
         /// </summary>
         public string DetalleVenta { get; set; }
+
+        /// <summary>
+        /// Detalle de venta en formtato de lista de productos.
+        /// </summary>
+        public List<Producto> DetalleVentaList { get; set; }
 
         /// <summary>
         /// Cantidad total final de la venta.
@@ -66,5 +73,23 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Fecha en la que se registro la venta.
         /// </summary>
         public DateTime FechaRegistro { get; set; }
+
+        /// <summary>
+        /// Método que convierte una lista de productos a un string codificado.
+        /// Contiene: IdProducto:CantidadProducto:TipoVenta:PrecioMayoreo:PrecioMenudeo,
+        /// </summary>
+        /// <param name="ListaProductos">Lista de objetos tipo <c>Producto</c>.</param>
+        /// <returns>Un <c>string</c> que contiene la lista codificada en un string</returns>
+        public static string ListProductosToString(List<Producto> ListaProductos) {
+            var lista = "";
+            foreach (var producto in ListaProductos) {
+                lista +=
+                    $"{producto.IdProducto.ToString()}:{producto.CantidadDependencia.ToString()}:{producto.TipoVenta.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
+            }
+
+            return lista.TrimEnd(',');
+        }
+
+
     }
 }

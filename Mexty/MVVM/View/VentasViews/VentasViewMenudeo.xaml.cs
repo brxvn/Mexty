@@ -30,23 +30,54 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Collection view actual de la datagrid.
         /// </summary>
         private CollectionView CollectionView { get; set; }
+
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Producto> ListaVenta = new();
 
         /// <summary>
+        /// Venta actual en pantalla.
+        /// </summary>
+        private Venta VentaActual { get; set; }
+
+        /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
         /// </summary>
         private Producto SelectedProduct { get; set; }
-        public VentasViewMenudeo() {
-            InitializeComponent();
-            FillData();
 
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += UpdateTimerTick;
-            timer.Interval = new TimeSpan(0, 0, 1);
-            timer.Start();
+        public VentasViewMenudeo() {
+            try {
+                InitializeComponent();
+                FillData();
+                NewVenta();
+
+                Log.Debug("Se han inicializado los campos de ventas menudeo.");
+
+                DispatcherTimer timer = new DispatcherTimer();
+                timer.Tick += UpdateTimerTick;
+                timer.Interval = new TimeSpan(0, 0, 1);
+                timer.Start();
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
+                Log.Error($"Error: {e.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Método que inicializa una nueva venta.
+        /// </summary>
+        private void NewVenta() {
+            var venta = new Venta {
+                Cambio = 0,
+                Pago = 0,
+                TotalVenta = 0,
+                DetalleVentaList = new List<Producto>(),
+                IdTienda = DatabaseInit.GetIdTienda(),
+                UsuarioRegistra = DatabaseInit.GetUsername()
+            };
+            VentaActual = venta;
         }
 
         /// <summary>
@@ -68,71 +99,7 @@ namespace Mexty.MVVM.View.VentasViews {
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
-            Log.Debug("Se ha llendado el datagrid de productos.");
-        }
-
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-
-        }
-        /// <summary>
-        /// Función que valida los campos númericos.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
-        }
-
-        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-
-        }
-
-        private void SeleccionarProducto(object sender, RoutedEventArgs e) {
-
-        }
-
-        /// <summary>
-        /// Lógica detrás del boton de agregar producto.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
-
-            if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
-
-            if (ListaVenta.Contains(producto)) {
-                producto.CantidadDependencia += 1;
-                //producto.PrecioMenudeo += producto.PrecioMenudeo;
-            }
-
-
-            DataVenta.ItemsSource = null;
-            DataVenta.ItemsSource = ListaVenta;
-
-            Log.Debug("Se ha agregado un producto a venta.");
-
-        }
-
-        /// <summary>
-        /// Lógica detrás del boton de eliminar producto.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DelProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
-
-            if (ListaVenta.Contains(producto)) {
-                producto.CantidadDependencia -= 1;
-                //producto.PrecioMenudeo -= producto.PrecioMenudeo;
-            }
-
-
-            if (producto.CantidadDependencia == 0) ListaVenta.Remove(producto);
-
-            DataVenta.ItemsSource = null;
-            DataVenta.ItemsSource = ListaVenta;
-            Log.Debug("Se ha eliminado una dependecia al producto.");
+            Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
         }
 
         /// <summary>
@@ -185,12 +152,117 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         /// <summary>
+        ///  Logica del evento item selected.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+            // Bajar el campo de Especificación de producto y cuanto hay en inventario.
+            // TODO: agregar el campo de especificicación e inventario.
+        }
+
+        /// <summary>
+        /// Lógica del boton de Pagar.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GuardarVenta(object sender, RoutedEventArgs e) {
+            Log.Info("Se ha precionado pagar en venta menudeo.");
+
+            // obtener la lista de productos.
+            // obtener el total
+            // Pedir la cantidad que se pago.
+            // Calcular el cambio.
+            //
+        }
+
+        /// <summary>
+        /// Método que mantiene actualizado el total de la venta.
+        /// </summary>
+        private void TotalVenta() {
+            decimal total = 0;
+            for (var index = 0; index < ListaVenta.Count; index++) {
+                var producto = ListaVenta[index];
+                total += producto.PrecioVenta;
+            }
+
+            txtTotal.Text = total.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Lógica detrás del boton de agregar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddProduct(object sender, RoutedEventArgs e) {
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+
+            if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
+
+            if (ListaVenta.Contains(producto)) {
+                producto.CantidadDependencia += 1;
+                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencia);
+            }
+            TotalVenta();
+
+            DataVenta.ItemsSource = null;
+            DataVenta.ItemsSource = ListaVenta;
+
+            Log.Debug("Se ha agregado un producto a venta.");
+        }
+
+        /// <summary>
+        /// Lógica detrás del boton de eliminar producto.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DelProduct(object sender, RoutedEventArgs e) {
+            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+
+            if (ListaVenta.Contains(producto)) {
+                producto.CantidadDependencia -= 1;
+                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencia);
+            }
+            TotalVenta();
+
+            if (producto.CantidadDependencia == 0) ListaVenta.Remove(producto);
+
+            DataVenta.ItemsSource = null;
+            DataVenta.ItemsSource = ListaVenta;
+            Log.Debug("Se ha eliminado una dependecia al producto.");
+        }
+
+
+        /// <summary>
         /// Validacion de solo letras y numeros para la dirección, así como el numeral.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+        }
+
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
+        }
+
+        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+
+        }
+
+        /// <summary>
+        /// Método que actualiza el campo de total venta.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtUpdateVenta(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtTotal.Text = textBox.Text;
         }
     }
 }

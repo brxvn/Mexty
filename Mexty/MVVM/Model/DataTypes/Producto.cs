@@ -92,12 +92,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Precio del producto en venta mayoreo.
         /// </summary>
-        public float PrecioMayoreo { get; set; }
+        public decimal PrecioMayoreo { get; set; }
 
         /// <summary>
         /// Precio del producto en venta menudeo.
         /// </summary>
-        public float PrecioMenudeo { get; set; }
+        public decimal PrecioMenudeo { get; set; }
 
         /// <summary>
         /// Detalles/descripción del producto.
@@ -110,10 +110,14 @@ namespace Mexty.MVVM.Model.DataTypes {
         public int Activo { get; set; }
 
         /// <summary>
-        /// Canitdad de cada dependencia (solo para uso en control de dependencias).
+        /// Canitdad de cada producto.
         /// </summary>
         public int CantidadDependencia { get; set; }
 
+        /// <summary>
+        /// Precio de venta final (solo para usarse en ventas).
+        /// </summary>
+        public decimal PrecioVenta { get; set; }
 
         /// <summary>
         /// La lista de dependencias codificada que se guarda en la base de datos.

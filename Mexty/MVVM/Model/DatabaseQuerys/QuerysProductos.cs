@@ -37,8 +37,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         MedidaProducto = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         TipoVenta = reader.IsDBNull("tipo_venta") ? 0 : reader.GetInt32("tipo_venta"),
-                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetFloat("precio_mayoreo"),
-                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetFloat("precio_menudeo"),
+                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetDecimal("precio_mayoreo"),
+                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetDecimal("precio_menudeo"),
                         DetallesProducto =
                             reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                         Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
