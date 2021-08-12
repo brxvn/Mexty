@@ -39,7 +39,7 @@
 
                     <!--ComboNomnre-->
                     <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboNombre" Grid.Column="1" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="30"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre" SelectionChanged="ItemSelected"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre" SelectionChanged="ProductoSelected" SelectedIndex="0"/>
                 </Grid>
             </Grid>
 
@@ -381,7 +381,7 @@
                 
                 <!--ComboSucursal-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="1" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="30"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Nombre" SelectionChanged="SucursalSelected" SelectedIndex="0"/>
             </Grid>
 
             <Grid Grid.Row="3" Grid.Column="1">
@@ -417,7 +417,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos" FontSize="20" Padding="20 0"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="True" ToolTip="Guardar Cambios" FontSize="20" Padding="20 0"/>
+                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTip="Guardar Cambios" FontSize="20" Padding="20 0"/>
                 <Button x:Name="Cerrar" Grid.Column="2" Content="Cerrar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="CerrarVentana" IsEnabled="True" ToolTip="Cerrar Ventana" FontSize="20" Padding="20 0"/>
             </Grid>
         </Grid>

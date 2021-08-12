@@ -140,8 +140,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             try {
                 var row = QuerysInventario.NewItem(newItem);
                 if (row > 0) {
-                    //InventarioViewInvent invent = new();
-                    //invent.List.Add(newItem);
+                    InventarioViewInvent invent = new();
+                    invent.FillData();
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");
                 }

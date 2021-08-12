@@ -3,6 +3,7 @@ using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +40,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private Producto SelectedProduct { get; set; }
         public VentasViewMenudeo() {
-            int TotalVenta = 0;
             InitializeComponent();
             FillData();
 
@@ -74,9 +74,13 @@ namespace Mexty.MVVM.View.VentasViews {
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
 
         }
-
+        /// <summary>
+        /// Función que valida los campos númericos.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-
+            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
         }
 
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
@@ -129,6 +133,64 @@ namespace Mexty.MVVM.View.VentasViews {
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
             Log.Debug("Se ha eliminado una dependecia al producto.");
+        }
+
+        /// <summary>
+        /// Lógica para el campo de búsqueda.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+            TextBox tbx = sender as TextBox;
+            var collection = CollectionView;
+            if (tbx != null && tbx.Text != "") {
+                var newText = tbx.Text;
+                var customFilter = new Predicate<object>(o => FilterLogic(o, newText));
+
+                collection.Filter = customFilter;
+                DataProducts.ItemsSource = collection;
+                CollectionView = collection;
+            }
+            else {
+                collection.Filter = null;
+                var noNull = new Predicate<object>(producto =>
+                {
+                    if (producto == null) return false;
+                    return ((Producto)producto).Activo == 1;
+                });
+
+                collection.Filter += noNull;
+                DataProducts.ItemsSource = collection;
+                CollectionView = collection;
+            }
+
+            SearchBox.Text = tbx.Text;
+        }
+
+        /// <summary>
+        /// Lógica para el filtro del data grid.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static bool FilterLogic(object obj, string text) {
+            text = text.ToLower();
+            var producto = (Producto)obj;
+            if (producto.NombreProducto.Contains(text) ||
+                producto.IdProducto.ToString().Contains(text) ||
+                producto.TipoProducto.ToLower().Contains(text)) {
+                return producto.Activo == 1;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Validacion de solo letras y numeros para la dirección, así como el numeral.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
     }
 }

@@ -4,10 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
-             xmlns:local="clr-namespace:Mexty.MVVM.View.InventarioViews" xmlns:viewmodel="clr-namespace:Mexty.MVVM.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:InventarioViewModel}"
+             xmlns:local="clr-namespace:Mexty.Commands"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920">
-    
+
+    <UserControl.Resources>
+        <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
+    </UserControl.Resources>
+
     <Grid Background="#7f233a">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -106,7 +110,7 @@
                BorderBrush="AntiqueWhite"/>
 
         <!-- DataProductos-->
-        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
+        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".25*">
                     <DataGridTextColumn.ElementStyle>
@@ -155,6 +159,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="Foreground" Value="{Binding Piezas, Converter={StaticResource ValueToBrushConverter}}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -165,6 +170,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="Foreground" Value="{Binding Cantidad, Converter={StaticResource ValueToBrushConverter}}"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>

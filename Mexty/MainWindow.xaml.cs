@@ -16,7 +16,7 @@ namespace Mexty {
             log4net.Config.XmlConfigurator.Configure();
             
             InitializeComponent();
-            BarCodes barCodes = new();
+            //BarCodes barCodes = new();
                         
             DataContext = new MainViewModel();
             

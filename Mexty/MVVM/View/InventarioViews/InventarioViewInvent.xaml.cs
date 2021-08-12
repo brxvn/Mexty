@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -48,7 +49,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         private int idTienda = DatabaseInit.GetIdTienda();
 
 
-        List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
+        private List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
 
         public InventarioViewInvent() {
 
@@ -85,12 +86,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <summary>
         /// Método que llena el datagrid y los combobox.
         /// </summary>
-        private void FillData() {
+        public void FillData() {
             var data = QuerysInventario.GetItemsFromInventario();
-            ListaItems = data;
+            //ListaItems = data;
 
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.IdTienda == idSucursal // Solo productos activos en la tabla.
+                Filter = (e) => e is ItemInventario producto //&& producto.ac == idSucursal // Solo productos activos en la tabla.
             };
             //foreach (var item in collectionView) {
             //    List.Add((ItemInventario)item);
@@ -98,7 +99,34 @@ namespace Mexty.MVVM.View.InventarioViews {
             CollectionView = collectionView;
             //DataProducts.ItemsSource = List;
             DataProducts.ItemsSource = collectionView;
+            SortDataGrid(DataProducts, 4);
+           
             Log.Debug("Se ha llenado la datagrid de manera exitosa.");
+        }
+
+        /// <summary>
+        /// Ordenar por piezas de manera ascendente 
+        /// </summary>
+        /// <param name="dataGrid"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="sortDirection"></param>
+        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending) {
+            var column = dataGrid.Columns[columnIndex];
+
+            // Clear current sort descriptions
+            dataGrid.Items.SortDescriptions.Clear();
+
+            // Add the new sort description
+            dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
+
+            // Apply sort
+            foreach (var col in dataGrid.Columns) {
+                col.SortDirection = null;
+            }
+            column.SortDirection = sortDirection;
+
+            // Refresh items to display sort
+            dataGrid.Items.Refresh();
         }
 
         /// <summary>

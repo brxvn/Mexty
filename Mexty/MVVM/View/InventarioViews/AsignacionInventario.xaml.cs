@@ -65,7 +65,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             Close();
         }
 
-        private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+        private void ProductoSelected(object sender, SelectionChangedEventArgs e) {
             var index = ComboNombre.SelectedIndex;
             var cantidad = ListaItems[index].Cantidad.ToString();
             var piezas = ListaItems[index].Piezas.ToString();
@@ -80,6 +80,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
             txtPiezas.Text = "";
             txtCantidad.Text = "";
+            Guardar.IsEnabled = true;
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
@@ -270,6 +271,10 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
 
             return false;
+        }
+
+        private void SucursalSelected(object sender, SelectionChangedEventArgs e) {
+            Guardar.IsEnabled = true; 
         }
     }
 }

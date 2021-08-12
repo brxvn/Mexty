@@ -40,10 +40,6 @@ namespace Mexty.MVVM.Model {
             Directory.CreateDirectory(_inventarioPath);
             Directory.CreateDirectory(_SucursalesInventarioPath);
         }
-
-       
-
-        
         private Document CreateDocument(string nombreDocumento, Paragraph metaData, string titulo, string path) {
             
             Cell cell;

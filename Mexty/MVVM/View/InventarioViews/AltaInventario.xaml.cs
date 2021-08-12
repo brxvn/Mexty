@@ -75,6 +75,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             var index = ComboNombre.SelectedIndex;
             txtMedida.Text = ListaProductos[index].MedidaProducto;
             txtTipo.Text = ListaProductos[index].TipoProducto;
+            Guardar.IsEnabled = true;
         }
 
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
