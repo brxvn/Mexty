@@ -206,6 +206,7 @@ namespace Mexty.MVVM.View.VentasViews {
             string totalFormated = string.Format("{0:C}", total);
 
             txtTotal.Text = totalFormated;
+            txtRecibido.IsReadOnly = false;
         }
 
         /// <summary>
@@ -268,10 +269,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
-        }
-
-        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-
         }
 
         /// <summary>
