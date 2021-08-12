@@ -173,7 +173,8 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
-                //VentaActual.Pago = // obtener el pago
+                VentaActual.Pago = decimal.Parse(txtRecibido.Text);
+                VentaActual.Cambio = VentaActual.TotalVenta - VentaActual.Pago;
                 // obtener el cambio.
 
                 // Validar que las cantidades sean validas.
@@ -225,7 +226,7 @@ namespace Mexty.MVVM.View.VentasViews {
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
 
-            Log.Debug("Se ha agregado un producto a venta.");
+            Log.Debug("Se ha agregado un producto de la venta.");
         }
 
         /// <summary>
@@ -246,7 +247,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
-            Log.Debug("Se ha eliminado una dependecia al producto.");
+            Log.Debug("Se ha eliminado un producto de la venta.");
         }
 
 

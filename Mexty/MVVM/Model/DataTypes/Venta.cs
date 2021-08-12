@@ -91,6 +91,31 @@ namespace Mexty.MVVM.Model.DataTypes {
             return lista.TrimEnd(',');
         }
 
+        /// <summary>
+        /// Método que convierte un string codificado de una lista de productos y lo transforma a una lista de objetos producto.
+        /// </summary>
+        /// <param name="listaProductos"><c>string</c> codificado de productos.</param>
+        /// <returns>Una lista de objetos tipo producto.</returns>
+        public static List<Producto> StringProductosToList(string listaProductos) {
+            var items = listaProductos.Split(',');
+            var productos = new List<Producto>();
+
+            for (var index = 0; index < items.Length; index++) {
+                var item = items[index];
+                var valores = item.Split(':');
+
+                var producto = new Producto() {
+                    IdProducto = int.Parse(valores[0]),
+                    CantidadDependencia = int.Parse(valores[1]),
+                    TipoVenta = int.Parse(valores[2]),
+                    PrecioMayoreo = decimal.Parse(valores[3]),
+                    PrecioMenudeo = decimal.Parse(valores[4])
+                };
+                productos.Add(producto);
+            }
+
+            return productos;
+        }
 
     }
 }
