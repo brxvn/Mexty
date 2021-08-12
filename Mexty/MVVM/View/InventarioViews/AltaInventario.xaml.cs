@@ -57,6 +57,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             ListaProductos = data;
             for (var index = 0; index < data.Count; index++) {
                 var producto = data[index];
+                if (producto.Activo == 1) continue;
                 ComboNombre.Items.Add(
                     $"{producto.IdProducto.ToString()} {producto.TipoProducto} {producto.NombreProducto}");
             }

@@ -78,11 +78,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Método que convierte una lista de productos a un string codificado.
         /// Contiene: IdProducto:CantidadProducto:TipoVenta:PrecioMayoreo:PrecioMenudeo,
         /// </summary>
-        /// <param name="ListaProductos">Lista de objetos tipo <c>Producto</c>.</param>
+        /// <param name="listaProductos">Lista de objetos tipo <c>Producto</c>.</param>
         /// <returns>Un <c>string</c> que contiene la lista codificada en un string</returns>
-        public static string ListProductosToString(List<Producto> ListaProductos) {
+        public static string ListProductosToString(List<Producto> listaProductos) {
             var lista = "";
-            foreach (var producto in ListaProductos) {
+            for (var index = 0; index < listaProductos.Count; index++) {
+                var producto = listaProductos[index];
                 lista +=
                     $"{producto.IdProducto.ToString()}:{producto.CantidadDependencia.ToString()}:{producto.TipoVenta.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
             }

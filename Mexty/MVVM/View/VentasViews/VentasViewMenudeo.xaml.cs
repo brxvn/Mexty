@@ -169,12 +169,27 @@ namespace Mexty.MVVM.View.VentasViews {
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
 
-            VentaActual.DetalleVentaList = ListaVenta;
-            VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
+            try {
+                VentaActual.DetalleVentaList = ListaVenta;
+                VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
-            // obtener el total
-            // Pedir la cantidad que se pago.
-            // Calcular el cambio.
+                //VentaActual.Pago = // obtener el pago
+                // obtener el cambio.
+
+                // Validar que las cantidades sean validas.
+
+                //QuerysVentas.NewItem(VentaActual);
+                MessageBox.Show("Se ha registrado la venta con exito.");
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al guardar la venta.");
+                Log.Error($"Error: {exception.Message}");
+                MessageBox.Show(
+                    "Ha ocurrido un error al guardar la venta.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
         }
 
         /// <summary>
@@ -197,7 +212,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+            var producto = (Producto)((Button)e.Source).DataContext;
 
             if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
 
@@ -219,7 +234,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext; //contiene todo lo del producto
+            var producto = (Producto)((Button)e.Source).DataContext;
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencia -= 1;
