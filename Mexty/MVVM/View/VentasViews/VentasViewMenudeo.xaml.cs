@@ -34,7 +34,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
-        private List<Producto> ListaVenta = new();
+        private List<ItemInventario> ListaVenta = new();
 
         /// <summary>
         /// Venta actual en pantalla.
@@ -74,7 +74,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Cambio = 0,
                 Pago = 0,
                 TotalVenta = 0,
-                DetalleVentaList = new List<Producto>(),
+                DetalleVentaList = new List<ItemInventario>(),
                 IdTienda = DatabaseInit.GetIdTienda(),
                 UsuarioRegistra = DatabaseInit.GetUsername()
             };
@@ -94,9 +94,9 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Método que se encarga de inicializar los campos.
         /// </summary>
         private void FillData() {
-            var data = QuerysProductos.GetTablesFromProductos();
+            var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -234,13 +234,13 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext;
+            var producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
 
             if (ListaVenta.Contains(producto)) {
-                producto.CantidadDependencia += 1;
-                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencia);
+                producto.CantidadDependencias += 1;
+                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -256,14 +256,14 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            var producto = (Producto)((Button)e.Source).DataContext;
+            var producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (ListaVenta.Contains(producto)) {
-                producto.CantidadDependencia -= 1;
-                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencia;
+                producto.CantidadDependencias -= 1;
+                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
             }
 
-            if (producto.CantidadDependencia == 0) ListaVenta.Remove(producto);
+            if (producto.CantidadDependencias == 0) ListaVenta.Remove(producto);
 
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;

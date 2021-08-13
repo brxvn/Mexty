@@ -68,5 +68,23 @@
         /// Fecha de la última modificación de este item.
         /// </summary>
         public string FechaModifica { get; set; }
+        
+        /// <summary>
+        /// Precio de cada producto (solo se usa en ventas)
+        /// </summary>
+        public decimal PrecioMayoreo { get; set; }
+
+        /// <summary>
+        /// Precio de cada producto (solo se usa en ventas)
+        /// </summary>
+        public decimal PrecioMenudeo { get; set; }
+        /// <summary>
+        /// Dependencias del prodcuto
+        /// </summary>
+        public int CantidadDependencias { get; set; }
+        /// <summary>
+        /// Precio de venta final (solo para usarse en ventas).
+        /// </summary>
+        public decimal PrecioVenta { get; set; }
     }
 }

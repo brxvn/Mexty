@@ -19,11 +19,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         /// <param name="mayoreo">Si <c>true</c> obtiene las tablas de ventas-mayoreo.</param>
         /// <returns> Una lista de objetos tipo <c>Venta</c>.</returns>
-        public static List<Venta> GetTablesFromVentas(bool mayoreo=false) {
+        public static List<Venta> GetTablesFromVentas(bool mayoreo = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
-           var cmd = mayoreo ? @"select * from venta_mayoreo" : @"select * from venta_menudeo";
+            var cmd = mayoreo ? @"select * from venta_mayoreo" : @"select * from venta_menudeo";
 
             var query = new MySqlCommand() {
                 Connection = connObj,
@@ -88,7 +88,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <param name="venta">El objeto tipo <c>Venta</c> a guardar.</param>
         /// <param name="mayoreo">Bandera par guardar en inventario maoreo o menudeo if <c>true</c> guarda a mayoreo</param>
         /// <returns></returns>
-        public static int UpdateData(Venta venta, bool mayoreo=false) {
+        public static int UpdateData(Venta venta, bool mayoreo = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
@@ -155,7 +155,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <param name="newVenta">El objeto tipo <c>Venta</c> a dar de alta.</param>
         /// <param name="mayoreo">Bandera <c>true</c> para guardar en ventas mayoreo.</param>
         /// <returns>El numero de tablas afectadas.</returns>
-        public static int NewItem(Venta newVenta, bool mayoreo=false) {
+        public static int NewItem(Venta newVenta, bool mayoreo = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
@@ -217,6 +217,59 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             finally {
                 connObj.Close();
             }
+        }
+
+        public static List<ItemInventario> GetListaInventarioVentasMenudeo() {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"
+                SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO,
+                       c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
+                       c.PRECIO_MENUDEO, c.ACTIVO,
+                       c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO,
+                       i.PIEZAS, i.CANTIDAD
+                FROM   cat_producto c, inventario i
+                WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO"
+            };
+
+            var items = new List<ItemInventario>();
+            try {
+                using var reader = query.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new ItemInventario() {
+                        IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
+                        NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
+                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
+                        //Dependencias = reader.IsDBNull("dependencias") ? 0 : reader.GetInt32("dependencias"),
+                        Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
+                        PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetDecimal("precio_menudeo"),
+                        PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetDecimal("precio_mayoreo"),
+                        //Comentario = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
+                    };
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario de venta menudeo.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario venta menudeo.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 14: ha ocurrido un error al intentar obtener la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+
+            return items;
         }
     }
 }
