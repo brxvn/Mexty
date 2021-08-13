@@ -57,6 +57,8 @@ namespace Mexty.MVVM.View.ReportesViews {
                 foreach (var sucu in dataSucursal) {
                     ComboSucursal.Items.Add(sucu.NombreTienda);
                 }
+
+                ComboSucursal.SelectedIndex = 0;
                 Log.Debug("Se ha llenado el combo de sucursal");
 
                 //var dataProductos = Database.GetTablesFromProductos();

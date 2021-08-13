@@ -42,8 +42,8 @@ namespace Mexty.MVVM.View.AdminViews {
         public AdminViewProductDependency(Producto selectedProduct) {
             try {
                 InitializeComponent();
-                FillData();
                 SelectedProduct = selectedProduct;
+                FillData();
                 if (selectedProduct.DependenciasText == "") {
                     selectedProduct.Dependencias ??= new List<Producto>();
                     ListaDependecias = selectedProduct.Dependencias;
@@ -69,7 +69,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillData() {
             var data = QuerysProductos.GetTablesFromProductos();
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is Producto producto && producto.Activo != 0 && producto.IdProducto != SelectedProduct.IdProducto && producto.DependenciasText == ""
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;

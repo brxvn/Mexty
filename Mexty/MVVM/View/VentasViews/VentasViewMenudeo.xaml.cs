@@ -309,7 +309,7 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void CambioVenta() {
-            decimal total = Convert.ToDecimal(txtTotal.Text.TrimStart('$'));
+            decimal total = txtTotal.Text == "" ? 0 : Convert.ToDecimal(txtTotal.Text.TrimStart('$'));
             decimal recibido = txtRecibido.Text == "" ? 0 : Convert.ToDecimal(txtRecibido.Text.Trim('$'));
             decimal cambio = Math.Max(0, recibido - total);
             string cambiFormated = string.Format("{0:C}", cambio);

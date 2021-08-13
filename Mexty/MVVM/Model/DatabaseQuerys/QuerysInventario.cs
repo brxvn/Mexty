@@ -11,7 +11,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// Clase que se encarga de hacer las consultas a la base de datos del modulo de Inventario.
     /// </summary>
     /// TODO: Bloated, quitar querys redundantes y separar.
-    public class QuerysInventario {
+    public static class QuerysInventario {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
