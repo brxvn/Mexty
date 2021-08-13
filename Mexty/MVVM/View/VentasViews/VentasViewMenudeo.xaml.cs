@@ -162,6 +162,17 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         /// <summary>
+        /// Método que limpia los campos de texto y lo relacionado a la venta.
+        /// </summary>
+        private void ClearFields() {
+            txtRecibido.Text = "";
+            txtTotal.Text = "";
+            ListaVenta.Clear();
+            DataVenta.ItemsSource = null;
+            VentaActual = new Venta();
+        }
+
+        /// <summary>
         /// Lógica del boton de Pagar.
         /// </summary>
         /// <param name="sender"></param>
@@ -173,14 +184,17 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
+                if (txtRecibido.Text == "") {
+                    MessageBox.Show("Error: necesitas asignar un valor de recibido a la venta.");
+                }
+
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
-                VentaActual.Cambio = VentaActual.TotalVenta - VentaActual.Pago;
-                // obtener el cambio.
+                VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
 
-                // Validar que las cantidades sean validas.
-
-                //QuerysVentas.NewItem(VentaActual);
+                var res = QuerysVentas.NewItem(VentaActual);
+                if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
+                ClearFields();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -203,7 +217,9 @@ namespace Mexty.MVVM.View.VentasViews {
                 total += producto.PrecioVenta;
             }
 
-            string totalFormated = string.Format("{0:C}", total);
+            VentaActual.TotalVenta = total;
+
+            var totalFormated = string.Format("{0:C}", total);
 
             txtTotal.Text = totalFormated;
             txtRecibido.IsReadOnly = false;
@@ -289,7 +305,7 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void CambioVenta() {
-            decimal total = Convert.ToDecimal(txtTotal.Text.Trim('$'));
+            decimal total = Convert.ToDecimal(txtTotal.Text.TrimStart('$'));
             decimal recibido = txtRecibido.Text == "" ? 0 : Convert.ToDecimal(txtRecibido.Text.Trim('$'));
             decimal cambio = Math.Max(0, recibido - total);
             string cambiFormated = string.Format("{0:C}", cambio);
