@@ -165,6 +165,26 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
+                        <DataGridTextColumn Header="Piezas" Binding="{Binding Piezas}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                         <DataGridTemplateColumn Width=".3*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -305,18 +325,18 @@
 
                         <!--txtTotal-->
                         <Label Content="Total:" Grid.Row="2" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtTotal" Grid.Row="2" HorizontalAlignment="Right" Margin="70 0" Width="100" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Background="Transparent" HorizontalContentAlignment="Center" IsReadOnly="True" Text="{Binding TotalVenta, StringFormat={}{0:C}}" />
+                        <TextBox x:Name="txtTotal" Grid.Row="2" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Background="Transparent" HorizontalContentAlignment="Center" IsReadOnly="True" Text="{Binding TotalVenta, StringFormat={}{0:C}}" />
 
                         <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
                         <!--txtRecibido-->
                         <Label Content="Recibido:" Grid.Row="3" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="100" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True"/>
+                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True"/>
 
                         <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 
                         <!--txtCambio-->
                         <Label Content="Cambio:" Grid.Row="4" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="70 0" Width="100" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" IsReadOnly="True" Background="Transparent" HorizontalContentAlignment="Center" Text="{Binding Cambio, StringFormat={}{0:C}}"/>
+                        <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" IsReadOnly="True" Background="Transparent" HorizontalContentAlignment="Center" Text="{Binding Cambio, StringFormat={}{0:C}}"/>
                     </Grid>
                 </Border>
 
