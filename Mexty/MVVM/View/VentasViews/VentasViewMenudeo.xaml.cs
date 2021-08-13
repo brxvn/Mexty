@@ -51,6 +51,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 InitializeComponent();
                 FillData();
                 NewVenta();
+                ClearFields();
 
                 Log.Debug("Se han inicializado los campos de ventas menudeo.");
 
@@ -170,6 +171,8 @@ namespace Mexty.MVVM.View.VentasViews {
             ListaVenta.Clear();
             DataVenta.ItemsSource = null;
             VentaActual = new Venta();
+            TotalVenta();
+            CambioVenta();
         }
 
         /// <summary>
@@ -239,11 +242,11 @@ namespace Mexty.MVVM.View.VentasViews {
                 producto.CantidadDependencia += 1;
                 producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencia);
             }
-            TotalVenta();
-
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
             Keyboard.Focus(txtRecibido);
+            TotalVenta();
+            CambioVenta();
             Log.Debug("Se ha agregado un producto a venta.");
         }
 
@@ -259,12 +262,13 @@ namespace Mexty.MVVM.View.VentasViews {
                 producto.CantidadDependencia -= 1;
                 producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencia;
             }
-            TotalVenta();
 
             if (producto.CantidadDependencia == 0) ListaVenta.Remove(producto);
 
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
+            TotalVenta();
+            CambioVenta();
             Log.Debug("Se ha eliminado un producto de la venta.");
         }
 
@@ -310,6 +314,10 @@ namespace Mexty.MVVM.View.VentasViews {
             decimal cambio = Math.Max(0, recibido - total);
             string cambiFormated = string.Format("{0:C}", cambio);
             txtCambio.Text = cambiFormated; 
+        }
+
+        private void Cancelar_Click(object sender, RoutedEventArgs e) {
+            ClearFields();
         }
     }
 }
