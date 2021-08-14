@@ -125,7 +125,7 @@
                 <!--DataProcuts-->
                 <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".25*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".35*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />

@@ -44,11 +44,31 @@ namespace Mexty.MVVM.View.VentasViews {
 
         }
 
-        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
+        private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
 
         }
 
-        private void SeleccionarProducto(object sender, RoutedEventArgs e) {
+        private void FilterSearch(object sender, TextChangedEventArgs e) {
+
+        }
+
+        private void AddProduct(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void DelProduct(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void GuardarVenta(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void Cancelar_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void RecibidoUpdate(object sender, TextChangedEventArgs e) {
 
         }
     }

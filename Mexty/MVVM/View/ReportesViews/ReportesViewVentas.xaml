@@ -54,8 +54,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Row="4" Content="Usuario" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
             <!--ComboUsuario-->
-            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboEmpleado" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400"/>
+            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboEmpleado" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400"/>
         </Grid>
 
         <Grid Grid.Row="5" Margin="50 020">
