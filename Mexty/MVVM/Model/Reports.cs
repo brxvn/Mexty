@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Data;
 using Mexty.MVVM.Model.DatabaseQuerys;
 using TextAlignment = iText.Layout.Properties.TextAlignment;
+using Border = iText.Layout.Borders.Border;
 
 namespace Mexty.MVVM.Model {
     public class Reports {
@@ -27,6 +28,8 @@ namespace Mexty.MVVM.Model {
 
         private readonly string _date = DateTime.Now.ToString("dd-MM-yy");
         private readonly string _dateNow = DateTime.Now.ToString("G");
+
+        private readonly int _fontSize = 5;
 
         private string sucursal = "";
         private string direccion = "";
@@ -44,8 +47,9 @@ namespace Mexty.MVVM.Model {
             
             Cell cell;
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileStream($"{path}{nombreDocumento}.pdf", FileMode.Create, FileAccess.Write)));
-            Document document = new Document(pdfDocument, PageSize.A7);
-            document.SetMargins(5, 5, 5, 5);
+            Rectangle pageSize = new Rectangle(125, 1000);
+            Document document = new Document(pdfDocument, new PageSize(pageSize));
+            document.SetMargins(0,0,0,0);
             
 
             Table header = new Table(2)
@@ -60,16 +64,16 @@ namespace Mexty.MVVM.Model {
             // This adds the image to the page
 
             cell = new();
-            cell.Add(image).SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+            cell.Add(image).SetBorder(Border.NO_BORDER);
             header.AddCell(cell);
 
             metaData
                .SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.RIGHT)
                .SetTextAlignment(TextAlignment.RIGHT)
-               .SetFontSize(6);
+               .SetFontSize(_fontSize);
 
             cell = new();
-            cell.SetBorder(iText.Layout.Borders.Border.NO_BORDER);
+            cell.SetBorder(Border.NO_BORDER);
             cell.Add(metaData);
             header.AddCell(cell);
 
@@ -83,6 +87,7 @@ namespace Mexty.MVVM.Model {
         }
 
         public void ReporteInventario() {
+            Cell cell;
             int idTienda = DatabaseInit.GetIdTienda();
 
             var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
@@ -113,15 +118,15 @@ namespace Mexty.MVVM.Model {
             table.SetWidth(UnitValue.CreatePercentValue(100));
 
             foreach (string columa in columnas) {
-                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(8)));
+                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
             }
 
             foreach (var item in data) {
-                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
+                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
+                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
             }
 
             document.Add(table);
@@ -152,15 +157,15 @@ namespace Mexty.MVVM.Model {
             table.SetWidth(UnitValue.CreatePercentValue(100));
 
             foreach (string columa in columnas) {
-                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(8)));
+                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
             }
 
             foreach (var item in data) {
-                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(_fontSize)));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(_fontSize)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
             }
 
             document.Add(table);
