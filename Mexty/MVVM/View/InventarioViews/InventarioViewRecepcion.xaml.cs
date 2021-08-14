@@ -118,7 +118,6 @@ namespace Mexty.MVVM.View.InventarioViews {
                 IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]), // Checar si no da problemas. <--
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
-                Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
 
 

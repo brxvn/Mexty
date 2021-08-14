@@ -120,7 +120,6 @@ namespace Mexty.MVVM.Model {
                 table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
                 table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
                 table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
                 table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
             }
 
@@ -159,7 +158,6 @@ namespace Mexty.MVVM.Model {
                 table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
                 table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
                 table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
                 table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
             }
 
@@ -170,7 +168,6 @@ namespace Mexty.MVVM.Model {
             MessageBox.Show(msg, "Reporte de sucursal Creado");
 
             Log.Debug("Reporte de inventario por sucursal creado");
-
 
         }
     }

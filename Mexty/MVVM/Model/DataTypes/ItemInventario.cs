@@ -37,7 +37,6 @@
         /// <summary>
         /// Cantidad de piezas del producto.
         /// </summary>
-        public int Piezas { get;set; }
 
         /// <summary>
         /// Cantidad en existencia del producto.

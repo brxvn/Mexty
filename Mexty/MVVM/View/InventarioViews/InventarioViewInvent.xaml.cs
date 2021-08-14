@@ -187,7 +187,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             SelectedItem = item;
             txtComentario.Text = item.Comentario;
             txtCantidad.Text = item.Cantidad.ToString();
-            txtPiezas.Text = item.Piezas.ToString();
 
             Guardar.IsEnabled = true;
         }
@@ -265,7 +264,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var newItem = new ItemInventario {
                 Comentario = txtComentario.Text,
                 Cantidad = int.Parse(txtCantidad.Text),
-                Piezas = int.Parse(txtPiezas.Text)
             };
 
             if (!Validar(newItem)) {
