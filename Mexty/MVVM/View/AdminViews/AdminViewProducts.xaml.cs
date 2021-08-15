@@ -289,7 +289,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var result = QuerysProductos.UpdateData(newProduct);
 
                 if (result <= 0) return;
-                var msg = $"Se actualizó el producto {newProduct.IdProducto} {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
+                var msg = $"Se actualizó el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha editado el producto de manera exitosa.");
             }

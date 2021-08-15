@@ -288,7 +288,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysUsuario.UpdateData(newUsuario);
                 if (res == 0) return;
                 
-                var msg = $"Se ha actualizado el usuario: {SelectedUser.Username}.";
+                var msg = $"Se ha actualizado el usuario: {SelectedUser.Username.ToUpper()}.";
                 MessageBox.Show(msg, "Usuario Actualizado");
                 Log.Debug("Se ha editado el usuario de manera exitosa.");
             }
@@ -317,7 +317,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     var res = QuerysUsuario.UpdateData(newUsuario);
                     if (res != 0) {
                         var msg =
-                            $"Se ha activado el usuario {newUsuario.Nombre} {newUsuario.ApPaterno} {newUsuario.ApMaterno}.";
+                            $"Se ha activado el usuario {newUsuario.Nombre.ToUpper()} {newUsuario.ApPaterno.ToUpper()} {newUsuario.ApMaterno.ToUpper()}.";
                         MessageBox.Show(msg, "Nuevo Usuario registrado.");
                         Log.Debug("Se ha activado el usuario exitosamente.");
                     }
