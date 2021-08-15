@@ -36,7 +36,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
@@ -83,7 +82,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                        p.nombre_producto, 
                        p.medida, 
                        i.ID_REGISTRO, 
-                       i.piezas, 
                        i.cantidad, 
                        i.comentario 
                 FROM   cat_producto p, 
@@ -101,7 +99,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                     };
@@ -188,7 +185,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                        p.nombre_producto, 
                        p.medida, 
                        i.ID_REGISTRO, 
-                       i.piezas, 
                        i.cantidad, 
                        i.comentario, 
                        i.ID_TIENDA 
@@ -210,7 +206,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
@@ -251,7 +246,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                        p.nombre_producto, 
                        p.medida, 
                        i.ID_REGISTRO, 
-                       i.piezas, 
                        i.cantidad, 
                        i.comentario, 
                        i.ID_TIENDA 
@@ -273,7 +267,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
                         Medida = reader.IsDBNull("medida") ? "" : reader.GetString("medida"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                     };
@@ -311,7 +304,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             var cmd = matriz ? @"
                 update inventario_matriz 
                 set ID_PRODUCTO=@idPX, 
-                    CANTIDAD=@cantidadX, PIEZAS=@piezasX, 
+                    CANTIDAD=@cantidadX, 
                     COMENTARIO=@comentario,
                     USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date 
                 where ID_REGISTRO=@idRX"
@@ -319,7 +312,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 @"
                 update inventario 
                 set ID_PRODUCTO=@idPX, 
-                    CANTIDAD=@cantidadX, PIEZAS=@piezasX, 
+                    CANTIDAD=@cantidadX, 
                     COMENTARIO=@comentario, ID_TIENDA=@idTX, 
                     USUARIO_MODIFICA=@usrM, FECHA_MODIFICA=@date 
                 where ID_REGISTRO=@idRX";
@@ -334,7 +327,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@tipo", item.TipoProducto);
             query.Parameters.AddWithValue("@med", item.Medida);
             query.Parameters.AddWithValue("@cantidadX", item.Cantidad.ToString());
-            query.Parameters.AddWithValue("@piezasX", item.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", item.Comentario);
             query.Parameters.AddWithValue("@idTX", IniFields.GetIdTiendaActual().ToString());
             query.Parameters.AddWithValue("@usrM", DatabaseInit.GetUsername());
@@ -377,24 +369,24 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 ? @"
                 insert into inventario_matriz 
                     (ID_REGISTRO, ID_PRODUCTO, 
-                     CANTIDAD, PIEZAS, 
+                     CANTIDAD, 
                      COMENTARIO, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
                 values (default, @idPX, 
-                        @cantidadX, @piezasX, 
+                        @cantidadX, 
                         @comentario, 
                         @usReg, @date, 
                         @usMod, @date)"
                 : @"
                 insert into inventario 
                     (ID_REGISTRO, ID_PRODUCTO, 
-                     CANTIDAD, PIEZAS, 
+                     CANTIDAD, 
                      COMENTARIO, ID_TIENDA, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica) 
                 values (default, @idPX, 
-                        @cantidadX, @piezasX, 
+                        @cantidadX, 
                         @comentario, @idTX, 
                         @usReg, @date, 
                         @usMod, @date)";
@@ -406,7 +398,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             query.Parameters.AddWithValue("@idPX", newItem.IdProducto.ToString());
             query.Parameters.AddWithValue("@cantidadX", newItem.Cantidad.ToString());
-            query.Parameters.AddWithValue("@piezasX", newItem.Piezas.ToString());
             query.Parameters.AddWithValue("@comentario", newItem.Comentario);
             query.Parameters.AddWithValue("@idTX", IniFields.GetIdTiendaActual().ToString());
             query.Parameters.AddWithValue("@usReg", DatabaseInit.GetUsername());

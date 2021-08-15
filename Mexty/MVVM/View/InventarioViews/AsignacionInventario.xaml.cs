@@ -72,15 +72,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void ProductoSelected(object sender, SelectionChangedEventArgs e) {
             var index = ComboNombre.SelectedIndex;
             var cantidad = ListaItems[index].Cantidad.ToString();
-            var piezas = ListaItems[index].Piezas.ToString();
 
             txtMedida.Text = ListaItems[index].Medida;
             txtTipo.Text = ListaItems[index].TipoProducto;
                     
             txtCantidadActual.Text = cantidad;
             txtCantidadPosterior.Text = cantidad;
-            txtPiezasActuales.Text = piezas;
-            txtPiezasPosterior.Text = piezas;
 
             txtPiezas.Text = "";
             txtCantidad.Text = "";
@@ -192,13 +189,11 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            var index = ComboNombre.SelectedIndex;
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
-            int piezasActual = ListaItems[index].Piezas;
-            int piezasRestantes = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
-            int resultado = piezasActual - piezasRestantes;
-            txtPiezasPosterior.Text = Math.Max(0, resultado).ToString();
+            // var index = ComboNombre.SelectedIndex;
+            // TextBox textbox = sender as TextBox;
+            // txtPiezas.Text = textbox.Text;
+            // int piezasRestantes = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+            //txtPiezasPosterior.Text = Math.Max(0, resultado).ToString();
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
@@ -230,7 +225,6 @@ namespace Mexty.MVVM.View.InventarioViews {
 
                     if (producto.IdProducto != int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0])) continue;
                     producto.Cantidad = cantiadadR;
-                    producto.Piezas = piezasR;
 
                     var res = QuerysInventario.UpdateData(producto, true);
                     if (res == 0) throw new Exception();
@@ -269,7 +263,6 @@ namespace Mexty.MVVM.View.InventarioViews {
                 var item = ListaItems[index];
                 if (item.IdProducto == id) {
                     cantidatR = item.Cantidad - cantidad;
-                    piezasR = item.Piezas - piezas;
                     return cantidatR >= 0 && piezasR >= 0;
                 }
             }

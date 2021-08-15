@@ -229,8 +229,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO,
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
                        c.PRECIO_MENUDEO, c.ACTIVO,
-                       c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO,
-                       i.PIEZAS, i.CANTIDAD
+                       c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
+                    i.CANTIDAD
                 FROM   cat_producto c, inventario i
                 WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO"
             };
@@ -243,7 +243,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
-                        Piezas = reader.IsDBNull("piezas") ? 0 : reader.GetInt32("piezas"),
                         //Dependencias = reader.IsDBNull("dependencias") ? 0 : reader.GetInt32("dependencias"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetDecimal("precio_menudeo"),

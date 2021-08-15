@@ -19,6 +19,11 @@ using System.Windows.Data;
 using Mexty.MVVM.Model.DatabaseQuerys;
 using TextAlignment = iText.Layout.Properties.TextAlignment;
 using Border = iText.Layout.Borders.Border;
+using System.Diagnostics;
+using System.Drawing.Printing;
+using System.Drawing;
+using Rectangle = iText.Kernel.Geom.Rectangle;
+using Image = iText.Layout.Element.Image;
 
 namespace Mexty.MVVM.Model {
     public class Reports {
@@ -29,7 +34,7 @@ namespace Mexty.MVVM.Model {
         private readonly string _date = DateTime.Now.ToString("dd-MM-yy");
         private readonly string _dateNow = DateTime.Now.ToString("G");
 
-        private readonly int _fontSize = 5;
+        private readonly int _fontSize = 12;
 
         private string sucursal = "";
         private string direccion = "";
@@ -37,6 +42,7 @@ namespace Mexty.MVVM.Model {
         private readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
         private readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
         private readonly string usuarioActivo = DatabaseInit.GetUsername();
+        private Font consola;
 
         public Reports() {
             Directory.CreateDirectory(_mainPath);
@@ -44,13 +50,12 @@ namespace Mexty.MVVM.Model {
             Directory.CreateDirectory(_SucursalesInventarioPath);
         }
         private Document CreateDocument(string nombreDocumento, Paragraph metaData, string titulo, string path) {
-            
+
             Cell cell;
             PdfDocument pdfDocument = new PdfDocument(new PdfWriter(new FileStream($"{path}{nombreDocumento}.pdf", FileMode.Create, FileAccess.Write)));
-            Rectangle pageSize = new Rectangle(125, 1000);
-            Document document = new Document(pdfDocument, new PageSize(pageSize));
-            document.SetMargins(0,0,0,0);
-            
+            Document document = new Document(pdfDocument, PageSize.A4);
+            document.SetMargins(20, 20, 20, 20);
+
 
             Table header = new Table(2)
                 .UseAllAvailableWidth()
@@ -59,7 +64,7 @@ namespace Mexty.MVVM.Model {
             // Load image from disk
             ImageData imageData = ImageDataFactory.Create(@"C:\Mexty\Brand\LogoReportes.png");
             // Create layout image object and provide parameters. Page number = 1
-            Image image = new Image(imageData).ScaleAbsolute(100, 30);
+            Image image = new Image(imageData).ScaleAbsolute(200, 60);
             image.SetHorizontalAlignment(iText.Layout.Properties.HorizontalAlignment.LEFT);
             // This adds the image to the page
 
@@ -73,7 +78,7 @@ namespace Mexty.MVVM.Model {
                .SetFontSize(_fontSize);
 
             cell = new();
-            cell.SetBorder(Border.NO_BORDER);
+            cell.SetBorder(Border.NO_BORDER );
             cell.Add(metaData);
             header.AddCell(cell);
 
@@ -81,13 +86,12 @@ namespace Mexty.MVVM.Model {
 
             document.Add(new Paragraph(titulo)
                .SetTextAlignment(TextAlignment.CENTER)
-               .SetFontSize(8));
+               .SetFontSize(_fontSize));
 
             return document;
         }
 
         public void ReporteInventario() {
-            Cell cell;
             int idTienda = DatabaseInit.GetIdTienda();
 
             var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
@@ -107,26 +111,25 @@ namespace Mexty.MVVM.Model {
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
 
             Paragraph p = new Paragraph().Add(texto);
-            
+
 
             var document = CreateDocument(nombreReporte, p, tituloReporte, path);
 
-            string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Piezas", "Cantidad" };
-            float[] tamaños = { 1, 3, 3, 1, 1 };
+            string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Cantidad" };
+            float[] tamaños = { 1, 3, 3, 1 };
 
             Table table = new Table(UnitValue.CreatePercentArray(tamaños));
             table.SetWidth(UnitValue.CreatePercentValue(100));
 
             foreach (string columa in columnas) {
-                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
+                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
             }
 
             foreach (var item in data) {
-                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
-                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
-                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(_fontSize)).SetBorder(Border.NO_BORDER));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
-                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)).SetBorder(Border.NO_BORDER));
+                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(_fontSize)));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(_fontSize)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
             }
 
             document.Add(table);
@@ -136,11 +139,73 @@ namespace Mexty.MVVM.Model {
             MessageBox.Show(msg, "Reporte Creado");
 
             Log.Debug("Reporte de inventario creado");
+
+            PrintDocument pd = new PrintDocument();
+            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+            consola = new Font("Courier New", 8);
+            //Create a PrintDocument object  
+            //Add PrintPage event handler  
+            pd.PrintPage += new PrintPageEventHandler(this.ReporteInventarioImprimir);
+            //Call Print Method  
+            pd.Print();
+        }
+
+        private void ReporteInventarioImprimir(object sender, PrintPageEventArgs ppeArgs) {
+            var data = QuerysInventario.GetItemsFromInventario();
+            System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
+            System.Drawing.Point ulCorner = new System.Drawing.Point(0, 0);
+            var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
+
+
+            //Get the Graphics object  
+            Graphics g = ppeArgs.Graphics;
+            float linesPerPage = 0;
+            float yPos = 70;
+            int count = 0;
+            //Read margins from PrintPageEventArgs  
+            float leftMargin = 0;
+            string type = null;
+            string name = null;
+            int renglon = 18;
+            g.DrawImage(image, ulCorner);
+
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
+            renglon += 18;
+            g.DrawString("   REPORTE DE INVENTARIO   ", consola, Brushes.Black, leftMargin, yPos + renglon - 9);
+            renglon += 18;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 9);
+            renglon += 18;
+            g.DrawString($"Sucursal: {sucursal.ToUpper()} ", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 18;
+            g.DrawString($"Dir: {direccion.ToUpper()} ", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 18;
+            g.DrawString($"Usuario: {usuarioActivo} ", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 18;
+            g.DrawString($"Fecha: {_dateNow} ", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 18;
+
+            g.DrawString("ID Tipo      Nombre    Pzas", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
+            renglon += 18;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
+            float topMargin = 75 + renglon;
+            foreach (var item in data) {
+                type = null;
+                name = null;
+                if (item.TipoProducto == "Paleta Agua" || item.TipoProducto == "Paleta Leche" || item.TipoProducto == "Paleta Fruta") {
+                    type = item.TipoProducto[..9];
+                }
+                else type = item.TipoProducto;
+
+                name = item.NombreProducto.Length >= 10 ? item.NombreProducto[..10] : item.NombreProducto;
+                yPos = topMargin + (count * consola.GetHeight(g));
+                g.DrawString(string.Format("{0,2} {1,-9} {2,-10} {3,3}", item.IdProducto, type, name, item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
+                count++;
+            }
         }
 
         public void ReportXSucursal(int idTienda, string nombreTienda, string direccion) {
             var data = QuerysInventario.GetItemsFromInventarioById(idTienda);
-            
+
 
             string path = $"{_SucursalesInventarioPath}";
             string nombreReporte = $"Reporte-{nombreTienda}-{_date}";
@@ -161,11 +226,10 @@ namespace Mexty.MVVM.Model {
             }
 
             foreach (var item in data) {
-                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(_fontSize)));
-                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(_fontSize)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Piezas.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.IdProducto.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
+                table.AddCell(new Cell().Add(new Paragraph(item.TipoProducto.ToString()).SetFontSize(8)));
+                table.AddCell(new Cell().Add(new Paragraph(item.NombreProducto.ToString()).SetFontSize(8)));
+                table.AddCell(new Cell().Add(new Paragraph(item.Cantidad.ToString()).SetFontSize(8).SetTextAlignment(TextAlignment.CENTER)));
             }
 
             document.Add(table);
@@ -175,7 +239,6 @@ namespace Mexty.MVVM.Model {
             MessageBox.Show(msg, "Reporte de sucursal Creado");
 
             Log.Debug("Reporte de inventario por sucursal creado");
-
 
         }
     }

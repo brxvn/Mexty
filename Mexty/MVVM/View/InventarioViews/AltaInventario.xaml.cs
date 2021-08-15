@@ -158,7 +158,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var newProduct = new ItemInventario() {
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
-                Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
 
             // Obtenemos el id el producto del string del combobox
