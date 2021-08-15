@@ -11,7 +11,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
     /// Clase que contiene las consultas a la base de datos de las tablas de Rol.
     /// </summary>
-    public class QuerysRol {
+    public static class QuerysRol {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
 

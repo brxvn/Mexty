@@ -11,7 +11,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
     /// Clase que se encarga de hacer las consultas a la base de datos del modulo de ventas.
     /// </summary>
-    public class QuerysVentas {
+    public static class QuerysVentas {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
