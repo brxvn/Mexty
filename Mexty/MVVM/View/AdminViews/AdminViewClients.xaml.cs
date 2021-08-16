@@ -249,7 +249,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysClientes.NewClient(newClient);
                 if (res == 0) return;
                 var name = char.ToUpper(newClient.Nombre[0]) + newClient.Nombre[1..] + " " + char.ToUpper(newClient.ApPaterno[0]) + newClient.ApPaterno[1..];
-                var msg = $"Se ha dado de alta el cliente {name}.";
+                var msg = $"Se ha dado de alta el cliente {name.ToUpper()}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
                 Log.Debug("Se ha actualizado el cliente exitosamente.");
 
@@ -274,7 +274,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysClientes.UpdateData(newClient);
                 if (res == 0) return;
                 
-                var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre.ToUpper()}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
                 Log.Debug("Se ha editado el cliente exitosamente.");
             }
@@ -301,7 +301,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     var res = QuerysClientes.UpdateData(newClient);
                     if (res != 0) {
                         var msg =
-                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre}.";
+                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre.ToUpper()}.";
                         MessageBox.Show(msg, "Cliente Actualizado");
                         Log.Debug("Se ha activado el cliente de manera exitosa.");
                     }
@@ -351,7 +351,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarCliente(object sender, RoutedEventArgs e) {
             var cliente = SelectedClient;
             var mensaje =
-                $"¿Seguro que quiere eliminar al cliente {cliente.Nombre} {cliente.ApPaterno} {cliente.ApMaterno}";
+                $"¿Seguro que quiere eliminar al cliente {cliente.Nombre} {cliente.ApPaterno.ToUpper()} {cliente.ApMaterno.ToUpper()}";
 
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;

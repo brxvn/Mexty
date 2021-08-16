@@ -255,7 +255,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysSucursales.NewSucursal(newSucursal);
                 if (res == 0) return;
                 
-                var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda}.";
+                var msg = $"Se ha dado de alta la sucursal {newSucursal.NombreTienda.ToUpper()}.";
                 MessageBox.Show(msg, "Nueva Sucursal Guardada");
                 Log.Debug("Alta exitosa de sucursal");
             }
@@ -278,7 +278,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 var res = QuerysSucursales.UpdateData(newSucursal);
                 if (res == 0) return;
 
-                var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                var msg = $"Se ha actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda.ToUpper()}.";
                 MessageBox.Show(msg, "Sucursal Actualizada");
                 Log.Debug("Edición de sucursal exitosa.");
             }
@@ -308,7 +308,7 @@ namespace Mexty.MVVM.View.AdminViews {
                      var res = QuerysSucursales.UpdateData(newSucursal);
                      if (res != 0) {
                         var msg =
-                            $"Se ha activado y actualizado el cliente {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda}.";
+                            $"Se ha activado y actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda.ToUpper()}.";
                         MessageBox.Show(msg, "Cliente Actualizado");
                         Log.Debug("Se ha activado la sucursal de manera exitosa.");
                      }
@@ -358,7 +358,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarEstablecimiento(object sender, RoutedEventArgs e) {
             Log.Debug("Presionado eliminar establecimiento.");
             var sucursal = SelectedSucursal;
-            var mensaje = $"¿Seguro quiere eliminar la sucursal {sucursal.NombreTienda}?";
+            var mensaje = $"¿Seguro quiere eliminar la sucursal {sucursal.NombreTienda.ToUpper()}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 

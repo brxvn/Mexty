@@ -105,7 +105,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda==DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -211,6 +211,33 @@ namespace Mexty.MVVM.View.VentasViews {
                 ticket.ImprimirTicketVenta();
                 if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
+
+                // por cada producto en la cuenta.
+                for (var index = 0; index < VentaActual.DetalleVentaList.Count; index++) {
+                    var item = VentaActual.DetalleVentaList[index];
+
+                    var dependencias = item.Dependencias;
+                    if (dependencias != "") {
+                        // Si es producto compuesto.
+                        QuerysVentas.UpdateInventario(item.IdProducto,
+                            item.CantidadDependencias); // descontamos el producto compuesto
+
+                        // convertimos el string a una lista de objetos con las dependencias del producto compuesto
+                        var dependenciasToList = Producto.DependenciasToList(dependencias);
+                        for (var i = 0; i < dependenciasToList.Count; i++) {
+                            var dependencia = dependenciasToList[i];
+                            QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
+                                // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                dependencia.CantidadDependencia * item.CantidadDependencias);
+                        }
+                    }
+                    else {
+                        // No es producto compuesto
+                        var res1 = QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
+                        if (res1 == 0) throw new Exception();
+                    }
+                }
+
                 ClearFields();
                 ListaVenta.Clear();
 

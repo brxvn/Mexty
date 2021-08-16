@@ -24,6 +24,7 @@
         /// </summary>
         public string TipoProducto { get; set; }
 
+
         /// <summary>
         /// EL nombre del producto.
         /// </summary>
@@ -35,13 +36,14 @@
         public string Medida { get; set; } 
 
         /// <summary>
-        /// Cantidad de piezas del producto.
-        /// </summary>
-
-        /// <summary>
         /// Cantidad en existencia del producto.
         /// </summary>
         public int Cantidad { get; set; }
+
+        /// <summary>
+        /// Lista codificada de dependecias del producto.
+        /// </summary>
+        public string Dependencias { get; set; }
 
         /// <summary>
         /// Comentario del producto.
