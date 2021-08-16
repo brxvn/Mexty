@@ -8,7 +8,7 @@
              xmlns:viewmodel="clr-namespace:Mexty.MVVM.Model.DataTypes" 
              xmlns:viewmodel1="clr-namespace:Mexty.MVVM.Model.DataTypes" d:DataContext="{d:DesignInstance Type=viewmodel1:Venta}"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" TextInput="GetIDScanner">
+             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" TextInput="GetIDScanner" TabIndex="2147483639">
     <Grid Background="#7f233a">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -123,7 +123,7 @@
                 </Grid.RowDefinitions>
 
                 <!--DataProcuts-->
-                <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
+                <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" TabIndex="-1" Focusable="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".35*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
@@ -175,10 +175,10 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTemplateColumn Width=".3*">
+                        <DataGridTemplateColumn Width=".3*" CanUserReorder="False" CanUserResize="False"> 
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="AddProduct">
+                                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="AddProduct" IsTabStop="False">
                                         <fa:FontAwesomeIcon SolidIcon="Plus"/>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
@@ -186,17 +186,19 @@
                                                 <Setter Property="Foreground" Value="Black"/>
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <Setter Property="FontSize" Value="20"/>
+                                                <Setter Property="IsTabStop" Value="False"/>
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="{x:Type Button}">
                                                             <Border x:Name="Border" Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
                                                                     <Setter Property="Background" Value="Transparent" TargetName="Border" />
                                                                     <Setter Property="Foreground" Value="LightGreen"/>
                                                                     <Setter Property="FontSize" Value="25"/>
+                                                                    <Setter Property="IsTabStop" Value="False"/>
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
@@ -217,44 +219,19 @@
                         <ColumnDefinition Width="auto"/>
                         <ColumnDefinition MaxWidth="200"/>
                     </Grid.ColumnDefinitions>
-                    <Label Content="ID Producto:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="0"/>
-
-                    <!--<TextBox Grid.Column="1" Background="Beige" Foreground="Gray" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="25" BorderThickness="0" BorderBrush="Transparent" FontSize="20" VerticalContentAlignment="Center" Padding="5 0" x:Name="txtID" PreviewKeyDown="txtID_PreviewKeyDown">
-                        <TextBox.Style>
-                            <Style TargetType="TextBox">
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="true">
-                                        <Setter Property="BorderBrush" Value="#fac034"/>
-                                    </Trigger>
-                                    <Trigger Property="IsFocused" Value="true">
-                                        <Setter Property="BorderBrush"  Value="#fac034"/>
-                                    </Trigger>
-                                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                                        <Setter Property="BorderBrush" Value="#fac034"/>
-                                    </Trigger>
-                                    <Trigger Property="IsReadOnly" Value="True">
-                                        <Setter Property="BorderBrush" Value="LightGray"/>
-                                        <Setter Property="Foreground" Value="Gray" />
-                                        <Setter Property="Background" Value="LightGray"/>
-                                        <Setter Property="ToolTip" Value="No se puede editar este campo"/>
-                                        <Setter Property="Cursor" Value="Arrow"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBox.Style>
-                    </TextBox>-->
-                    <!--txtCantidad-->
+                    <Label Content="ID Producto:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="0" Visibility="Collapsed"/>
                     <TextBox Background="Beige"
                      x:Name="txtID"
+                     TabIndex="1"
                      Grid.Column="1"
                      CharacterCasing="Upper"
                      HorizontalAlignment="left"
                      Width="100"
                      PreviewKeyDown="txtID_PreviewKeyDown"
                      PreviewTextInput="OnlyNumbersValidation"
-                     TextChanged="txtIDChanged"
                      MaxLength="10"
-                     Margin="10 0">
+                     Margin="10 0"
+                     Visibility="Visible">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Style.Setters>
@@ -330,7 +307,7 @@
                     </TextBox>
 
 
-                    <Label Content="Cantidad:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="2"/>
+                    <Label Content="Cantidad:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="2" Visibility="Collapsed"/>
                     <!--txtCantidad-->
                     <TextBox Background="Beige"
                      x:Name="txtCantidad"
@@ -338,11 +315,11 @@
                      CharacterCasing="Upper"
                      HorizontalAlignment="left"
                      Width="100"
-                     PreviewKeyDown="txtCantidad_PreviewKeyDown"
                      PreviewTextInput="OnlyNumbersValidation"
                      TextChanged="txtCantidadUpdate"
                      MaxLength="5"
-                     Margin="10 0">
+                     Margin="10 0"
+                             Visibility="Collapsed">
                         <TextBox.Style>
                             <Style TargetType="TextBox">
                                 <Style.Setters>
@@ -363,7 +340,6 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="5"
                                                      CharacterCasing="Upper"
-                                                     PreviewKeyDown="txtCantidad_PreviewKeyDown"
                                                      PreviewTextInput="OnlyNumbersValidation"
                                                      TextChanged="txtCantidadUpdate"/>
 
@@ -439,9 +415,8 @@
                         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 
                         <!--DataPedido-->
-                        <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataVenta" Grid.Row="1" Margin="10"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="None">
+                        <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataVenta" Grid.Row="1" Margin="10"  SelectionChanged="ItemSelected" IsReadOnly="False" SelectionMode="Single" SelectionUnit="Cell" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="None" PreviewKeyDown="DataVenta_PreviewKeyDown" IsTabStop="False">
                             <DataGrid.Columns>
-
                                 <DataGridTextColumn Binding="{Binding TipoProducto}" Width="*"  CellStyle="{DynamicResource DisableSelection}">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="{x:Type TextBlock}">
@@ -452,7 +427,7 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                                <DataGridTextColumn Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}" IsReadOnly="True">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Margin" Value="5" />
@@ -462,7 +437,7 @@
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding CantidadDependencias, StringFormat=x{0}}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                                <DataGridTextColumn Binding="{Binding Path=CantidadDependencias, StringFormat=x{0}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="*" CellStyle="{DynamicResource DisableSelection1}" IsReadOnly="False" FontSize="20">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Margin" Value="5" />
@@ -527,7 +502,7 @@
                         <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
                         <!--txtRecibido-->
                         <Label Content="Recibido:" Grid.Row="3" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True"/>
+                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" TabIndex="2" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" PreviewKeyDown="txtRecibido_PreviewKeyDown"/>
 
                         <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 

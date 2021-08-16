@@ -196,6 +196,9 @@
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                 <Setter Property="BorderBrush" Value="Transparent"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                
             </Trigger>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -206,7 +209,7 @@
                 <Setter Property="BorderBrush" Value="Beige"/>
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}}"/>
             </MultiTrigger>
-            <Trigger Property="IsEnabled" Value="false">
+            <Trigger Property="IsEnabled" Value="True">
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
             </Trigger>
         </Style.Triggers>
@@ -214,6 +217,12 @@
     
     <Style x:Key="DisableSelection" TargetType="DataGridCell">
         <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+    </Style>
+    <Style x:Key="DisableSelection1" TargetType="DataGridCell">
+        <Setter Property="Focusable" Value="True"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>

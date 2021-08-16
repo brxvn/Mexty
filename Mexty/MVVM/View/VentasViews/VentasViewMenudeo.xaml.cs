@@ -4,19 +4,11 @@ using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace Mexty.MVVM.View.VentasViews {
@@ -35,7 +27,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
-        private List<ItemInventario> ListaVenta = new();
+        public List<ItemInventario> ListaVenta = new();
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
@@ -194,7 +186,11 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="e"></param>
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
+            ProcesarVenta();
 
+        }
+
+        private void ProcesarVenta() {
             try {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
@@ -228,7 +224,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         for (var i = 0; i < dependenciasToList.Count; i++) {
                             var dependencia = dependenciasToList[i];
                             QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
-                                // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                                                                  // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
                                 dependencia.CantidadDependencia * item.CantidadDependencias);
                         }
                     }
@@ -373,7 +369,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private void txtIDChanged(object sender, TextChangedEventArgs e) {
             TextBox textBox = sender as TextBox;
-            txtID.Text = textBox.Text;
+            txtID.Text = textBox.Text.Trim();
         }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
@@ -386,18 +382,11 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private void txtID_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
+                AddFromScannerToGrid(txtID.Text, "0");
                 var id = int.Parse(txtID.Text);
                 txtID.Text = id.ToString();
-                Keyboard.Focus(txtCantidad);
-            }
-        }
-
-        private void txtCantidad_PreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Return) {
-                Keyboard.Focus(txtTotal);
-                AddFromScannerToGrid(txtID.Text, txtCantidad.Text);
                 txtID.Text = "";
-                txtCantidad.Text = "";
+                Keyboard.Focus(txtID);
             }
         }
 
@@ -426,10 +415,54 @@ namespace Mexty.MVVM.View.VentasViews {
                     DataVenta.ItemsSource = null;
                     DataVenta.ItemsSource = ListaVenta;
 
-                    Keyboard.Focus(txtRecibido);
+                    Keyboard.Focus(txtID);
                     TotalVenta();
                     CambioVenta();
                 }
+            }
+        }
+
+        private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Return) {
+                ChangeCantidad();
+            }
+        }
+
+        private void ChangeCantidad() {
+            var cellInfo = DataVenta.SelectedCells[0];
+            var content = cellInfo.Column.GetCellContent(cellInfo.Item);
+            var item2 = cellInfo.Item as ItemInventario;
+            var nuevaCantidad = int.Parse((content as TextBox).Text.Trim('x'));
+
+            foreach (var item in ListaProductos) {
+                if (item.IdProducto == item2.IdProducto) {
+
+                    if (ListaVenta.Contains(item)) {
+                        if (nuevaCantidad != 0) {
+                            item.CantidadDependencias = nuevaCantidad;
+                        }
+                        else if (nuevaCantidad == 0) ListaVenta.Remove(item);
+                        else {
+                            item.CantidadDependencias += 1;
+                        }
+                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                    }
+
+
+                    DataVenta.ItemsSource = null;
+                    DataVenta.ItemsSource = ListaVenta;
+
+                    Keyboard.Focus(txtID);
+                    TotalVenta();
+                    CambioVenta();
+                }
+            }
+        }
+
+        private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Return) {
+                Log.Debug("Enter en el recibido, se procede a procesar la venta.");
+                ProcesarVenta();
             }
         }
     }
