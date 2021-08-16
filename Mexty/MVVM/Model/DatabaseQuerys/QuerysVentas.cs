@@ -219,6 +219,10 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
         }
 
+        /// <summary>
+        /// query que obtiene los productos disponibles para ventas menudeo.
+        /// </summary>
+        /// <returns></returns>
         public static List<ItemInventario> GetListaInventarioVentasMenudeo() {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
@@ -226,7 +230,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             var query = new MySqlCommand() {
                 Connection = connObj,
                 CommandText = @"
-                SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO,
+                SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO, i.ID_REGISTRO,
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
                        c.PRECIO_MENUDEO, c.ACTIVO,
                        c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
@@ -241,13 +245,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 while (reader.Read()) {
                     var item = new ItemInventario() {
                         IdProducto = reader.IsDBNull("id_producto") ? 0 : reader.GetInt32("id_producto"),
+                        IdRegistro = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
                         TipoProducto = reader.IsDBNull("tipo_producto") ? "" : reader.GetString("tipo_producto"),
                         NombreProducto = reader.IsDBNull("nombre_producto") ? "" : reader.GetString("nombre_producto"),
-                        //Dependencias = reader.IsDBNull("dependencias") ? 0 : reader.GetInt32("dependencias"),
+                        Dependencias = reader.IsDBNull("dependencias") ? "" : reader.GetString("dependencias"),
                         Cantidad = reader.IsDBNull("cantidad") ? 0 : reader.GetInt32("cantidad"),
                         PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetDecimal("precio_menudeo"),
                         PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetDecimal("precio_mayoreo"),
-                        //Comentario = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
+                        Comentario = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                     };
                     items.Add(item);
                 }
@@ -269,6 +274,52 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
 
             return items;
+        }
+
+        /// <summary>
+        /// Método que descuenta la cantidad guardada en inventario cuando se hace una venta.
+        /// </summary>
+        /// <param name="idProducto">Id de producto del articulo.</param>
+        /// <param name="cantidad">Cantidad a descontar, por defecto 1.</param>
+        /// <returns></returns>
+        public static int UpdateInventario(int idProducto, int cantidad = 1) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"
+                update inventario inv 
+                inner join inventario inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
+                set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
+                where inv.ID_PRODUCTO = @idX and inv.ID_TIENDA=@idTX"
+            };
+
+            query.Parameters.AddWithValue("@cantidadX", cantidad.ToString());
+            query.Parameters.AddWithValue("@idX", idProducto.ToString());
+            query.Parameters.AddWithValue("@idTX", DatabaseInit.GetIdTienda().ToString());
+
+            try {
+                QuerysDatabase.ProcessQuery(query);
+                Log.Debug("Se ha guardado la query.");
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha actualizado la exitencia de un articulo.");
+                return res;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al actualizar la exitencia de un articulo.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
         }
     }
 }

@@ -189,6 +189,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: necesitas asignar un valor de recibido a la venta.");
+                    return;
                 }
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
@@ -197,7 +198,31 @@ namespace Mexty.MVVM.View.VentasViews {
                 var res = QuerysVentas.NewItem(VentaActual);
                 if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
+
+                // por cada producto en la cuenta.
+                foreach (var item in VentaActual.DetalleVentaList) {
+                    var dependencias = item.Dependencias;
+                    if (dependencias != "") {
+                        // Si es producto compuesto.
+                        QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias); // descontamos el producto compuesto
+
+                        // convertimos el string a una lista de objetos con las dependencias del producto compuesto
+                        var dependenciasToList = Producto.DependenciasToList(dependencias);
+                        foreach (var dependencia in dependenciasToList) {
+                            QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
+                                // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                dependencia.CantidadDependencia * item.CantidadDependencias);
+                        }
+                    }
+                    else {
+                        // No es producto compuesto
+                        var res1 =QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
+                        if (res1 == 0) throw new Exception();
+                    }
+                }
+
                 ClearFields();
+                FillData();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
