@@ -38,6 +38,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static bool ConnectionSuccess { get; set; }
 
         /// <summary>
+        /// <c>bool</c> true si este usuario tiene asignada matriz.
+        /// </summary>
+        private static bool MatrizAsigned { get; set; }
+
+        /// <summary>
         /// Método que se encarga del inicio de sesión al programa.
         /// </summary>
         /// <param name="username"><c>string</c> conteniendo el nombre de usuario.</param>
@@ -60,6 +65,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 if (fistQuery.HasRows) {
                     InitializeFields(fistQuery);
                     ValidateIdTienda();
+                    CheckMatriz();
                     Log.Info("Se ha iniciado sesión de manera exitosa.");
                     return true;
                 }
@@ -151,6 +157,47 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
         }
 
+
+        /// <summary>
+        /// Método que checa si el usuario loggeado esta asignado a matriz.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private static void CheckMatriz() {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = "select ID_TIENDA from cat_tienda where TIPO_TIENDA='Matriz' and ID_TIENDA=@id"
+            };
+            query.Parameters.AddWithValue("@id", IdTienda.ToString());
+
+            try {
+                var res = query.ExecuteReader();
+
+                if (!res.HasRows) {
+                    MatrizAsigned = false;
+                    Log.Info("Este usuario no esta asignado a matriz.");
+                }
+                else {
+                    MatrizAsigned = true;
+                }
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al validar el id tienda asignado al usuario.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
         /// <summary>
         /// Método que limpia todos los datos obtenidos de la base de datos.
         /// </summary>
@@ -191,6 +238,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <returns>Un <c>int</c> con el Id de tienda.</returns>
         public static int GetIdTienda() {
             return IdTienda;
+        }
+
+        /// <summary>
+        /// Método para saber si el usuario logueado tiene acceso a los campos de matriz.
+        /// </summary>
+        /// <returns></returns>
+        public static bool GetMatrizEnabled() {
+            return MatrizAsigned;
         }
     }
 }

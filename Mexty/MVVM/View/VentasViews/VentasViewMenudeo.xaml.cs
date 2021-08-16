@@ -51,6 +51,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 InitializeComponent();
                 FillData();
                 NewVenta();
+                ClearFields();
                 Log.Debug("Se han inicializado los campos de ventas menudeo.");
 
                 DispatcherTimer timer = new DispatcherTimer();
@@ -97,7 +98,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.IdTienda==DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda!=DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -127,7 +128,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 var noNull = new Predicate<object>(producto =>
                 {
                     if (producto == null) return false;
-                    return true;
+                    return ((Producto)producto).Activo == 1;
                 });
 
                 collection.Filter += noNull;
@@ -273,13 +274,13 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
-            producto = (ItemInventario)((Button)e.Source).DataContext;
+            var producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias += 1;
-                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
+                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -295,7 +296,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            producto = (ItemInventario)((Button)e.Source).DataContext;
+            var producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias -= 1;
@@ -391,7 +392,7 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void AddFromScannerToGrid(string id, string cant) {
-            var idProdutco = int.Parse(id);
+            var idProdutco = id == "" ? 0 : int.Parse(id);
             var cantidadProducto = cant == "" ? 0 : int.Parse(cant);
 
             foreach (var item in ListaProductos) {
