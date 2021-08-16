@@ -24,6 +24,10 @@
         /// </summary>
         public string TipoProducto { get; set; }
 
+        /// <summary>
+        /// Tipo de venta del producto.
+        /// </summary>
+        public int TipoVenta { get;set; }
 
         /// <summary>
         /// EL nombre del producto.
