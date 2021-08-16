@@ -105,7 +105,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto && producto.IdTienda==DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto //&& producto.IdTienda==DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -201,6 +201,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
+                    return;
                 }
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
@@ -239,8 +240,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 }
 
                 ClearFields();
-                ListaVenta.Clear();
-
+                FillData();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
