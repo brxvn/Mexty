@@ -64,6 +64,8 @@ namespace Mexty.MVVM.Model {
             cell.SetPaddingLeft(10);
 
             return cell;
+
+            
         }
 
 

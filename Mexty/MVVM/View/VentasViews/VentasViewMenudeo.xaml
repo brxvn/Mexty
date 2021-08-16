@@ -8,7 +8,7 @@
              xmlns:viewmodel="clr-namespace:Mexty.MVVM.Model.DataTypes" 
              xmlns:viewmodel1="clr-namespace:Mexty.MVVM.Model.DataTypes" d:DataContext="{d:DesignInstance Type=viewmodel1:Venta}"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920">
+             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" TextInput="GetIDScanner">
     <Grid Background="#7f233a">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
+
             <Label Content="Elige los Productos"
                FontSize="40"
                VerticalContentAlignment="Center"
@@ -121,7 +121,7 @@
                     <RowDefinition MaxHeight="400"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <!--DataProcuts-->
                 <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
                     <DataGrid.Columns>
@@ -210,6 +210,213 @@
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
                 </DataGrid>
+                <Grid Grid.Row="2" Margin="0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition MaxWidth="200"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition MaxWidth="200"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="ID Producto:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="0"/>
+
+                    <!--<TextBox Grid.Column="1" Background="Beige" Foreground="Gray" Margin="10" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="25" BorderThickness="0" BorderBrush="Transparent" FontSize="20" VerticalContentAlignment="Center" Padding="5 0" x:Name="txtID" PreviewKeyDown="txtID_PreviewKeyDown">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="true">
+                                        <Setter Property="BorderBrush" Value="#fac034"/>
+                                    </Trigger>
+                                    <Trigger Property="IsFocused" Value="true">
+                                        <Setter Property="BorderBrush"  Value="#fac034"/>
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                        <Setter Property="BorderBrush" Value="#fac034"/>
+                                    </Trigger>
+                                    <Trigger Property="IsReadOnly" Value="True">
+                                        <Setter Property="BorderBrush" Value="LightGray"/>
+                                        <Setter Property="Foreground" Value="Gray" />
+                                        <Setter Property="Background" Value="LightGray"/>
+                                        <Setter Property="ToolTip" Value="No se puede editar este campo"/>
+                                        <Setter Property="Cursor" Value="Arrow"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>-->
+                    <!--txtCantidad-->
+                    <TextBox Background="Beige"
+                     x:Name="txtID"
+                     Grid.Column="1"
+                     CharacterCasing="Upper"
+                     HorizontalAlignment="left"
+                     Width="100"
+                     PreviewKeyDown="txtID_PreviewKeyDown"
+                     PreviewTextInput="OnlyNumbersValidation"
+                     TextChanged="txtIDChanged"
+                     MaxLength="10"
+                     Margin="10 0">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type TextBox}">
+                                                <Border ToolTip="Cantidad disponible" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
+                                                    <Grid>
+                                                        <Rectangle StrokeThickness="1"/>
+                                                        <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     MaxLength="10"
+                                                     CharacterCasing="Upper"
+                                                     PreviewKeyDown="txtID_PreviewKeyDown"
+                                                     PreviewTextInput="OnlyNumbersValidation"
+                                                     TextChanged="txtIDChanged"/>
+
+                                                        <TextBlock IsHitTestVisible="False"
+                                                       Text="ID"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="{x:Type TextBlock}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsReadOnly" Value="True">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                        <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                        <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                        <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+
+
+                    <Label Content="Cantidad:" FontSize="25" Foreground="AntiqueWhite" Grid.Column="2"/>
+                    <!--txtCantidad-->
+                    <TextBox Background="Beige"
+                     x:Name="txtCantidad"
+                     Grid.Column="3"
+                     CharacterCasing="Upper"
+                     HorizontalAlignment="left"
+                     Width="100"
+                     PreviewKeyDown="txtCantidad_PreviewKeyDown"
+                     PreviewTextInput="OnlyNumbersValidation"
+                     TextChanged="txtCantidadUpdate"
+                     MaxLength="5"
+                     Margin="10 0">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Style.Setters>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="{x:Type TextBox}">
+                                                <Border ToolTip="Cantidad disponible" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
+                                                    <Grid>
+                                                        <Rectangle StrokeThickness="1"/>
+                                                        <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="Gray"
+                                                     FontSize="15"
+                                                     x:Name="SearchBox"
+                                                     MaxLength="5"
+                                                     CharacterCasing="Upper"
+                                                     PreviewKeyDown="txtCantidad_PreviewKeyDown"
+                                                     PreviewTextInput="OnlyNumbersValidation"
+                                                     TextChanged="txtCantidadUpdate"/>
+
+                                                        <TextBlock IsHitTestVisible="False"
+                                                       Text="Cantidad"
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="gray"
+                                                       Grid.Column="1">
+
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="{x:Type TextBlock}">
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                    <Setter Property="Visibility" Value="Hidden"/>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsFocused" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsReadOnly" Value="True">
+                                                        <Setter Property="BorderBrush" TargetName="border" Value="LightGray"/>
+                                                        <Setter Property="Foreground" Value="Gray" TargetName="SearchBox"/>
+                                                        <Setter Property="Background" Value="LightGray" TargetName="border"/>
+                                                        <Setter Property="ToolTip" Value="No se puede editar este campo" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="border"/>
+                                                        <Setter Property="Cursor" Value="Arrow" TargetName="SearchBox"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style.Setters>
+
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
+                </Grid>
             </Grid>
 
             <Grid Grid.Column="1">
@@ -338,11 +545,11 @@
 
                     <Button x:Name="Cancelar" Grid.Column="0" Content="Cancelar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="Cancelar_Click"  IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
 
-                    <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+                    <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Pagar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
                 </Grid>
             </Grid>
         </Grid>
-        
+
         <Label Name="time" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
     </Grid>
 </UserControl>

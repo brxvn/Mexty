@@ -1,4 +1,5 @@
 ﻿using log4net;
+using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System;
@@ -37,9 +38,16 @@ namespace Mexty.MVVM.View.VentasViews {
         private List<ItemInventario> ListaVenta = new();
 
         /// <summary>
+        /// Lista de productos dada por la base de datos.
+        /// </summary>
+        private List<ItemInventario> ListaProductos = new();
+
+        /// <summary>
         /// Venta actual en pantalla.
         /// </summary>
         private Venta VentaActual { get; set; }
+
+        private ItemInventario producto = new();
 
         /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
@@ -51,8 +59,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 InitializeComponent();
                 FillData();
                 NewVenta();
-                ClearFields();
-
                 Log.Debug("Se han inicializado los campos de ventas menudeo.");
 
                 DispatcherTimer timer = new DispatcherTimer();
@@ -64,6 +70,8 @@ namespace Mexty.MVVM.View.VentasViews {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
                 Log.Error($"Error: {e.Message}");
             }
+            ClearFields();
+
         }
 
         /// <summary>
@@ -95,11 +103,14 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private void FillData() {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
+            ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
                 Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
+            Keyboard.Focus(txtID);
+
             Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
         }
 
@@ -124,7 +135,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 var noNull = new Predicate<object>(producto =>
                 {
                     if (producto == null) return false;
-                    return ((Producto)producto).Activo == 1;
+                    return true;
                 });
 
                 collection.Filter += noNull;
@@ -143,11 +154,11 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
-            var producto = (Producto)obj;
+            var producto = (ItemInventario)obj;
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
-                return producto.Activo == 1;
+                return true;
             }
             return false;
         }
@@ -173,6 +184,7 @@ namespace Mexty.MVVM.View.VentasViews {
             VentaActual = new Venta();
             TotalVenta();
             CambioVenta();
+            Keyboard.Focus(txtID);
         }
 
         /// <summary>
@@ -188,16 +200,20 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
                 if (txtRecibido.Text == "") {
-                    MessageBox.Show("Error: necesitas asignar un valor de recibido a la venta.");
+                    MessageBox.Show("Error: El pago está vacío.");
                 }
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
 
                 var res = QuerysVentas.NewItem(VentaActual);
+                Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta);
+                ticket.ImprimirTicketVenta();
                 if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
                 ClearFields();
+                ListaVenta.Clear();
+
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -234,13 +250,13 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void AddProduct(object sender, RoutedEventArgs e) {
-            var producto = (ItemInventario)((Button)e.Source).DataContext;
+            producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias += 1;
-                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
+                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -256,7 +272,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelProduct(object sender, RoutedEventArgs e) {
-            var producto = (ItemInventario)((Button)e.Source).DataContext;
+            producto = (ItemInventario)((Button)e.Source).DataContext;
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias -= 1;
@@ -313,11 +329,82 @@ namespace Mexty.MVVM.View.VentasViews {
             decimal recibido = txtRecibido.Text == "" ? 0 : Convert.ToDecimal(txtRecibido.Text.Trim('$'));
             decimal cambio = Math.Max(0, recibido - total);
             string cambiFormated = string.Format("{0:C}", cambio);
-            txtCambio.Text = cambiFormated; 
+            txtCambio.Text = cambiFormated;
         }
 
         private void Cancelar_Click(object sender, RoutedEventArgs e) {
+            foreach (var item in ListaVenta) {
+                item.CantidadDependencias = 0;
+            }
             ClearFields();
+        }
+
+        private void txtCantidadUpdate(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtCantidad.Text = textBox.Text;
+        }
+
+        private void txtIDChanged(object sender, TextChangedEventArgs e) {
+            TextBox textBox = sender as TextBox;
+            txtID.Text = textBox.Text;
+        }
+
+        private void SetFocus(object sender, RoutedEventArgs e) {
+            txtID.Focus();
+        }
+
+        private void GetIDScanner(object sender, TextCompositionEventArgs e) {
+            txtID.Focus();
+        }
+
+        private void txtID_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Return) {
+                var id = int.Parse(txtID.Text);
+                txtID.Text = id.ToString();
+                Keyboard.Focus(txtCantidad);
+            }
+        }
+
+        private void txtCantidad_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Return) {
+                Keyboard.Focus(txtTotal);
+                AddFromScannerToGrid(txtID.Text, txtCantidad.Text);
+                txtID.Text = "";
+                txtCantidad.Text = "";
+            }
+        }
+
+        private void AddFromScannerToGrid(string id, string cant) {
+            var idProdutco = int.Parse(id);
+            var cantidadProducto = cant == "" ? 0 : int.Parse(cant);
+
+            foreach (var item in ListaProductos) {
+                if (item.IdProducto == idProdutco) {
+
+                    if (!ListaVenta.Contains(item)) {
+                        ListaVenta.Add(item);
+                    }
+
+                    if (ListaVenta.Contains(item)) {
+                        if (cantidadProducto != 0) {
+                            item.CantidadDependencias += cantidadProducto;
+                        }
+                        else {
+                            item.CantidadDependencias += 1;
+                        }
+                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                    }
+
+
+                    DataVenta.ItemsSource = null;
+                    DataVenta.ItemsSource = ListaVenta;
+
+                    Keyboard.Focus(txtRecibido);
+                    TotalVenta();
+                    CambioVenta();
+                }
+            }
         }
     }
 }
+
