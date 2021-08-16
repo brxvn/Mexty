@@ -96,7 +96,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private void FillData() {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda==DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -200,15 +200,19 @@ namespace Mexty.MVVM.View.VentasViews {
                 MessageBox.Show("Se ha registrado la venta con exito.");
 
                 // por cada producto en la cuenta.
-                foreach (var item in VentaActual.DetalleVentaList) {
+                for (var index = 0; index < VentaActual.DetalleVentaList.Count; index++) {
+                    var item = VentaActual.DetalleVentaList[index];
+
                     var dependencias = item.Dependencias;
                     if (dependencias != "") {
                         // Si es producto compuesto.
-                        QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias); // descontamos el producto compuesto
+                        QuerysVentas.UpdateInventario(item.IdProducto,
+                            item.CantidadDependencias); // descontamos el producto compuesto
 
                         // convertimos el string a una lista de objetos con las dependencias del producto compuesto
                         var dependenciasToList = Producto.DependenciasToList(dependencias);
-                        foreach (var dependencia in dependenciasToList) {
+                        for (var i = 0; i < dependenciasToList.Count; i++) {
+                            var dependencia = dependenciasToList[i];
                             QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
                                 // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
                                 dependencia.CantidadDependencia * item.CantidadDependencias);
@@ -216,7 +220,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     }
                     else {
                         // No es producto compuesto
-                        var res1 =QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
+                        var res1 = QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
                         if (res1 == 0) throw new Exception();
                     }
                 }

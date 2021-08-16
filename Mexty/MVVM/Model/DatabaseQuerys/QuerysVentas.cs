@@ -234,7 +234,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
                        c.PRECIO_MENUDEO, c.ACTIVO,
                        c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
-                    i.CANTIDAD
+                       i.ID_TIENDA,i.CANTIDAD
                 FROM   cat_producto c, inventario i
                 WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO"
             };
