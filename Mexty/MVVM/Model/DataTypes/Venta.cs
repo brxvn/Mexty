@@ -114,8 +114,7 @@ namespace Mexty.MVVM.Model.DataTypes {
                 var item = items[index];
                 var valores = item.Split(':');
 
-                var producto = new ItemInventario() {
-                };
+                var producto = new ItemInventario();
                 producto.IdProducto = int.Parse(valores[0]);
                 producto.CantidadDependencias = int.Parse(valores[1]);
                 var key = int.Parse(valores[3]);

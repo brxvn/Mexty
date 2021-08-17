@@ -31,7 +31,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private CollectionView CollectionView { get; set; }
 
         /// <summary>
-        /// Lista de productos dada por la base de datos.
+        /// Lista de productos en la venta.
         /// </summary>
         public List<ItemInventario> ListaVenta = new();
 
@@ -101,7 +101,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentas(true);
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto //&& producto.IdTienda==DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -218,16 +218,22 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
 
+                if (!ValidaExistencias()) {
+                    MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
+                    return;
+                }
+
                 var res = QuerysVentas.NewItem(VentaActual, true);
-                Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta);
-                ticket.ImprimirTicketVenta();
+
                 if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
 
-                ActualizaInvnetario();
+                ActualizaInventario();
 
-                ClearFields();
                 FillData();
+                Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta);
+                ticket.ImprimirTicketVenta();
+                ClearFields();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -244,7 +250,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Método que actualiza la existencia en el inventario.
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private void ActualizaInvnetario() {
+        private void ActualizaInventario() {
             // por cada producto en la cuenta.
             for (var index = 0; index < VentaActual.DetalleVentaList.Count; index++) {
                 var item = VentaActual.DetalleVentaList[index];
@@ -270,6 +276,30 @@ namespace Mexty.MVVM.View.VentasViews {
                     if (res1 == 0) throw new Exception();
                 }
             }
+        }
+
+        /// <summary>
+        /// Método que valida las exitencias antes de que se haga la venta.
+        /// </summary>
+        private bool ValidaExistencias() {
+            foreach (var itemVenta in ListaVenta) { // por cada item en el carrito de la venta.
+                if (itemVenta.Dependencias != "") { // SI es un produco compuesto.
+                    var dep = Producto.DependenciasToList(itemVenta.Dependencias); // Obtenemos la lista de dependencias.
+                    foreach (var dependencia in dep) { // Por cada dependencia.
+                        var alcanza =
+                            ListaProductos.Where(producto => dependencia.IdProducto == producto.IdProducto) //donde el Id del producto de la dependencia coincida con el del inventario
+                            .All(x => x.Cantidad >= dependencia.CantidadDependencia * itemVenta.CantidadDependencias); // la cantidad en existencia tiene que ser menor o igual a la que se va a vender
+                        if (!alcanza) return false;
+                    }
+                }
+                else {
+                    var alcanza = ListaProductos.Where(producto => producto.IdProducto == itemVenta.IdProducto)
+                        .All(x => x.Cantidad >= itemVenta.CantidadDependencias);
+                    if (!alcanza) return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
