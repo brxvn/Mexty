@@ -79,7 +79,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtCantidadActual.Text = cantidad;
             txtCantidadPosterior.Text = cantidad;
 
-            txtPiezas.Text = "";
             txtCantidad.Text = "";
             Guardar.IsEnabled = true;
         }
@@ -92,42 +91,15 @@ namespace Mexty.MVVM.View.InventarioViews {
             TextBox textBox = sender as TextBox;
             txtMedida.Text = textBox.Text;
             switch (textBox.Text) {
-                case "pieza":
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Visible;
-
-                    txtCantidadActual.Visibility = Visibility.Collapsed;
-                    txtCantidadPosterior.Visibility = Visibility.Collapsed;
-                    lblCActual.Visibility = Visibility.Collapsed;
-                    lblCRestante.Visibility = Visibility.Collapsed;
-
-                    txtPiezasActuales.Visibility = Visibility.Visible;
-                    txtPiezasPosterior.Visibility = Visibility.Visible;
-                    lblPActual.Visibility = Visibility.Visible;
-                    lblPRestante.Visibility = Visibility.Visible;
-
-                    rowCantidad.Height = new GridLength(0, GridUnitType.Star);
-                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
-                    rowPiezas.Height = new GridLength(1, GridUnitType.Star);
-
-                    break;
                 case "0.5 litros":
                 case "3 litros":
                 case "12 litros":
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Collapsed;
 
                     txtCantidadActual.Visibility = Visibility.Visible;
                     txtCantidadPosterior.Visibility = Visibility.Visible;
                     lblCActual.Visibility = Visibility.Visible;
                     lblCRestante.Visibility = Visibility.Visible;
-
-                    txtPiezasActuales.Visibility = Visibility.Collapsed;
-                    txtPiezasPosterior.Visibility = Visibility.Collapsed;
-                    lblPActual.Visibility = Visibility.Collapsed;
-                    lblPRestante.Visibility = Visibility.Collapsed;
 
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
                     rowCantidad.Height = new GridLength(0, GridUnitType.Star);
@@ -137,17 +109,11 @@ namespace Mexty.MVVM.View.InventarioViews {
                     break;
                 case "litro":
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Collapsed;
 
                     txtCantidadActual.Visibility = Visibility.Visible;
                     txtCantidadPosterior.Visibility = Visibility.Visible;
                     lblCActual.Visibility = Visibility.Visible;
                     lblCRestante.Visibility = Visibility.Visible;
-
-                    txtPiezasActuales.Visibility = Visibility.Collapsed;
-                    txtPiezasPosterior.Visibility = Visibility.Collapsed;
-                    lblPActual.Visibility = Visibility.Collapsed;
-                    lblPRestante.Visibility = Visibility.Collapsed;
 
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
                     rowCantidad.Height = new GridLength(1, GridUnitType.Star);
@@ -157,17 +123,11 @@ namespace Mexty.MVVM.View.InventarioViews {
                     break;
                 default:
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
 
                     txtCantidadActual.Visibility = Visibility.Visible;
                     txtCantidadPosterior.Visibility = Visibility.Visible;
                     lblCActual.Visibility = Visibility.Visible;
                     lblCRestante.Visibility = Visibility.Visible;
-
-                    txtPiezasActuales.Visibility = Visibility.Visible;
-                    txtPiezasPosterior.Visibility = Visibility.Visible;
-                    lblPActual.Visibility = Visibility.Visible;
-                    lblPRestante.Visibility = Visibility.Visible;
 
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
                     rowCantidad.Height = new GridLength(0, GridUnitType.Star);
@@ -188,17 +148,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtCantidadPosterior.Text = Math.Max(0, resultado).ToString();
         }
 
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            // var index = ComboNombre.SelectedIndex;
-            // TextBox textbox = sender as TextBox;
-            // txtPiezas.Text = textbox.Text;
-            // int piezasRestantes = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
-            //txtPiezasPosterior.Text = Math.Max(0, resultado).ToString();
-        }
-
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             txtCantidad.Text = "";
-            txtPiezas.Text = "";
         }
 
         /// <summary>
@@ -212,9 +163,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             try {
                 // Validar que la cantidad asignada <= cantidad actual.
                 var cantiadad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
-                var piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
 
-                if (!Validar(cantiadad, piezas, out var cantiadadR, out var piezasR)) {
+                if (!Validar(cantiadad, out var cantiadadR, out var piezasR)) {
                     Log.Debug("Se ha dado una cantidad no válida.");
                     MessageBox.Show("Cantidad no valida."); // provicional.
                     return;
@@ -233,7 +183,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
                 // Escribir en moviemientos inventario.
                 var newLog = new LogInventario() {
-                    Mensaje = $"Asignada Cantidad: {cantiadad.ToString()} Piezas: {piezas.ToString()} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
+                    Mensaje = $"Asignada Cantidad: {cantiadad.ToString()} de {ComboNombre.SelectedItem} a {ComboSucursal.SelectedItem}",
                     UsuarioRegistra = DatabaseInit.GetUsername(),
                     FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate()),
                 };
@@ -254,7 +204,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que valida que las cantidades y piezas sean validas.
         /// </summary>
         /// <returns><c>true</c> si las cantidades son validas, <c>false</c> si no.</returns>
-        private bool Validar(int cantidad, int piezas, out int cantidatR, out int piezasR) {
+        private bool Validar(int cantidad, out int cantidatR, out int piezasR) {
             var id = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
             cantidatR = -1;
             piezasR = -1;

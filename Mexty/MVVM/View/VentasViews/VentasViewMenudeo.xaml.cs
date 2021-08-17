@@ -172,6 +172,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private void ClearFields() {
             txtRecibido.Text = "";
+            txtDescripcion.Text = "";
             txtTotal.Text = "";
             ListaVenta.Clear();
             DataVenta.ItemsSource = null;
@@ -282,6 +283,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 producto.CantidadDependencias += 1;
                 producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
             }
+            txtDescripcion.Text = producto.Comentario;
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
             Keyboard.Focus(txtRecibido);
@@ -304,6 +306,7 @@ namespace Mexty.MVVM.View.VentasViews {
             }
 
             if (producto.CantidadDependencias == 0) ListaVenta.Remove(producto);
+            txtDescripcion.Text = producto.Comentario;
 
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -368,27 +371,33 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void AddFromScannerToGrid(string id) {
-            id.Trim('\r');
-            var idProdutco = id == "" ? 0 : int.Parse(id);
+            try {
+                id.Trim('\r');
+                var idProdutco = id == "" ? 0 : int.Parse(id);
 
-            foreach (var item in ListaProductos) {
-                if (item.IdProducto == idProdutco) {
+                foreach (var item in ListaProductos) {
+                    if (item.IdProducto == idProdutco) {
 
-                    if (!ListaVenta.Contains(item)) {
-                        ListaVenta.Add(item);
+                        if (!ListaVenta.Contains(item)) {
+                            ListaVenta.Add(item);
+                        }
+
+                        if (ListaVenta.Contains(item)) {
+                            item.CantidadDependencias += 1;
+                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                        }
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
                     }
-
-                    if (ListaVenta.Contains(item)) {
-                        item.CantidadDependencias += 1;
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
-                    }
-                    DataVenta.ItemsSource = null;
-                    DataVenta.ItemsSource = ListaVenta;
-
-                    TotalVenta();
-                    CambioVenta();
                 }
             }
+            catch (Exception e) {
+                Log.Error(e.ToString());
+            }
+            
         }
 
         private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {

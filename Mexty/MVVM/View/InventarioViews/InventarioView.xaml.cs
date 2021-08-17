@@ -21,5 +21,9 @@ namespace Mexty.MVVM.View.InventarioViews {
         public InventarioView() {
             InitializeComponent();
         }
+
+        private void TabItem_MouseDown(object sender, MouseButtonEventArgs e) {
+            tabControl.Items.Refresh();
+        }
     }
 }

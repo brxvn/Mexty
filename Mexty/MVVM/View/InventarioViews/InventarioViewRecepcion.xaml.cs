@@ -150,7 +150,9 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error($"Error: {exception.Message}");
             }
 
-            RefreshDataGrid();
+            ClearFields();
+            InventarioViewInvent inventario = new();
+            inventario.ActualizarData(sender, e);
         }
 
         /// <summary>
@@ -195,12 +197,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtCantidad.Text = textbox.Text;
         }
 
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
-
-        }
-
         private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtComentario.Text = textbox.Text;
@@ -224,19 +220,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
         }
 
-        private void RefreshDataGrid() {
-            
-
-            //InventarioViewInvent inventario = new();
-            //inventario.DataProducts.ItemsSource = null;
-
-            //var data = Database.GetItemsFromInventario();
-
-            //inventario.DataProducts.ItemsSource = data;
-            //Log.Debug("Se ha llenado la datagrid de manera exitosa.");
-
-        }
-
         /// <summary>
         /// Método para habilitar cambios en la GUI depende del tipo de medidida del producto.
         /// </summary>
@@ -246,31 +229,19 @@ namespace Mexty.MVVM.View.InventarioViews {
             TextBox textBox = sender as TextBox;
             txtMedida.Text = textBox.Text;
             switch (textBox.Text) {
-                case "pieza":
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Visible;
-                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
-                    break;
-                case "0.5 litros":
+               case "0.5 litros":
                 case "3 litros":
                 case "12 litros":
                     txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Collapsed;
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
                     break;
                 case "litro":
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Collapsed;
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
                     break;
                 default:
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
                     break;
             }
         }

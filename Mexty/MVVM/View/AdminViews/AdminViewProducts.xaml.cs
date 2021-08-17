@@ -529,8 +529,8 @@ namespace Mexty.MVVM.View.AdminViews {
                     ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant:1);
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = false;
-                    txtPrecioMayoreo.IsReadOnly = true;
-                    txtPrecioMenudeo.IsReadOnly = true;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 default:
                     ComboMedida.ItemsSource = null;

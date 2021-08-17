@@ -87,31 +87,19 @@ namespace Mexty.MVVM.View.InventarioViews {
             TextBox textBox = sender as TextBox;
             txtMedida.Text = textBox.Text;
             switch (textBox.Text) {
-                case "pieza":
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Visible;
-                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
-                    break;
                 case "0.5 litros":
                 case "3 litros":
                 case "12 litros":
                     txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Collapsed;
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
                     break;
                 case "litro":
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Collapsed;
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
                     break;
                 default:
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
                     break;
             }
         }
@@ -119,11 +107,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtCantidad.Text = textbox.Text;
-        }
-
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
         }
 
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
@@ -142,7 +125,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="e"></param>
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
             txtCantidad.Text = "";
-            txtPiezas.Text = "";
             txtComentario.Text = "";
             Log.Debug("Se han limpiado los campos.");
         }

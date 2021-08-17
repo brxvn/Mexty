@@ -198,7 +198,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             Guardar.IsEnabled = false;
             txtComentario.Text = "";
             txtCantidad.Text = "";
-            txtPiezas.Text = "";
             Log.Debug("Se han limpiado los campos de inventario.");
         }
 
@@ -323,11 +322,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtComentario.Text = textbox.Text;
         }
 
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
-        }
-
         private void OnlyLettersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(c => char.IsLetter(c));
         }
@@ -343,6 +337,10 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void ReporteInventario(object sender, RoutedEventArgs e) {
             Reports reports = new();
             reports.ReporteInventario();
+        }
+
+        public void ActualizarData(object sender, RoutedEventArgs e) {
+            FillData();
         }
     }
 }
