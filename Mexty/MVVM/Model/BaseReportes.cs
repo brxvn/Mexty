@@ -14,7 +14,7 @@ using TextAlignment = iText.Layout.Properties.TextAlignment;
 
 namespace Mexty.MVVM.Model {
     public class BaseReportes {
-        protected readonly string _date = DateTime.Now.ToString("dd-MM-yy");
+        protected readonly string _date = DateTime.Now.ToString("d");
         protected readonly string _dateNow = DateTime.Now.ToString("G");
 
         protected readonly int _fontSize = 12;
@@ -37,6 +37,7 @@ namespace Mexty.MVVM.Model {
             Directory.CreateDirectory(_mainPath);
             Directory.CreateDirectory(_inventarioPath);
             Directory.CreateDirectory(_SucursalesInventarioPath);
+            Directory.CreateDirectory($"{_sucursalesVentas}");
         }
         protected Document CreateDocument(string nombreDocumento, Paragraph metaData, string titulo, string path) {
 

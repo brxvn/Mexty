@@ -81,7 +81,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             var cmd = "";
 
             switch (comando) {
-                case "dia":
+                case "hoy":
                     cmd = @"select * from venta_menudeo where date(FECHA_REGISTRO) = curdate() and id_tienda=@id";
                     break;
                 case "semana":
@@ -97,7 +97,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 CommandText = cmd
             };
 
-            conn.Parameters.AddWithValue("id", id);
+            conn.Parameters.AddWithValue("id", id.ToString());
 
             var items = new List<Venta>();
             try {
@@ -105,9 +105,9 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 while (reader.Read()) {
                     var item = new Venta() {
                         IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
-                        IdCliente = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
-                        DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta")
+                        DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
                     };
 
                     items.Add(item);

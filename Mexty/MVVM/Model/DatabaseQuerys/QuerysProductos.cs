@@ -214,5 +214,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 connObj.Close();
             }
         }
+
     }
 }

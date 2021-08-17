@@ -69,6 +69,8 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public string UsuarioRegistra { get; set; }
 
+        public decimal TotalAllVentas { get; set; }
+
         /// <summary>
         /// Fecha en la que se registro la venta.
         /// </summary>
@@ -117,12 +119,12 @@ namespace Mexty.MVVM.Model.DataTypes {
                 var producto = new ItemInventario();
                 producto.IdProducto = int.Parse(valores[0]);
                 producto.CantidadDependencias = int.Parse(valores[1]);
-                var key = int.Parse(valores[3]);
+                var key = int.Parse(valores[2]);
                 if (key == 1) {
-                    producto.PrecioMayoreo = decimal.Parse(valores[4]);
+                    producto.PrecioMayoreo = decimal.Parse(valores[3]);
                 }
                 else {
-                    producto.PrecioMenudeo = decimal.Parse(valores[4]);
+                    producto.PrecioMenudeo = decimal.Parse(valores[3]);
                 }
                 productos.Add(producto);
             }

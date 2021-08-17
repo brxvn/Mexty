@@ -1,4 +1,5 @@
-﻿using Mexty.MVVM.Model.DatabaseQuerys;
+﻿using log4net;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,8 @@ using log4net;
 
 namespace Mexty.MVVM.Model {
     public class Ticket {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+        private static readonly ILog Log =
+          LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private Font consola = new("Courier New", 8, FontStyle.Bold);
         private PrintDocument pd = new();
@@ -41,9 +43,11 @@ namespace Mexty.MVVM.Model {
                 pd.Print();
             }
             catch (Exception e) {
-                Log.Error("No se encontro la impresora.");
-                Log.Error($"Error {e.Message}");
+                Log.Error("No se encontró la impresora");
+                Log.Error(e.Message);
             }
+            finally { pd.Print(); }
+            
         }
 
         private void PrintTicketMenudeo(object sender, PrintPageEventArgs ppeArgs) {
