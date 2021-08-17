@@ -83,10 +83,19 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <returns>Un <c>string</c> que contiene la lista codificada en un string</returns>
         public static string ListProductosToString(List<ItemInventario> listaProductos, bool mayoreo = false) {
             var lista = "";
+            if (mayoreo) {
+                for (var index = 0; index < listaProductos.Count; index++) {
+                    var producto = listaProductos[index];
+                    lista +=
+                        $"{producto.IdProducto.ToString()}:{producto.CantidadDependencias.ToString()}:{1.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)},";
+                }
+
+                return lista.TrimEnd(',');
+            }
             for (var index = 0; index < listaProductos.Count; index++) {
                 var producto = listaProductos[index];
                 lista +=
-                    $"{producto.IdProducto.ToString()}:{producto.CantidadDependencias.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
+                    $"{producto.IdProducto.ToString()}:{producto.CantidadDependencias.ToString()}:{2.ToString()}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
             }
 
             return lista.TrimEnd(',');
@@ -106,12 +115,16 @@ namespace Mexty.MVVM.Model.DataTypes {
                 var valores = item.Split(':');
 
                 var producto = new ItemInventario() {
-                    IdProducto = int.Parse(valores[0]),
-                    CantidadDependencias = int.Parse(valores[1]),
-                    //TipoVenta = int.Parse(valores[2]),
-                    PrecioMayoreo = decimal.Parse(valores[3]),
-                    PrecioMenudeo = decimal.Parse(valores[4])
                 };
+                producto.IdProducto = int.Parse(valores[0]);
+                producto.CantidadDependencias = int.Parse(valores[1]);
+                var key = int.Parse(valores[3]);
+                if (key == 1) {
+                    producto.PrecioMayoreo = decimal.Parse(valores[4]);
+                }
+                else {
+                    producto.PrecioMenudeo = decimal.Parse(valores[4]);
+                }
                 productos.Add(producto);
             }
 

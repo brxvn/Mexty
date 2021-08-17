@@ -194,7 +194,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private void ProcesarVenta() {
             try {
                 VentaActual.DetalleVentaList = ListaVenta;
-                VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
+                VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
                 VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
 
                 if (txtRecibido.Text == "") {
