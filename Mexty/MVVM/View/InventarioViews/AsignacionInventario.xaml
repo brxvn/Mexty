@@ -13,7 +13,7 @@
         Background="#7f233a">
 
     <Border BorderThickness="2" BorderBrush="#F78b37">
-        <Grid Margin="15">
+        <Grid Margin="22,15,8,15" RenderTransformOrigin="0.497,0.502">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".5*"/>
                 <ColumnDefinition Width="*"/>

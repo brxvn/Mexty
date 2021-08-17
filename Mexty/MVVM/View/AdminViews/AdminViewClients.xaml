@@ -563,6 +563,7 @@
                                                      CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="txtUpdateDireccion"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -638,6 +639,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="txtUpdateComentario"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->

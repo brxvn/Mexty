@@ -139,13 +139,22 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-            var index = ComboNombre.SelectedIndex;
             TextBox textbox = sender as TextBox;
             txtCantidad.Text = textbox.Text;
-            int cantidadActual = ListaItems[index].Cantidad;
-            int cantidadRestar = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
-            int resultado = cantidadActual - cantidadRestar;
+            var index = ComboNombre.SelectedIndex;
+            var cantidadActual = ListaItems[index].Cantidad;
+            var cantidadRestar = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
+            var resultado = cantidadActual - cantidadRestar;
             txtCantidadPosterior.Text = Math.Max(0, resultado).ToString();
+        }
+
+        /// <summary>
+        /// Función que actualiza la cantidad restante mostrada.
+        /// </summary>
+        private void UpdateCantidad() {
+            var index = ComboNombre.SelectedIndex;
+            txtCantidadActual.Text = ListaItems[index].Cantidad.ToString();
+            txtCantidadPosterior.Text = txtCantidadActual.Text;
         }
 
         private void LimpiarCampos(object sender, RoutedEventArgs e) {
@@ -164,7 +173,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 // Validar que la cantidad asignada <= cantidad actual.
                 var cantiadad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text);
 
-                if (!Validar(cantiadad, out var cantiadadR, out var piezasR)) {
+                if (!Validar(cantiadad, out var cantiadadR)) {
                     Log.Debug("Se ha dado una cantidad no válida.");
                     MessageBox.Show("Cantidad no valida."); // provicional.
                     return;
@@ -192,6 +201,9 @@ namespace Mexty.MVVM.View.InventarioViews {
                 if (res1 == 0) throw new Exception();
                 Log.Debug("Se ha actualizado el movimiento en movimientos inventario.");
                 MessageBox.Show("Se ha asignado producto de manera exitosa.");
+                FillData();
+                txtCantidad.Text = "";
+                UpdateCantidad();
 
             }
             catch (Exception exception) {
@@ -204,16 +216,15 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que valida que las cantidades y piezas sean validas.
         /// </summary>
         /// <returns><c>true</c> si las cantidades son validas, <c>false</c> si no.</returns>
-        private bool Validar(int cantidad, out int cantidatR, out int piezasR) {
+        private bool Validar(int cantidad, out int cantidatR) {
             var id = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
             cantidatR = -1;
-            piezasR = -1;
 
             for (var index = 0; index < ListaItems.Count; index++) {
                 var item = ListaItems[index];
                 if (item.IdProducto == id) {
                     cantidatR = item.Cantidad - cantidad;
-                    return cantidatR >= 0 && piezasR >= 0;
+                    return cantidatR >= 0;
                 }
             }
 
