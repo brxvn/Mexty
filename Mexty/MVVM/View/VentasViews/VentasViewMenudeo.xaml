@@ -332,7 +332,7 @@
                         <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
                         <!--txtRecibido-->
                         <Label Content="Recibido:" Grid.Row="3" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" TabIndex="2" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" PreviewKeyDown="txtRecibido_PreviewKeyDown"/>
+                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Focusable="True" TabIndex="2" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" PreviewKeyDown="txtRecibido_PreviewKeyDown" PreviewTextInput="OnlyNumbersValidation"/>
 
                         <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 

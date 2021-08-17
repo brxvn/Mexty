@@ -74,5 +74,61 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             return listaVentas;
         }
+
+        public static List<Venta> GetVentasPorSucursal(int id, string comando) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+            var cmd = "";
+
+            switch (comando) {
+                case "dia":
+                    cmd = @"select * from venta_menudeo where date(FECHA_REGISTRO) = curdate() and id_tienda=@id";
+                    break;
+                case "semana":
+                    cmd = @"select * from venta_menudeo where date_sub(now(), interval 1 week) and now() and id_tienda=@id";
+                    break;
+                case "mes":
+                    cmd = @"select * from venta_menudeo where FECHA_REGISTRO>now() - interval 1 month and id_tienda=@id";
+                    break;
+            }
+
+            var conn = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = cmd
+            };
+
+            conn.Parameters.AddWithValue("id", id);
+
+            var items = new List<Venta>();
+            try {
+                using var reader = conn.ExecuteReader();    
+                while (reader.Read()) {
+                    var item = new Venta() {
+                        IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
+                        IdCliente = reader.IsDBNull("id_registro") ? 0 : reader.GetInt32("id_registro"),
+                        TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
+                        DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta")
+                    };
+
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario de venta menudeo.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario venta menudeo.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 14: ha ocurrido un error al intentar obtener la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+            return items;
+        }
     }
 }

@@ -41,9 +41,15 @@ namespace Mexty.MVVM.View.VentasViews {
         private List<ItemInventario> ListaProductos = new();
 
         /// <summary>
+        /// El último producto seleccionado de la datagrid.
+        /// </summary>
+        private ItemInventario SelectedItem { get; set; }
+
+        /// <summary>
         /// Venta actual en pantalla.
         /// </summary>
         private Venta VentaActual { get; set; }
+        string barCode = null;
 
         public VentasViewMayoreo() {
             try {
@@ -133,7 +139,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 var noNull = new Predicate<object>(producto =>
                 {
                     if (producto == null) return false;
-                    return ((Producto)producto).Activo == 1;
+                    return true;
                 });
 
                 collection.Filter += noNull;
@@ -163,7 +169,13 @@ namespace Mexty.MVVM.View.VentasViews {
 
         // TODO: terminar este y el otro.
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
+            ClearFields();
+            if (DataProducts.SelectedItem == null) return;
+            Log.Debug("Item seleccionado.");
+            var item = (ItemInventario)DataProducts.SelectedItem;
 
+            SelectedItem = item;
+            txtDescripcion.Text = item.Comentario;
         }
 
         /// <summary>
@@ -172,12 +184,13 @@ namespace Mexty.MVVM.View.VentasViews {
         private void ClearFields() {
             txtRecibido.Text = "";
             txtTotal.Text = "";
+            txtDescripcion.Text = "";
             ListaVenta.Clear();
             DataVenta.ItemsSource = null;
             VentaActual = new Venta();
             TotalVenta();
             CambioVenta();
-            //Keyboard.Focus(txtID); // TODO: agregar esto.
+            Keyboard.Focus(txtTotal);
         }
 
         /// <summary>
@@ -293,6 +306,7 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
+            txtDescripcion.Text = producto.Comentario;
             Keyboard.Focus(txtRecibido);
             TotalVenta();
             CambioVenta();
@@ -326,7 +340,7 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '.'.Equals(x));
         }
 
 
@@ -360,66 +374,38 @@ namespace Mexty.MVVM.View.VentasViews {
                 item.CantidadDependencias = 0;
             }
             ClearFields();
+            SetFocus(sender, e);
         }
 
-        private void txtCantidadUpdate(object sender, TextChangedEventArgs e) {
-            TextBox textBox = sender as TextBox;
-            //txtCantidad.Text = textBox.Text;
-        }
+        private void AddFromScannerToGrid(string id) {
+            try {
+                id.Trim('\r');
+                var idProdutco = id == "" ? 0 : int.Parse(id);
 
-        private void txtIDChanged(object sender, TextChangedEventArgs e) {
-            TextBox textBox = sender as TextBox;
-            //txtID.Text = textBox.Text.Trim();
-        }
+                foreach (var item in ListaProductos) {
+                    if (item.IdProducto == idProdutco) {
 
-        private void SetFocus(object sender, RoutedEventArgs e) {
-            //txtID.Focus();
-        }
-
-        private void GetIDScanner(object sender, TextCompositionEventArgs e) {
-            //txtID.Focus();
-        }
-
-        private void txtID_PreviewKeyDown(object sender, KeyEventArgs e) {
-            // if (e.Key == Key.Return) {
-            //     AddFromScannerToGrid(txtID.Text, "0");
-            //     var id = int.Parse(txtID.Text);
-            //     txtID.Text = id.ToString();
-            //     txtID.Text = "";
-            //     Keyboard.Focus(txtID);
-            // }
-        }
-
-        private void AddFromScannerToGrid(string id, string cant) {
-            var idProdutco = id == "" ? 0 : int.Parse(id);
-            var cantidadProducto = cant == "" ? 0 : int.Parse(cant);
-
-            foreach (var item in ListaProductos) {
-                if (item.IdProducto == idProdutco) {
-
-                    if (!ListaVenta.Contains(item)) {
-                        ListaVenta.Add(item);
-                    }
-
-                    if (ListaVenta.Contains(item)) {
-                        if (cantidadProducto != 0) {
-                            item.CantidadDependencias += cantidadProducto;
+                        if (!ListaVenta.Contains(item)) {
+                            ListaVenta.Add(item);
                         }
-                        else {
+
+                        if (ListaVenta.Contains(item)) {
                             item.CantidadDependencias += 1;
+                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                         }
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
                     }
-
-
-                    DataVenta.ItemsSource = null;
-                    DataVenta.ItemsSource = ListaVenta;
-
-                    //Keyboard.Focus(txtID);
-                    TotalVenta();
-                    CambioVenta();
                 }
             }
+            catch (Exception e) {
+                Log.Error(e.ToString());
+            }
+
         }
 
         private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -452,7 +438,6 @@ namespace Mexty.MVVM.View.VentasViews {
                     DataVenta.ItemsSource = null;
                     DataVenta.ItemsSource = ListaVenta;
 
-                    //Keyboard.Focus(txtID);
                     TotalVenta();
                     CambioVenta();
                 }
@@ -464,6 +449,19 @@ namespace Mexty.MVVM.View.VentasViews {
                 Log.Debug("Enter en el recibido, se procede a procesar la venta.");
                 ProcesarVenta();
             }
+        }
+
+        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+            barCode += e.Text;
+
+            if (barCode.Length == 9) {
+                AddFromScannerToGrid(barCode);
+                barCode = null;
+            }
+        }
+
+        private void SetFocus(object sender, RoutedEventArgs e) {
+            txtTotal.Focus();
         }
     }
 }

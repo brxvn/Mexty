@@ -296,7 +296,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <param name="cantidad">Cantidad a descontar, por defecto 1.</param>
         /// <param name="matriz"><c>bool</c> por defecto false.</param>
         /// <returns></returns>
-        public static int UpdateInventario(int idProducto, int cantidad = 1, bool matriz=false) {
+        public static int UpdateInventario(int idProducto, int cantidad = 1, bool matriz = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 

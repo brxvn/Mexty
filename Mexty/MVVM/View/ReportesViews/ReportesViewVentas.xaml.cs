@@ -93,7 +93,8 @@ namespace Mexty.MVVM.View.ReportesViews {
 
 
         private void BtnHoy_Click(object sender, RoutedEventArgs e) {
-
+            var id = ComboSucursal.SelectedIndex + 1;
+            report.ReporteVentas(id, "hoy");
         }
     }
 }

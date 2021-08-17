@@ -591,6 +591,7 @@
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
                      MaxLength="25"
+                     PreviewTextInput="OnlyLetterAndNumbers"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -612,6 +613,7 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextChanged="txtUpdateFacebook"/>
 
                                                     <TextBlock IsHitTestVisible="False"
@@ -663,6 +665,7 @@
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
                      MaxLength="25"
+                     PreviewTextInput="OnlyLetterAndNumbers"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -684,6 +687,7 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextChanged="txtUpdateInstagram"/>
 
                                                     <TextBlock IsHitTestVisible="False"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,8 +38,34 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void FillData() {
             var data = QuerysMovInvent.GetTablesFromMovInventario();
             DataProducts.ItemsSource = data;
+            SortDataGrid(DataProducts, 0);
             Log.Debug("Se ha llenado la data grid de moviemientos inventario con exito.");
 
+        }
+
+        /// <summary>
+        /// Ordenar por piezas de manera ascendente 
+        /// </summary>
+        /// <param name="dataGrid"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="sortDirection"></param>
+        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending) {
+            var column = dataGrid.Columns[columnIndex];
+
+            // Clear current sort descriptions
+            dataGrid.Items.SortDescriptions.Clear();
+
+            // Add the new sort description
+            dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
+
+            // Apply sort
+            foreach (var col in dataGrid.Columns) {
+                col.SortDirection = null;
+            }
+            column.SortDirection = sortDirection;
+
+            // Refresh items to display sort
+            dataGrid.Items.Refresh();
         }
 
         private void CerrarVentana(object sender, RoutedEventArgs e) {

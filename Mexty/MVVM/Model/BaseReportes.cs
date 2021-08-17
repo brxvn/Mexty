@@ -24,6 +24,7 @@ namespace Mexty.MVVM.Model {
         protected readonly string _mainPath = @"C:\Mexty\Reportes\";
         protected readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
         protected readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
+        protected readonly string _sucursalesVentas = @"C:\Mexty\Ventas\Sucursales\";
         protected readonly string usuarioActivo = DatabaseInit.GetUsername();
         protected int idImprimir = 0;
         protected string dirImprimir = null;

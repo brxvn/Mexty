@@ -40,14 +40,13 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private Venta VentaActual { get; set; }
 
-        //private ItemInventario producto = new();
 
         string barCode = null;
 
         /// <summary>
-        /// Producto seleccionado, viniendo de la pantalla de adm productos.
+        /// El último producto seleccionado de la datagrid.
         /// </summary>
-        //private Producto SelectedProduct { get; set; }
+        private ItemInventario SelectedItem { get; set; }
 
         public VentasViewMenudeo() {
             try {
@@ -126,7 +125,8 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto => {
+                var noNull = new Predicate<object>(producto =>
+                {
                     if (producto == null) return false;
                     return ((Producto)producto).Activo == 1;
                 });
@@ -163,8 +163,13 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            // Bajar el campo de Especificación de producto y cuanto hay en inventario.
-            // TODO: agregar el campo de especificicación e inventario.
+            ClearFields();
+            if (DataProducts.SelectedItem == null) return;
+            Log.Debug("Item seleccionado.");
+            var item = (ItemInventario)DataProducts.SelectedItem;
+
+            SelectedItem = item;
+            txtDescripcion.Text = item.Comentario;
         }
 
         /// <summary>
@@ -174,6 +179,7 @@ namespace Mexty.MVVM.View.VentasViews {
             txtRecibido.Text = "";
             txtDescripcion.Text = "";
             txtTotal.Text = "";
+            Keyboard.Focus(txtTotal);
             ListaVenta.Clear();
             DataVenta.ItemsSource = null;
             VentaActual = new Venta();
@@ -246,7 +252,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     for (var i = 0; i < dependenciasToList.Count; i++) {
                         var dependencia = dependenciasToList[i];
                         QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
-                            // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                                                              // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
                             dependencia.CantidadDependencia * item.CantidadDependencias);
                     }
                 }
@@ -373,6 +379,7 @@ namespace Mexty.MVVM.View.VentasViews {
             }
 
             ClearFields();
+            SetFocus(sender, e);
         }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
@@ -391,13 +398,13 @@ namespace Mexty.MVVM.View.VentasViews {
                             ListaVenta.Add(item);
                         }
 
-                    if (ListaVenta.Contains(item)) {
-                        item.CantidadDependencias += 1;
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
-                    }
+                        if (ListaVenta.Contains(item)) {
+                            item.CantidadDependencias += 1;
+                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                        }
 
-                    DataVenta.ItemsSource = null;
-                    DataVenta.ItemsSource = ListaVenta;
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
 
                         TotalVenta();
                         CambioVenta();

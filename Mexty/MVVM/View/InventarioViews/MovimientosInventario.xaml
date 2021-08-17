@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Mexty.MVVM.View.InventarioViews"
         mc:Ignorable="d"
-        Title="MovimientosInventario" Height="450" Width="800"
+        Title="Movimientos de Inventario" Height="450" Width="800"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         ResizeMode="NoResize"

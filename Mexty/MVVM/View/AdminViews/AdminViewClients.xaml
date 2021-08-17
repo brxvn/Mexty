@@ -542,6 +542,7 @@
                      Grid.Column="0"
                      CharacterCasing="Upper"
                      HorizontalAlignment="Stretch"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -618,6 +619,7 @@
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
