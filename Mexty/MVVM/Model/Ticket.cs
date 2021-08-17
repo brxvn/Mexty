@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
+using log4net;
 
 namespace Mexty.MVVM.Model {
     public class Ticket {
+        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         private Font consola = new("Courier New", 8, FontStyle.Bold);
         private PrintDocument pd = new();
@@ -33,9 +35,15 @@ namespace Mexty.MVVM.Model {
         }
 
         public void ImprimirTicketVenta() {
-            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(PrintTicketMenudeo);
-            pd.Print();
+            try {
+                pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+                pd.PrintPage += new PrintPageEventHandler(PrintTicketMenudeo);
+                pd.Print();
+            }
+            catch (Exception e) {
+                Log.Error("No se encontro la impresora.");
+                Log.Error($"Error {e.Message}");
+            }
         }
 
         private void PrintTicketMenudeo(object sender, PrintPageEventArgs ppeArgs) {

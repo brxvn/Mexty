@@ -210,6 +210,11 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
 
+                if (VentaActual.TotalVenta > VentaActual.Pago) {
+                    MessageBox.Show("El pago dado no alcanza para cubrir la venta!");
+                    return;
+                }
+
                 if (!ValidaExistencias()) {
                     MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
                     return;

@@ -96,7 +96,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 update venta_mayoreo 
                 set ID_CLIENTE=@idClienteX, 
                     DETALLE_VENTA=@detalle, TOTAL_VENTA=@totalX, 
-                    PAGO=@pagoX, CAMBIO=@cambioX, DEBE=@debeX, 
+                    PAGO=@pagoX, CAMBIO=@cambioX, 
                     COMENTARIOS=@comentarios, ID_TIENDA=@idTiendaX, 
                     USUARIO_REGISTRA=@usrRegistra, FECHA_REGISTRO=@fechaRegistro 
                 where ID_VENTA_MAYOREO = @idX"
@@ -119,7 +119,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@totalX", venta.TotalVenta.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pagoX", venta.Pago.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@cambioX", venta.Cambio.ToString(CultureInfo.InvariantCulture));
-            query.Parameters.AddWithValue("@debeX", venta.Debe.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@comentarios", venta.Comentarios);
             query.Parameters.AddWithValue("@idTiendaX", venta.IdTienda.ToString());
             query.Parameters.AddWithValue("@usrRegistra", DatabaseInit.GetUsername());
@@ -302,23 +301,19 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             var cmd = matriz
                 ? @"
-                update inventario inv 
-                inner join inventario inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
-                set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
-                where inv.ID_PRODUCTO = @idX and inv.ID_TIENDA=@idTX"
-                : @"
                 update inventario_matriz inv 
                 inner join inventario_matriz inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
                 set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
-                where inv.ID_PRODUCTO = @idX";
-
-            var query = new MySqlCommand() {
-                Connection = connObj,
-                CommandText = @"
+                where inv.ID_PRODUCTO = @idX"
+                : @"
                 update inventario inv 
                 inner join inventario inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
                 set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
-                where inv.ID_PRODUCTO = @idX and inv.ID_TIENDA=@idTX"
+                where inv.ID_PRODUCTO = @idX and inv.ID_TIENDA=@idTX";
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = cmd
             };
 
             query.Parameters.AddWithValue("@cantidadX", cantidad.ToString());

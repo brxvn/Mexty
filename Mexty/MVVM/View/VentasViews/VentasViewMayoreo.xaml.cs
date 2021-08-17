@@ -46,6 +46,11 @@ namespace Mexty.MVVM.View.VentasViews {
         private ItemInventario SelectedItem { get; set; }
 
         /// <summary>
+        /// Lista de clientes dada por la bd
+        /// </summary>
+        private List<Cliente> ListaClientes { get; set; }
+
+        /// <summary>
         /// Venta actual en pantalla.
         /// </summary>
         private Venta VentaActual { get; set; }
@@ -109,7 +114,9 @@ namespace Mexty.MVVM.View.VentasViews {
 
             Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
 
+            ComboCliente.Items.Clear();
             var dataClientes = QuerysClientes.GetTablesFromClientes(true);
+            ListaClientes = dataClientes;
             foreach (var client in dataClientes) {
                 ComboCliente.Items.Add($"{client.IdCliente.ToString()} {client.Nombre} Deuda: {client.Debe.ToString()}");
             }
@@ -217,6 +224,27 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
+
+                if (VentaActual.TotalVenta > VentaActual.Pago) {
+                    var buttons = MessageBoxButton.YesNo;
+                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! Desea agregarlo a la deuda del cliente?", "Pago insuficiente", buttons);
+                    var SelectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                    if (resYesNo == MessageBoxResult.Yes) {
+                        for (var index = 0; index < ListaClientes.Count; index++) {
+                            var cliente = ListaClientes[index];
+
+                            if (cliente.IdCliente == SelectedClientId) {
+                                cliente.Debe += (float)(VentaActual.TotalVenta - VentaActual.Pago);
+
+                                var resQ = QuerysClientes.UpdateData(cliente);
+                                if (resQ == 0) throw new Exception("no se actualizo la deuda del cliente.");
+                            }
+                        }
+                    }
+                    else {
+                        return;
+                    }
+                }
 
                 if (!ValidaExistencias()) {
                     MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
