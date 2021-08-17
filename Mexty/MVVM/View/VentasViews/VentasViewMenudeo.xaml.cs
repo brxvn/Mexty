@@ -289,6 +289,7 @@ namespace Mexty.MVVM.View.VentasViews {
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias += 1;
                 producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
+                txtDescripcion.Text = producto.Comentario;
             }
 
             DataVenta.ItemsSource = null;
@@ -422,26 +423,26 @@ namespace Mexty.MVVM.View.VentasViews {
             var nuevaCantidad = int.Parse((content as TextBox).Text.Trim('x'));
 
             foreach (var item in ListaProductos) {
-                    if (item.IdProducto == item2.IdProducto) {
+                if (item.IdProducto == item2.IdProducto) {
 
-                        if (ListaVenta.Contains(item)) {
-                            if (nuevaCantidad != 0) {
-                                item.CantidadDependencias = nuevaCantidad;
-                            }
-                            else if (nuevaCantidad == 0) ListaVenta.Remove(item);
-                            else {
-                                item.CantidadDependencias += 1;
-                            }
-
-                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                    if (ListaVenta.Contains(item)) {
+                        if (nuevaCantidad != 0) {
+                            item.CantidadDependencias = nuevaCantidad;
+                        }
+                        else if (nuevaCantidad == 0) ListaVenta.Remove(item);
+                        else {
+                            item.CantidadDependencias += 1;
                         }
 
-                        DataVenta.ItemsSource = null;
-                        DataVenta.ItemsSource = ListaVenta;
-
-                        TotalVenta();
-                        CambioVenta();
+                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                     }
+
+                    DataVenta.ItemsSource = null;
+                    DataVenta.ItemsSource = ListaVenta;
+
+                    TotalVenta();
+                    CambioVenta();
+                }
             }
         }
 
