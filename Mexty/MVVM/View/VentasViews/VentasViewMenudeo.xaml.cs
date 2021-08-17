@@ -41,6 +41,8 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private ItemInventario producto = new();
 
+        string barCode = null;
+
         /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
         /// </summary>
@@ -98,11 +100,10 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentasMenudeo();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto && producto.IdTienda!=DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda != DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
-            Keyboard.Focus(txtID);
 
             Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
         }
@@ -177,7 +178,6 @@ namespace Mexty.MVVM.View.VentasViews {
             VentaActual = new Venta();
             TotalVenta();
             CambioVenta();
-            Keyboard.Focus(txtID);
         }
 
         /// <summary>
@@ -363,37 +363,13 @@ namespace Mexty.MVVM.View.VentasViews {
             ClearFields();
         }
 
-        private void txtCantidadUpdate(object sender, TextChangedEventArgs e) {
-            TextBox textBox = sender as TextBox;
-            txtCantidad.Text = textBox.Text;
-        }
-
-        private void txtIDChanged(object sender, TextChangedEventArgs e) {
-            TextBox textBox = sender as TextBox;
-            txtID.Text = textBox.Text.Trim();
-        }
-
         private void SetFocus(object sender, RoutedEventArgs e) {
-            txtID.Focus();
+            txtTotal.Focus();
         }
 
-        private void GetIDScanner(object sender, TextCompositionEventArgs e) {
-            txtID.Focus();
-        }
-
-        private void txtID_PreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Return) {
-                AddFromScannerToGrid(txtID.Text, "0");
-                var id = int.Parse(txtID.Text);
-                txtID.Text = id.ToString();
-                txtID.Text = "";
-                Keyboard.Focus(txtID);
-            }
-        }
-
-        private void AddFromScannerToGrid(string id, string cant) {
+        private void AddFromScannerToGrid(string id) {
+            id.Trim('\r');
             var idProdutco = id == "" ? 0 : int.Parse(id);
-            var cantidadProducto = cant == "" ? 0 : int.Parse(cant);
 
             foreach (var item in ListaProductos) {
                 if (item.IdProducto == idProdutco) {
@@ -403,20 +379,12 @@ namespace Mexty.MVVM.View.VentasViews {
                     }
 
                     if (ListaVenta.Contains(item)) {
-                        if (cantidadProducto != 0) {
-                            item.CantidadDependencias += cantidadProducto;
-                        }
-                        else {
-                            item.CantidadDependencias += 1;
-                        }
+                        item.CantidadDependencias += 1;
                         item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                     }
-
-
                     DataVenta.ItemsSource = null;
                     DataVenta.ItemsSource = ListaVenta;
 
-                    Keyboard.Focus(txtID);
                     TotalVenta();
                     CambioVenta();
                 }
@@ -449,11 +417,9 @@ namespace Mexty.MVVM.View.VentasViews {
                         item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                     }
 
-
                     DataVenta.ItemsSource = null;
                     DataVenta.ItemsSource = ListaVenta;
 
-                    Keyboard.Focus(txtID);
                     TotalVenta();
                     CambioVenta();
                 }
@@ -466,6 +432,15 @@ namespace Mexty.MVVM.View.VentasViews {
                 ProcesarVenta();
             }
         }
-    }
+
+        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+            barCode += e.Text;
+
+            if (barCode.Length == 9) {
+                AddFromScannerToGrid(barCode);
+                barCode = null;
+            }
+        }
+}
 }
 
