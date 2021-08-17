@@ -3,12 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Mexty.MVVM.View.VentasViews"
+             xmlns:local="clr-namespace:Mexty.Commands"
+
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome" 
              xmlns:viewmodel="clr-namespace:Mexty.MVVM.Model.DataTypes" 
              xmlns:viewmodel1="clr-namespace:Mexty.MVVM.Model.DataTypes" d:DataContext="{d:DesignInstance Type=viewmodel1:Venta}"
              mc:Ignorable="d" 
              d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" TabIndex="2147483639" PreviewTextInput="UserControl_PreviewTextInput">
+
+    <UserControl.Resources>
+        <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
+    </UserControl.Resources>
+    
     <Grid Background="#7f233a">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -173,6 +179,7 @@
                                     <Setter Property="HorizontalAlignment" Value="Center"/>
                                     <Setter Property="VerticalAlignment" Value="Center"/>
                                     <Setter Property="FontSize" Value="20"/>
+                                    <Setter Property="Foreground" Value="{Binding Cantidad, Converter={StaticResource ValueToBrushConverter}}"/>
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>

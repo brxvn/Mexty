@@ -169,13 +169,13 @@ namespace Mexty.MVVM.View.VentasViews {
 
         // TODO: terminar este y el otro.
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            ClearFields();
-            if (DataProducts.SelectedItem == null) return;
-            Log.Debug("Item seleccionado.");
-            var item = (ItemInventario)DataProducts.SelectedItem;
+            //ClearFields();
+            //if (DataProducts.SelectedItem == null) return;
+            //Log.Debug("Item seleccionado.");
+            //var item = (ItemInventario)DataProducts.SelectedItem;
 
-            SelectedItem = item;
-            txtDescripcion.Text = item.Comentario;
+            //SelectedItem = item;
+            //txtDescripcion.Text = item.Comentario;
         }
 
         /// <summary>
