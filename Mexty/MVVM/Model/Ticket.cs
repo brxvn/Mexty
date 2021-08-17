@@ -3,8 +3,6 @@ using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Drawing.Printing;
 
 namespace Mexty.MVVM.Model {
@@ -36,11 +34,11 @@ namespace Mexty.MVVM.Model {
 
         public void ImprimirTicketVenta() {
             pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(PrintTicket);
+            pd.PrintPage += new PrintPageEventHandler(PrintTicketMenudeo);
             pd.Print();
         }
 
-        private void PrintTicket(object sender, PrintPageEventArgs ppeArgs) {
+        private void PrintTicketMenudeo(object sender, PrintPageEventArgs ppeArgs) {
             foreach (var item in listaVenta) {
                 totalProductos += item.CantidadDependencias;
             }
@@ -56,9 +54,7 @@ namespace Mexty.MVVM.Model {
                 }
             }
 
-            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoReportes - Copy.png");
-            var imageResized = ResizeImage(image, 185, 58);
-            //Icon icon = Icon.ExtractAssociatedIcon(@"C:\Mexty\Brand\LogoTicket.ico");
+            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
 
             Point ulCorner = new Point(0, 0);
 
@@ -126,33 +122,5 @@ namespace Mexty.MVVM.Model {
             g.DrawString("ENTRA PARA MÁS PROMOCIONES ", consola, Brushes.Black, leftMargin, newYpos);
         }
 
-        /// <summary>
-        /// Resize the image to the specified width and height.
-        /// </summary>
-        /// <param name="image">The image to resize.</param>
-        /// <param name="width">The width to resize to.</param>
-        /// <param name="height">The height to resize to.</param>
-        /// <returns>The resized image.</returns>
-        private static Bitmap ResizeImage(Image image, int width, int height) {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage)) {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes()) {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
     }
 }

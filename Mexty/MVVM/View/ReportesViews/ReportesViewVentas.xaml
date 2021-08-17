@@ -38,7 +38,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
 
-            <Button Content="Hoy" Grid.Column="0" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Margin="50 0"/>
+            <Button Content="Hoy" Grid.Column="0" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Margin="50 0" x:Name="btnHoy" Click="BtnHoy_Click"/>
             <Button Content="Última Semana" Grid.Column="1" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Margin="50 0"/>
             <Button Content="Último Mes" Grid.Column="2" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Margin="50 0"/>
         </Grid>

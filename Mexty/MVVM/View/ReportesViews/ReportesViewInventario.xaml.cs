@@ -19,7 +19,7 @@ namespace Mexty.MVVM.View.ReportesViews {
     public partial class ReportesViewInventario : UserControl {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        Reports report = new Reports();
+        ReportesInventario report = new ReportesInventario();
         List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
         public ReportesViewInventario() {
             try {
@@ -60,13 +60,6 @@ namespace Mexty.MVVM.View.ReportesViews {
 
                 ComboSucursal.SelectedIndex = 0;
                 Log.Debug("Se ha llenado el combo de sucursal");
-
-                //var dataProductos = Database.GetTablesFromProductos();
-                //foreach (var pro in dataProductos) {
-                //    ComboTipo.Items.Add($"{pro.TipoProducto} {pro.NombreProducto}");
-                //}
-                Log.Debug("Se ha llenado el combo de productos.");
-
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al llenar los campos de reportes inventario");

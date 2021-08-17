@@ -281,7 +281,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ReporteInventario(object sender, RoutedEventArgs e) {
-            Reports reports = new();
+            ReportesInventario reports = new();
             reports.ReporteInventario();
         }
 
