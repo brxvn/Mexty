@@ -79,13 +79,14 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Contiene: IdProducto:CantidadProducto:TipoVenta:PrecioMayoreo:PrecioMenudeo,
         /// </summary>
         /// <param name="listaProductos">Lista de objetos tipo <c>Producto</c>.</param>
+        /// <param name="mayoreo">si <c>true</c> guarda en venta mayoreo.</param>
         /// <returns>Un <c>string</c> que contiene la lista codificada en un string</returns>
-        public static string ListProductosToString(List<ItemInventario> listaProductos) {
+        public static string ListProductosToString(List<ItemInventario> listaProductos, bool mayoreo = false) {
             var lista = "";
             for (var index = 0; index < listaProductos.Count; index++) {
                 var producto = listaProductos[index];
                 lista +=
-                    $"{producto.IdProducto}:{producto.CantidadDependencias}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
+                    $"{producto.IdProducto.ToString()}:{producto.CantidadDependencias.ToString()}:{producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture)}:{producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture)},";
             }
 
             return lista.TrimEnd(',');

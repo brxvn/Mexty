@@ -11,20 +11,24 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
     /// Clase que se encarga de hacer las consultas a la base de datos del modulo de clientes.
     /// </summary>
-    public class QuerysClientes {
+    public static class QuerysClientes {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
 
         /// <summary>
         /// Método para obtener todos los datos de la tabla de clientes Mayoreo.
+        /// Si se le da true como parametero solo manda los clientes activos.
         /// </summary>
         /// <returns>Una lista de elementos tipo <c>Cliente</c>.</returns>
-        public static List<Cliente> GetTablesFromClientes() {
+        public static List<Cliente> GetTablesFromClientes(bool activos=false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
+
+            var cmd = activos ? @"select * from cliente_mayoreo where ACTIVO=1" : @"select * from cliente_mayoreo";
+
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "select * from cliente_mayoreo"
+                CommandText = cmd
             };
 
             var clientes = new List<Cliente>();

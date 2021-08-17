@@ -163,11 +163,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 ? @"
                 insert into venta_mayoreo 
                     (ID_VENTA_MAYOREO, ID_CLIENTE, DETALLE_VENTA, 
-                     TOTAL_VENTA, PAGO, CAMBIO, DEBE, 
+                     TOTAL_VENTA, PAGO, CAMBIO, 
                      COMENTARIOS, ID_TIENDA, 
                      USUARIO_REGISTRA, FECHA_REGISTRO) 
                 values (default, @idCX, @detalle, 
-                        @totalX, @pagoX, @cambioX, @debeX, 
+                        @totalX, @pagoX, @cambioX, 
                         @comentarios, @idTX, 
                         @usrRegistra, @fechaRegistro)"
                 : @"
@@ -191,8 +191,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@totalX", newVenta.TotalVenta.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pagoX", newVenta.Pago.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@cambioX", newVenta.Cambio.ToString(CultureInfo.InvariantCulture));
-            query.Parameters.AddWithValue("@debeX", newVenta.Debe.ToString(CultureInfo.InvariantCulture));
-            query.Parameters.AddWithValue("@comentario", newVenta.Comentarios);
+            query.Parameters.AddWithValue("@comentarios", newVenta.Comentarios);
             query.Parameters.AddWithValue("@idTX", newVenta.IdTienda.ToString());
             query.Parameters.AddWithValue("@usrRegistra", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@fechaRegistro", DatabaseHelper.GetCurrentTimeNDate());
@@ -220,23 +219,34 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         }
 
         /// <summary>
-        /// query que obtiene los productos disponibles para ventas menudeo.
+        /// query que obtiene los productos disponibles para ventas
         /// </summary>
         /// <returns></returns>
-        public static List<ItemInventario> GetListaInventarioVentasMenudeo() {
+        public static List<ItemInventario> GetListaInventarioVentas(bool mayoreo = false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
-            var query = new MySqlCommand() {
-                Connection = connObj,
-                CommandText = @"
+            var cmd = mayoreo
+                ? @"
+                SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO, i.ID_REGISTRO,
+                       c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
+                       c.PRECIO_MENUDEO, c.ACTIVO, c.TIPO_VENTA,
+                       c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
+                       i.CANTIDAD
+                FROM   cat_producto c, inventario_matriz i
+                WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO"
+                : @"
                 SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO, i.ID_REGISTRO,
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
                        c.PRECIO_MENUDEO, c.ACTIVO, c.TIPO_VENTA,
                        c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
                        i.ID_TIENDA,i.CANTIDAD
                 FROM   cat_producto c, inventario i
-                WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO"
+                WHERE  c.ID_PRODUCTO = i.ID_PRODUCTO";
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = cmd
             };
 
             var items = new List<ItemInventario>();
@@ -255,6 +265,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         PrecioMayoreo = reader.IsDBNull("precio_mayoreo") ? 0 : reader.GetDecimal("precio_mayoreo"),
                         Comentario = reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
                     };
+                    if (!mayoreo) item.IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda");
+
                     items.Add(item);
                 }
 
@@ -282,10 +294,23 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         /// <param name="idProducto">Id de producto del articulo.</param>
         /// <param name="cantidad">Cantidad a descontar, por defecto 1.</param>
+        /// <param name="matriz"><c>bool</c> por defecto false.</param>
         /// <returns></returns>
-        public static int UpdateInventario(int idProducto, int cantidad = 1) {
+        public static int UpdateInventario(int idProducto, int cantidad = 1, bool matriz=false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
+
+            var cmd = matriz
+                ? @"
+                update inventario inv 
+                inner join inventario inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
+                set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
+                where inv.ID_PRODUCTO = @idX and inv.ID_TIENDA=@idTX"
+                : @"
+                update inventario_matriz inv 
+                inner join inventario_matriz inv1 on inv.ID_REGISTRO = inv1.ID_REGISTRO 
+                set inv.CANTIDAD=inv1.CANTIDAD - @cantidadX 
+                where inv.ID_PRODUCTO = @idX";
 
             var query = new MySqlCommand() {
                 Connection = connObj,

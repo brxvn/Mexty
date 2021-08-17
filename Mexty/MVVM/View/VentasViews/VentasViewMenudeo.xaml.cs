@@ -17,7 +17,8 @@ namespace Mexty.MVVM.View.VentasViews {
     /// Interaction logic for VentasViewMenudeo.xaml
     /// </summary>
     public partial class VentasViewMenudeo : UserControl {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -39,21 +40,21 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private Venta VentaActual { get; set; }
 
-        private ItemInventario producto = new();
+        //private ItemInventario producto = new();
 
         string barCode = null;
 
         /// <summary>
         /// Producto seleccionado, viniendo de la pantalla de adm productos.
         /// </summary>
-        private Producto SelectedProduct { get; set; }
+        //private Producto SelectedProduct { get; set; }
 
         public VentasViewMenudeo() {
             try {
                 InitializeComponent();
                 FillData();
                 NewVenta();
-                ClearFields();
+                //ClearFields();
                 Log.Debug("Se han inicializado los campos de ventas menudeo.");
 
                 DispatcherTimer timer = new DispatcherTimer();
@@ -65,8 +66,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
                 Log.Error($"Error: {e.Message}");
             }
-            ClearFields();
-
+            //ClearFields();
         }
 
         /// <summary>
@@ -97,10 +97,10 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Método que se encarga de inicializar los campos.
         /// </summary>
         private void FillData() {
-            var data = QuerysVentas.GetListaInventarioVentasMenudeo();
+            var data = QuerysVentas.GetListaInventarioVentas();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto && producto.IdTienda != DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda == DatabaseInit.GetIdTienda()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
@@ -126,8 +126,7 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto =>
-                {
+                var noNull = new Predicate<object>(producto => {
                     if (producto == null) return false;
                     return ((Producto)producto).Activo == 1;
                 });
@@ -154,6 +153,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
             }
+
             return false;
         }
 
@@ -189,7 +189,6 @@ namespace Mexty.MVVM.View.VentasViews {
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
             ProcesarVenta();
-
         }
 
         private void ProcesarVenta() {
@@ -211,31 +210,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 if (res == 0) throw new Exception();
                 MessageBox.Show("Se ha registrado la venta con exito.");
 
-                // por cada producto en la cuenta.
-                for (var index = 0; index < VentaActual.DetalleVentaList.Count; index++) {
-                    var item = VentaActual.DetalleVentaList[index];
-
-                    var dependencias = item.Dependencias;
-                    if (dependencias != "") {
-                        // Si es producto compuesto.
-                        QuerysVentas.UpdateInventario(item.IdProducto,
-                            item.CantidadDependencias); // descontamos el producto compuesto
-
-                        // convertimos el string a una lista de objetos con las dependencias del producto compuesto
-                        var dependenciasToList = Producto.DependenciasToList(dependencias);
-                        for (var i = 0; i < dependenciasToList.Count; i++) {
-                            var dependencia = dependenciasToList[i];
-                            QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
-                                                                                  // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
-                                dependencia.CantidadDependencia * item.CantidadDependencias);
-                        }
-                    }
-                    else {
-                        // No es producto compuesto
-                        var res1 = QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
-                        if (res1 == 0) throw new Exception();
-                    }
-                }
+                ActualizaInvnetario();
 
                 ClearFields();
                 FillData();
@@ -248,6 +223,38 @@ namespace Mexty.MVVM.View.VentasViews {
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Método que actualiza la existencia en el inventario.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        private void ActualizaInvnetario() {
+            // por cada producto en la cuenta.
+            for (var index = 0; index < VentaActual.DetalleVentaList.Count; index++) {
+                var item = VentaActual.DetalleVentaList[index];
+
+                var dependencias = item.Dependencias;
+                if (dependencias != "") {
+                    // Si es producto compuesto.
+                    QuerysVentas.UpdateInventario(item.IdProducto,
+                        item.CantidadDependencias); // descontamos el producto compuesto
+
+                    // convertimos el string a una lista de objetos con las dependencias del producto compuesto
+                    var dependenciasToList = Producto.DependenciasToList(dependencias);
+                    for (var i = 0; i < dependenciasToList.Count; i++) {
+                        var dependencia = dependenciasToList[i];
+                        QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
+                            // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                            dependencia.CantidadDependencia * item.CantidadDependencias);
+                    }
+                }
+                else {
+                    // No es producto compuesto
+                    var res1 = QuerysVentas.UpdateInventario(item.IdProducto, item.CantidadDependencias);
+                    if (res1 == 0) throw new Exception();
+                }
             }
         }
 
@@ -283,7 +290,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 producto.CantidadDependencias += 1;
                 producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
             }
-            txtDescripcion.Text = producto.Comentario;
+
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
             Keyboard.Focus(txtRecibido);
@@ -363,6 +370,7 @@ namespace Mexty.MVVM.View.VentasViews {
             foreach (var item in ListaVenta) {
                 item.CantidadDependencias = 0;
             }
+
             ClearFields();
         }
 
@@ -382,12 +390,13 @@ namespace Mexty.MVVM.View.VentasViews {
                             ListaVenta.Add(item);
                         }
 
-                        if (ListaVenta.Contains(item)) {
-                            item.CantidadDependencias += 1;
-                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
-                        }
-                        DataVenta.ItemsSource = null;
-                        DataVenta.ItemsSource = ListaVenta;
+                    if (ListaVenta.Contains(item)) {
+                        item.CantidadDependencias += 1;
+                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                    }
+
+                    DataVenta.ItemsSource = null;
+                    DataVenta.ItemsSource = ListaVenta;
 
                         TotalVenta();
                         CambioVenta();
@@ -397,7 +406,7 @@ namespace Mexty.MVVM.View.VentasViews {
             catch (Exception e) {
                 Log.Error(e.ToString());
             }
-            
+
         }
 
         private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -413,25 +422,26 @@ namespace Mexty.MVVM.View.VentasViews {
             var nuevaCantidad = int.Parse((content as TextBox).Text.Trim('x'));
 
             foreach (var item in ListaProductos) {
-                if (item.IdProducto == item2.IdProducto) {
+                    if (item.IdProducto == item2.IdProducto) {
 
-                    if (ListaVenta.Contains(item)) {
-                        if (nuevaCantidad != 0) {
-                            item.CantidadDependencias = nuevaCantidad;
+                        if (ListaVenta.Contains(item)) {
+                            if (nuevaCantidad != 0) {
+                                item.CantidadDependencias = nuevaCantidad;
+                            }
+                            else if (nuevaCantidad == 0) ListaVenta.Remove(item);
+                            else {
+                                item.CantidadDependencias += 1;
+                            }
+
+                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                         }
-                        else if (nuevaCantidad == 0) ListaVenta.Remove(item);
-                        else {
-                            item.CantidadDependencias += 1;
-                        }
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
                     }
-
-                    DataVenta.ItemsSource = null;
-                    DataVenta.ItemsSource = ListaVenta;
-
-                    TotalVenta();
-                    CambioVenta();
-                }
             }
         }
 
@@ -450,6 +460,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 barCode = null;
             }
         }
-}
+    }
 }
 
