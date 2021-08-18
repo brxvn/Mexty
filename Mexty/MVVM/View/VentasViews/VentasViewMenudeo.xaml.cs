@@ -228,7 +228,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
 
                 FillData();
-                Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta);
+                Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta();
                 ClearFields();
             }

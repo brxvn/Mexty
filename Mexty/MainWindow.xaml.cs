@@ -16,13 +16,15 @@ namespace Mexty {
             log4net.Config.XmlConfigurator.Configure();
             
             InitializeComponent();
-            //BarCodes barCodes = new();
+            BarCodes barCodes = new();
                         
             DataContext = new MainViewModel();
             
-            if (DatabaseInit.GetIdRol().Equals(2)) {
+            if (DatabaseInit.GetIdRol().Equals(3)) {
                 Admn.Visibility = Visibility.Collapsed;
+                Reportes.Visibility = Visibility.Collapsed;
             }
+
             activeUser.Text = DatabaseInit.GetUsername();
 
             //Para mostrar la hora actual del sistema

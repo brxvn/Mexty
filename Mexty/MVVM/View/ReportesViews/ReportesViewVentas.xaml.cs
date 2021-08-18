@@ -94,18 +94,60 @@ namespace Mexty.MVVM.View.ReportesViews {
 
         private void BtnHoy_Click(object sender, RoutedEventArgs e) {
             var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasDia(id, "hoy");
+            report.ReporteVentasSucursal(id, "hoy");
         }
 
 
         private void UltimaSemana_Click(object sender, RoutedEventArgs e) {
             var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasDia(id, "semana");
+            report.ReporteVentasSucursal(id, "semana");
         }
 
         private void Mes_Click(object sender, RoutedEventArgs e) {
             var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasDia(id, "mes");
+            report.ReporteVentasSucursal(id, "mes");
+        }
+
+        private void btnHoyUsuario_Click(object sender, RoutedEventArgs e) {
+            string username = "";
+            var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
+            string[] nombre = allText.Split(' ');
+            foreach (var item in dataUsuarios) {
+                if (item.Nombre == nombre[0]) {
+                    username = item.Username;
+                    break;
+                }
+            }
+
+            report.ReporteVentasUsuario(username,"hoy");
+        }
+
+        private void btnSemanaUsuario_Click(object sender, RoutedEventArgs e) {
+            string username = "";
+            var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
+            string[] nombre = allText.Split(' ');
+            foreach (var item in dataUsuarios) {
+                if (item.Nombre == nombre[0]) {
+                    username = item.Username;
+                    break;
+                }
+            }
+
+            report.ReporteVentasUsuario(username, "semana");
+        }
+
+        private void btnMesUsuario_Click(object sender, RoutedEventArgs e) {
+            string username = "";
+            var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
+            string[] nombre = allText.Split(' ');
+            foreach (var item in dataUsuarios) {
+                if (item.Nombre == nombre[0]) {
+                    username = item.Username;
+                    break;
+                }
+            }
+
+            report.ReporteVentasUsuario(username, "mes");
         }
     }
 }

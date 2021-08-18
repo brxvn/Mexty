@@ -62,6 +62,17 @@ namespace Mexty.MVVM.View.InventarioViews {
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            if (DatabaseInit.GetIdRol().Equals(3)) {
+                AltInventario.Visibility = Visibility.Collapsed;
+                AsignInventario.Visibility = Visibility.Collapsed;
+                MovInventario.Visibility = Visibility.Collapsed;
+            }
+            else {
+                AltInventario.Visibility = Visibility.Visible;
+                AsignInventario.Visibility = Visibility.Visible;
+                MovInventario.Visibility = Visibility.Visible;
+            }
         }
 
         /// <summary>

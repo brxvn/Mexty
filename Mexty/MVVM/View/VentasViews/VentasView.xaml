@@ -17,7 +17,7 @@
                     <ventasView:VentasViewMenudeo/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Ventas Mayoreo" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Ventas Mayoreo" Background="#710a24" BorderBrush="Transparent" Name="VentasMayoreo"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <ventasView:VentasViewMayoreo/>

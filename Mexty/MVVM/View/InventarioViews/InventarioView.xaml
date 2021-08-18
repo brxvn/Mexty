@@ -19,7 +19,7 @@
                 </TabItem.Content>
             </TabItem>
 
-            <TabItem Header="Inventario Matriz" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Inventario Matriz" Background="#710a24" BorderBrush="Transparent" Name="inventarioMatriz"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <inventViews:InventarioViewInventMatriz/>

@@ -67,7 +67,6 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error($"Error: {e.Message}");
             }
 
-
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
@@ -100,7 +99,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             //DataProducts.ItemsSource = List;
             DataProducts.ItemsSource = collectionView;
             SortDataGrid(DataProducts, 4);
-           
+
             Log.Debug("Se ha llenado la datagrid de manera exitosa.");
         }
 

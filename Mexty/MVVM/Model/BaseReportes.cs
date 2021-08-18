@@ -25,12 +25,13 @@ namespace Mexty.MVVM.Model {
         protected readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
         protected readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
         protected readonly string _sucursalesVentas = @"C:\Mexty\Ventas\Sucursales\";
+        protected readonly string _ventasUsuarios = @"C:\Mexty\Ventas\Usuarios\";
         protected readonly string usuarioActivo = DatabaseInit.GetUsername();
         protected int idImprimir = 0;
         protected string dirImprimir = null;
         protected string nombreImprimir = null;
 
-        protected Font consola = new("Courier New", 8);
+        protected Font consola = new("Courier New", 8, FontStyle.Bold);
         protected PrintDocument pd = new();
 
         public BaseReportes() {
