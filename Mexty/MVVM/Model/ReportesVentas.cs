@@ -118,9 +118,17 @@ namespace Mexty.MVVM.Model {
 
             Log.Debug("Reporte de ventas por sucursal creado");
 
-            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(ImprimirReporteVentas);
-            pd.Print();
+            try {
+                pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteVentas);
+                pd.Print();
+                Log.Debug("Reporte de ventas impreso en ticket");
+
+            }
+            catch (System.Exception e) {
+                Log.Debug("Impresora de ticket no encontrada");
+                Log.Error(e.Message);
+            }
         }
 
 
@@ -199,13 +207,23 @@ namespace Mexty.MVVM.Model {
 
             Log.Debug("Reporte de ventas por sucursal creado");
 
-            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(ImprimirReporteVentasXUsuario);
-            pd.Print();
+            try {
+                pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteVentasXUsuario);
+                pd.Print();
+                Log.Debug("Reporte de ventas por sucursal impreso en ticket");
+
+            }
+            catch (System.Exception e) {
+                Log.Debug("Impresora de ticket no encontrada");
+                Log.Error(e.Message);
+            }
 
         }
 
         private void ImprimirReporteVentas(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión de repote de ventas...");
+
             var data = QuerysReportesVentas.GetVentasPorSucursal(idTienda, comandoSucursal);
 
             var totalProductos = 0;
@@ -303,10 +321,12 @@ namespace Mexty.MVVM.Model {
                     break;
             }
 
-
+            Log.Debug("Finalizando impresión de repote de ventas.");
         }
 
         private void ImprimirReporteVentasXUsuario(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión de repote de ventas por usuario...");
+
             var data = QuerysReportesVentas.GetVentasPorUsuario(username, comandoUsuario);
 
             var totalProductos = 0;
@@ -403,7 +423,7 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     break;
             }
-
+            Log.Debug("Finalizando impresión de repote de ventas por usuario.");
 
         }
 

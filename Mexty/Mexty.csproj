@@ -34,6 +34,7 @@
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="MySqlBackup.NET" Version="2.3.4.1" />
+    <PackageReference Include="QRCoder" Version="1.4.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 

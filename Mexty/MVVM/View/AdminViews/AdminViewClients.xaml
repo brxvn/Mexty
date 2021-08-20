@@ -772,11 +772,13 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                
+                <Button x:Name="Historial" Grid.Column="0" Content="Historial" Click="Historial_Click" ToolTip="Historial Cliente" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Limpiar" Grid.Column="1" Content="Limpiar" Click="LimpiarCampos" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Guardar" Grid.Column="2" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Eliminar" Grid.Column="3" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
 
             </Grid>
         </Grid>
