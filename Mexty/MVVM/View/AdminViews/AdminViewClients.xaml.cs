@@ -305,6 +305,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void EliminarCliente(object sender, RoutedEventArgs e) {
+            //
             var cliente = SelectedClient;
 
             if (cliente.Debe > 0) {
