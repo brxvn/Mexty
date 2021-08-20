@@ -1,6 +1,6 @@
-﻿using Common.Logging;
-using iText.Layout.Element;
+﻿using iText.Layout.Element;
 using iText.Layout.Properties;
+using log4net;
 using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System.Drawing;
@@ -29,7 +29,7 @@ namespace Mexty.MVVM.Model {
             }
 
             string path = $"{_inventarioPath}";
-            string nombreReporte = $"Reporte-{sucursal}-{_date}";
+            string nombreReporte = @$"ReporteInventario-{sucursal}-{_date}";
             string tituloReporte = $"Reporte de Inventario de {sucursal}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
@@ -64,9 +64,18 @@ namespace Mexty.MVVM.Model {
 
             Log.Debug("Reporte de inventario creado");
 
-            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventario);
-            pd.Print();
+            try {
+                pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+                var aber = pd.PrinterSettings.PaperSizes;
+                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventarioXSucursal);
+                pd.Print();
+                Log.Debug("Reporte de inventario impreso en ticket");
+
+            }
+            catch (System.Exception e) {
+                Log.Debug("Impresora de ticket no encontrada");
+                Log.Error(e.Message);
+            }
         }
 
         public void ReportXSucursal(int idTienda, string nombreTienda, string direccion) {
@@ -108,13 +117,21 @@ namespace Mexty.MVVM.Model {
 
             Log.Debug("Reporte de inventario por sucursal creado");
 
-            pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-            pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventarioXSucursal);
-            pd.Print();
+            try {
+                pd.PrinterSettings.PrinterName = "EC-PM-5890X";
+                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventarioXSucursal);
+                pd.Print();
+                Log.Debug("Reporte de inventario impreso en ticket");
 
+            }
+            catch (System.Exception e) {
+                Log.Debug("Impresora de ticket no encontrada");
+                Log.Error(e.Message);
+            }
         }
 
         private void ImprimirReporteInventario(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión del ticket de reporte de inventario...");
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
             System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
@@ -163,9 +180,13 @@ namespace Mexty.MVVM.Model {
                 g.DrawString(string.Format("{0,2} {1,-9} {2,-10} {3,3}", item.IdProducto, type, name, item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
+            Log.Debug("Finalizando impresión del ticket de reporte de inventario.");
+
         }
 
         private void ImprimirReporteInventarioXSucursal(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión del ticket de reporte de inventario por sucursal...");
+
             var dataInventarioSucursal = QuerysInventario.GetItemsFromInventarioById(idImprimir);
 
             string path = $"{_SucursalesInventarioPath}";
@@ -218,6 +239,7 @@ namespace Mexty.MVVM.Model {
                 g.DrawString(string.Format("{0,2} {1,-9} {2,-10} {3,3}", item.IdProducto, type, name, item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
+            Log.Debug("Finalizando impresión del ticket de reporte de inventario por sucursal.");
         }
     }
 }

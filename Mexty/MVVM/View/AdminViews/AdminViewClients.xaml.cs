@@ -139,6 +139,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
             EnableGuardar();
+            SelectedClient = null;
             Log.Debug("Se han limpiado los campos de texto.");
         }
 
@@ -233,7 +234,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private static void Alta(Cliente newClient) {
             try {
                 Log.Debug("Detectada alta de cliente.");
-                
+
                 var res = QuerysClientes.NewClient(newClient);
                 if (res == 0) return;
                 var name = char.ToUpper(newClient.Nombre[0]) + newClient.Nombre[1..] + " " + char.ToUpper(newClient.ApPaterno[0]) + newClient.ApPaterno[1..];
@@ -260,7 +261,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
                 var res = QuerysClientes.UpdateData(newClient);
                 if (res == 0) return;
-                
+
                 var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre.ToUpper()}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
                 Log.Debug("Se ha editado el cliente exitosamente.");
@@ -425,6 +426,16 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+        }
+
+        private void Historial_Click(object sender, RoutedEventArgs e) {
+            if (SelectedClient is null) {
+                MessageBox.Show("Seleccione un cliente para poder ver su historial");
+                return;
+            }
+            AdminViewHistorialCliente historialCliente = new(SelectedClient);
+            historialCliente.ShowDialog();
+
         }
     }
 }

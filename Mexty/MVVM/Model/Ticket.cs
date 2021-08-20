@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using log4net;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace Mexty.MVVM.Model {
     public class Ticket {
@@ -27,10 +29,12 @@ namespace Mexty.MVVM.Model {
         private string cambio;
         private List<ItemInventario> listaVenta;
         private List<Cliente> listaClientes = QuerysClientes.GetTablesFromClientes();
-        private Image qrCode = Image.FromFile(@"C:\Mexty\Brand\qr.png");
         private int totalProductos;
         private int idCliente;
         private float deudaCliente;
+        private QRGenerator generator = new();
+        private Bitmap bitmap;
+        private string instagram;
 
         public Ticket(string totalVenta, string recibido, string cambio, List<ItemInventario> listaVenta, Venta ventaActual) {
             this.totalVenta = totalVenta;
@@ -38,6 +42,7 @@ namespace Mexty.MVVM.Model {
             this.cambio = cambio;
             this.listaVenta = listaVenta;
             idCliente = ventaActual.IdCliente;
+
         }
 
         public void ImprimirTicketVenta(bool tipoVenta = true) {
@@ -61,6 +66,7 @@ namespace Mexty.MVVM.Model {
         }
 
         private void PrintTicketMenudeo(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión de ticket de venta menudeo...");
             foreach (var item in listaVenta) {
                 totalProductos += item.CantidadDependencias;
             }
@@ -73,12 +79,17 @@ namespace Mexty.MVVM.Model {
                 if (tienda.IdTienda == idTienda) {
                     sucursal = tienda.NombreTienda;
                     direccion = tienda.Dirección;
+                    instagram = tienda.Instagram == "" ? "https://www.instagram.com" : tienda.Instagram;
                 }
             }
+            bitmap = generator.GenerarQR(instagram);
+            bitmap.SetResolution(100, 100);
+            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket1.png");
+            var newimage = ResizeImage(image, 185, 142);
+            Image imageQr = (Image)bitmap;
+            
 
-            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
-
-            Point ulCorner = new Point(0, 0);
+             Point ulCorner = new Point(0, 0);
 
             Graphics g = ppeArgs.Graphics;
 
@@ -91,7 +102,7 @@ namespace Mexty.MVVM.Model {
             float leftMargin = 0;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
+            g.DrawImage(newimage, ulCorner);
 
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
             renglon += 15;
@@ -138,13 +149,18 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(45, (int)newYpos);
-            g.DrawImage(qrCode, point);
-            newYpos += 100;
+            Point point = new Point(50, (int)newYpos);
+            g.DrawImage(imageQr, point);
+            newYpos += 90;
             g.DrawString("ENTRA PARA MÁS PROMOCIONES ", consola, Brushes.Black, leftMargin, newYpos);
+
+            Log.Debug("Finalizando impresión de ticket de venta menudeo.");
+
         }
 
         private void PrintTicketMayoreo(object sender, PrintPageEventArgs ppeArgs) {
+            Log.Debug("Iniciando impresión de ticket de venta mayoreo...");
+
             foreach (var item in listaVenta) {
                 totalProductos += item.CantidadDependencias;
             }
@@ -164,10 +180,14 @@ namespace Mexty.MVVM.Model {
                 if (tienda.IdTienda == idTienda) {
                     sucursal = tienda.NombreTienda;
                     direccion = tienda.Dirección;
+                    bitmap = generator.GenerarQR(tienda.Instagram);
+
                 }
             }
 
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
+            Image imageQr = (Image)bitmap;
+
 
             Point ulCorner = new Point(0, 0);
 
@@ -229,12 +249,44 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos); newYpos += 15;
             g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;            g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15; g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             Point point = new Point(45, (int)newYpos);
-            g.DrawImage(qrCode, point);
+            g.DrawImage(imageQr, point);
             newYpos += 100;
             g.DrawString("ENTRA PARA MÁS PROMOCIONES ", consola, Brushes.Black, leftMargin, newYpos);
+
+            Log.Debug("Finalizando impresión de ticket de venta mayoreo.");
+
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Image image, int width, int height) {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage)) {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes()) {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
 
     }

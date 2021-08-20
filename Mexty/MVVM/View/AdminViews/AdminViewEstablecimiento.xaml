@@ -663,9 +663,8 @@
                      x:Name="txtInstagram"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
-                     CharacterCasing="Upper"
-                     MaxLength="25"
-                     PreviewTextInput="OnlyLetterAndNumbers"
+                     
+                     MaxLength="100"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -685,9 +684,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="25"
-                                                     CharacterCasing="Upper"
-                                                     PreviewTextInput="OnlyLetterAndNumbers"
+                                                     MaxLength="100"
                                                      TextChanged="txtUpdateInstagram"/>
 
                                                     <TextBlock IsHitTestVisible="False"
