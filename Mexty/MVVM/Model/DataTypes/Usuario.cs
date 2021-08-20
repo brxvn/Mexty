@@ -94,11 +94,6 @@ namespace Mexty.MVVM.Model.DataTypes
         public string Telefono { get; set; }
 
         /// <summary>
-        /// Indica si el usuario esta activo o no.
-        /// </summary>
-        public int Activo { get; set; }
-
-        /// <summary>
         /// Id de la tienda asignada al empleado.
         /// </summary>
         public int IdTienda { get; set; }
@@ -185,7 +180,6 @@ namespace Mexty.MVVM.Model.DataTypes
             var resultado = new Usuario() {
                 //no editables directamente
                 Id = b.Id,
-                Activo = a.Activo,
                 UsuraioRegistra = b.UsuraioRegistra,
                 FechaRegistro = b.FechaRegistro,
                 // Identificadores de usuario
@@ -213,7 +207,6 @@ namespace Mexty.MVVM.Model.DataTypes
             var resultado = new Usuario {
                 //no editables
                 Id = b.Id,
-                Activo = b.Activo,
                 UsuraioRegistra = b.UsuraioRegistra,
                 FechaRegistro = b.FechaRegistro,
                 

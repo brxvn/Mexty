@@ -39,7 +39,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         Contraseña = reader.IsDBNull("contrasenia") ? "" : reader.GetString("contrasenia"),
                         Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
                         Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
-                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                         IdTienda = reader.IsDBNull("id_tienda") ? 0 : reader.GetInt32("id_tienda"),
                         IdRol = reader.IsDBNull("id_rol") ? 0 : reader.GetInt32("id_rol"),
                         UsuraioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
@@ -84,7 +83,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         DOMICILIO=@dom, 
                         CONTRASENIA=@pass, 
                         TELEFONO=@telX, 
-                        ACTIVO=@actX, 
                         ID_ROL=@idRX, 
                         USUARIO_MODIFICA=@uMod, 
                         FECHA_MODIFICA=@date 
@@ -99,7 +97,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@pass", usuario.Contraseña);
             query.Parameters.AddWithValue("@telX", usuario.Telefono);
             query.Parameters.AddWithValue("@idX", usuario.Id.ToString());
-            query.Parameters.AddWithValue("@actX", usuario.Activo.ToString());
             query.Parameters.AddWithValue("@idRX",usuario.IdRol.ToString());
             query.Parameters.AddWithValue("@uMod", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@date", DatabaseHelper.GetCurrentTimeNDate());
@@ -141,14 +138,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     insert into usuario 
                         (ID_USUARIO, NOMBRE_USUARIO, AP_PATERNO, AP_MATERNO, 
                          USUARIO, CONTRASENIA, DOMICILIO, TELEFONO, 
-                         ACTIVO, ID_TIENDA, ID_ROL, 
+                         ID_TIENDA, ID_ROL, 
                          USUARIO_REGISTRA, 
                          FECHA_REGISTRO, 
                          USUARIO_MODIFICA, 
                          FECHA_MODIFICA) 
                     values (default, @nombre, @apPat, @apMat, 
                             @usuario, @pass, @dom, @telX, 
-                            @actX, @idTX, @idRX, 
+                            @idTX, @idRX, 
                             @usrReg, 
                             @date, 
                             @usrMod, 
@@ -162,7 +159,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@pass", newUser.Contraseña);
             query.Parameters.AddWithValue("@dom", newUser.Domicilio);
             query.Parameters.AddWithValue("@telX", newUser.Telefono);
-            query.Parameters.AddWithValue("@actX", newUser.Activo.ToString());//evitamos boxing
             query.Parameters.AddWithValue("@idTX", newUser.IdTienda.ToString());
             query.Parameters.AddWithValue("@idRX", newUser.IdRol.ToString());
             query.Parameters.AddWithValue("@usrReg", DatabaseInit.GetUsername());
@@ -178,6 +174,44 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
             catch (MySqlException e) {
                 Log.Error("Ha ocurrido un error al dar de alta un un nuevo usuario.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que elimina un usuario de la base de datos.
+        /// </summary>
+        /// <returns></returns>
+        public static int DelProduct(int idClient) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"delete from usuario where ID_USUARIO=@idX"
+            };
+
+            query.Parameters.AddWithValue("@idX", idClient.ToString());
+
+            try {
+                QuerysDatabase.ProcessQuery(query);
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha eliminado un usuario de manera exitosa.");
+                return res;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al eliminar los datos del usuario.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
                     $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",

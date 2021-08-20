@@ -51,11 +51,6 @@
         public string Telefono { get; set; }
 
         /// <summary>
-        /// Indica si el cliente esta activo.
-        /// </summary>
-        public int Activo { get; set; }
-
-        /// <summary>
         /// Usuario que registró al cliente.
         /// </summary>
         public string UsuarioRegistra { get; set; }

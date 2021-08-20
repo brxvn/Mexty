@@ -20,15 +20,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Si se le da true como parametero solo manda los clientes activos.
         /// </summary>
         /// <returns>Una lista de elementos tipo <c>Cliente</c>.</returns>
-        public static List<Cliente> GetTablesFromClientes(bool activos=false) {
+        public static List<Cliente> GetTablesFromClientes() {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
-            var cmd = activos ? @"select * from cliente_mayoreo where ACTIVO=1" : @"select * from cliente_mayoreo";
 
             var query = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = cmd
+                CommandText = @"select * from cliente_mayoreo"
             };
 
             var clientes = new List<Cliente>();
@@ -42,7 +41,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         ApMaterno = reader.IsDBNull("ap_materno") ? "" : reader.GetString("ap_materno"),
                         Domicilio = reader.IsDBNull("domicilio") ? "" : reader.GetString("domicilio"),
                         Telefono = reader.IsDBNull("telefono") ? "" : reader.GetString("telefono"),
-                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                         UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
@@ -84,7 +82,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 CommandText = @"
                 update cliente_mayoreo 
                 set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
-                    DOMICILIO=@dom, TELEFONO=@telX, ACTIVO=@actX, 
+                    DOMICILIO=@dom, TELEFONO=@telX, 
                     USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=@date, 
                     COMENTARIO=@com, DEBE=@debeX
                 where ID_CLIENTE=@idX"
@@ -94,7 +92,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@apM", cliente.ApMaterno);
             query.Parameters.AddWithValue("@dom", cliente.Domicilio);
             query.Parameters.AddWithValue("@telX", cliente.Telefono);
-            query.Parameters.AddWithValue("@actX", cliente.Activo.ToString());
             query.Parameters.AddWithValue("@usMod", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@idX", cliente.IdCliente.ToString());
             query.Parameters.AddWithValue("@com", cliente.Comentario);
@@ -137,12 +134,12 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 CommandText = @"
                 insert into cliente_mayoreo 
                     (id_cliente, nombre_cliente, ap_paterno, ap_materno, 
-                     domicilio, telefono, activo, 
+                     domicilio, telefono, 
                      usuario_registra, fecha_registro, 
                      usuario_modifica, fecha_modifica, 
                      comentario, DEBE) 
                 values (default, @nom, @apP, @apM, 
-                        @dom, @telX, @actX, 
+                        @dom, @telX, 
                         @usReg, @date, 
                         @usMod, @date, 
                         @com, @debeX)"
@@ -152,7 +149,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@apM", newClient.ApMaterno);
             query.Parameters.AddWithValue("@dom", newClient.Domicilio);
             query.Parameters.AddWithValue("@telX", newClient.Telefono);
-            query.Parameters.AddWithValue("@actX", 1.ToString());
             query.Parameters.AddWithValue("@usReg", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@usMod", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@com", newClient.Comentario);
@@ -168,6 +164,44 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
             catch (MySqlException e) {
                 Log.Error("Ha ocurrido un error al dar de alta un nuevo cliente.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que elimina un cliente de la base de datos.
+        /// </summary>
+        /// <returns></returns>
+        public static int DelClient(int idClient) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"delete from cliente_mayoreo where ID_CLIENTE=@idX"
+            };
+
+            query.Parameters.AddWithValue("@idX", idClient.ToString());
+
+            try {
+                QuerysDatabase.ProcessQuery(query);
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha eliminado un cliente de manera exitosa.");
+                return res;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al eliminar los datos del cliente.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
                     $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",

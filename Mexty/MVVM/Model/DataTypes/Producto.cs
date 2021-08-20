@@ -100,11 +100,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         public string DetallesProducto { get; set; }
 
         /// <summary>
-        /// Indica si el producto esta activo o no.
-        /// </summary>
-        public int Activo { get; set; }
-
-        /// <summary>
         /// Canitdad de cada producto.
         /// </summary>
         public int CantidadDependencia { get; set; }

@@ -70,7 +70,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena los campos con la información necesaria.
         /// </summary>
         private void FillData() {
-            var productosDisponibles = QuerysProductos.GetTablesFromProductos(true);
+            var productosDisponibles = QuerysProductos.GetTablesFromProductos();
             ListaProductos = productosDisponibles;
             var listaProductos = new List<string>();
             for (var index = 0; index < productosDisponibles.Count; index++) {

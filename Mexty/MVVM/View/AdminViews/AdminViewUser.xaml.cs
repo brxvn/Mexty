@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using iText.Layout.Element;
 using log4net;
 using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DatabaseQuerys;
@@ -30,6 +31,11 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Lista de los usuarios de la base de datos.
         /// </summary>
         private List<Usuario> UsuariosList { get; set; }
+
+        /// <summary>
+        /// Lista de sucusales de la bd
+        /// </summary>
+        private List<Sucursal> ListaSucursales { get; set; }
 
         /// <summary>
         /// El último usuario seleccionado.
@@ -73,8 +79,9 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillDataGrid() {
             var query = QuerysUsuario.GetTablesFromUsuarios();
             UsuariosList = query;
+
             var collectionView = new ListCollectionView(query) {
-                Filter = (e) => e is Usuario emp && emp.Activo != 0 // Solo usuarios activos en la tabla.
+                Filter = (e) => e is Usuario emp //&& emp.Activo != 0 // Solo usuarios activos en la tabla.
             };
             CollectionView = collectionView;
             DataUsuarios.ItemsSource = collectionView;
@@ -98,7 +105,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillSucursales() {
             var sucursales = QuerysSucursales.GetTablesFromSucursales();
             foreach (var sucursal in sucursales) {
-                ComboSucursal.Items.Add(sucursal.NombreTienda.ToUpper());
+                ComboSucursal.Items.Add($"{sucursal.IdTienda.ToString()} {sucursal.NombreTienda.ToUpper()}");
             }
             Log.Debug("Se ha llenado el combo box de sucursales.");
         }
@@ -173,12 +180,12 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(empleado =>
-                {
-                    if (empleado == null) return false;
-                    return ((Usuario)empleado).Activo == 1;
-                });
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(empleado =>
+                // {
+                //     if (empleado == null) return false;
+                //     return ((Usuario)empleado).Activo == 1;
+                // });
+                // collection.Filter += noNull;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -200,7 +207,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 usuario.ApPaterno.Contains(text) ||
                 usuario.SucursalNombre.Contains(text) ||
                 usuario.Nombre.Contains(text)) {
-                return usuario.Activo == 1;
+                return true;
             }
             return false;
         }
@@ -220,11 +227,11 @@ namespace Mexty.MVVM.View.AdminViews {
                     Domicilio = TxtDireccion.Text,
                     Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
                     Contraseña = TxtContraseña.Text,
-                    IdTienda = ComboSucursal.SelectedIndex + 1,
+                    IdTienda = int.Parse(ComboSucursal.Text.Split(' ')[0]),
                     IdRol = ComboRol.SelectedIndex + 1
                 };
-                Log.Debug("Se ha creado el objeto Usuario exitosamente.");
 
+                Log.Debug("Se ha creado el objeto Usuario exitosamente.");
                 if (!Validar(newUsuario)) {
                     Log.Warn("El objeto creado tipo Usuario no ha pasado las validaciones.");
                     return;
@@ -235,13 +242,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Edit(newUsuario);
                 }
                 else {
-                    var flag = true;
-                    if (UsuariosList != null) {
-                        Activar(newUsuario, ref flag);
-                    }
-                    if (flag) {
-                        Alta(newUsuario);
-                    }
+                    Alta(newUsuario);
                 }
                 FillDataGrid();
                 ClearFields();
@@ -259,7 +260,6 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="newUsuario"></param>
         private static void Alta(Usuario newUsuario) {
             try {
-                newUsuario.Activo = 1;
                 newUsuario.Username = Usuario.GenUsername(newUsuario); // Generamos el usename si el usuario es nuevo.
                 Log.Debug("Detectado nuevo usuario, dando de alta.");
                 
@@ -294,40 +294,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al editar el usuario.");
-                Log.Error($"Error: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Método que se encarga de la activación de un usuario.
-        /// </summary>
-        /// <param name="newUsuario"> El usuario a activar.</param>
-        /// <param name="flag">Bandera para señalizar si es necesario dar de alta un nuevo usuario.</param>
-        private void Activar(Usuario newUsuario, ref bool flag) {
-            try {
-                for (var index = 0; index < UsuariosList.Count; index++) {
-                    var usuario = UsuariosList[index];
-
-                    if (usuario != newUsuario || usuario.Activo != 0) continue;
-                    Log.Debug("Detectado usuario equivalente no activo, activando y actualizando.");
-                    newUsuario += usuario;
-                    newUsuario.Activo = 1;
-                    flag = false;
-
-                    var res = QuerysUsuario.UpdateData(newUsuario);
-                    if (res != 0) {
-                        var msg =
-                            $"Se ha activado el usuario {newUsuario.Nombre.ToUpper()} {newUsuario.ApPaterno.ToUpper()} {newUsuario.ApMaterno.ToUpper()}.";
-                        MessageBox.Show(msg, "Nuevo Usuario registrado.");
-                        Log.Debug("Se ha activado el usuario exitosamente.");
-                    }
-
-                    break;
-                }
-
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrdo un error al actualizar el usuario.");
                 Log.Error($"Error: {e.Message}");
             }
         }
@@ -373,9 +339,9 @@ namespace Mexty.MVVM.View.AdminViews {
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Eliminar", buttons, icon) != MessageBoxResult.OK) return;
-            usuario.Activo = 0;
+
             try {
-                QuerysUsuario.UpdateData(usuario);
+                QuerysUsuario.DelProduct(usuario.Id);
                 Log.Info("Usuario eliminado.");
             }
             catch (Exception exception) {

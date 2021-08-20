@@ -41,7 +41,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         Facebook = reader.IsDBNull("facebook") ? "" : reader.GetString("facebook"),
                         Instagram = reader.IsDBNull("instagram") ? "" : reader.GetString("instagram"),
                         TipoTienda = reader.IsDBNull("tipo_tienda") ? "" : reader.GetString("tipo_tienda"),
-                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo")
                     };
                     sucursales.Add(sucursal);
                     Log.Debug("Se han obtenido con exito las tablas de sucursales.");
@@ -82,8 +81,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     MENSAJE=@msg, 
                     FACEBOOK=@face, 
                     INSTAGRAM=@inst,
-                    TIPO_TIENDA=@suc,
-                    ACTIVO=@actX 
+                    TIPO_TIENDA=@suc 
                 where ID_TIENDA=@idX"
             };
 
@@ -95,7 +93,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@face", sucursal.Facebook);
             query.Parameters.AddWithValue("@inst", sucursal.Instagram);
             query.Parameters.AddWithValue("@suc", sucursal.TipoTienda);
-            query.Parameters.AddWithValue("@actX", sucursal.Activo.ToString());
             query.Parameters.AddWithValue("@idX", sucursal.IdTienda.ToString());
 
             try {
@@ -135,11 +132,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     (ID_TIENDA, NOMBRE_TIENDA, DIRECCION, TELEFONO, 
                      RFC, 
                      MENSAJE, 
-                     FACEBOOK, INSTAGRAM, TIPO_TIENDA, ACTIVO) 
+                     FACEBOOK, INSTAGRAM, TIPO_TIENDA) 
                 values (default, @nom, @dir, @telX, 
                         @rfc, 
                         @msg, 
-                        @face, @insta, @tTienda, @actX)"
+                        @face, @insta, @tTienda)"
             };
             query.Parameters.AddWithValue("@nom", newSucursal.NombreTienda);
             query.Parameters.AddWithValue("@dir", newSucursal.Dirección);
@@ -149,7 +146,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@face", newSucursal.Facebook);
             query.Parameters.AddWithValue("@insta", newSucursal.Instagram);
             query.Parameters.AddWithValue("@tTienda", newSucursal.TipoTienda);
-            query.Parameters.AddWithValue("@actX", 1.ToString());
 
             try {
                 QuerysDatabase.ProcessQuery(query);
@@ -160,6 +156,46 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
             catch (MySqlException e) {
                 Log.Error("Ha ocurrido un error al dar de alta una nueva sucursal.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que elimina una sucursal
+        /// </summary>
+        /// <param name="idSucursal"></param>
+        /// <returns></returns>
+        public static int DeleteSuc(int idSucursal) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"delete from cat_tienda where ID_TIENDA=@idX"
+            };
+
+            query.Parameters.AddWithValue("@idX", idSucursal.ToString());
+
+
+            try {
+                QuerysDatabase.ProcessQuery(query);
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha eliminado una sucursal de manera exitosa.");
+                return res;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al eliminar los datos de la sucursal.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
                     $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",

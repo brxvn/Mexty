@@ -125,13 +125,13 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto =>
-                {
-                    if (producto == null) return false;
-                    return ((Producto)producto).Activo == 1;
-                });
-
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(producto =>
+                // {
+                //     if (producto == null) return false;
+                //     return ((Producto)producto).Activo == 1;
+                // });
+                //
+                // collection.Filter += noNull;
                 DataProducts.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -286,12 +286,14 @@ namespace Mexty.MVVM.View.VentasViews {
                         var alcanza =
                             ListaProductos.Where(producto => dependencia.IdProducto == producto.IdProducto) //donde el Id del producto de la dependencia coincida con el del inventario
                             .All(x => x.Cantidad >= dependencia.CantidadDependencia * itemVenta.CantidadDependencias); // la cantidad en existencia tiene que ser menor o igual a la que se va a vender
+
                         if (!alcanza) return false;
                     }
                 }
                 else {
                     var alcanza = ListaProductos.Where(producto => producto.IdProducto == itemVenta.IdProducto)
                         .All(x => x.Cantidad >= itemVenta.CantidadDependencias);
+
                     if (!alcanza) return false;
                 }
             }

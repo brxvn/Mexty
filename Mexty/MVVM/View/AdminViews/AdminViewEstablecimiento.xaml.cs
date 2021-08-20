@@ -79,7 +79,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var data = QuerysSucursales.GetTablesFromSucursales();
             ListaSucursales = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = e => e is Sucursal sucursal && sucursal.Activo != 0
+                Filter = e => e is Sucursal sucursal //&& sucursal.Activo != 0
             };
             CollectionView = collectionView;
             DataEstablecimientos.ItemsSource = collectionView;
@@ -160,12 +160,12 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(sucursal =>
-                {
-                    if (sucursal == null) return false;
-                    return ((Sucursal)sucursal).Activo == 1;
-                });
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(sucursal =>
+                // {
+                //     if (sucursal == null) return false;
+                //     return ((Sucursal)sucursal).Activo == 1;
+                // });
+                // collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -226,14 +226,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Edit(newSucursal);
                 }
                 else {
-                    var alta = true;
-                    if (ListaSucursales != null) {
-                        Activar(newSucursal, ref alta);
-                    }
-
-                    if (alta) {
-                        Alta(newSucursal);
-                    }
+                    Alta(newSucursal);
                 }
                 FillData();
                 ClearFields();
@@ -272,7 +265,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Sucursal newSucursal) {
             try {
                 Log.Debug("Detectada edición de una sucursal.");
-                newSucursal.Activo = SelectedSucursal.Activo;
                 newSucursal.IdTienda = SelectedSucursal.IdTienda;
                 
                 var res = QuerysSucursales.UpdateData(newSucursal);
@@ -284,40 +276,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al dar de alta la sucurzal.");
-                Log.Error($"Error: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Método que se encarga de la activación de un producto.
-        /// </summary>
-        /// <param name="newSucursal"></param>
-        /// <param name="alta"></param>
-        private void Activar(Sucursal newSucursal, ref bool alta) {
-            try {
-                for (var index = 0; index < ListaSucursales.Count; index++) {
-                    var sucursal = ListaSucursales[index];
-
-                    if (newSucursal != sucursal || sucursal.Activo != 0) continue;
-                    
-                     Log.Debug("Detectada sucursal equivalente no activa, actualizando y activando.");
-                     newSucursal.IdTienda = sucursal.IdTienda;
-                     newSucursal.Activo = 1;
-                     alta = false;
-                     
-                     var res = QuerysSucursales.UpdateData(newSucursal);
-                     if (res != 0) {
-                        var msg =
-                            $"Se ha activado y actualizado la sucursal {newSucursal.IdTienda.ToString()} {newSucursal.NombreTienda.ToUpper()}.";
-                        MessageBox.Show(msg, "Cliente Actualizado");
-                        Log.Debug("Se ha activado la sucursal de manera exitosa.");
-                     }
-                     
-                     break;
-                }
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrrido un error al activar la sucursal.");
                 Log.Error($"Error: {e.Message}");
             }
         }
@@ -363,9 +321,15 @@ namespace Mexty.MVVM.View.AdminViews {
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
-            sucursal.Activo = 0;
-            QuerysSucursales.UpdateData(sucursal);
-            Log.Debug("Sucursal eliminada.");
+            try {
+                QuerysSucursales.DeleteSuc(sucursal.IdTienda);
+                QuerysSucursales.UpdateData(sucursal);
+                Log.Debug("Sucursal eliminada.");
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al eliminar la sucursal.");
+                Log.Error($"Error: {exception.Message}");
+            }
             SelectedSucursal = null;
             ClearFields();
             FillData();

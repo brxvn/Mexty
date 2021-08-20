@@ -115,7 +115,7 @@ namespace Mexty.MVVM.View.VentasViews {
             Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
 
             ComboCliente.Items.Clear();
-            var dataClientes = QuerysClientes.GetTablesFromClientes(true);
+            var dataClientes = QuerysClientes.GetTablesFromClientes();
             ListaClientes = dataClientes;
             foreach (var client in dataClientes) {
                 ComboCliente.Items.Add($"{client.IdCliente.ToString()} {client.Nombre} Deuda: {client.Debe.ToString()}");

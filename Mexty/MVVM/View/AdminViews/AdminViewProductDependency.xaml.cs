@@ -69,7 +69,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private void FillData() {
             var data = QuerysProductos.GetTablesFromProductos();
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is Producto producto && producto.Activo != 0 && producto.IdProducto != SelectedProduct.IdProducto && producto.DependenciasText == ""
+                Filter = (e) => e is Producto producto && producto.IdProducto != SelectedProduct.IdProducto && producto.DependenciasText == ""
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;

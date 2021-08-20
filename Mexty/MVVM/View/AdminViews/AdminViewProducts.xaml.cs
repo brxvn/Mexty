@@ -82,7 +82,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is Producto producto
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
@@ -172,13 +172,13 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto =>
-                {
-                    if (producto == null) return false;
-                    return ((Producto)producto).Activo == 1;
-                });
-
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(producto =>
+                // {
+                //     if (producto == null) return false;
+                //     return ((Producto)producto).Activo == 1;
+                // });
+                //
+                // collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -203,7 +203,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
                 producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)
                 ) {
-                return producto.Activo == 1;
+                return true;
             }
             return false;
         }
@@ -239,13 +239,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Edit(newProduct);
                 }
                 else {
-                    var alta = true;
-                    if (ListaProductos != null) {
-                        Activar(newProduct, ref alta);
-                    }
-                    if (alta) {
-                        Alta(newProduct);
-                    }
+                    Alta(newProduct);
                 }
                 FillData();
                 ClearFields();
@@ -285,7 +279,6 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada actualización de producto.");
                 newProduct.IdProducto = SelectedProduct.IdProducto;
-                newProduct.Activo = SelectedProduct.Activo;
                 var result = QuerysProductos.UpdateData(newProduct);
 
                 if (result <= 0) return;
@@ -295,43 +288,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al editar el producto.");
-                Log.Error($"Error: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Métdodo que se encarga de la activación de un usuario.
-        /// </summary>
-        /// <param name="newProduct"></param>
-        /// <param name="alta"></param>
-        private void Activar(Producto newProduct, ref bool alta) {
-            try {
-                for (var index = 0; index < ListaProductos.Count; index++) {
-                    var producto = ListaProductos[index];
-
-                    if (newProduct.NombreProducto == producto.NombreProducto &&
-                        newProduct.TipoProducto == producto.TipoProducto && producto.Activo == 0) {
-
-                        Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
-                        // actualizamos y activamos.
-                        newProduct.IdProducto = producto.IdProducto;
-                        newProduct.Activo = 1;
-                        alta = false;
-
-                        var res = QuerysProductos.UpdateData(newProduct);
-                        if (res != 0) {
-                            var msg =
-                                $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto}.";
-                            MessageBox.Show(msg, "Producto Actualizado");
-                            Log.Debug("Se ha activado el producto de manera exitosa.");
-                        }
-
-                        break;
-                    }
-                }
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrido un error al activar un producto.");
                 Log.Error($"Error: {e.Message}");
             }
         }
@@ -377,8 +333,7 @@ namespace Mexty.MVVM.View.AdminViews {
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
-            producto.Activo = 0;
-            QuerysProductos.UpdateData(producto);
+            QuerysProductos.DelProduct(producto.IdProducto);
             Log.Debug("Producto eliminado.");
             SelectedProduct = null;
             ClearFields();

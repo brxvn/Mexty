@@ -18,15 +18,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Función que retorna una lista con los productos de la base de datos.
         /// </summary>
         /// <returns> Una lista de objetos tipo <c>Producto</c>.</returns>
-        public static List<Producto> GetTablesFromProductos(bool activo = false) {
+        public static List<Producto> GetTablesFromProductos() {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
-            var cmd = activo ? @"select * from cat_producto where ACTIVO=1" : "select * from cat_producto";
 
             var querry = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = cmd
+                CommandText = @"select * from cat_producto"
             };
 
             var productos = new List<Producto>();
@@ -43,7 +42,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         PrecioMenudeo = reader.IsDBNull("precio_menudeo") ? 0 : reader.GetDecimal("precio_menudeo"),
                         DetallesProducto =
                             reader.IsDBNull("especificacion_producto") ? "" : reader.GetString("especificacion_producto"),
-                        Activo = reader.IsDBNull("activo") ? 0 : reader.GetInt32("activo"),
                         DependenciasText = reader.IsDBNull("dependencias") ? "" : reader.GetString("dependencias")
                     };
                     productos.Add(producto);
@@ -87,8 +85,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     TIPO_VENTA=@tipoVX, 
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
-                    ESPECIFICACION_PRODUCTO=@esp, 
-                    ACTIVO=@actX 
+                    ESPECIFICACION_PRODUCTO=@esp 
                 where ID_PRODUCTO=@idX"
             };
 
@@ -100,7 +97,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@pMenu", producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", producto.DetallesProducto);
             query.Parameters.AddWithValue("@idX", producto.IdProducto.ToString());
-            query.Parameters.AddWithValue("@actX", producto.Activo.ToString());
             query.Parameters.AddWithValue("@dependencias", producto.DependenciasText);
 
             try {
@@ -160,11 +156,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
                      TIPO_VENTA, DEPENDENCIAS,
                      PRECIO_MAYOREO, PRECIO_MENUDEO, 
-                     ESPECIFICACION_PRODUCTO, ACTIVO) 
+                     ESPECIFICACION_PRODUCTO) 
                 values (default, @nom, @medida, @tipoP, 
                         @tipoV, @dependencias,
                         @pMayo, @pMenu, 
-                        @esp, @actX)"
+                        @esp)"
             };
 
             query.Parameters.AddWithValue("@nom", newProduct.NombreProducto);
@@ -174,7 +170,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@pMayo", newProduct.PrecioMayoreo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@pMenu", newProduct.PrecioMenudeo.ToString(CultureInfo.InvariantCulture));
             query.Parameters.AddWithValue("@esp", newProduct.DetallesProducto);
-            query.Parameters.AddWithValue("@actX", 1.ToString());
             query.Parameters.AddWithValue("@dependencias", newProduct.DependenciasText);
 
             try {
@@ -202,6 +197,44 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             }
             catch (MySqlException e) {
                 Log.Error("Ha ocurrido un error al dar de alta un nuevo producto.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que elimina un producto de la base de datos.
+        /// </summary>
+        /// <returns></returns>
+        public static int DelProduct(int idClient) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            var query = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = @"delete from cat_producto where ID_PRODUCTO=@idX"
+            };
+
+            query.Parameters.AddWithValue("@idX", idClient.ToString());
+
+            try {
+                QuerysDatabase.ProcessQuery(query);
+
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha eliminado un producto de manera exitosa.");
+                return res;
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al eliminar los datos del producto.");
                 Log.Error($"Error: {e.Message}");
                 MessageBox.Show(
                     $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",

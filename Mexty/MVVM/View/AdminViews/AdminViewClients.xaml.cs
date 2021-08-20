@@ -83,7 +83,7 @@ namespace Mexty.MVVM.View.AdminViews {
             var dataClientes = QuerysClientes.GetTablesFromClientes();
             ListaClientes = dataClientes;
             var collectionView = new ListCollectionView(dataClientes) {
-                Filter = e => e is Cliente cliente && cliente.Activo != 0
+                Filter = e => e is Cliente cliente
             };
             CollectionView = collectionView;
             DataClientes.ItemsSource = collectionView;
@@ -160,12 +160,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(cliente =>
-                {
-                    if (cliente == null) return false;
-                    return ((Cliente)cliente).Activo == 1;
-                });
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(cliente => {
+                //     return cliente != null;
+                // });
+                // collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -183,12 +181,9 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var cliente = (Cliente)obj;
-            if (cliente.Nombre.Contains(text) ||
-                cliente.ApPaterno.Contains(text) ||
-                cliente.ApMaterno.Contains(text)) {
-                return cliente.Activo == 1;
-            }
-            return false;
+            return cliente.Nombre.Contains(text) ||
+                   cliente.ApPaterno.Contains(text) ||
+                   cliente.ApMaterno.Contains(text);
         }
 
         /// <summary>
@@ -220,14 +215,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     Edit(newClient);
                 }
                 else {
-                    var alta = true;
-                    if (ListaClientes != null) {
-                        Activar(newClient, ref alta);
-                    }
-
-                    if (alta) {
-                        Alta(newClient);
-                    }
+                    Alta(newClient);
                 }
                 FillData();
                 ClearFields();
@@ -269,8 +257,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Debug("Detectada edición de un cliente.");
                 QuerysClientes.UpdateData(newClient);
                 newClient.IdCliente = SelectedClient.IdCliente;
-                newClient.Activo = 1;
-                
+
                 var res = QuerysClientes.UpdateData(newClient);
                 if (res == 0) return;
                 
@@ -280,37 +267,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al editar el cliente.");
-                Log.Error($"Error: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Método que se encarga de la activación de un producto.
-        /// </summary>
-        /// <param name="newClient"></param>
-        private void Activar(Cliente newClient, ref bool alta) {
-            try {
-                for (var index = 0; index < ListaClientes.Count; index++) {
-                    var cliente = ListaClientes[index];
-
-                    if (newClient != cliente || cliente.Activo != 0) continue;
-                    Log.Debug("Detectado cliente equivalente no activo, actualizando y activando.");
-                    newClient.IdCliente = cliente.IdCliente;
-                    newClient.Activo = 1;
-                    alta = false;
-                    var res = QuerysClientes.UpdateData(newClient);
-                    if (res != 0) {
-                        var msg =
-                            $"Se ha activado y actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre.ToUpper()}.";
-                        MessageBox.Show(msg, "Cliente Actualizado");
-                        Log.Debug("Se ha activado el cliente de manera exitosa.");
-                    }
-                    break;
-                }
-
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrido un error al activar el cliente.");
                 Log.Error($"Error: {e.Message}");
             }
         }
@@ -350,6 +306,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void EliminarCliente(object sender, RoutedEventArgs e) {
             var cliente = SelectedClient;
+
+            if (cliente.Debe > 0) {
+                MessageBox.Show("No puede eliminar un cliente cuya deuda no es 0!", "Error");
+                return;
+            }
+
             var mensaje =
                 $"¿Seguro que quiere eliminar al cliente {cliente.Nombre} {cliente.ApPaterno.ToUpper()} {cliente.ApMaterno.ToUpper()}";
 
@@ -357,8 +319,7 @@ namespace Mexty.MVVM.View.AdminViews {
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
-            cliente.Activo = 0;
-            QuerysClientes.UpdateData(cliente);
+            QuerysClientes.DelClient(cliente.IdCliente);
             SelectedClient = null;
             ClearFields();
             FillData();

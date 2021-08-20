@@ -229,7 +229,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 ? @"
                 SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO, i.ID_REGISTRO,
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
-                       c.PRECIO_MENUDEO, c.ACTIVO, c.TIPO_VENTA,
+                       c.PRECIO_MENUDEO, c.TIPO_VENTA,
                        c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
                        i.CANTIDAD
                 FROM   cat_producto c, inventario_matriz i
@@ -237,7 +237,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 : @"
                 SELECT c.ID_PRODUCTO, c.TIPO_PRODUCTO, i.ID_REGISTRO,
                        c.NOMBRE_PRODUCTO, c.PRECIO_MAYOREO,
-                       c.PRECIO_MENUDEO, c.ACTIVO, c.TIPO_VENTA,
+                       c.PRECIO_MENUDEO, c.TIPO_VENTA,
                        c.DEPENDENCIAS, c.ESPECIFICACION_PRODUCTO, 
                        i.ID_TIENDA,i.CANTIDAD
                 FROM   cat_producto c, inventario i

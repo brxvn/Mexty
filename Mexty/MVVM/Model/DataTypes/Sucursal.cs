@@ -59,11 +59,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         public string TipoTienda { get; set; }
 
         /// <summary>
-        /// Indica si la sucursal esta activa o no.
-        /// </summary>
-        public int Activo { get; set; }
-
-        /// <summary>
         /// Sobrecarga de operadores para saber si una sucursal es igual a otra, en base al nombre y la dirección.
         /// </summary>
         /// <param name="a"></param>
