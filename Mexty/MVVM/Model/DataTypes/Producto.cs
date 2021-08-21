@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Mexty.MVVM.Model.DataTypes {
     /// <summary>
@@ -24,7 +25,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Variable que obtiene los tipos de medida.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposMedida = { "pieza", "bolsa", "caja", "tarro", "0.5 litros", "litro", "3 litros", "12 litros" };
+        private static readonly string[] TiposMedida = { "pieza", "litro", };
 
 
         /// <summary>
@@ -69,11 +70,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         }
 
         /// <summary>
-        /// Cantidad de piezas del producto.
-        /// </summary>
-        public int Piezas { get; set; }
-
-        /// <summary>
         /// Tipo de producto.
         /// </summary>
         public string TipoProducto { get; set; }
@@ -91,12 +87,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Precio del producto en venta mayoreo.
         /// </summary>
-        public float PrecioMayoreo { get; set; }
+        public decimal PrecioMayoreo { get; set; }
 
         /// <summary>
         /// Precio del producto en venta menudeo.
         /// </summary>
-        public float PrecioMenudeo { get; set; }
+        public decimal PrecioMenudeo { get; set; }
 
         /// <summary>
         /// Detalles/descripción del producto.
@@ -104,9 +100,62 @@ namespace Mexty.MVVM.Model.DataTypes {
         public string DetallesProducto { get; set; }
 
         /// <summary>
-        /// Indica si el producto esta activo o no.
+        /// Canitdad de cada producto.
         /// </summary>
-        public int Activo { get; set; }
+        public int CantidadDependencia { get; set; }
 
+        /// <summary>
+        /// Precio de venta final (solo para usarse en ventas).
+        /// </summary>
+        public decimal PrecioVenta { get; set; }
+
+        /// <summary>
+        /// La lista de dependencias codificada que se guarda en la base de datos.
+        /// </summary>
+        public string DependenciasText { get; set; }
+
+        /// <summary>
+        /// Lista que contiene todas las dependencias
+        /// </summary>
+        public List<Producto> Dependencias { get; set; }
+
+        /// <summary>
+        /// Método que convierte una lista de dependencias a string para ser guardada en la base de datos.
+        /// IdProducto:CantidadDependencia
+        /// </summary>
+        /// <param name="listaDepend"> Una lista de objetos tipo <c>Producto</c>.</param>
+        /// <returns>Un diccionario tipo string codificado donde : separa al id y la cantidad y , separa los elementos.</returns>
+        public static string DependenciasToString(List<Producto> listaDepend) {
+            var cadena = "";
+            for (var index = 0; index < listaDepend.Count; index++) {
+                var producto = listaDepend[index];
+                cadena += $"{producto.IdProducto.ToString()}:{producto.CantidadDependencia.ToString()},";
+            }
+
+            return cadena.TrimEnd(',');
+        }
+
+        /// <summary>
+        /// Método que recibe un string codificaddo con la información de las dependencias
+        /// </summary>
+        /// <param name="depend"><c>string</c> codificado con <c>DepenendciasToString</c>.</param>
+        /// <returns>Lista de Objetos tipo Producto con solo los campos IdProducto y CantidadDependencia llenos.</returns>
+        public static List<Producto> DependenciasToList(string depend) {
+            var items = depend.Split(',');
+            var dependencias = new List<Producto>();
+
+            for (var index = 0; index < items.Length; index++) {
+                var dependencia = items[index];
+                var valores = dependencia.Split(':');
+
+                var producto = new Producto {
+                    IdProducto = int.Parse(valores[0]),
+                    CantidadDependencia = int.Parse(valores[1])
+                };
+                dependencias.Add(producto);
+            }
+
+            return dependencias;
+        }
     }
 }

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Mexty"
         xmlns:ViewModel="clr-namespace:Mexty.MVVM.ViewModel"
         xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
+        Title="Mexty"
         mc:Ignorable="d"
         WindowStyle="None"
         WindowState="Maximized"

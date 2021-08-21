@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mexty.MVVM.Model.DatabaseQuerys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,10 @@ namespace Mexty.MVVM.View.VentasViews {
     public partial class VentasView : UserControl {
         public VentasView() {
             InitializeComponent();
+
+            if (DatabaseInit.GetIdRol().Equals(3)) {
+                VentasMayoreo.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

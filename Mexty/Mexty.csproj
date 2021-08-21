@@ -7,6 +7,9 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
 	<PublishSingleFile>true</PublishSingleFile>
 	<SelfContained>true</SelfContained>
+	<ApplicationIcon>icon.ico</ApplicationIcon>
+	<EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+	<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,12 +27,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentDateTime" Version="2.0.0" />
     <PackageReference Include="FluentValidation" Version="10.2.3" />
     <PackageReference Include="itext7" Version="7.1.16" />
     <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Meziantou.WpfFontAwesome" Version="5.15.3" />
     <PackageReference Include="MySql.Data" Version="8.0.25" />
     <PackageReference Include="MySqlBackup.NET" Version="2.3.4.1" />
+    <PackageReference Include="QRCoder" Version="1.4.1" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,6 +52,19 @@
 
   <ItemGroup>
     <Folder Include="bin\Debug" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="MVVM\View\InventarioViews\InventarioViewInventMatriz.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="MVVM\View\InventarioViews\InventarioViewInventMatriz.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Mexty.MVVM.View.AdminViews"
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignHeight="1080" d:DesignWidth="1920"
              RenderOptions.EdgeMode="Aliased">
 
@@ -20,11 +20,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Label Content="Catálogo de Productos"
-               FontSize="40"
-               VerticalContentAlignment="Center"
-               Foreground="AntiqueWhite"
-               Padding="0,20"/>
+            <Label Content="Catálogo de Productos" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20"/>
 
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke"
@@ -110,8 +106,7 @@
         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0"
                BorderBrush="AntiqueWhite"/>
         <!-- DataProductos-->
-        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False">
+        <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="0.25*">
@@ -144,7 +139,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Precio Menudeo" Binding="{Binding PrecioMenudeo}" Width="1*">
+                <DataGridTextColumn Header="Precio Menudeo" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -154,7 +149,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Precio Mayoreo" Binding="{Binding PrecioMayoreo}" Width="1*">
+                <DataGridTextColumn Header="Precio Mayoreo" Binding="{Binding PrecioMayoreo, StringFormat=C}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -201,13 +196,11 @@
                     <ColumnDefinition Width=".5*"/>
                     <ColumnDefinition/>
                     <ColumnDefinition Width=".5*"/>
-                    <ColumnDefinition Width=".5*" x:Name="ColCantidad"/>
-                    <ColumnDefinition Width="auto" x:Name="ColPiezas"/>
                 </Grid.ColumnDefinitions>
 
                 <!--ComboTipo-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" Grid.Column="0" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto" SelectionChanged="HablitarMedidas"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Tipo de Producto" SelectionChanged="MonstrarLitros"/>
 
                 <!--ComboVenta-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboVenta" Grid.Column="1" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
@@ -218,7 +211,7 @@
                      x:Name="txtNombreProducto"
                      Grid.Column="2"
                      Margin="10,0,10,0"
-                     MaxLength="15"
+                     MaxLength="30"
                      CharacterCasing="Upper"
                      PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
@@ -239,7 +232,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="15"
+                                                     MaxLength="30"
                                                      CharacterCasing="Upper"
                                                      PreviewTextInput="OnlyLettersValidation"
                                                      TextChanged="TextUpdateNombre"/>
@@ -295,164 +288,14 @@
 
                 <!--ComboMedida-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboMedida" Grid.Column="3" Margin="10 0" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida" SelectionChanged="HabililtarCantidades" />
-
-                <!--txtCantidad-->
-                <TextBox Background="Beige"
-                     x:Name="txtCantidad"
-                     Grid.Column="4"
-                     HorizontalAlignment="Stretch"
-                     MaxLength="8"
-                     PreviewTextInput="OnlyNumbersValidationCantidad"
-                     Margin="10 0" 
-                         >
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Setters>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border ToolTip="Cantidad" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
-                                                <Grid>
-                                                    <Rectangle StrokeThickness="1"/>
-                                                    <TextBox Margin="1"
-                                                     Text="{TemplateBinding Text}"
-                                                     BorderThickness="0"
-                                                     Background="Transparent"
-                                                     VerticalContentAlignment="Center"
-                                                     Padding="3"
-                                                     Foreground="Gray"
-                                                     FontSize="15"
-                                                     MaxLength="8"
-                                                     PreviewTextInput="OnlyNumbersValidationCantidad"
-                                                     x:Name="SearchBox"
-                                                     TextChanged="txtUpdateCantidad"
-                                                     >
-                                                        <!--TextChanged="SearchBox_TextChanged"-->
-
-                                                    </TextBox>
-
-                                                    <TextBlock IsHitTestVisible="False"
-                                                       Text="Cantidad"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="7,0,5,0"
-                                                       FontSize="15"
-                                                       Foreground="gray"
-                                                       Grid.Column="1">
-
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                </Grid>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsFocused" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style.Setters>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-
-                <!--txtPiezas-->
-                <TextBox Background="Beige"
-                     x:Name="txtPiezas"
-                     Grid.Column="5"
-                     HorizontalAlignment="Stretch"
-                     MaxLength="8"
-                     Visibility="Collapsed"
-                     PreviewTextInput="OnlyNumbersValidationCantidad"
-                     Margin="10 0" 
-                         >
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Setters>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border ToolTip="Piezas" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
-                                                <Grid>
-                                                    <Rectangle StrokeThickness="1"/>
-                                                    <TextBox Margin="1"
-                                                     Text="{TemplateBinding Text}"
-                                                     BorderThickness="0"
-                                                     Background="Transparent"
-                                                     VerticalContentAlignment="Center"
-                                                     Padding="3"
-                                                     Foreground="Gray"
-                                                     FontSize="15"
-                                                     MaxLength="8"
-                                                     PreviewTextInput="OnlyNumbersValidationCantidad"
-                                                     x:Name="SearchBox"
-                                                     TextChanged="txtUpdatePiezas"/>
-
-                                                    <TextBlock IsHitTestVisible="False"
-                                                       Text="Piezas"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="7,0,5,0"
-                                                       FontSize="15"
-                                                       Foreground="gray"
-                                                       Grid.Column="1">
-
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                </Grid>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsFocused" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style.Setters>
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-
+                          VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Medida" />
 
             </Grid>
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="0.5*"/>
-                    <ColumnDefinition Width="2.0*"/>
+                    <ColumnDefinition Width="1.5*"/>
                 </Grid.ColumnDefinitions>
 
                 <!--txtPrecioMayoreo-->
@@ -698,12 +541,15 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True" />
-                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="EliminarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True" />
-
+                
+                <Button x:Name="Producto_Compuesto" Grid.Column="0" Content="Producto Compuesto" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="DependenciaProductos" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Producto Compuesto"/>
+                <Button x:Name="generarQR" Grid.Column="1" Content="Generar Códigos" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="generarQR_Click" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Generar código de barras de los productos"/>
+                <Button x:Name="Limpiar" Grid.Column="2" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos"/>
+                <Button x:Name="Guardar" Grid.Column="3" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>
+                <Button x:Name="Eliminar" Grid.Column="4" Content="Eliminar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="EliminarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>
             </Grid>
         </Grid>
 

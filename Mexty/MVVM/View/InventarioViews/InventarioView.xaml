@@ -8,12 +8,21 @@
               d:DesignHeight="1080" d:DesignWidth="1920"
              RenderOptions.EdgeMode="Aliased">
     <Grid>
-        <ContentControl Content="{Binding SelectedViewModel}" />
-        <TabControl  BorderThickness="0" Padding="0">
+        <ContentControl Content="{Binding SelectedViewModel}"/>
+        
+        <TabControl  BorderThickness="0" Padding="0" Name="tabControl">
+            
             <TabItem Header="Inventario" Background="#710a24" BorderBrush="Transparent"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <inventViews:InventarioViewInvent/>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Header="Inventario Matriz" Background="#710a24" BorderBrush="Transparent" Name="inventarioMatriz"
+                     Style="{StaticResource ButtonThemeActive}">
+                <TabItem.Content>
+                    <inventViews:InventarioViewInventMatriz/>
                 </TabItem.Content>
             </TabItem>
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mexty.MVVM.Model.DatabaseQuerys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,9 @@ namespace Mexty.MVVM.View.InventarioViews {
     public partial class InventarioView : UserControl {
         public InventarioView() {
             InitializeComponent();
+            if (DatabaseInit.GetIdRol().Equals(3) && !DatabaseInit.GetMatrizEnabled()) {
+                inventarioMatriz.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

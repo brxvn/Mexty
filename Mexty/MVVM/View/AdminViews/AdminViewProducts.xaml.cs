@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -26,17 +27,13 @@ namespace Mexty.MVVM.View.AdminViews {
     /// </summary>
     public partial class AdminViewProducts : UserControl {
         private static readonly ILog Log =
-            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         /// Lista de productos dada por la base de datos.
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
-        /// <summary>
-        /// Lista de todas las sucursales dada por la Base de datos
-        /// </summary>
-        private List<Sucursal> ListaSucursales { get; set; }
 
         /// <summary>
         /// Collection view actual de la datagrid.
@@ -82,10 +79,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Método que llena la datadrid con los productos.
         /// </summary>
         private void FillData() {
-            var data = Database.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is Producto producto && producto.Activo != 0 // Solo productos activos en la tabla.
+                Filter = (e) => e is Producto producto
             };
             CollectionView = collectionView;
             DataProductos.ItemsSource = collectionView;
@@ -102,8 +99,6 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
-
-
         }
 
 
@@ -129,7 +124,7 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
             ComboMedida.SelectedItem = producto.MedidaProducto;
-            txtPiezas.Text = producto.Piezas.ToString();
+            //txtPiezas.Text = producto.Piezas.ToString();
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
@@ -148,8 +143,8 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
-            txtCantidad.Text = "";
-            txtPiezas.Text = "";
+            //txtCantidad.Text = "";
+            //txtPiezas.Text = "";
             txtDetalle.Text = "";
             SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
@@ -177,13 +172,13 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto =>
-                {
-                    if (producto == null) return false;
-                    return ((Producto)producto).Activo == 1;
-                });
-
-                collection.Filter += noNull;
+                // var noNull = new Predicate<object>(producto =>
+                // {
+                //     if (producto == null) return false;
+                //     return ((Producto)producto).Activo == 1;
+                // });
+                //
+                // collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -204,9 +199,11 @@ namespace Mexty.MVVM.View.AdminViews {
             if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
-                producto.TipoVentaNombre.ToLower().Contains(text) //||
+                producto.TipoVentaNombre.ToLower().Contains(text) ||
+                producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
+                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)
                 ) {
-                return producto.Activo == 1;
+                return true;
             }
             return false;
         }
@@ -219,17 +216,16 @@ namespace Mexty.MVVM.View.AdminViews {
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de guardar.");
             try {
-                var newProduct = new Producto();
-                newProduct.NombreProducto = txtNombreProducto.Text;
-
-                newProduct.MedidaProducto = ComboMedida.SelectedItem.ToString();
-                newProduct.Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text);
+                var newProduct = new Producto {
+                    NombreProducto = txtNombreProducto.Text,
+                    MedidaProducto = ComboMedida.SelectedItem.ToString(),
+                    TipoProducto = ComboTipo.SelectedItem.ToString(),
+                    TipoVenta = ComboVenta.SelectedIndex
+                };
 
                 newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-                newProduct.TipoVenta = ComboVenta.SelectedIndex;
-                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
-                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMayoreo.Text);
-                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : float.Parse(txtPrecioMenudeo.Text);
+                newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
+                newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
@@ -239,17 +235,11 @@ namespace Mexty.MVVM.View.AdminViews {
                 }
                 Log.Debug("El objeto tipo Producto ha pasado las validaciones.");
 
-                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto) {
+                if (SelectedProduct != null && SelectedProduct.NombreProducto == newProduct.NombreProducto && SelectedProduct.TipoProducto == newProduct.TipoProducto) {
                     Edit(newProduct);
                 }
                 else {
-                    var alta = true;
-                    if (ListaProductos != null) {
-                        Activar(newProduct, ref alta);
-                    }
-                    if (alta) {
-                        Alta(newProduct);
-                    }
+                    Alta(newProduct);
                 }
                 FillData();
                 ClearFields();
@@ -268,11 +258,11 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada alta de producto.");
 
-                var res = Database.NewProduct(newProduct);
+                var res = QuerysProductos.NewProduct(newProduct);
                 if (res == 0) return;
 
-                var msg = $"Se ha dado de alta el producto {newProduct.NombreProducto}.";
-                MessageBox.Show(msg, "Producto Actualizado");
+                var msg = $"Se agregó el producto {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
+                MessageBox.Show(msg, "Producto Agregado");
                 Log.Debug("Se ha dado de alta el producto de manera exitosa.");
             }
             catch (Exception e) {
@@ -289,50 +279,15 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 Log.Debug("Detectada actualización de producto.");
                 newProduct.IdProducto = SelectedProduct.IdProducto;
-                newProduct.Activo = SelectedProduct.Activo;
-                var result = Database.UpdateData(newProduct);
+                var result = QuerysProductos.UpdateData(newProduct);
 
                 if (result <= 0) return;
-                var msg = $"Se ha actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
+                var msg = $"Se actualizó el producto {newProduct.IdProducto.ToString()} {newProduct.TipoProducto} {newProduct.NombreProducto} correctamente.";
                 MessageBox.Show(msg, "Producto Actualizado");
                 Log.Debug("Se ha editado el producto de manera exitosa.");
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al editar el producto.");
-                Log.Error($"Error: {e.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Métdodo que se encarga de la activación de un usuario.
-        /// </summary>
-        /// <param name="newProduct"></param>
-        /// <param name="alta"></param>
-        private void Activar(Producto newProduct, ref bool alta) {
-            try {
-                for (var index = 0; index < ListaProductos.Count; index++) {
-                    var producto = ListaProductos[index];
-
-                    if (newProduct.NombreProducto != producto.NombreProducto || producto.Activo != 0) continue;
-                    Log.Debug("Detectado producto equivalente que no está activo... Actualizando y activando.");
-                    // actualizamos y activamos.
-                    newProduct.IdProducto = producto.IdProducto;
-                    newProduct.Activo = 1;
-                    alta = false;
-
-                    var res = Database.UpdateData(newProduct);
-                    if (res != 0) {
-                        var msg =
-                            $"Se ha activado y actualizado el producto {newProduct.IdProducto.ToString()} {newProduct.NombreProducto}.";
-                        MessageBox.Show(msg, "Producto Actualizado");
-                        Log.Debug("Se ha activado el producto de manera exitosa.");
-                    }
-
-                    break;
-                }
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrido un error al activar un producto.");
                 Log.Error($"Error: {e.Message}");
             }
         }
@@ -373,14 +328,14 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarProducto(object sender, RoutedEventArgs e) {
             Log.Debug("Presionado eliminar producto.");
             var producto = SelectedProduct;
-            var mensaje = $"¿Seguro quiere eliminar el producto {producto.NombreProducto}?";
+            var mensaje = $"¿Seguro quiere eliminar el producto {producto.TipoProducto} {producto.NombreProducto}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
-            producto.Activo = 0;
-            Database.UpdateData(producto);
+            QuerysProductos.DelProduct(producto.IdProducto);
             Log.Debug("Producto eliminado.");
+            SelectedProduct = null;
             ClearFields();
             FillData();
         }
@@ -391,11 +346,11 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => Char.IsDigit(x) || '.'.Equals(x));
+            e.Handled = !e.Text.Any(x => char.IsDigit(x) || '.'.Equals(x));
         }
 
         private void OnlyNumbersValidationCantidad(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => Char.IsDigit(x));
+            e.Handled = !e.Text.Any(x => char.IsDigit(x));
         }
 
         /// <summary>
@@ -419,7 +374,6 @@ namespace Mexty.MVVM.View.AdminViews {
         private void TextUpdatePrecioMenudeo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMenudeo.Text = textbox.Text;
-            //EnableGuardar();
             Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
             Match m = r.Match(txtPrecioMenudeo.Text);
             if (m.Success) {
@@ -427,14 +381,12 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMenudeo.Text = "";
-                //Keyboard.Focus(txtPrecioMenudeo);
             }
         }
 
         private void TextUpdatePrecioMayoreo(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
             txtPrecioMayoreo.Text = textbox.Text;
-            //EnableGuardar();
             Regex r = new Regex(@"^-{0,1}\d+\.{0,1}\d*$"); // This is the main part, can be altered to match any desired form or limitations
             Match m = r.Match(txtPrecioMayoreo.Text);
             if (m.Success) {
@@ -442,7 +394,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 txtPrecioMayoreo.Text = "";
-                //Keyboard.Focus(txtPrecioMayoreo);
             }
         }
 
@@ -450,17 +401,6 @@ namespace Mexty.MVVM.View.AdminViews {
             TextBox textbox = sender as TextBox;
             txtDetalle.Text = textbox.Text;
             EnableGuardar();
-        }
-
-        private void txtUpdateCantidad(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtCantidad.Text = textbox.Text;
-
-        }
-
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
         }
 
         /// <summary>
@@ -508,18 +448,12 @@ namespace Mexty.MVVM.View.AdminViews {
 
                     break;
                 case 1:
-                    txtPrecioMayoreo.Visibility = Visibility.Visible;
-                    txtPrecioMenudeo.Visibility = Visibility.Visible;
-
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "";
                     txtPrecioMenudeo.Text = "0";
                     txtPrecioMenudeo.IsReadOnly = true;
                     break;
                 default:
-                    txtPrecioMayoreo.Visibility = Visibility.Visible;
-                    txtPrecioMenudeo.Visibility = Visibility.Visible;
-
                     txtPrecioMayoreo.IsReadOnly = true;
                     txtPrecioMenudeo.IsReadOnly = false;
                     txtPrecioMayoreo.Text = "0";
@@ -530,109 +464,54 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
+        /// Mostrar solo litros para Agua y Helado
         /// </summary>
-        private void HablitarMedidas(object sender, SelectionChangedEventArgs e) {
-            switch (ComboTipo.SelectedIndex) {
-                case 0:
-                case 1:
-                case 2:
+        private void MonstrarLitros(object sender, SelectionChangedEventArgs e) {
+            switch (ComboTipo.SelectedItem.ToString()) {    
+                case "Paleta Agua":
+                case "Paleta Leche":
+                case "Paleta Fruta":
+                    ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 1);
+                    ComboMedida.IsEnabled = false;
                     ComboMedida.SelectedIndex = 0;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
                     break;
-                case 3:
-                case 4:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant: 4);
+                case "Agua":
+                case "Helado":
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant:1);
                     ComboMedida.SelectedIndex = 0;
-                    break;
-                case 5:
-                case 6:
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(cant: 4);
-                    ComboMedida.SelectedIndex = 0;
+                    ComboMedida.IsEnabled = false;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 default:
+                    ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida();
                     ComboMedida.SelectedIndex = 0;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    ComboMedida.IsEnabled = true;
                     break;
-
             }
         }
 
         /// <summary>
-        /// Método de la lógica para filtrar cantidades.
+        /// Método para filtar las medidas dependiendo del tipo de producto seleccionado.
         /// </summary>
-        private void HabililtarCantidades(object sender, SelectionChangedEventArgs e) {
-
-            switch (ComboMedida.SelectedIndex) {
-                case 0:
-                    switch (ComboMedida.SelectedItem.ToString()) {
-                        case "pieza":
-                            txtCantidad.Visibility = Visibility.Collapsed;
-                            txtPiezas.Visibility = Visibility.Visible;
-                            ColPiezas.Width = new GridLength(.5, GridUnitType.Star);
-                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                            break;
-
-                        default:
-                            txtCantidad.Visibility = Visibility.Collapsed;
-                            txtPiezas.Visibility = Visibility.Collapsed;
-                            ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                            ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                            break;
-                    }
-                    break;
-                case 1:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-
-                    break;
-                case 2:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-                    break;
-                case 3:
-                    if (ComboMedida.SelectedItem.ToString() == "0.5 litros" || ComboMedida.SelectedItem.ToString() == "litro" || ComboMedida.SelectedItem.ToString() == "3 litros" || ComboMedida.SelectedItem.ToString() == "12 litros") {
-                        txtCantidad.Visibility = Visibility.Collapsed;
-                        txtPiezas.Visibility = Visibility.Collapsed;
-                        ColPiezas.Width = new GridLength(0, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    }
-                    else {
-                        txtCantidad.Visibility = Visibility.Visible;
-                        txtPiezas.Visibility = Visibility.Visible;
-                        ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                        ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    }
-                    break;
-                default:
-                    txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
-                    ColPiezas.Width = new GridLength(0.5, GridUnitType.Star);
-                    ColCantidad.Width = new GridLength(0.5, GridUnitType.Star);
-                    break;
-
+        private void DependenciaProductos(object sender, RoutedEventArgs e) {
+            if (SelectedProduct == null) {
+                MessageBox.Show("Seleccione un producto de la tabla primero.");
+                return;
             }
+            AdminViewProductDependency dependency = new(SelectedProduct);
+            dependency.ShowDialog();
         }
 
+        private void generarQR_Click(object sender, RoutedEventArgs e) {
+            BarCodes barCodes = new();
+        }
     }
 }

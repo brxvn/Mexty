@@ -113,7 +113,7 @@
 
         <!--DataGridClientes-->
         <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataEstablecimientos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Usuario}" IsSynchronizedWithCurrentItem="False">
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Usuario}" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nombre" Binding="{Binding NombreTienda}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
@@ -591,6 +591,7 @@
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
                      MaxLength="25"
+                     PreviewTextInput="OnlyLetterAndNumbers"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -612,6 +613,7 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      CharacterCasing="Upper"
+                                                     PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextChanged="txtUpdateFacebook"/>
 
                                                     <TextBlock IsHitTestVisible="False"
@@ -661,8 +663,8 @@
                      x:Name="txtInstagram"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
-                     CharacterCasing="Upper"
-                     MaxLength="25"
+                     
+                     MaxLength="100"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -682,8 +684,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="25"
-                                                     CharacterCasing="Upper"
+                                                     MaxLength="100"
                                                      TextChanged="txtUpdateInstagram"/>
 
                                                     <TextBlock IsHitTestVisible="False"

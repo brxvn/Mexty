@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using Google.Protobuf.WellKnownTypes;
+using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty.MVVM.Model.DataTypes
 {
@@ -60,7 +61,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <returns></returns>
         public static string GenUsername(Usuario usr) {
             Random random = new();
-            string username = $"{usr.Nombre[..2]}{usr.ApMaterno[..2]}{usr.ApPaterno}{random.Next(1, 10)}";
+            string username = $"{usr.Nombre}{usr.ApPaterno[..1]}{usr.ApMaterno[..1]}{random.Next(1, 10)}";
 
             var normalizedString = username.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
@@ -91,11 +92,6 @@ namespace Mexty.MVVM.Model.DataTypes
         /// Teléfono del empleado.
         /// </summary>
         public string Telefono { get; set; }
-
-        /// <summary>
-        /// Indica si el usuario esta activo o no.
-        /// </summary>
-        public int Activo { get; set; }
 
         /// <summary>
         /// Id de la tienda asignada al empleado.
@@ -136,7 +132,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// Actualiza la lista de sucursales.
         /// </summary>
         public void UpdateListaSucursal() {
-            ListaSucursal = Database.GetTablesFromSucursales();
+            ListaSucursal = QuerysSucursales.GetTablesFromSucursales();
         }
 
         /// <summary>
@@ -144,10 +140,14 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string SucursalNombre {
             get {
-                ListaSucursal ??= Database.GetTablesFromSucursales();
+                ListaSucursal ??= QuerysSucursales.GetTablesFromSucursales();
                 var nombre = "";
+                if (IdTienda == 0) {
+                    return "general";
+                }
                 for (var index = 0; index < ListaSucursal.Count; index++) {
                     var sucursal = ListaSucursal[index];
+
                     if (IdTienda == sucursal.IdTienda) {
                         nombre = sucursal.NombreTienda;
                     }
@@ -184,7 +184,6 @@ namespace Mexty.MVVM.Model.DataTypes
             var resultado = new Usuario() {
                 //no editables directamente
                 Id = b.Id,
-                Activo = a.Activo,
                 UsuraioRegistra = b.UsuraioRegistra,
                 FechaRegistro = b.FechaRegistro,
                 // Identificadores de usuario
@@ -212,7 +211,6 @@ namespace Mexty.MVVM.Model.DataTypes
             var resultado = new Usuario {
                 //no editables
                 Id = b.Id,
-                Activo = b.Activo,
                 UsuraioRegistra = b.UsuraioRegistra,
                 FechaRegistro = b.FechaRegistro,
                 

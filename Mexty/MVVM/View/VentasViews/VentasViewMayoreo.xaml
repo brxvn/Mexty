@@ -3,11 +3,373 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Mexty.MVVM.View.VentasViews"
+             xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome" 
+             xmlns:local="clr-namespace:Mexty.Commands"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        <Label Content="Mayoreo" FontSize="50"/>
-            
+             d:DesignHeight="1080" d:DesignWidth="1920" PreviewTextInput="UserControl_PreviewTextInput" Loaded="SetFocus">
+    <UserControl.Resources>
+        <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
+    </UserControl.Resources>
+    
+    <Grid Background="#7f233a">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"  Margin="50 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Elige los Productos"
+               FontSize="40"
+               VerticalContentAlignment="Center"
+               Foreground="AntiqueWhite"
+               Padding="0,20"/>
+
+            <TextBox Background="WhiteSmoke"
+                     Grid.Column="1"
+                     x:Name="SearchBox"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
+                     HorizontalAlignment="Right">
+                <TextBox.Style>
+                    <Style TargetType="TextBox">
+                        <Style.Setters>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type TextBox}">
+                                        <Border ToolTip="Buscar" BorderBrush="Beige" BorderThickness="3" x:Name="border" Background="Beige" UseLayoutRounding="False" CornerRadius="10" Width="350" Height="40">
+                                            <Grid>
+                                                <Rectangle StrokeThickness="1"/>
+                                                <TextBox Margin="1"
+                                                     Text="{TemplateBinding Text}"
+                                                     BorderThickness="0"
+                                                     Background="Transparent"
+                                                     VerticalContentAlignment="Center"
+                                                     Padding="5"
+                                                     Foreground="DarkGray"
+                                                     FontSize="18"
+                                                     x:Name="txtBusqueda"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
+                                                     TextChanged="FilterSearch"
+                                                     >
+
+                                                </TextBox>
+                                                <fa:FontAwesomeIcon SolidIcon="Search"
+                                                        FontSize="15"
+                                                        Foreground="DarkGray"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Right"
+                                                        HorizontalContentAlignment="Center"
+                                                        Margin="10,0,15,0"
+                                                        x:Name="Icon"
+                                                        />
+                                                <TextBlock IsHitTestVisible="False"
+                                                       Text="Buscar..."
+                                                       VerticalAlignment="Center"
+                                                       HorizontalAlignment="Left"
+                                                       Margin="10,0,0,0"
+                                                       FontSize="15"
+                                                       Foreground="DarkGray"
+                                                       Grid.Column="1">
+
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Text, ElementName=txtBusqueda}" Value="">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                            <Setter Property="Visibility" Value="Hidden"/>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
+                                            </Trigger>
+                                            <Trigger Property="IsFocused" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                            </Trigger>
+                                            <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                                                <Setter Property="BorderBrush" TargetName="border" Value="#FAC034"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style.Setters>
+
+                    </Style>
+                </TextBox.Style>
+            </TextBox>
+
+
+        </Grid>
+        <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="AntiqueWhite"/>
+
+        <Grid Grid.Row="1" Margin="50,0,50,75" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.5*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Margin="0,30,15,30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition MaxHeight="400"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <!--DataProcuts-->
+                <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".35*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Tipo" Binding="{Binding TipoProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Setter Property="Margin" Value="5" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="20"/>
+                                    <Setter Property="Foreground" Value="{Binding Cantidad, Converter={StaticResource ValueToBrushConverter}}"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTemplateColumn Width=".3*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="AddProduct">
+                                        <fa:FontAwesomeIcon SolidIcon="Plus"/>
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="Foreground" Value="Black"/>
+                                                <Setter Property="BorderThickness" Value="0"/>
+                                                <Setter Property="FontSize" Value="20"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type Button}">
+                                                            <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="Transparent" TargetName="Border" />
+                                                                    <Setter Property="Foreground" Value="LightGreen"/>
+                                                                    <Setter Property="FontSize" Value="25"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <Grid Grid.Row="2" Margin="0 10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--txtDescripcion-->
+                    <Label Content="Descripción" Grid.Row="0" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtDescripcion"/>
+
+                    <!--txtComentario-->
+                    <Label Content="Comentario de venta " Grid.Row="1" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtComentario" PreviewTextInput="OnlyLettersAndNumbersValidation"/>
+                    
+                    <!--ComboCliente-->
+                    <Label Content="Cliente " FontSize="30" Foreground="AntiqueWhite" Grid.Row="2"/>
+                    <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboCliente" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="300" Grid.Row="2"/>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Background="Beige" BorderThickness="0" CornerRadius="30" Margin="15,30,0,50">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="5*"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition  Height="auto"/>
+                            <RowDefinition  Height="auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="Resumen" FontSize="25" VerticalContentAlignment="Top" Foreground="Black" HorizontalAlignment="Center"/>
+                        <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+
+                        <!--DataPedido-->
+                        <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataVenta" Grid.Row="1" Margin="10"  SelectionChanged="ItemSelected" IsReadOnly="False" SelectionMode="Single" SelectionUnit="Cell" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="None" PreviewKeyDown="DataVenta_PreviewKeyDown" IsTabStop="False">
+                            <DataGrid.Columns>
+
+                                <DataGridTextColumn Binding="{Binding TipoProducto}" Width="*"  CellStyle="{DynamicResource DisableSelection}">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="5" />
+                                            <Setter Property="HorizontalAlignment" Value="Center" />
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="5" />
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Path=CantidadDependencias, StringFormat=x{0}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="*" CellStyle="{DynamicResource DisableSelection1}" IsReadOnly="False" FontSize="20">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="5" />
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding PrecioVenta, StringFormat=C}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="5" />
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="20"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTemplateColumn Width=".25*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="DelProduct">
+                                                <fa:FontAwesomeIcon SolidIcon="Minus"/>
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Background" Value="Transparent" />
+                                                        <Setter Property="Foreground" Value="Black"/>
+                                                        <Setter Property="BorderThickness" Value="0"/>
+                                                        <Setter Property="FontSize" Value="15"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="{x:Type Button}">
+                                                                    <Border x:Name="Border" Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="Transparent" TargetName="Border" />
+                                                                            <Setter Property="Foreground" Value="OrangeRed"/>
+                                                                            <Setter Property="FontSize" Value="20"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <Separator BorderThickness="1" Grid.Row="1" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+
+                        <!--txtTotal-->
+                        <Label Content="Total:" Grid.Row="2" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                        <TextBox x:Name="txtTotal" Grid.Row="2" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" Background="Transparent" HorizontalContentAlignment="Center" IsReadOnly="True" Text="{Binding TotalVenta, StringFormat={}{0:C}}" />
+
+                        <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+                        <!--txtRecibido-->
+                        <Label Content="Recibido:" Grid.Row="3" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="6" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True" PreviewTextInput="OnlyNumbersValidation" PreviewKeyDown="txtRecibido_PreviewKeyDown"/>
+
+                        <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
+
+                        <!--txtCambio-->
+                        <Label Content="Cambio:" Grid.Row="4" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
+                        <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" IsReadOnly="True" Background="Transparent" HorizontalContentAlignment="Center" Text="{Binding Cambio, StringFormat={}{0:C}}"/>
+                    </Grid>
+                </Border>
+
+                <Grid Grid.Row="1" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="Cancelar" Grid.Column="0" Content="Cancelar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="Cancelar_Click"  IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+
+                    <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <Label Name="time" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
     </Grid>
 </UserControl>

@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using log4net;
 using Mexty.MVVM.Model;
+using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using Mexty.MVVM.Model.Validations;
 
@@ -32,15 +33,17 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
+        /// <summary>
+        /// Lista de items en el inventario.
+        /// </summary>
         private List<ItemInventario> ListaFromInventario { get; set; }
-
+        public ListCollectionView CollectionView { get; private set; }
         public InventarioViewRecepcion() {
 
             try {
                 InitializeComponent();
                 FillData();
                 ClearFields();
-
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de Recepción de inventario.");
@@ -67,7 +70,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que llena los campos con la información necesaria.
         /// </summary>
         private void FillData() {
-            var productosDisponibles = Database.GetTablesFromProductos();
+            var productosDisponibles = QuerysProductos.GetTablesFromProductos();
             ListaProductos = productosDisponibles;
             var listaProductos = new List<string>();
             for (var index = 0; index < productosDisponibles.Count; index++) {
@@ -79,7 +82,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             ComboNombre.ItemsSource = listaProductos;
             Log.Debug("Se ha llenado el combo box con los productos de manera exitosa.");
 
-            var enInventario = Database.GetTablesFromInventario();
+            var enInventario = QuerysInventario.GetTablesFromInventario();
             ListaFromInventario = enInventario;
             Log.Debug("Se han obtenido los prodcutos de manera exitosa.");
         }
@@ -93,7 +96,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var index = ComboNombre.SelectedIndex;
             txtMedida.Text = ListaProductos[index].MedidaProducto;
             txtTipo.Text = ListaProductos[index].TipoProducto;
-
         }
 
         private void FilterSearch(object sender, TextChangedEventArgs e) {
@@ -112,11 +114,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="e"></param>
         private void RegistrarProducto(object sender, RoutedEventArgs e) {
             var newItem = new ItemInventario {
-                IdProducto = ComboNombre.SelectedIndex + 1,
+                //IdProducto = ComboNombre.SelectedIndex + 1,
+                IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]), // Checar si no da problemas. <--
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
-                Piezas = txtPiezas.Text == "" ? 0 : int.Parse(txtPiezas.Text)
             };
+
 
             if (!Validar(newItem)) {
                 Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");
@@ -134,8 +137,10 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
 
             try {
-                var row = Database.NewItem(newItem);
+                var row = QuerysInventario.NewItem(newItem);
                 if (row > 0) {
+                    InventarioViewInvent invent = new();
+                    invent.FillData();
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");
                 }
@@ -144,6 +149,10 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Log.Error("Ha ocurrido un error al dar de alta un producto en el inventario.");
                 Log.Error($"Error: {exception.Message}");
             }
+
+            ClearFields();
+            InventarioViewInvent inventario = new();
+            inventario.ActualizarData(sender, e);
         }
 
         /// <summary>
@@ -188,12 +197,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             txtCantidad.Text = textbox.Text;
         }
 
-        private void txtUpdatePiezas(object sender, TextChangedEventArgs e) {
-            TextBox textbox = sender as TextBox;
-            txtPiezas.Text = textbox.Text;
-
-        }
-
         private void txtUpdateComentario(object sender, TextChangedEventArgs e) {
             TextBox textbox = sender as TextBox;
             txtComentario.Text = textbox.Text;
@@ -226,26 +229,19 @@ namespace Mexty.MVVM.View.InventarioViews {
             TextBox textBox = sender as TextBox;
             txtMedida.Text = textBox.Text;
             switch (textBox.Text) {
-                case "pieza":
-                    txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Visible;
-                    GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
-                    break;
-                case "0.5 litros":
-                case "litro":
+               case "0.5 litros":
                 case "3 litros":
                 case "12 litros":
                     txtCantidad.Visibility = Visibility.Collapsed;
-                    txtPiezas.Visibility = Visibility.Collapsed;    
                     GridCantidad.Width = new GridLength(0, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(0, GridUnitType.Star);
+                    break;
+                case "litro":
+                    txtCantidad.Visibility = Visibility.Visible;
+                    GridCantidad.Width = new GridLength(1, GridUnitType.Star);
                     break;
                 default:
                     txtCantidad.Visibility = Visibility.Visible;
-                    txtPiezas.Visibility = Visibility.Visible;
                     GridCantidad.Width = new GridLength(1, GridUnitType.Star);
-                    GridPiezas.Width = new GridLength(1, GridUnitType.Star);
                     break;
             }
         }

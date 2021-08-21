@@ -39,8 +39,7 @@ namespace Mexty.MVVM.Model.Validations {
     
             RuleFor(sucursal => sucursal.Instagram)
                 .Cascade(CascadeMode.Stop)
-                .Length(0, 100).WithMessage("El facebook debe de tener máximo 100 caracteres y tiene {TotalLength}.")
-                .Must(Validations.BeAValidLink);
+                .Length(0, 100).WithMessage("El facebook debe de tener máximo 100 caracteres y tiene {TotalLength}.");
 
             RuleFor(sucursal => sucursal.Mensaje)
                 .Cascade(CascadeMode.Stop)

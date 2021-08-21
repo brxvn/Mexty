@@ -51,11 +51,6 @@
         public string Telefono { get; set; }
 
         /// <summary>
-        /// Indica si el cliente esta activo.
-        /// </summary>
-        public int Activo { get; set; }
-
-        /// <summary>
         /// Usuario que registró al cliente.
         /// </summary>
         public string UsuarioRegistra { get; set; }
@@ -83,7 +78,7 @@
         /// <summary>
         /// Monto que debe el cliente.
         /// </summary>
-        public float Debe { get; set; }
+        public decimal Debe { get; set; }
 
         /// <summary>
         /// Evalua si dos clientes son el mismo, Mismo nombre y apellidos

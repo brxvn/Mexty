@@ -114,7 +114,7 @@
 
         <!--DataGridClientes-->
         <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataClientes" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False"
-                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Cliente}" IsSynchronizedWithCurrentItem="False">
+                  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" ItemsSource="{Binding Source=Cliente}" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
             
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Nombre" Binding="{Binding Nombre}" Width="1*">
@@ -148,7 +148,7 @@
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTextColumn Header="Deuda" Binding="{Binding Debe}" Width="1*">
+                <DataGridTextColumn Header="Deuda" Binding="{Binding Debe, StringFormat=C}" Width="1*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -542,6 +542,7 @@
                      Grid.Column="0"
                      CharacterCasing="Upper"
                      HorizontalAlignment="Stretch"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -563,6 +564,7 @@
                                                      CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="txtUpdateDireccion"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -617,6 +619,7 @@
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      CharacterCasing="Upper"
+                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -638,6 +641,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="txtUpdateComentario"
                                                      >
                                                         <!--TextChanged="SearchBox_TextChanged"-->
@@ -768,11 +772,13 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
+                    <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-
-                <Button x:Name="Limpiar" Grid.Column="0" Content="Limpiar" Click="LimpiarCampos" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Guardar" Grid.Column="1" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
-                <Button x:Name="Eliminar" Grid.Column="2" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                
+                <Button x:Name="Historial" Grid.Column="0" Content="Historial" Click="Historial_Click" ToolTip="Historial Cliente" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Limpiar" Grid.Column="1" Content="Limpiar" Click="LimpiarCampos" ToolTip="Limpiar Campos" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Guardar" Grid.Column="2" Content="Guardar" Click="GuardarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
+                <Button x:Name="Eliminar" Grid.Column="3" Content="Eliminar" Click="EliminarCliente" IsEnabled="False" ToolTipService.ShowOnDisabled="True" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}"/>
 
             </Grid>
         </Grid>
