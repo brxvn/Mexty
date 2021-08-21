@@ -84,7 +84,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 set NOMBRE_CLIENTE=@nom, AP_PATERNO=@apP, AP_MATERNO=@apM, 
                     DOMICILIO=@dom, TELEFONO=@telX, 
                     USUARIO_MODIFICA=@usMod, FECHA_MODIFICA=@date, 
-                    COMENTARIO=@com, DEBE=@debeX
+                    COMENTARIO=@com, DEBE=@debeX 
                 where ID_CLIENTE=@idX"
             };
             query.Parameters.AddWithValue("@nom", cliente.Nombre);

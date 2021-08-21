@@ -81,7 +81,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 set NOMBRE_PRODUCTO=@nom, 
                     TIPO_PRODUCTO=@tipoP, 
                     MEDIDA=@med, 
-                    DEPENDENCIAS=@dependencias,
+                    DEPENDENCIAS=@dependencias, 
                     TIPO_VENTA=@tipoVX, 
                     PRECIO_MAYOREO=@pMayo, 
                     PRECIO_MENUDEO=@pMenu, 
@@ -154,11 +154,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 CommandText = @"
                 insert into cat_producto 
                     (ID_PRODUCTO, NOMBRE_PRODUCTO, MEDIDA, TIPO_PRODUCTO, 
-                     TIPO_VENTA, DEPENDENCIAS,
+                     TIPO_VENTA, DEPENDENCIAS, 
                      PRECIO_MAYOREO, PRECIO_MENUDEO, 
                      ESPECIFICACION_PRODUCTO) 
                 values (default, @nom, @medida, @tipoP, 
-                        @tipoV, @dependencias,
+                        @tipoV, @dependencias, 
                         @pMayo, @pMenu, 
                         @esp)"
             };

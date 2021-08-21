@@ -75,7 +75,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Connection = connObj,
                 CommandText = @"
                 insert into movimientos_inventario 
-                    (ID_REGISTRO, MENSAJE, USUARIO_REGISTRA, FECHA_REGISTRO)
+                    (ID_REGISTRO, MENSAJE, USUARIO_REGISTRA, FECHA_REGISTRO) 
                 values (default, @mensaje, @usuarioReg, @fechaReg)"
             };
 

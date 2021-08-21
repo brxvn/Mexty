@@ -10,7 +10,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// <summary>
     /// Clase que contiene las consultas a la base de datos del modulo de administración de sucursales.
     /// </summary>
-    public class QuerysSucursales {
+    public static class QuerysSucursales {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         

@@ -55,6 +55,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             Log.Debug("Se ha llenado el combo de item inventario.");
 
             var sucursales = QuerysSucursales.GetTablesFromSucursales();
+
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add($"{sucursal.IdTienda} {sucursal.NombreTienda}");
             }
@@ -199,6 +200,7 @@ namespace Mexty.MVVM.View.InventarioViews {
 
                 var res1 = QuerysMovInvent.NewLogInventario(newLog);
                 if (res1 == 0) throw new Exception();
+
                 Log.Debug("Se ha actualizado el movimiento en movimientos inventario.");
                 MessageBox.Show("Se ha asignado producto de manera exitosa.");
                 FillData();
