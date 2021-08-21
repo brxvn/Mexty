@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
 using iText.Layout.Element;
 using log4net;
@@ -51,6 +52,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 FillRol();
                 FillSucursales();
                 ClearFields();
+                pswrdUsuario.Background = Brushes.Beige;
                 Log.Debug("Se han inicializado los campos del modulo Usuarios exitosamente.");
             }
             catch (Exception ex) {
@@ -132,7 +134,7 @@ namespace Mexty.MVVM.View.AdminViews {
             ComboRol.SelectedIndex = usuario.IdRol - 1;
             TxtDireccion.Text = usuario.Domicilio.ToUpper();
             TxtTelefono.Text = usuario.Telefono; //ojo
-            TxtContraseña.Text = usuario.Contraseña;
+            //TxtContraseña.Text = usuario.Contraseña;
             Limpiar.IsEnabled = true;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Registro";
@@ -148,7 +150,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.Text = "";
             ComboSucursal.SelectedIndex = 0;
             TxtDireccion.Text = "";
-            TxtContraseña.Text = "";
+            //TxtContraseña.Text = "";
             TxtTelefono.Text = "";
             SearchBox.Text = "";
             ComboRol.SelectedIndex = 0;
@@ -226,7 +228,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     ApMaterno = apMaternoUsuario.Text,
                     Domicilio = TxtDireccion.Text,
                     Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
-                    Contraseña = TxtContraseña.Text,
+                    //Contraseña = TxtContraseña.Text,
                     IdTienda = int.Parse(ComboSucursal.Text.Split(' ')[0]),
                     IdRol = ComboRol.SelectedIndex + 1
                 };
@@ -378,7 +380,7 @@ namespace Mexty.MVVM.View.AdminViews {
 
         private void TextUpdatePswd(object sender, TextChangedEventArgs a) {
             TextBox textbox = sender as TextBox;
-            TxtContraseña.Text = textbox.Text;
+            //TxtContraseña.Text = textbox.Text;
             EnableGuardar();
         }
 
@@ -456,5 +458,26 @@ namespace Mexty.MVVM.View.AdminViews {
             e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
         }
 
+
+        private void passwordChanged(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
+            else
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void hidePswrd(object sender, DependencyPropertyChangedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 0;
+        }
+
+        private void showPswrd(object sender, RoutedEventArgs e) {
+            if (pswrdUsuario.Password.Length == 0)
+                pswrdUsuario.Background.Opacity = 1;
+        }
+
+        private void EnterKeyPassword(object sender, KeyEventArgs e) {
+
+        }
     }
 }

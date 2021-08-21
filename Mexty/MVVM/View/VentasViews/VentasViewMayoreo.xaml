@@ -235,7 +235,7 @@
                     
                     <!--ComboCliente-->
                     <Label Content="Cliente " FontSize="30" Foreground="AntiqueWhite" Grid.Row="2"/>
-                    <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboCliente" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400" Grid.Row="2"/>
+                    <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboCliente" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="300" Grid.Row="2"/>
                 </Grid>
             </Grid>
 

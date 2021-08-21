@@ -21,6 +21,7 @@
                 <ResourceDictionary Source="Theme\ButtonStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Theme\WrappedColumsStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="Theme\ComboBoxListStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Theme\PasswordStyle.xaml"></ResourceDictionary>
                 <ResourceDictionary Source="pack://application:,,,/Meziantou.WpfFontAwesome;component/Themes/Generic.xaml" />
             </ResourceDictionary.MergedDictionaries>
 

@@ -600,7 +600,18 @@
                     </TextBox.Style>
                 </TextBox>
 
-                <TextBox Background="Beige"
+                <Grid Grid.Column="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Label Content="Contraseña:" Foreground="AntiqueWhite" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                    <PasswordBox Style="{DynamicResource PasswordBoxStyle1}" Grid.Column="1" Height="40" Foreground="Gray" BorderThickness="3" FontSize="15" x:Name="pswrdUsuario" MaxLength="8" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Padding="10 0">
+                    </PasswordBox>
+                </Grid>
+
+
+                <!--<TextBox Background="Beige"
                      x:Name="TxtContraseña"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
@@ -669,7 +680,7 @@
 
                         </Style>
                     </TextBox.Style>
-                </TextBox>
+                </TextBox>-->
 
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Rol de Usuario"/>

@@ -84,19 +84,19 @@ namespace Mexty.MVVM.Model {
             }
             bitmap = generator.GenerarQR(instagram);
             bitmap.SetResolution(100, 100);
-            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket1.png");
-            var newimage = ResizeImage(image, 185, 142);
+            Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
+            var newimage = ResizeImage(image, 115, 115);
             Image imageQr = (Image)bitmap;
             
 
-             Point ulCorner = new Point(0, 0);
+            Point ulCorner = new Point(40,0);
 
             Graphics g = ppeArgs.Graphics;
 
             /* g.DrawIcon(icon, new Rectangle(0,0,100,50))*/
             ;
             var settings = ppeArgs.PageSettings;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -118,7 +118,7 @@ namespace Mexty.MVVM.Model {
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
 
-            float topMargin = 85 + renglon;
+            float topMargin = 145 + renglon;
 
             foreach (var item in listaVenta) {
                 var total = (item.CantidadDependencias * item.PrecioMenudeo).ToString();
@@ -186,23 +186,25 @@ namespace Mexty.MVVM.Model {
             }
 
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
+            var newimage = ResizeImage(image, 115, 115);
+
             Image imageQr = (Image)bitmap;
 
 
-            Point ulCorner = new Point(0, 0);
+            Point ulCorner = new Point(40, 0);
 
             Graphics g = ppeArgs.Graphics;
 
             /* g.DrawIcon(icon, new Rectangle(0,0,100,50))*/
             ;
             var settings = ppeArgs.PageSettings;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
+            g.DrawImage(newimage, ulCorner);
 
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
             renglon += 15;
@@ -218,7 +220,7 @@ namespace Mexty.MVVM.Model {
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
 
-            float topMargin = 85 + renglon;
+            float topMargin = 145 + renglon;
 
             foreach (var item in listaVenta) {
                 var total = (item.CantidadDependencias * item.PrecioMenudeo).ToString();

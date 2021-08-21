@@ -17,32 +17,125 @@ using Mexty.MVVM.Model.DatabaseQuerys;
 namespace Mexty.MVVM.Model {
     class BarCodes {
         private readonly string _mainPath = @"C:\Mexty\CodigoBarras\";
+
+        //private static readonly string[] _tipoProductoText = { "Paleta Agua", "Paleta Leche", "Paleta Fruta", "Helado", "Agua", "Extras", "Otros" };
+
         public BarCodes() {
             Directory.CreateDirectory(_mainPath);
             ManipulatePdf(_mainPath);
         }
 
         private void ManipulatePdf(string dest) {
+            Paragraph titulo;
+            Paragraph p;
+            int i;
+            Table table;
             PdfDocument pdfDoc = new PdfDocument(new PdfWriter(new FileStream($"{dest}Codigo-Productos.pdf", FileMode.Create, FileAccess.Write)));
 
             Document doc = new Document(pdfDoc, PageSize.A4);
-            Table table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
 
-            Paragraph titulo = new Paragraph().Add("Codigos de Productos").SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Codigos de Productos").SetTextAlignment(TextAlignment.CENTER);
             doc.Add(titulo);
 
             var data = QuerysProductos.GetTablesFromProductos();
 
+            titulo = new Paragraph().Add("Paleta Agua").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
             foreach (var item in data) {
-                Paragraph p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
-                var i = item.IdProducto;
-                table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
-                if ((string.Format("{0:d8}", i) == i.ToString())) {
-
+                if (item.TipoProducto == "Paleta Agua") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
+                else continue;
             }
-
             doc.Add(table);
+
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            titulo = new Paragraph().Add("Paleta Leche").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Paleta Leche") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            titulo = new Paragraph().Add("Paleta Fruta").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Paleta Fruta") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Helado").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Helado") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Agua").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Agua") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Extras").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Extras") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
+            doc.Add(new AreaBreak(AreaBreakType.NEXT_PAGE));
+            table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Otros").SetTextAlignment(TextAlignment.CENTER);
+            doc.Add(titulo);
+            foreach (var item in data) {
+                if (item.TipoProducto == "Otros") {
+                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    i = item.IdProducto;
+                    table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
+                }
+                else continue;
+            }
+            doc.Add(table);
+
 
             doc.Close();
         }
@@ -51,7 +144,7 @@ namespace Mexty.MVVM.Model {
             nombre.SetFontSize(10);
 
             Barcode39 barcode = new Barcode39(pdfDoc);
-            
+
             barcode.SetCode(code);
 
             // Create barcode object to put it to the cell as image
@@ -65,7 +158,7 @@ namespace Mexty.MVVM.Model {
 
             return cell;
 
-            
+
         }
 
 

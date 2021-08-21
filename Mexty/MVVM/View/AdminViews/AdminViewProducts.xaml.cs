@@ -481,7 +481,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 case "Agua":
                 case "Helado":
                     ComboMedida.ItemsSource = null;
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 4, cant:1);
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant:1);
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = false;
                     txtPrecioMayoreo.IsReadOnly = false;
@@ -508,6 +508,10 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             AdminViewProductDependency dependency = new(SelectedProduct);
             dependency.ShowDialog();
+        }
+
+        private void generarQR_Click(object sender, RoutedEventArgs e) {
+            BarCodes barCodes = new();
         }
     }
 }
