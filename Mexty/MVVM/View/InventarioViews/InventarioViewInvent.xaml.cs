@@ -60,6 +60,10 @@ namespace Mexty.MVVM.View.InventarioViews {
                 FillSucursales();
                 ClearFields();
 
+                if (DatabaseInit.GetIdRol().Equals(3)) {
+                    ComboSucursal.Visibility = Visibility.Collapsed;
+                }
+
                 Log.Debug("Se han inicializado los campos del modulo de inventario exitosamente.");
             }
             catch (Exception e) {

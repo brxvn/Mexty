@@ -61,7 +61,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <returns></returns>
         public static string GenUsername(Usuario usr) {
             Random random = new();
-            string username = $"{usr.Nombre[..2]}{usr.ApMaterno[..2]}{usr.ApPaterno}{random.Next(1, 10)}";
+            string username = $"{usr.Nombre}{usr.ApPaterno[..1]}{usr.ApMaterno[..1]}{random.Next(1, 10)}";
 
             var normalizedString = username.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
