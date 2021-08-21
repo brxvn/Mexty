@@ -107,7 +107,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentas(true);
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto
+                Filter = (e) => e is ItemInventario producto && producto.Cantidad > 0
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;

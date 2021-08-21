@@ -99,7 +99,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentas();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto && producto.IdTienda == DatabaseInit.GetIdTiendaIni()
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda == DatabaseInit.GetIdTiendaIni() && producto.Cantidad > 0
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
