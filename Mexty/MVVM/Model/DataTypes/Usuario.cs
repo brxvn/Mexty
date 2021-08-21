@@ -142,8 +142,12 @@ namespace Mexty.MVVM.Model.DataTypes
             get {
                 ListaSucursal ??= QuerysSucursales.GetTablesFromSucursales();
                 var nombre = "";
+                if (IdTienda == 0) {
+                    return "general";
+                }
                 for (var index = 0; index < ListaSucursal.Count; index++) {
                     var sucursal = ListaSucursal[index];
+
                     if (IdTienda == sucursal.IdTienda) {
                         nombre = sucursal.NombreTienda;
                     }

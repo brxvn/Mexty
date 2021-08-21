@@ -106,6 +106,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// </summary>
         private void FillSucursales() {
             var sucursales = QuerysSucursales.GetTablesFromSucursales();
+            ComboSucursal.Items.Add($"{0.ToString()} General");
             foreach (var sucursal in sucursales) {
                 ComboSucursal.Items.Add($"{sucursal.IdTienda.ToString()} {sucursal.NombreTienda.ToUpper()}");
             }
@@ -131,10 +132,23 @@ namespace Mexty.MVVM.View.AdminViews {
             apPaternoUsuario.Text = usuario.ApPaterno.ToUpper();
             apMaternoUsuario.Text = usuario.ApMaterno.ToUpper();
             ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
+            if (usuario.IdTienda == 0) {
+                ComboSucursal.SelectedIndex = 0;
+            }
+            else {
+                var suc = ComboSucursal.Items;
+                for (var index = 0; index < suc.Count; index++) {
+                    var sucursal = suc[index];
+
+                    if (sucursal.ToString().Split(' ')[0].Contains(usuario.IdTienda.ToString())) {
+                        ComboSucursal.SelectedIndex = index;
+                    }
+                }
+            }
             ComboRol.SelectedIndex = usuario.IdRol - 1;
             TxtDireccion.Text = usuario.Domicilio.ToUpper();
-            TxtTelefono.Text = usuario.Telefono; //ojo
-            //TxtContraseña.Text = usuario.Contraseña;
+            TxtTelefono.Text = usuario.Telefono;
+            pswrdUsuario.Password = usuario.Contraseña;
             Limpiar.IsEnabled = true;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Registro";
@@ -150,7 +164,7 @@ namespace Mexty.MVVM.View.AdminViews {
             apMaternoUsuario.Text = "";
             ComboSucursal.SelectedIndex = 0;
             TxtDireccion.Text = "";
-            //TxtContraseña.Text = "";
+            pswrdUsuario.Password = "";
             TxtTelefono.Text = "";
             SearchBox.Text = "";
             ComboRol.SelectedIndex = 0;
@@ -182,12 +196,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(empleado =>
-                // {
-                //     if (empleado == null) return false;
-                //     return ((Usuario)empleado).Activo == 1;
-                // });
-                // collection.Filter += noNull;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -228,7 +236,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     ApMaterno = apMaternoUsuario.Text,
                     Domicilio = TxtDireccion.Text,
                     Telefono = TxtTelefono.Text.Equals("") ? "0" : TxtTelefono.Text,
-                    //Contraseña = TxtContraseña.Text,
+                    Contraseña = pswrdUsuario.Password,
                     IdTienda = int.Parse(ComboSucursal.Text.Split(' ')[0]),
                     IdRol = ComboRol.SelectedIndex + 1
                 };

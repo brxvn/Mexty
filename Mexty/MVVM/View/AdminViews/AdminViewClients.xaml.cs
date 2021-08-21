@@ -161,10 +161,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(cliente => {
-                //     return cliente != null;
-                // });
-                // collection.Filter += noNull;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
