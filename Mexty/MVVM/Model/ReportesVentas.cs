@@ -7,6 +7,8 @@ using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.IO;
 using System.Windows;
@@ -119,6 +121,7 @@ namespace Mexty.MVVM.Model {
             Log.Debug("Reporte de ventas por sucursal creado");
 
             try {
+                PrintDocument pd = new();
                 pd.PrinterSettings.PrinterName = "EC-PM-5890X";
                 pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteVentas);
                 pd.Print();
@@ -139,7 +142,7 @@ namespace Mexty.MVVM.Model {
 
             table.SetWidth(UnitValue.CreatePercentValue(100));
 
-            string path = $"{_ventasUsuarios}{username}\\{_date}\\";
+            string path = $"{_ventasUsuarios}{username}\\{comando}\\";
             Directory.CreateDirectory($"{path}");
             string nombreReporte = $"ReporteVentas-{username}-{comando}-{_date}";
             string tituloReporte = $"Reporte de Ventas del usuario {username}";
@@ -208,10 +211,12 @@ namespace Mexty.MVVM.Model {
             Log.Debug("Reporte de ventas por sucursal creado");
 
             try {
+                PrintDocument pd = new();
+
                 pd.PrinterSettings.PrinterName = "EC-PM-5890X";
                 pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteVentasXUsuario);
                 pd.Print();
-                Log.Debug("Reporte de ventas por sucursal impreso en ticket");
+                Log.Debug("Reporte de ventas por usuario impreso en ticket");
 
             }
             catch (System.Exception e) {
@@ -231,10 +236,11 @@ namespace Mexty.MVVM.Model {
             decimal totalDia = 0.0m;
 
             System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
-            System.Drawing.Point ulCorner = new System.Drawing.Point(0, 0);
+            System.Drawing.Point ulCorner = new System.Drawing.Point(40, 0);
+            var newimage = ResizeImage(image, 115, 115);
 
             Graphics g = ppeArgs.Graphics;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -242,7 +248,7 @@ namespace Mexty.MVVM.Model {
             string name = null;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
+            g.DrawImage(newimage, ulCorner);
 
             g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos);
             renglon += 18;
@@ -257,7 +263,7 @@ namespace Mexty.MVVM.Model {
             g.DrawString("Cant Tipo    Nombre   Total", consola1, Brushes.Black, leftMargin, yPos + renglon + 2);
             renglon += 18;
             g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos + renglon - 8);
-            float topMargin = 75 + renglon;
+            float topMargin = 145 + renglon;
             foreach (var detalle in data) {
                 itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
                 foreach (var item in itemInventarios) {
@@ -299,6 +305,7 @@ namespace Mexty.MVVM.Model {
                 case "semana":
 
                     var ultimaSeana = DateTime.Now - 1.Weeks();
+                    ultimaSeana.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
@@ -334,10 +341,12 @@ namespace Mexty.MVVM.Model {
             decimal totalDia = 0.0m;
 
             System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
-            System.Drawing.Point ulCorner = new System.Drawing.Point(0, 0);
+            System.Drawing.Point ulCorner = new System.Drawing.Point(40, 0);
+
+            var newimage = ResizeImage(image, 115, 115);
 
             Graphics g = ppeArgs.Graphics;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -345,7 +354,7 @@ namespace Mexty.MVVM.Model {
             string name = null;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
+            g.DrawImage(newimage, ulCorner);
 
             g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos);
             renglon += 18;
@@ -360,7 +369,7 @@ namespace Mexty.MVVM.Model {
             g.DrawString("Cant Tipo    Nombre   Total", consola1, Brushes.Black, leftMargin, yPos + renglon + 2);
             renglon += 18;
             g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos + renglon - 8);
-            float topMargin = 75 + renglon;
+            float topMargin = 145 + renglon;
             foreach (var detalle in data) {
                 itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
                 foreach (var item in itemInventarios) {
@@ -402,6 +411,7 @@ namespace Mexty.MVVM.Model {
                 case "semana":
 
                     var ultimaSeana = DateTime.Now - 1.Weeks();
+                    ultimaSeana.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
@@ -413,6 +423,7 @@ namespace Mexty.MVVM.Model {
                     break;
                 case "mes":
                     var ultimoMes = DateTime.Now - 1.Months();
+                    ultimoMes.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"{ultimoMes.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
@@ -425,6 +436,35 @@ namespace Mexty.MVVM.Model {
             }
             Log.Debug("Finalizando impresión de repote de ventas por usuario.");
 
+        }
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        private static Bitmap ResizeImage(System.Drawing.Image image, int width, int height) {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage)) {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes()) {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
 
     }

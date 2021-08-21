@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,7 +14,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using log4net;
+using Mexty.MVVM.Model;
 using Mexty.MVVM.Model.DatabaseQuerys;
+using Mexty.MVVM.Model.DataTypes;
 
 namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
@@ -49,7 +52,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="dataGrid"></param>
         /// <param name="columnIndex"></param>
         /// <param name="sortDirection"></param>
-        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending) {
+        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Descending) {
             var column = dataGrid.Columns[columnIndex];
 
             // Clear current sort descriptions
@@ -74,10 +77,17 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
 
+
         }
 
         private void ImprimirTxt(object sender, RoutedEventArgs e) {
-            MessageBox.Show("TODO:");
+            List<LogInventario> mensajes = new();
+            IList list = DataProducts.SelectedItems;
+            foreach (var item in list) {
+                mensajes.Add(item as LogInventario);
+            }
+            TicketAsignacion ticket = new(mensajes);
+            
         }
     }
 }

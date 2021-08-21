@@ -3,7 +3,10 @@ using iText.Layout.Properties;
 using log4net;
 using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Drawing.Printing;
 using System.Windows;
 using TextAlignment = iText.Layout.Properties.TextAlignment;
@@ -14,12 +17,15 @@ namespace Mexty.MVVM.Model {
         private static readonly ILog Log =
           LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
+
+        int idTienda = DatabaseInit.GetIdTiendaIni();
+
+        private List<Sucursal> ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
+        private new string sucursal;
+
         public void ReporteInventario() {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
-            int idTienda = DatabaseInit.GetIdTiendaIni();
-
-            var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
 
             foreach (Sucursal tienda in ListaSucursales) {
                 if (tienda.IdTienda == idTienda) {
@@ -65,9 +71,9 @@ namespace Mexty.MVVM.Model {
             Log.Debug("Reporte de inventario creado");
 
             try {
+                PrintDocument pd = new();
                 pd.PrinterSettings.PrinterName = "EC-PM-5890X";
-                var aber = pd.PrinterSettings.PaperSizes;
-                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventarioXSucursal);
+                pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventario);
                 pd.Print();
                 Log.Debug("Reporte de inventario impreso en ticket");
 
@@ -92,8 +98,8 @@ namespace Mexty.MVVM.Model {
 
             var document = CreateDocument(nombreReporte, p, tituloReporte, path);
 
-            string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Piezas", "Cantidad" };
-            float[] tamaños = { 1, 3, 3, 1, 1 };
+            string[] columnas = { "ID", "Tipo de Producto", "Nombre", "Cantidad" };
+            float[] tamaños = { 1, 3, 3, 1 };
 
             Table table = new Table(UnitValue.CreatePercentArray(tamaños));
             table.SetWidth(UnitValue.CreatePercentValue(100));
@@ -118,6 +124,7 @@ namespace Mexty.MVVM.Model {
             Log.Debug("Reporte de inventario por sucursal creado");
 
             try {
+                PrintDocument pd = new();
                 pd.PrinterSettings.PrinterName = "EC-PM-5890X";
                 pd.PrintPage += new PrintPageEventHandler(this.ImprimirReporteInventarioXSucursal);
                 pd.Print();
@@ -135,10 +142,12 @@ namespace Mexty.MVVM.Model {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
             System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
-            System.Drawing.Point ulCorner = new System.Drawing.Point(0, 0);
+            System.Drawing.Point ulCorner = new System.Drawing.Point(40, 0);
+
+            var newimage = ResizeImage(image, 115, 115);
 
             Graphics g = ppeArgs.Graphics;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -146,7 +155,7 @@ namespace Mexty.MVVM.Model {
             string name = null;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
+            g.DrawImage(newimage, ulCorner);
 
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
             renglon += 18;
@@ -166,7 +175,7 @@ namespace Mexty.MVVM.Model {
             g.DrawString("ID Tipo      Nombre    Pzas", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
             renglon += 18;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
-            float topMargin = 75 + renglon;
+            float topMargin = 145 + renglon;
             foreach (var item in dataInventario) {
                 type = null;
                 name = null;
@@ -185,6 +194,12 @@ namespace Mexty.MVVM.Model {
         }
 
         private void ImprimirReporteInventarioXSucursal(object sender, PrintPageEventArgs ppeArgs) {
+            foreach (Sucursal tienda in ListaSucursales) {
+                if (tienda.IdTienda == idImprimir) {
+                    sucursal = tienda.NombreTienda;
+                    direccion = tienda.Dirección;
+                }
+            }
             Log.Debug("Iniciando impresión del ticket de reporte de inventario por sucursal...");
 
             var dataInventarioSucursal = QuerysInventario.GetItemsFromInventarioById(idImprimir);
@@ -194,10 +209,12 @@ namespace Mexty.MVVM.Model {
             string tituloReporte = $"Reporte de Inventario de {nombreImprimir}";
 
             System.Drawing.Image image = System.Drawing.Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
-            System.Drawing.Point ulCorner = new System.Drawing.Point(0, 0);
+            System.Drawing.Point ulCorner = new System.Drawing.Point(40, 0);
+
+            var newimage = ResizeImage(image, 115, 115);
 
             Graphics g = ppeArgs.Graphics;
-            float yPos = 70;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -205,8 +222,7 @@ namespace Mexty.MVVM.Model {
             string name = null;
             int renglon = 18;
 
-            g.DrawImage(image, ulCorner);
-
+            g.DrawImage(newimage, ulCorner);
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
             renglon += 18;
             g.DrawString("   REPORTE DE INVENTARIO   ", consola, Brushes.Black, leftMargin, yPos + renglon - 9);
@@ -225,7 +241,7 @@ namespace Mexty.MVVM.Model {
             g.DrawString("ID Tipo      Nombre    Pzas", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
             renglon += 18;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
-            float topMargin = 75 + renglon;
+            float topMargin = 145 + renglon;
             foreach (var item in dataInventarioSucursal) {
                 type = null;
                 name = null;
@@ -240,6 +256,28 @@ namespace Mexty.MVVM.Model {
                 count++;
             }
             Log.Debug("Finalizando impresión del ticket de reporte de inventario por sucursal.");
+        }
+
+        private static Bitmap ResizeImage(System.Drawing.Image image, int width, int height) {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage)) {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes()) {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }
