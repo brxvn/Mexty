@@ -77,7 +77,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Pago = 0,
                 TotalVenta = 0,
                 DetalleVentaList = new List<ItemInventario>(),
-                IdTienda = DatabaseInit.GetIdTienda(),
+                IdTienda = DatabaseInit.GetIdTiendaIni(),
                 UsuarioRegistra = DatabaseInit.GetUsername()
             };
             VentaActual = venta;
@@ -99,7 +99,7 @@ namespace Mexty.MVVM.View.VentasViews {
             var data = QuerysVentas.GetListaInventarioVentas();
             ListaProductos = data;
             var collectionView = new ListCollectionView(data) {
-                Filter = (e) => e is ItemInventario producto && producto.IdTienda == DatabaseInit.GetIdTienda()
+                Filter = (e) => e is ItemInventario producto && producto.IdTienda == DatabaseInit.GetIdTiendaIni()
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;

@@ -33,6 +33,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static int IdTienda { get; set; }
 
         /// <summary>
+        /// El id de tienda leido desde el ini.
+        /// </summary>
+        private static int IdTiendaIni { get; set; }
+
+        /// <summary>
         /// <c>Bool</c> que guarda si el log-in fue exitoso.
         /// </summary>
         private static bool ConnectionSuccess { get; set; }
@@ -96,7 +101,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Username = firstQuery.IsDBNull("usuario") ? "" : firstQuery.GetString("usuario");
                 IdRol = firstQuery.IsDBNull("id_rol") ? 0 : firstQuery.GetInt32("id_rol");
                 Password = firstQuery.IsDBNull("contrasenia") ? "" : firstQuery.GetString("contrasenia");
-                // TODO: hacer distinción si la tienda asignada es Matriz.
                 IdTienda = firstQuery.IsDBNull("id_tienda") ? 0 : firstQuery.GetInt32("id_tienda");
 
                 if (Username != "" && Password != "" && IdRol != 0 && IdTienda != 0) {
@@ -140,7 +144,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     throw new Exception("Valor de IdTienda en ini invalido.");
                 }
                 else {
-                    IdTienda = idTienda;
+                    IdTiendaIni = idTienda;
                 }
             }
             catch (Exception e) {
@@ -236,8 +240,16 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método para obtener el Id de tienda asignado a el usuario que ha iniciado sesión.
         /// </summary>
         /// <returns>Un <c>int</c> con el Id de tienda.</returns>
-        public static int GetIdTienda() {
+        public static int GetIdTiendaUsuario() {
             return IdTienda;
+        }
+
+        /// <summary>
+        /// Método para obtener el id de tienda dado en el ini.
+        /// </summary>
+        /// <returns></returns>
+        public static int GetIdTiendaIni() {
+            return IdTiendaIni;
         }
 
         /// <summary>

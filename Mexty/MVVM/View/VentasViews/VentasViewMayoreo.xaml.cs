@@ -85,7 +85,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Pago = 0,
                 TotalVenta = 0,
                 DetalleVentaList = new List<ItemInventario>(),
-                IdTienda = DatabaseInit.GetIdTienda(),
+                IdTienda = DatabaseInit.GetIdTiendaIni(),
                 UsuarioRegistra = DatabaseInit.GetUsername()
             };
             VentaActual = venta;

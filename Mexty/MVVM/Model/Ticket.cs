@@ -71,7 +71,7 @@ namespace Mexty.MVVM.Model {
                 totalProductos += item.CantidadDependencias;
             }
 
-            int idTienda = DatabaseInit.GetIdTienda();
+            int idTienda = DatabaseInit.GetIdTiendaIni();
 
             var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
 
@@ -172,7 +172,7 @@ namespace Mexty.MVVM.Model {
                 }
             }
 
-            int idTienda = DatabaseInit.GetIdTienda();
+            int idTienda = DatabaseInit.GetIdTiendaIni();
 
             var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
 

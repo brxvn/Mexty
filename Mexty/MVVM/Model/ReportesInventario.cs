@@ -17,7 +17,7 @@ namespace Mexty.MVVM.Model {
         public void ReporteInventario() {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
-            int idTienda = DatabaseInit.GetIdTienda();
+            int idTienda = DatabaseInit.GetIdTiendaIni();
 
             var ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
 

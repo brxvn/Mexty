@@ -46,7 +46,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private ItemInventario SelectedItem { get; set; }
 
-        private int idTienda = DatabaseInit.GetIdTienda();
+        private int idTienda = DatabaseInit.GetIdTiendaIni();
 
 
         private List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();

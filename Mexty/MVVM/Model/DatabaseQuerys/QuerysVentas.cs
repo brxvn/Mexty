@@ -318,7 +318,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             query.Parameters.AddWithValue("@cantidadX", cantidad.ToString());
             query.Parameters.AddWithValue("@idX", idProducto.ToString());
-            query.Parameters.AddWithValue("@idTX", DatabaseInit.GetIdTienda().ToString());
+            query.Parameters.AddWithValue("@idTX", DatabaseInit.GetIdTiendaIni().ToString());
 
             try {
                 QuerysDatabase.ProcessQuery(query);
