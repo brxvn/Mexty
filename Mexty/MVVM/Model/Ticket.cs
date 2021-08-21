@@ -167,7 +167,7 @@ namespace Mexty.MVVM.Model {
 
             foreach (var item in listaClientes) {
                 if (item.IdCliente == idCliente) {
-                    deudaCliente = item.Debe;
+                    deudaCliente = (float)item.Debe;
                     break;
                 }
             }

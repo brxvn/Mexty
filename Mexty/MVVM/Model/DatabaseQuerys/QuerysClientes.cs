@@ -46,7 +46,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         UsuarioModifica = reader.IsDBNull("usuario_modifica") ? "" : reader.GetString("usuario_modifica"),
                         FechaModifica = reader.IsDBNull("fecha_modifica") ? "" : reader.GetString("fecha_modifica"),
                         Comentario = reader.IsDBNull("comentario") ? "" : reader.GetString("comentario"),
-                        Debe = reader.IsDBNull("debe") ? 0 : reader.GetFloat("debe")
+                        Debe = reader.IsDBNull("debe") ? 0 : reader.GetDecimal("debe")
                     };
                     clientes.Add(cliente);
                 }

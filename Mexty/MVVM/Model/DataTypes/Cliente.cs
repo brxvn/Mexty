@@ -78,7 +78,7 @@
         /// <summary>
         /// Monto que debe el cliente.
         /// </summary>
-        public float Debe { get; set; }
+        public decimal Debe { get; set; }
 
         /// <summary>
         /// Evalua si dos clientes son el mismo, Mismo nombre y apellidos

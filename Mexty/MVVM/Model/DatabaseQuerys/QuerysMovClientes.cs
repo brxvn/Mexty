@@ -17,14 +17,16 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que obtiene el contenido de la tabla de movimientos clientes.
         /// </summary>
         /// <returns></returns>
-        public static List<LogCliente> GetTablesFromMovClientes() {
+        public static List<LogCliente> GetTablesFromMovClientes(int idCliente) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
             var querry = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = "select * from movimientos_clientes"
+                CommandText = "select * from movimientos_clientes where ID_CLIENTE=@id"
             };
+
+            querry.Parameters.AddWithValue("@id", idCliente.ToString());
 
             var listaLogs = new List<LogCliente>();
 

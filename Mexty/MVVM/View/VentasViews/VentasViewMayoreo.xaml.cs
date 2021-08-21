@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -228,18 +229,9 @@ namespace Mexty.MVVM.View.VentasViews {
                 if (VentaActual.TotalVenta > VentaActual.Pago) {
                     var buttons = MessageBoxButton.YesNo;
                     var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! Desea agregarlo a la deuda del cliente?", "Pago insuficiente", buttons);
-                    var SelectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                    var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
                     if (resYesNo == MessageBoxResult.Yes) {
-                        for (var index = 0; index < ListaClientes.Count; index++) {
-                            var cliente = ListaClientes[index];
-
-                            if (cliente.IdCliente == SelectedClientId) {
-                                cliente.Debe += (float)(VentaActual.TotalVenta - VentaActual.Pago);
-
-                                var resQ = QuerysClientes.UpdateData(cliente);
-                                if (resQ == 0) throw new Exception("no se actualizo la deuda del cliente.");
-                            }
-                        }
+                        ActualizaDeuda(selectedClientId);
                     }
                     else {
                         return;
@@ -271,6 +263,39 @@ namespace Mexty.MVVM.View.VentasViews {
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Método que se encarga de actualizar la deuda.
+        /// </summary>
+        private void ActualizaDeuda(int selectedClientId) {
+            // Iteramos entre la lista de clientes.
+            for (var index = 0; index < ListaClientes.Count; index++) {
+                var cliente = ListaClientes[index];
+
+                if (cliente.IdCliente == selectedClientId) {
+                    // Encontramos el cliente en la lista por id.
+
+                    var deudaAnterior = cliente.Debe;
+                    cliente.Debe += VentaActual.TotalVenta - VentaActual.Pago;
+
+                    // Creamos el historial.
+                    var log = new LogCliente() {
+                        IdCliente = selectedClientId,
+                        Mensaje = $"Deuda aumentada de {deudaAnterior.ToString(CultureInfo.InvariantCulture)} a {cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
+                        UsuarioRegistra = DatabaseInit.GetUsername(),
+                        FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate())
+                    };
+                    var resDeud = QuerysMovClientes.NewLogCliente(log);
+                    if (resDeud == 0)
+                        throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
+
+
+                    // Acualizamos la deuda.
+                    var resQ = QuerysClientes.UpdateData(cliente);
+                    if (resQ == 0) throw new Exception("no se actualizo la deuda del cliente.");
+                }
             }
         }
 

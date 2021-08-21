@@ -9,7 +9,7 @@ namespace Mexty.MVVM.Model {
     public class QRGenerator {
 
         public Bitmap GenerarQR(string url) {
-            Url generator = new Url(url);
+            var generator = new Url(url);
             string payload = generator.ToString();
 
             QRCodeGenerator qrGenerator = new QRCodeGenerator();

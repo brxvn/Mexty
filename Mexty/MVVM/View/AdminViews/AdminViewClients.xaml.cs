@@ -194,6 +194,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="e"></param>
         private void GuardarCliente(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de guardar.");
+
             try {
                 var newClient = new Cliente {
                     Nombre = txtNombreCliente.Text,
@@ -201,7 +202,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     ApMaterno = txtApMaternoCliente.Text,
                     Domicilio = txtDireccion.Text,
                     Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
-                    Debe = float.Parse(txtDeuda.Text),
+                    Debe = decimal.Parse(txtDeuda.Text),
                     Comentario = txtComentario.Text
                 };
                 Log.Debug("Se ha creado el objeto el objeto Cliente con los campos de texto.");
@@ -256,11 +257,23 @@ namespace Mexty.MVVM.View.AdminViews {
         private void Edit(Cliente newClient) {
             try {
                 Log.Debug("Detectada edición de un cliente.");
-                QuerysClientes.UpdateData(newClient);
                 newClient.IdCliente = SelectedClient.IdCliente;
 
                 var res = QuerysClientes.UpdateData(newClient);
-                if (res == 0) return;
+                if (res == 0) throw new Exception("No se ha alterado ninguna columna al actualizar el cliente.");
+
+                if (SelectedClient.Debe != newClient.Debe) {
+                    // La deuda cambio
+                    var log = new LogCliente() {
+                        IdCliente = newClient.IdCliente,
+                        Mensaje = $"Ajuste de deuda de {SelectedClient.Debe.ToString(CultureInfo.InvariantCulture)} a {newClient.Debe.ToString(CultureInfo.InvariantCulture)}",
+                        UsuarioRegistra = DatabaseInit.GetUsername(),
+                        FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate())
+                    };
+                    var resDeud = QuerysMovClientes.NewLogCliente(log);
+                    if (resDeud == 0)
+                        throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
+                }
 
                 var msg = $"Se ha actualizado el cliente {newClient.IdCliente.ToString()} {newClient.Nombre.ToUpper()}.";
                 MessageBox.Show(msg, "Cliente Actualizado");
