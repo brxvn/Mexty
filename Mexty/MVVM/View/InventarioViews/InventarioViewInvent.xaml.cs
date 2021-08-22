@@ -183,6 +183,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void ItemSelected(object sender, EventArgs e) {
 
             ClearFields();
+            txtCantidad.IsReadOnly = false;
+            txtComentario.IsReadOnly = false;
             if (DataProducts.SelectedItem == null) return;
             Log.Debug("Item seleccionado.");
             var item = (ItemInventario)DataProducts.SelectedItem;
@@ -198,6 +200,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que limpia los campos de texto.
         /// </summary>
         private void ClearFields() {
+            txtCantidad.IsReadOnly = true;
+            txtComentario.IsReadOnly = true;
             Guardar.IsEnabled = false;
             txtComentario.Text = "";
             txtCantidad.Text = "";
@@ -345,5 +349,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         public void ActualizarData(object sender, RoutedEventArgs e) {
             FillData();
         }
+
     }
 }

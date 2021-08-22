@@ -26,7 +26,6 @@ namespace Mexty.MVVM.Model {
         public void ReporteInventario() {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
-
             foreach (Sucursal tienda in ListaSucursales) {
                 if (tienda.IdTienda == idTienda) {
                     sucursal = tienda.NombreTienda;

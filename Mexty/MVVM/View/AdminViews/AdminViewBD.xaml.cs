@@ -62,7 +62,7 @@ namespace Mexty.MVVM.View.AdminViews {
             try {
                 if (QuerysDatabase.BackUp()) {
                     Log.Info("Se ha exportado la base de datos de manera exitosa.");
-                    MessageBox.Show("Se ha exportado la base de datos con exito.");
+                    MessageBox.Show("Se ha exportado la base de datos con éxito.");
                 }
             }
             catch (Exception exception) {
@@ -102,7 +102,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 if (dialog.ShowDialog() == true) {
                     if (QuerysDatabase.Import(dialog.FileName)) {
                         Log.Info("Se ha importado a la base de datos de manera exitosa.");
-                        MessageBox.Show("Se ha importado a la base de datos con exito.");
+                        MessageBox.Show("Se ha importado a la base de datos con éxito.");
                     }
                 }
             }

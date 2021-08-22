@@ -545,8 +545,8 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 
-                <Button x:Name="Producto_Compuesto" Grid.Column="0" Content="Producto Compuesto" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="DependenciaProductos" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Producto Compuesto"/>
-                <Button x:Name="generarQR" Grid.Column="1" Content="Generar Códigos" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="generarQR_Click" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Generar código de barras de los productos"/>
+                <Button x:Name="Producto_Compuesto" Grid.Column="0" Content="Producto Compuesto" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="DependenciaProductos" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Producto Compuesto" Padding="10 0" FontSize="18"/>
+                <Button x:Name="generarQR" Grid.Column="1" Content="Generar Códigos" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="generarQR_Click" IsEnabled="True" ToolTipService.ShowOnDisabled="True" ToolTip="Generar código de barras de los productos" Padding="10 0" FontSize="20" Height="40" Margin="20,0,20,0" VerticalAlignment="Top"/>
                 <Button x:Name="Limpiar" Grid.Column="2" Content="Limpiar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="LimpiarCampos" ToolTip="Limpiar Campos"/>
                 <Button x:Name="Guardar" Grid.Column="3" Content="Guardar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="RegistrarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>
                 <Button x:Name="Eliminar" Grid.Column="4" Content="Eliminar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="EliminarProducto" IsEnabled="False" ToolTipService.ShowOnDisabled="True"/>

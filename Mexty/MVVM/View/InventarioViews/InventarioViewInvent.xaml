@@ -186,7 +186,8 @@
                      TextWrapping="Wrap"
                      PreviewTextInput="OnlyLettersValidation"
                      Grid.Column="0"
-                     Margin="10 0">
+                     Margin="10 0"
+                     IsReadOnly="True">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -268,7 +269,8 @@
                      Grid.Column="1"
                      CharacterCasing="Upper"
                      PreviewTextInput="OnlyNumbersValidation"
-                     Margin="10 0">
+                     Margin="10 0"
+                     IsReadOnly="True">
 
                     <TextBox.Style>
                         <Style TargetType="TextBox">

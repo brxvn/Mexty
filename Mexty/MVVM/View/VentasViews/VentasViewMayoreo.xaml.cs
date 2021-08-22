@@ -283,7 +283,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     // Creamos el historial.
                     var log = new LogCliente() {
                         IdCliente = selectedClientId,
-                        Mensaje = $"Deuda aumentada de {deudaAnterior.ToString(CultureInfo.InvariantCulture)} a {cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
+                        Mensaje = $"Deuda aumentada por venta de ${deudaAnterior.ToString(CultureInfo.InvariantCulture)} a ${cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
                         UsuarioRegistra = DatabaseInit.GetUsername(),
                         FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate())
                     };
@@ -294,7 +294,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                     // Acualizamos la deuda.
                     var resQ = QuerysClientes.UpdateData(cliente);
-                    if (resQ == 0) throw new Exception("no se actualizo la deuda del cliente.");
+                    if (resQ == 0) throw new Exception("No se actualizó la deuda del cliente.");
                 }
             }
         }
