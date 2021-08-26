@@ -57,6 +57,8 @@ namespace Mexty.MVVM.Model.Validations {
             text = text.Replace(",", "");
             text = text.Replace(".", "");
             text = text.Replace("#", "");
+            text = text.Replace("(", "");
+            text = text.Replace(")", "");
             return text.All(Char.IsLetterOrDigit);
         }
 
