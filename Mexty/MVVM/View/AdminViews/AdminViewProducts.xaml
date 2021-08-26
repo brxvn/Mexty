@@ -467,7 +467,7 @@
                      Margin="10,0,10,0"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
                      CharacterCasing="Upper"
-                     MaxLength="50">
+                     MaxLength="150">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -489,7 +489,7 @@
                                                      TextWrapping="Wrap"
                                                      CharacterCasing="Upper"
                                                      Height="80"
-                                                     MaxLength="50"
+                                                     MaxLength="150"
                                                      PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="TextUpdateDetalle"/>
 

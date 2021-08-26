@@ -388,7 +388,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// Metodo para la validacion de solo Letras y numeros en el input
         /// </summary>
         private void OnlyLetterAndNumbers(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '.'.Equals(x) || '/'.Equals(x) || ','.Equals(x));
         }
 
         /// <summary>
