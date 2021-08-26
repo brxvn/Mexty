@@ -316,9 +316,18 @@ namespace Mexty.MVVM.View.AdminViews {
         private void EliminarEstablecimiento(object sender, RoutedEventArgs e) {
             Log.Debug("Presionado eliminar establecimiento.");
             var sucursal = SelectedSucursal;
+
+            if (DatabaseInit.GetIdTiendaIni() == sucursal.IdTienda) {
+                MessageBox.Show("Error: estas intentando borrar la sucursal en la que te encuentras, se recomienda después de hacer este cambio, salir del programa y ajustar el IdTienda a otro que si exista para evitar errores.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+
             var mensaje = $"¿Seguro quiere eliminar la sucursal {sucursal.NombreTienda.ToUpper()}?";
             const MessageBoxButton buttons = MessageBoxButton.OKCancel;
             const MessageBoxImage icon = MessageBoxImage.Warning;
+
 
             if (MessageBox.Show(mensaje, "Confirmación", buttons, icon) != MessageBoxResult.OK) return;
             try {
