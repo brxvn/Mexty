@@ -115,6 +115,11 @@ namespace Mexty.MVVM.Model.DataTypes {
         public string DependenciasText { get; set; }
 
         /// <summary>
+        /// Toma el usuario modificado
+        /// </summary>
+        public string UsuarioModifica { get; set; }
+
+        /// <summary>
         /// Lista que contiene todas las dependencias
         /// </summary>
         public List<Producto> Dependencias { get; set; }
