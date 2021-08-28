@@ -51,7 +51,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <summary>
         /// Método que llena el combobox de producto.
         /// </summary>
-        // TODO: hacer que los campos de cantidad y piezas aparezcan y desaparezcan de la ui dependiendo del tipo.
         private void FillData() {
             var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
@@ -60,6 +59,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 ComboNombre.Items.Add(
                     $"{producto.IdProducto.ToString()} {producto.TipoProducto} {producto.NombreProducto}");
             }
+            ComboNombre.SelectedIndex = 1;
             Log.Debug("Se ha llenado el combo box de producto.");
 
             var dataInventario = QuerysInventario.GetTablesFromInventarioMatrix();

@@ -30,7 +30,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
-
         /// <summary>
         /// Lista de items en el inventario.
         /// </summary>
@@ -59,9 +58,11 @@ namespace Mexty.MVVM.View.InventarioViews {
                 ComboNombre.Items.Add(
                     $"{producto.IdProducto.ToString()} {producto.TipoProducto} {producto.NombreProducto}");
             }
+
+            ComboNombre.SelectedIndex = 1;
             Log.Debug("Se ha llenado el combo box de producto.");
 
-            var dataInventario = QuerysInventario.GetItemsFromInventario();
+            var dataInventario = QuerysInventario.GetItemsFromInventarioById(DatabaseInit.GetIdTiendaIni());
             ListaFromInventario = dataInventario;
         }
 
@@ -143,6 +144,14 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Comentario = txtComentario.Text,
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
             };
+
+            if (newProduct.Cantidad == 0) {
+                MessageBox.Show("No puede dar de alta un producto si la cantidad esta en 0",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+                return;
+            }
 
             // Obtenemos el id el producto del string del combobox
             newProduct.IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
