@@ -60,9 +60,20 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ExportBd(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
-                if (QuerysDatabase.BackUp()) {
-                    Log.Info("Se ha exportado la base de datos de manera exitosa.");
-                    MessageBox.Show("Se ha exportado la base de datos con éxito.");
+                if (!QuerysDatabase.CheckDeltas()) { // Si no hay deltas
+                    if (QuerysDatabase.BackUp()) { // exportamos bd.
+                        Log.Info("Se ha exportado la base de datos de manera exitosa.");
+                        MessageBox.Show("Se ha exportado la base de datos con éxito.");
+                    }
+                }
+                else { // si si hay deltas.
+                    MessageBox.Show("Advertencia: Se han encontrado cambios sin exportar, Estos cambios se exportaran para que sean sincronizados en otras sucursales.");
+                    QuerysDatabase.DumpDeltas(); // exportamos deltas.
+                    Log.Info("Se ha intentado el export de la base de datos con cambios en la tabla de sincronización, se han vaciado los deltas.");
+                    if (QuerysDatabase.BackUp()) { // exportamos bd.
+                        Log.Info("Se ha exportado la base de datos de manera exitosa.");
+                        MessageBox.Show("Se ha exportado la base de datos con éxito.");
+                    }
                 }
             }
             catch (Exception exception) {
@@ -97,14 +108,15 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se ha presionado el boton de importar datos.");
             try {
                 OpenFileDialog dialog = new OpenFileDialog();
-                // TODO: probablemente solo abrir .sql
-                dialog.Filter = "Text files (*.sql;*.txt)|*.sql;*.txt";
+                dialog.Filter = "Text files (*.sql)|*.sql;";
                 if (dialog.ShowDialog() == true) {
                     if (QuerysDatabase.Import(dialog.FileName)) {
                         Log.Info("Se ha importado a la base de datos de manera exitosa.");
                         MessageBox.Show("Se ha importado a la base de datos con éxito.");
                     }
                 }
+
+                MessageBox.Show("Se recomienda salir y volver a entrar al programa");
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al importar la base de datos.");

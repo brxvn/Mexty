@@ -201,7 +201,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Metodo a usar para exportar toda la base de datos.
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
-        // TODO: quizá agregar un combo para controlar si exportar toda la base de datos o solo la estructura.
         public static bool BackUp() {
             Log.Info("Se ha empezado el backUp de la base de datos.");
             try {
@@ -224,6 +223,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     }
                 }
 
+                MessageBox.Show($"Se ha creado el archivo {file}");
                 return true;
             }
             catch (Exception e) {
@@ -234,6 +234,30 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     "Error",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Método que verifica si hay deltas en la bd.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckDeltas() {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"select * from control_sincbd"
+            };
+
+            try {
+                using var reader = query.ExecuteReader();
+                return reader.HasRows;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al checar si la tabla de Deltas tiene datos.");
+                Log.Error($"{e.Message}");
                 throw;
             }
         }
@@ -281,6 +305,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <param name="file">Ruta al archivo .sql a ejecutar.</param>
         /// <returns></returns>
         private static bool ExecFromScript(string file) {
+            var numberLine = 0;
             try {
                 var connObj = new MySqlConnection(IniFields.GetConnectionString());
                 connObj.Open();
@@ -295,6 +320,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                             CommandText = line
                         };
                         query.ExecuteNonQuery();
+                        numberLine += 1;
                     }
                     else {
                         break;
@@ -303,7 +329,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 return true;
             }
             catch (Exception e) {
-                Log.Error("Ha cocurrido un error al ejecutar el script sql.");
+                Log.Error($"Ha cocurrido un error al ejecutar el script sql en la linea {numberLine}.");
                 Log.Error($"Error: {e.Message}");
                 throw;
             }

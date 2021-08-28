@@ -54,9 +54,11 @@ namespace Mexty.MVVM.View.InventarioViews {
             ComboNombre.SelectedIndex = 0;
             Log.Debug("Se ha llenado el combo de item inventario.");
 
-            var sucursales = QuerysSucursales.GetTablesFromSucursales();
 
+            var sucursales = QuerysSucursales.GetTablesFromSucursales();
+            var sucActual = DatabaseInit.GetIdTiendaIni();
             foreach (var sucursal in sucursales) {
+                if (sucActual == sucursal.IdTienda) continue; // excluye la sucursal actual.
                 ComboSucursal.Items.Add($"{sucursal.IdTienda} {sucursal.NombreTienda}");
             }
 
