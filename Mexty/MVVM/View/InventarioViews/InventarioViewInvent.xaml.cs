@@ -48,7 +48,6 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private int idTienda = DatabaseInit.GetIdTiendaIni();
 
-
         private List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
 
         public InventarioViewInvent() {
@@ -96,9 +95,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var collectionView = new ListCollectionView(data) {
                 Filter = (e) => e is ItemInventario producto //&& producto.ac == idSucursal // Solo productos activos en la tabla.
             };
-            //foreach (var item in collectionView) {
-            //    List.Add((ItemInventario)item);
-            //}
             CollectionView = collectionView;
             //DataProducts.ItemsSource = List;
             DataProducts.ItemsSource = collectionView;
@@ -155,20 +151,20 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SucursalSeleccionada(object sender, SelectionChangedEventArgs e) {
-            var newList = ComboSucursal.SelectedIndex + 1;
-            if (newList == idTienda) {
+            var idSucursal = int.Parse(ComboSucursal.SelectedItem.ToString().Split(' ')[0]);
+            if (idSucursal == idTienda) {
                 FillData();
             }
             else {
-                FillData(newList);
+                FillData(idSucursal);
             }
         }
 
         private void FillSucursales() {
             foreach (var sucu in dataSucursal) {
-                ComboSucursal.Items.Add(sucu.NombreTienda);
+                ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
                 if (sucu.IdTienda == idTienda) {
-                    ComboSucursal.SelectedIndex = idTienda - 1;
+                    ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
                 }
             }
 

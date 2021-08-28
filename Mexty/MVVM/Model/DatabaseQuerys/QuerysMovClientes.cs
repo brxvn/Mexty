@@ -85,7 +85,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@idX", newLog.IdCliente.ToString());
             query.Parameters.AddWithValue("@mensaje", newLog.Mensaje);
             query.Parameters.AddWithValue("@usuarioReg", newLog.UsuarioRegistra);
-            query.Parameters.AddWithValue("@fechaReg", newLog.FechaRegistro);
+            query.Parameters.AddWithValue("@fechaReg", DatabaseHelper.GetCurrentTimeNDate());
 
             try {
                 QuerysDatabase.ProcessQuery(query);

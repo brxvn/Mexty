@@ -285,12 +285,11 @@ namespace Mexty.MVVM.View.VentasViews {
                         IdCliente = selectedClientId,
                         Mensaje = $"Deuda aumentada por venta de ${deudaAnterior.ToString(CultureInfo.InvariantCulture)} a ${cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
                         UsuarioRegistra = DatabaseInit.GetUsername(),
-                        FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
+                        //FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)
                         throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
-
 
                     // Acualizamos la deuda.
                     var resQ = QuerysClientes.UpdateData(cliente);

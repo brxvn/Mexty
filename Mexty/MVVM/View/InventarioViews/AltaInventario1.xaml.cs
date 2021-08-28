@@ -51,7 +51,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <summary>
         /// Método que llena el combobox de producto.
         /// </summary>
-        // TODO: hacer que los campos de cantidad y piezas aparezcan y desaparezcan de la ui dependiendo del tipo.
         private void FillData() {
             var data = QuerysProductos.GetTablesFromProductos();
             ListaProductos = data;
@@ -159,13 +158,13 @@ namespace Mexty.MVVM.View.InventarioViews {
                 var item = ListaFromInventario[index];
                 if (item.IdProducto != newProduct.IdProducto) continue;
                 MessageBox.Show(
-                    "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes ir a la pantalla de Inventario.",
+                    "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes hacerlo en la pantalla de Inventario.",
                     "Producto duplicado");
                 return;
             }
 
             try {
-                var row = QuerysInventario.NewItem(newProduct, true);
+                var row = QuerysInventario.NewItem(newProduct);
                 if (row > 0) {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");

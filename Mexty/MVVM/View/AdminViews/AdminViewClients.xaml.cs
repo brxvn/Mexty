@@ -264,8 +264,7 @@ namespace Mexty.MVVM.View.AdminViews {
                         IdCliente = newClient.IdCliente,
                         Mensaje = $"Deuda actualizada de ${SelectedClient.Debe.ToString(CultureInfo.InvariantCulture)} a ${newClient.Debe.ToString(CultureInfo.InvariantCulture)}",
                         UsuarioRegistra = DatabaseInit.GetUsername(),
-                        /// TODO:
-                        FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
+                        //FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)
