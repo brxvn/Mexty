@@ -122,11 +122,15 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
             ComboTipo.SelectedItem = producto.TipoProducto;
+
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture);
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
-            ComboMedida.SelectedItem = producto.MedidaProducto;
-            //txtPiezas.Text = producto.Piezas.ToString();
+
+            var strings = producto.MedidaProducto.Split(' ');
+            ComboMedida.SelectedItem = strings[0];
+            if (strings.Length == 2) ComboCantidad.SelectedItem = strings[1]; // si es litros y contiene medida.
+
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
@@ -138,15 +142,13 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ClearFields() {
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
-            //PrecioGeneral.IsChecked = false;
             Eliminar.ToolTip = "Seleccione al menos un producto para eliminar.";
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
-            //txtCantidad.Text = "";
-            //txtPiezas.Text = "";
+
             txtDetalle.Text = "";
             SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
@@ -174,13 +176,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(producto =>
-                // {
-                //     if (producto == null) return false;
-                //     return ((Producto)producto).Activo == 1;
-                // });
-                //
-                // collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -225,7 +220,9 @@ namespace Mexty.MVVM.View.AdminViews {
                     TipoVenta = ComboVenta.SelectedIndex
                 };
 
-                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                var tipo = ComboMedida.SelectedItem.ToString();
+                newProduct.MedidaProducto = tipo == "litro" ? $"{tipo} {ComboCantidad.SelectedItem}" : ComboMedida.SelectedItem.ToString();
+
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
