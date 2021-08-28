@@ -285,7 +285,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         IdCliente = selectedClientId,
                         Mensaje = $"Deuda aumentada por venta de ${deudaAnterior.ToString(CultureInfo.InvariantCulture)} a ${cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
                         UsuarioRegistra = DatabaseInit.GetUsername(),
-                        FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate())
+                        FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)

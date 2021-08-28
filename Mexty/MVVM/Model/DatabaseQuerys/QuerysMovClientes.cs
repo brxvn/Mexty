@@ -40,9 +40,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         UsuarioRegistra = reader.IsDBNull("usuario_registra")
                             ? ""
                             : reader.GetString("usuario_registra"),
-                        FechaRegistro = reader.IsDBNull("fecha_registro")
-                            ? Convert.ToDateTime("")
-                            : reader.GetDateTime("fecha_registro"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                     };
                     listaLogs.Add(log);
                 }
