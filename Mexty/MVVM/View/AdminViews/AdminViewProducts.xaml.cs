@@ -99,6 +99,8 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
+
+            ComboCantidad.ItemsSource = Producto.GetTiposCantidades();
         }
 
 
@@ -479,11 +481,19 @@ namespace Mexty.MVVM.View.AdminViews {
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 case "Agua":
-                case "Helado":
                     ComboMedida.ItemsSource = null;
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant:1);
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant: 1);
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = false;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    break;
+                case "Helado":
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida();
+
+                    ComboMedida.SelectedIndex = 0;
+                    ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
@@ -512,6 +522,18 @@ namespace Mexty.MVVM.View.AdminViews {
 
         private void generarQR_Click(object sender, RoutedEventArgs e) {
             BarCodes barCodes = new();
+        }
+
+        private void MostrarCantidades(object sender, SelectionChangedEventArgs e) {
+
+            if (ComboMedida.SelectedIndex == 1 && ComboTipo.SelectedIndex == 3) {
+                ComboCantidad.Visibility = Visibility.Visible;
+                ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
+            }
+            else {
+                ComboCantidad.Visibility = Visibility.Collapsed;
+                ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+            }
         }
     }
 }

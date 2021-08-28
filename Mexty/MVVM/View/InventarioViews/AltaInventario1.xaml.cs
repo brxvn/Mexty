@@ -21,7 +21,7 @@ namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
     /// Interaction logic for AltaInventario.xaml
     /// </summary>
-    public partial class AltaInventario : Window {
+    public partial class AltaInventario1 : Window {
         private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -36,7 +36,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private List<ItemInventario> ListaFromInventario { get; set; }
 
-        public AltaInventario() {
+        public AltaInventario1() {
             try {
                 InitializeComponent();
                 FillData();
@@ -62,7 +62,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             }
             Log.Debug("Se ha llenado el combo box de producto.");
 
-            var dataInventario = QuerysInventario.GetTablesFromInventarioMatrix();
+            var dataInventario = QuerysInventario.GetItemsFromInventario();
             ListaFromInventario = dataInventario;
         }
 

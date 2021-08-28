@@ -350,5 +350,10 @@ namespace Mexty.MVVM.View.InventarioViews {
             FillData();
         }
 
+        private void AltaInventario(object sender, RoutedEventArgs e) {
+            AltaInventario1 altaInventario = new AltaInventario1();
+            altaInventario.ShowDialog();
+            FillData();
+        }
     }
 }
