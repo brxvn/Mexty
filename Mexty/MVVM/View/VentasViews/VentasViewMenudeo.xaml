@@ -132,7 +132,7 @@
                 <!--DataProducts-->
                 <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" TabIndex="-1" Focusable="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".35*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".3*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -152,7 +152,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="1.5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -162,7 +162,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width=".5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -172,7 +172,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width=".5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />

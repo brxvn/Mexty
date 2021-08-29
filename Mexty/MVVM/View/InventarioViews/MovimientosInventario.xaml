@@ -33,7 +33,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioRegistra}" Width=".25*">
+                    <DataGridTextColumn Header="Detalle Asignación" Binding="{Binding Mensaje}" Width="*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Margin" Value="5" />
@@ -43,7 +43,7 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Mensaje" Binding="{Binding Mensaje}" Width="*">
+                    <DataGridTextColumn Header="Usuario" Binding="{Binding UsuarioRegistra}" Width=".25*">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
                                 <Setter Property="Margin" Value="5" />

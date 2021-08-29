@@ -93,19 +93,37 @@ namespace Mexty.MVVM.View.ReportesViews {
 
 
         private void BtnHoy_Click(object sender, RoutedEventArgs e) {
-            var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasSucursal(id, "hoy");
+            foreach (var sucu in dataSucursal) {
+                var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
+                if (sucu.NombreTienda == seleccion) {
+                    idSucursal = sucu.IdTienda;
+                    break;
+                }
+            }
+            report.ReporteVentasSucursal(idSucursal, "hoy");
         }
 
 
         private void UltimaSemana_Click(object sender, RoutedEventArgs e) {
-            var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasSucursal(id, "semana");
+            foreach (var sucu in dataSucursal) {
+                var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
+                if (sucu.NombreTienda == seleccion) {
+                    idSucursal = sucu.IdTienda;
+                    break;
+                }
+            }
+            report.ReporteVentasSucursal(idSucursal, "semana");
         }
 
         private void Mes_Click(object sender, RoutedEventArgs e) {
-            var id = ComboSucursal.SelectedIndex + 1;
-            report.ReporteVentasSucursal(id, "mes");
+            foreach (var sucu in dataSucursal) {
+                var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
+                if (sucu.NombreTienda == seleccion) {
+                    idSucursal = sucu.IdTienda;
+                    break;
+                }
+            }
+            report.ReporteVentasSucursal(idSucursal, "mes");
         }
 
         private void btnHoyUsuario_Click(object sender, RoutedEventArgs e) {
@@ -119,7 +137,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                 }
             }
 
-            report.ReporteVentasUsuario(username,"hoy");
+            report.ReporteVentasUsuario(username, "hoy");
         }
 
         private void btnSemanaUsuario_Click(object sender, RoutedEventArgs e) {

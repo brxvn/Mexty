@@ -3,7 +3,7 @@
     /// Clase para la tabla de Clientes Mayoreo.
     /// </summary>
     public class Cliente {
-        private string _nombre;
+        private string nombre;
         private string _apPaterno;
         private string _apMaterno;
         private string _domicilio;
@@ -17,24 +17,39 @@
         /// Nombre del cliente
         /// </summary>
         public string Nombre {
-            get => _nombre;
-            set => _nombre = value.ToLower().Trim(); // TODO: quitar espacios al final.
+            get {
+                char v = char.ToUpper(nombre[0]);
+                return nombre = v + nombre.Substring(1);
+            }
+            set {
+                nombre = value.ToLower().Trim();
+            }
         }
 
         /// <summary>
         /// Apellido paterno del cliente.
         /// </summary>
         public string ApPaterno {
-            get => _apPaterno; 
-            set => _apPaterno = value.ToLower().Trim();
+            get {
+                char v = char.ToUpper(_apPaterno[0]);
+                return _apPaterno = v + _apPaterno.Substring(1);
+            }
+            set {
+                _apPaterno = value.ToLower().Trim();
+            }
         }
 
         /// <summary>
         /// Apellido materno del cliente.
         /// </summary>
         public string ApMaterno {
-            get => _apMaterno; 
-            set => _apMaterno = value.ToLower().Trim();
+            get {
+                char v = char.ToUpper(_apMaterno[0]);
+                return _apMaterno = v + _apMaterno.Substring(1);
+            }
+            set {
+                _apMaterno = value.ToLower().Trim();
+            }
         }
 
         /// <summary>

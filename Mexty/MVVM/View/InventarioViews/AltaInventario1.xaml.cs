@@ -21,7 +21,7 @@ namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
     /// Interaction logic for AltaInventario.xaml
     /// </summary>
-    public partial class AltaInventario : Window {
+    public partial class AltaInventario1 : Window {
         private static readonly ILog Log =
             LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
@@ -30,13 +30,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         private List<Producto> ListaProductos { get; set; }
 
-
         /// <summary>
         /// Lista de items en el inventario.
         /// </summary>
         private List<ItemInventario> ListaFromInventario { get; set; }
 
-        public AltaInventario() {
+        public AltaInventario1() {
             try {
                 InitializeComponent();
                 FillData();
@@ -59,10 +58,11 @@ namespace Mexty.MVVM.View.InventarioViews {
                 ComboNombre.Items.Add(
                     $"{producto.IdProducto.ToString()} {producto.TipoProducto} {producto.NombreProducto}");
             }
+
             ComboNombre.SelectedIndex = 1;
             Log.Debug("Se ha llenado el combo box de producto.");
 
-            var dataInventario = QuerysInventario.GetTablesFromInventarioMatrix();
+            var dataInventario = QuerysInventario.GetItemsFromInventarioById(DatabaseInit.GetIdTiendaIni());
             ListaFromInventario = dataInventario;
         }
 
@@ -145,6 +145,14 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Cantidad = txtCantidad.Text == "" ? 0 : int.Parse(txtCantidad.Text),
             };
 
+            if (newProduct.Cantidad == 0) {
+                MessageBox.Show("No puede dar de alta un producto si la cantidad esta en 0",
+                "Error",
+                MessageBoxButton.OK,
+                MessageBoxImage.Error);
+                return;
+            }
+
             // Obtenemos el id el producto del string del combobox
             newProduct.IdProducto = int.Parse(ComboNombre.SelectedItem.ToString().Split(" ")[0]);
 
@@ -159,13 +167,13 @@ namespace Mexty.MVVM.View.InventarioViews {
                 var item = ListaFromInventario[index];
                 if (item.IdProducto != newProduct.IdProducto) continue;
                 MessageBox.Show(
-                    "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes ir a la pantalla de Inventario.",
+                    "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes hacerlo en la pantalla de Inventario.",
                     "Producto duplicado");
                 return;
             }
 
             try {
-                var row = QuerysInventario.NewItem(newProduct, true);
+                var row = QuerysInventario.NewItem(newProduct);
                 if (row > 0) {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");

@@ -29,6 +29,6 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <summary>
         /// Fecha del registro
         /// </summary>
-        public DateTime FechaRegistro { get; set; }
+        public string FechaRegistro { get; set; }
     }
 }

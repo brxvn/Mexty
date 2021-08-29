@@ -127,7 +127,7 @@
                 <!--DataProcuts-->
                 <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".35*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".3*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -147,7 +147,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding NombreProducto}" Width="1.5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -157,7 +157,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Precio" Binding="{Binding PrecioMenudeo, StringFormat=C}" Width=".5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -167,7 +167,7 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="*" CellStyle="{DynamicResource DisableSelection}">
+                        <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width=".5*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Setter Property="Margin" Value="5" />
@@ -230,8 +230,8 @@
                     <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtDescripcion"/>
 
                     <!--txtComentario-->
-                    <Label Content="Comentario de venta " Grid.Row="1" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtComentario" PreviewTextInput="OnlyLettersAndNumbersValidation"/>
+                    <Label Content="Comentario de venta " Grid.Row="1" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Top"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Height="80" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="False"  VerticalContentAlignment="Top" Foreground="Gray" x:Name="txtComentario" PreviewTextInput="OnlyLettersAndNumbersValidation"/>
                     
                     <!--ComboCliente-->
                     <Label Content="Cliente " FontSize="30" Foreground="AntiqueWhite" Grid.Row="2"/>

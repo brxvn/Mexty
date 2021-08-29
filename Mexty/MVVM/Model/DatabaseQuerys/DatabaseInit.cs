@@ -48,6 +48,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static bool MatrizAsigned { get; set; }
 
         /// <summary>
+        /// <c>bool</c> true si la sucursal es matriz
+        /// </summary>
+        private static bool MatrizAsignedIni { get; set; }
+
+        /// <summary>
         /// Método que se encarga del inicio de sesión al programa.
         /// </summary>
         /// <param name="username"><c>string</c> conteniendo el nombre de usuario.</param>
@@ -166,7 +171,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que checa si el usuario loggeado esta asignado a matriz.
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private static void CheckMatriz() {
+        private static void CheckMatriz(bool ini=false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
 
@@ -174,17 +179,32 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Connection = connObj,
                 CommandText = "select ID_TIENDA from cat_tienda where TIPO_TIENDA='Matriz' and ID_TIENDA=@id"
             };
-            query.Parameters.AddWithValue("@id", IdTienda.ToString());
+            if (!ini) {
+                query.Parameters.AddWithValue("@id", IdTienda.ToString());
+            }
+            else {
+                query.Parameters.AddWithValue("@id", IdTiendaIni.ToString());
+            }
 
             try {
                 var res = query.ExecuteReader();
 
                 if (!res.HasRows) {
-                    MatrizAsigned = false;
+                    if (!ini) {
+                        MatrizAsigned = false;
+                    }
+                    else {
+                        MatrizAsignedIni = false;
+                    }
                     Log.Info("Este usuario no esta asignado a matriz.");
                 }
                 else {
-                    MatrizAsigned = true;
+                    if (!ini) {
+                        MatrizAsigned = true;
+                    }
+                    else {
+                        MatrizAsignedIni = true;
+                    }
                 }
 
             }
@@ -258,6 +278,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <returns></returns>
         public static bool GetMatrizEnabled() {
             return MatrizAsigned;
+        }
+
+        public static bool GetMatrizEnabledFromIni() {
+            CheckMatriz(true);
+            return MatrizAsignedIni;
         }
     }
 }

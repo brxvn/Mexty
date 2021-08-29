@@ -27,6 +27,12 @@ namespace Mexty.MVVM.Model.DataTypes {
         // TODO: probablemente leerlos del ini.
         private static readonly string[] TiposMedida = { "pieza", "litro", };
 
+        /// <summary>
+        /// Variable que obtiene los tipos de cantidades.
+        /// </summary>
+        // TODO: probablemente leerlos del ini.
+        private static readonly string[] TiposCantidades = { "0.5", "1", "3", "12" };
+
 
         /// <summary>
         /// Método estatico para obtener Los tipos de producto que hay.
@@ -34,6 +40,14 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// <returns></returns>
         public static string[] GetTiposProducto() {
             return _tipoProductoText;
+        }
+
+        /// <summary>
+        /// Método estatico para obtener Los tipos de producto que hay.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetTiposCantidades() {
+            return TiposCantidades;
         }
 
         /// <summary>
@@ -113,6 +127,11 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// La lista de dependencias codificada que se guarda en la base de datos.
         /// </summary>
         public string DependenciasText { get; set; }
+
+        /// <summary>
+        /// Toma el usuario modificado
+        /// </summary>
+        public string UsuarioModifica { get; set; }
 
         /// <summary>
         /// Lista que contiene todas las dependencias

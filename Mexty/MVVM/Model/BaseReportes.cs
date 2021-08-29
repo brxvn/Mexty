@@ -26,10 +26,10 @@ namespace Mexty.MVVM.Model {
         protected string sucursal = "";
         protected string direccion = "";
         protected readonly string _mainPath = @"C:\Mexty\Reportes\";
-        protected readonly string _inventarioPath = @"C:\Mexty\Reportes\Inventario\";
-        protected readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Sucursales\";
-        protected readonly string _sucursalesVentas = @"C:\Mexty\Ventas\Sucursales\";
-        protected readonly string _ventasUsuarios = @"C:\Mexty\Ventas\Usuarios\";
+        protected readonly string _inventarioPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        protected readonly string _SucursalesInventarioPath = @"C:\Mexty\Reportes\Inventario\";
+        protected readonly string _sucursalesVentas = @"C:\Mexty\Reportes\Ventas\Sucursales\";
+        protected readonly string _ventasUsuarios = @"C:\Mexty\Reportes\Ventas\Usuarios\";
         protected readonly string usuarioActivo = DatabaseInit.GetUsername();
         protected int idImprimir = 0;
         protected string dirImprimir = null;
@@ -41,7 +41,7 @@ namespace Mexty.MVVM.Model {
 
         public BaseReportes() {
             Directory.CreateDirectory(_mainPath);
-            Directory.CreateDirectory(_inventarioPath);
+            Directory.CreateDirectory(_inventarioPath+"\\Reportes\\");
             Directory.CreateDirectory(_SucursalesInventarioPath);
             Directory.CreateDirectory($"{_sucursalesVentas}");
         }

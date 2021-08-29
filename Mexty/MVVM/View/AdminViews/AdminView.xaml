@@ -12,31 +12,31 @@
         <ContentControl Content="{Binding SelectedViewModel}" />
 
         <TabControl BorderThickness="0" Padding="0">
-            <TabItem Header="Usuarios" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Usuarios" Background="#710a24" BorderBrush="Transparent" x:Name="tabUsuarios"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content >
                     <adminViews:AdminViewUser/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Productos" Background="#710a24"  BorderBrush="Transparent"
+            <TabItem Header="Productos" Background="#710a24"  BorderBrush="Transparent" x:Name="tabProductos"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewProducts/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Clientes" Background="#710a24"  BorderBrush="Transparent"
+            <TabItem Header="Clientes" Background="#710a24"  BorderBrush="Transparent" x:Name="tabClientes"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewClients/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Establecimientos" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Establecimientos" Background="#710a24" BorderBrush="Transparent" x:Name="tabEstablecimientos"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewEstablecimiento/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Bases de Datos" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Bases de Datos" Background="#710a24" BorderBrush="Transparent" x:Name="tabDB"
                       Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content>
                     <adminViews:AdminViewBD/>

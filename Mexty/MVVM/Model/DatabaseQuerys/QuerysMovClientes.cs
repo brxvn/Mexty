@@ -40,9 +40,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         UsuarioRegistra = reader.IsDBNull("usuario_registra")
                             ? ""
                             : reader.GetString("usuario_registra"),
-                        FechaRegistro = reader.IsDBNull("fecha_registro")
-                            ? Convert.ToDateTime("")
-                            : reader.GetDateTime("fecha_registro"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? "" : reader.GetString("fecha_registro"),
                     };
                     listaLogs.Add(log);
                 }
@@ -87,7 +85,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@idX", newLog.IdCliente.ToString());
             query.Parameters.AddWithValue("@mensaje", newLog.Mensaje);
             query.Parameters.AddWithValue("@usuarioReg", newLog.UsuarioRegistra);
-            query.Parameters.AddWithValue("@fechaReg", newLog.FechaRegistro);
+            query.Parameters.AddWithValue("@fechaReg", DatabaseHelper.GetCurrentTimeNDate());
 
             try {
                 QuerysDatabase.ProcessQuery(query);

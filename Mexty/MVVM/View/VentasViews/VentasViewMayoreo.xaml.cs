@@ -177,13 +177,6 @@ namespace Mexty.MVVM.View.VentasViews {
 
         // TODO: terminar este y el otro.
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            //ClearFields();
-            //if (DataProducts.SelectedItem == null) return;
-            //Log.Debug("Item seleccionado.");
-            //var item = (ItemInventario)DataProducts.SelectedItem;
-
-            //SelectedItem = item;
-            //txtDescripcion.Text = item.Comentario;
         }
 
         /// <summary>
@@ -208,7 +201,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="e"></param>
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
-            // TODO: agregar el campo de comentario a la ui.
             ProcesarVenta();
         }
 
@@ -283,18 +275,17 @@ namespace Mexty.MVVM.View.VentasViews {
                     // Creamos el historial.
                     var log = new LogCliente() {
                         IdCliente = selectedClientId,
-                        Mensaje = $"Deuda aumentada de {deudaAnterior.ToString(CultureInfo.InvariantCulture)} a {cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
+                        Mensaje = $"Deuda aumentada por venta de ${deudaAnterior.ToString(CultureInfo.InvariantCulture)} a ${cliente.Debe.ToString(CultureInfo.InvariantCulture)}",
                         UsuarioRegistra = DatabaseInit.GetUsername(),
-                        FechaRegistro = Convert.ToDateTime(DatabaseHelper.GetCurrentTimeNDate())
+                        //FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)
                         throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
 
-
                     // Acualizamos la deuda.
                     var resQ = QuerysClientes.UpdateData(cliente);
-                    if (resQ == 0) throw new Exception("no se actualizo la deuda del cliente.");
+                    if (resQ == 0) throw new Exception("No se actualizó la deuda del cliente.");
                 }
             }
         }

@@ -14,6 +14,16 @@ namespace Mexty.MVVM.Model.Validations {
             return name.All(Char.IsLetter);
         }
 
+        public static bool BeAValidProduct(string name) {
+            name = name.Replace(" ", "");
+            name = name.Replace("-", "");
+            name = name.Replace("/", "");
+            name = name.Replace(",", "");
+            name = name.Replace("(", "");
+            name = name.Replace(")", "");
+            return name.All(Char.IsLetter);
+        }
+
         /// <summary>
         /// Método que revisa si un número teléfonico es valido.
         /// </summary>
@@ -47,6 +57,8 @@ namespace Mexty.MVVM.Model.Validations {
             text = text.Replace(",", "");
             text = text.Replace(".", "");
             text = text.Replace("#", "");
+            text = text.Replace("(", "");
+            text = text.Replace(")", "");
             return text.All(Char.IsLetterOrDigit);
         }
 

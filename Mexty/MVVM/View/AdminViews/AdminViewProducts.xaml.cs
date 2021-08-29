@@ -99,6 +99,8 @@ namespace Mexty.MVVM.View.AdminViews {
             //Datos Combo Medida.
             ComboMedida.ItemsSource = Producto.GetTiposMedida();
             Log.Debug("Se ha llenadao el comobo box de tipos de medida.");
+
+            ComboCantidad.ItemsSource = Producto.GetTiposCantidades();
         }
 
 
@@ -120,11 +122,15 @@ namespace Mexty.MVVM.View.AdminViews {
             txtNombreProducto.Text = producto.NombreProducto;
             ComboVenta.SelectedIndex = producto.TipoVenta;
             ComboTipo.SelectedItem = producto.TipoProducto;
+
             txtPrecioMayoreo.Text = producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture);
             txtPrecioMenudeo.Text = producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture);
             txtDetalle.Text = producto.DetallesProducto;
-            ComboMedida.SelectedItem = producto.MedidaProducto;
-            //txtPiezas.Text = producto.Piezas.ToString();
+
+            var strings = producto.MedidaProducto.Split(' ');
+            ComboMedida.SelectedItem = strings[0];
+            if (strings.Length == 2) ComboCantidad.SelectedItem = strings[1]; // si es litros y contiene medida.
+
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Producto.";
             Guardar.IsEnabled = true;
@@ -136,15 +142,13 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ClearFields() {
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
-            //PrecioGeneral.IsChecked = false;
             Eliminar.ToolTip = "Seleccione al menos un producto para eliminar.";
             txtNombreProducto.Text = "";
             ComboVenta.SelectedIndex = 0;
             ComboTipo.SelectedIndex = 0;
             txtPrecioMayoreo.Text = "";
             txtPrecioMenudeo.Text = "";
-            //txtCantidad.Text = "";
-            //txtPiezas.Text = "";
+
             txtDetalle.Text = "";
             SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
@@ -172,13 +176,6 @@ namespace Mexty.MVVM.View.AdminViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(producto =>
-                // {
-                //     if (producto == null) return false;
-                //     return ((Producto)producto).Activo == 1;
-                // });
-                //
-                // collection.Filter += noNull;
                 DataProductos.ItemsSource = collection;
                 CollectionView = collection;
                 ClearFields();
@@ -223,7 +220,9 @@ namespace Mexty.MVVM.View.AdminViews {
                     TipoVenta = ComboVenta.SelectedIndex
                 };
 
-                newProduct.TipoProducto = ComboTipo.SelectedItem.ToString();
+                var tipo = ComboMedida.SelectedItem.ToString();
+                newProduct.MedidaProducto = tipo == "litro" ? $"{tipo} {ComboCantidad.SelectedItem}" : ComboMedida.SelectedItem.ToString();
+
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
                 newProduct.DetallesProducto = txtDetalle.Text;
@@ -431,7 +430,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x) || '.'.Equals(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || ','.Equals(x) || '/'.Equals(x) || '('.Equals(x) || ')'.Equals(x) || '-'.Equals(x));
         }
 
 
@@ -479,11 +478,19 @@ namespace Mexty.MVVM.View.AdminViews {
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 case "Agua":
-                case "Helado":
                     ComboMedida.ItemsSource = null;
-                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant:1);
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant: 1);
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = false;
+                    txtPrecioMayoreo.IsReadOnly = false;
+                    txtPrecioMenudeo.IsReadOnly = false;
+                    break;
+                case "Helado":
+                    ComboMedida.ItemsSource = null;
+                    ComboMedida.ItemsSource = Producto.GetTiposMedida();
+
+                    ComboMedida.SelectedIndex = 0;
+                    ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
@@ -512,6 +519,18 @@ namespace Mexty.MVVM.View.AdminViews {
 
         private void generarQR_Click(object sender, RoutedEventArgs e) {
             BarCodes barCodes = new();
+        }
+
+        private void MostrarCantidades(object sender, SelectionChangedEventArgs e) {
+
+            if (ComboMedida.SelectedIndex == 1 && ComboTipo.SelectedIndex == 3) {
+                ComboCantidad.Visibility = Visibility.Visible;
+                ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
+            }
+            else {
+                ComboCantidad.Visibility = Visibility.Collapsed;
+                ColCantidad.Width = new GridLength(0, GridUnitType.Star);
+            }
         }
     }
 }

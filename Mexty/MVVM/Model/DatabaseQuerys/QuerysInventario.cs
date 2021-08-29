@@ -399,7 +399,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             query.Parameters.AddWithValue("@idPX", newItem.IdProducto.ToString());
             query.Parameters.AddWithValue("@cantidadX", newItem.Cantidad.ToString());
             query.Parameters.AddWithValue("@comentario", newItem.Comentario);
-            query.Parameters.AddWithValue("@idTX", IniFields.GetIdTiendaActual().ToString());
+            query.Parameters.AddWithValue("@idTX", DatabaseInit.GetIdTiendaIni().ToString());
             query.Parameters.AddWithValue("@usReg", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@usMod", DatabaseInit.GetUsername());
             query.Parameters.AddWithValue("@date", DatabaseHelper.GetCurrentTimeNDate());

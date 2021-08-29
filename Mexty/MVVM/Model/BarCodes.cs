@@ -13,6 +13,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Mexty.MVVM.Model.DatabaseQuerys;
+using System.Windows;
+using TextAlignment = iText.Layout.Properties.TextAlignment;
+using HorizontalAlignment = iText.Layout.Properties.HorizontalAlignment;
 
 namespace Mexty.MVVM.Model {
     class BarCodes {
@@ -23,6 +26,7 @@ namespace Mexty.MVVM.Model {
         public BarCodes() {
             Directory.CreateDirectory(_mainPath);
             ManipulatePdf(_mainPath);
+            MessageBox.Show($"Se ha generado el pdf de los códigos de barras en la ruta {_mainPath}");
         }
 
         private void ManipulatePdf(string dest) {
@@ -35,7 +39,7 @@ namespace Mexty.MVVM.Model {
             Document doc = new Document(pdfDoc, PageSize.A4);
             table = new Table(UnitValue.CreatePercentArray(4)).UseAllAvailableWidth().SetTextAlignment(TextAlignment.CENTER);
 
-            titulo = new Paragraph().Add("Codigos de Productos").SetTextAlignment(TextAlignment.CENTER);
+            titulo = new Paragraph().Add("Códigos de Productos").SetTextAlignment(TextAlignment.CENTER);
             doc.Add(titulo);
 
             var data = QuerysProductos.GetTablesFromProductos();

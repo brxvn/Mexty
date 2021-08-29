@@ -48,7 +48,6 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private int idTienda = DatabaseInit.GetIdTiendaIni();
 
-
         private List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
 
         public InventarioViewInvent() {
@@ -96,9 +95,6 @@ namespace Mexty.MVVM.View.InventarioViews {
             var collectionView = new ListCollectionView(data) {
                 Filter = (e) => e is ItemInventario producto //&& producto.ac == idSucursal // Solo productos activos en la tabla.
             };
-            //foreach (var item in collectionView) {
-            //    List.Add((ItemInventario)item);
-            //}
             CollectionView = collectionView;
             //DataProducts.ItemsSource = List;
             DataProducts.ItemsSource = collectionView;
@@ -155,20 +151,20 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void SucursalSeleccionada(object sender, SelectionChangedEventArgs e) {
-            var newList = ComboSucursal.SelectedIndex + 1;
-            if (newList == idTienda) {
+            var idSucursal = int.Parse(ComboSucursal.SelectedItem.ToString().Split(' ')[0]);
+            if (idSucursal == idTienda) {
                 FillData();
             }
             else {
-                FillData(newList);
+                FillData(idSucursal);
             }
         }
 
         private void FillSucursales() {
             foreach (var sucu in dataSucursal) {
-                ComboSucursal.Items.Add(sucu.NombreTienda);
+                ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
                 if (sucu.IdTienda == idTienda) {
-                    ComboSucursal.SelectedIndex = idTienda - 1;
+                    ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
                 }
             }
 
@@ -183,6 +179,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void ItemSelected(object sender, EventArgs e) {
 
             ClearFields();
+            txtCantidad.IsReadOnly = false;
+            txtComentario.IsReadOnly = false;
             if (DataProducts.SelectedItem == null) return;
             Log.Debug("Item seleccionado.");
             var item = (ItemInventario)DataProducts.SelectedItem;
@@ -198,6 +196,8 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que limpia los campos de texto.
         /// </summary>
         private void ClearFields() {
+            txtCantidad.IsReadOnly = true;
+            txtComentario.IsReadOnly = true;
             Guardar.IsEnabled = false;
             txtComentario.Text = "";
             txtCantidad.Text = "";
@@ -343,6 +343,12 @@ namespace Mexty.MVVM.View.InventarioViews {
         }
 
         public void ActualizarData(object sender, RoutedEventArgs e) {
+            FillData();
+        }
+
+        private void AltaInventario(object sender, RoutedEventArgs e) {
+            AltaInventario1 altaInventario = new AltaInventario1();
+            altaInventario.ShowDialog();
             FillData();
         }
     }
