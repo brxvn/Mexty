@@ -23,8 +23,20 @@ namespace Mexty.MVVM.View.AdminViews {
 
         public AdminView() {
             InitializeComponent();
-
             DataContext = new MainViewModel();
+
+            if (Model.DatabaseQuerys.DatabaseInit.GetIdTiendaIni() != 6) {
+                tabUsuarios.Visibility = Visibility.Collapsed;
+                tabProductos.Visibility = Visibility.Collapsed;
+                tabEstablecimientos.Visibility = Visibility.Collapsed;
+                tabClientes.Visibility = Visibility.Collapsed;
+            }
+            else {
+                tabUsuarios.Visibility = Visibility.Visible;
+                tabProductos.Visibility = Visibility.Visible;
+                tabEstablecimientos.Visibility = Visibility.Visible;
+                tabClientes.Visibility = Visibility.Visible;
+            }
             
         }
     }
