@@ -25,7 +25,7 @@ namespace Mexty.MVVM.View.AdminViews {
             InitializeComponent();
             DataContext = new MainViewModel();
 
-            if (Model.DatabaseQuerys.DatabaseInit.GetIdTiendaIni() != 6) {
+            if (!Model.DatabaseQuerys.DatabaseInit.GetMatrizEnabledFromIni()) {
                 tabUsuarios.Visibility = Visibility.Collapsed;
                 tabProductos.Visibility = Visibility.Collapsed;
                 tabEstablecimientos.Visibility = Visibility.Collapsed;

@@ -202,7 +202,7 @@
                                                      BorderThickness="0"
                                                      Background="Transparent"
                                                      VerticalContentAlignment="Top"
-                                                     Padding="5 10"
+                                                     Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      CharacterCasing="Upper"
@@ -214,7 +214,7 @@
 
                                                     <TextBlock IsHitTestVisible="False"
                                                        Text="Comentario del producto"
-                                                       Padding="5 10"
+                                                       Padding="5"
                                                        VerticalAlignment="Top"
                                                        HorizontalAlignment="Left"
                                                        Margin="5,0,0,0"

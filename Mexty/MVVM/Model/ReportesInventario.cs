@@ -33,8 +33,8 @@ namespace Mexty.MVVM.Model {
                 }
             }
 
-            string path = $"{_inventarioPath}";
-            string nombreReporte = @$"ReporteInventario-{sucursal}-{_date}";
+            string path = $"{_inventarioPath}\\Reportes\\";
+            string nombreReporte = $"ReporteInventario-{sucursal}-{_date}";
             string tituloReporte = $"Reporte de Inventario de {sucursal}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
