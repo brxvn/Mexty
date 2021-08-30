@@ -24,6 +24,10 @@ namespace Mexty.MVVM.View.InventarioViews {
             if (DatabaseInit.GetIdRol().Equals(3) && !DatabaseInit.GetMatrizEnabled()) {
                 inventarioMatriz.Visibility = Visibility.Collapsed;
             }
+
+            if (!DatabaseInit.GetMatrizEnabledFromIni()) {
+                inventarioMatriz.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
