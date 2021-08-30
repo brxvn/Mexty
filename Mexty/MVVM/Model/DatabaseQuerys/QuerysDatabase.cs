@@ -267,6 +267,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
+            var path = @"C:\Mexty\Backups\ErrorLogDb\";
+            Directory.CreateDirectory(path);
             try {
                 if (file.Contains("FullBackupBD")) { // solo BackUps de toda la base de datos.
                     using (MySqlConnection conn = new MySqlConnection(IniFields.GetConnectionString())) {
@@ -274,7 +276,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                             using (MySqlBackup mb = new MySqlBackup(cmd)) {
                                 cmd.Connection = conn;
                                 conn.Open();
-                                mb.ImportInfo.ErrorLogFile = @"C:\Mexty\Backups\ErroLog\errors.log";
+                                mb.ImportInfo.ErrorLogFile = $"{path}errors.log";
                                 mb.ImportFromFile(file);
                                 Log.Debug("Se ha importado el archivo Exitosamente.");
                                 conn.Close();

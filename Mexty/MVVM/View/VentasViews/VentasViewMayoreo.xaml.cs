@@ -202,6 +202,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
             ProcesarVenta();
+            NewVenta();
         }
 
         private void ProcesarVenta() {
