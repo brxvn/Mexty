@@ -495,6 +495,7 @@ namespace Mexty.MVVM.View.VentasViews {
             if (e.Key == Key.Return) {
                 Log.Debug("Enter en el recibido, se procede a procesar la venta.");
                 ProcesarVenta();
+                NewVenta();
             }
         }
 
