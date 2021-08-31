@@ -96,15 +96,13 @@ namespace Mexty.MVVM.Model {
             /* g.DrawIcon(icon, new Rectangle(0,0,100,50))*/
             ;
             var settings = ppeArgs.PageSettings;
-            float yPos = 120;
+            float yPos = 130;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
             int renglon = 18;
 
             g.DrawImage(newimage, ulCorner);
-            g.DrawString("   HELADERÍA Y PALETERÍA   ", consola, Brushes.Black, leftMargin, yPos);
-            renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 15;
             g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 10);
@@ -153,8 +151,6 @@ namespace Mexty.MVVM.Model {
             Point point = new Point(50, (int)newYpos);
             g.DrawImage(imageQr, point);
             newYpos += 90;
-            g.DrawString("  GRACIAS POR SU COMPRA   ", consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
             g.DrawString("ENTRA PARA MÁS PROMOCIONES", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta menudeo.");
