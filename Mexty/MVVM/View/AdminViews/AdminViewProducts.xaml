@@ -212,7 +212,7 @@
                      Grid.Column="2"
                      Margin="10,0,10,0"
                      MaxLength="30"
-                     PreviewTextInput="OnlyLettersValidation">
+                     PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -232,7 +232,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="30"
-                                                     PreviewTextInput="OnlyLettersValidation"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"

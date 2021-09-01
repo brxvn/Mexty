@@ -225,6 +225,17 @@ namespace Mexty.MVVM.View.AdminViews {
 
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
+
+                // Validación de precio mayoreo y precio menudeo.
+                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo) {
+                    MessageBox.Show("No se permite guardar productos con un precio mayoreo mayor a el precio menudeo",
+                        "Error: Precio mayoreo mayor que precio menudeo",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+
+
                 newProduct.DetallesProducto = txtDetalle.Text;
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 

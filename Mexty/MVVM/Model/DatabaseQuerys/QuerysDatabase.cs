@@ -14,6 +14,15 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
+        /// Nombre del ultimo archivo de delta que se ingreso al programa.
+        /// </summary>
+        private static string LastImportName { get; set; }
+
+        public static string GetLastImportName() {
+            return LastImportName;
+        }
+
+        /// <summary>
         /// Struct que contiene la querry y la fecha en la que se hizo.
         /// </summary>
         private struct Deltas {
@@ -66,7 +75,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 }
 
                 var date = DateTime.Today;
-                var fileName = $"DBChangesFrom_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
+                var fileName = $"DBChangesStore:{DatabaseInit.GetIdTiendaIni().ToString()}_From_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
                 var path = $@"C:\Mexty\Backups\{date:yyyy-MMMM}\";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
