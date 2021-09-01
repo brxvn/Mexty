@@ -8,7 +8,6 @@ namespace Mexty.MVVM.Model.DataTypes {
     /// </summary>
     public class Producto {
         private string _nombreProducto;
-        private string _medidaProducto;
 
         /// <summary>
         /// Variable estatica que tiene los tipos de venta, sin id.
@@ -31,7 +30,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Variable que obtiene los tipos de cantidades.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposCantidades = { "0.5", "1", "3", "12" };
+        private static readonly string[] TiposCantidades = { "0.5", "1","5", "3", "12" };
 
 
         /// <summary>
@@ -72,16 +71,13 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public string NombreProducto {
             get => _nombreProducto;
-            set => _nombreProducto = value.ToLower().Trim();
+            set => _nombreProducto = value.Trim();
         }
 
         /// <summary>
         /// Nombre de la medida del producto.
         /// </summary>
-        public string MedidaProducto {
-            get => _medidaProducto;
-            set => _medidaProducto = value.ToLower();
-        }
+        public string MedidaProducto { get; set; }
 
         /// <summary>
         /// Tipo de producto.

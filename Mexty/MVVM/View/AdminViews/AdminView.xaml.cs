@@ -19,13 +19,14 @@ namespace Mexty.MVVM.View.AdminViews {
     /// Interaction logic for AdminView.xaml
     /// </summary>
     public partial class AdminView : UserControl {
-       
+
 
         public AdminView() {
             InitializeComponent();
             DataContext = new MainViewModel();
 
             if (!Model.DatabaseQuerys.DatabaseInit.GetMatrizEnabledFromIni()) {
+                tabDB.IsSelected = true;
                 tabUsuarios.Visibility = Visibility.Collapsed;
                 tabProductos.Visibility = Visibility.Collapsed;
                 tabEstablecimientos.Visibility = Visibility.Collapsed;
@@ -37,7 +38,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 tabEstablecimientos.Visibility = Visibility.Visible;
                 tabClientes.Visibility = Visibility.Visible;
             }
-            
+
         }
     }
 }

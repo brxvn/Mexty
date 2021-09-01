@@ -200,7 +200,6 @@
                      HorizontalAlignment="Stretch"
                      Margin="10 0"
                      MaxLength="25"
-                     CharacterCasing="Upper"
                      PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -222,7 +221,6 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
                                                      Focusable="True"
-                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateUserName"
                                                      PreviewTextInput="OnlyLettersValidation"/>
 
@@ -282,7 +280,6 @@
                      Grid.Column="1"
                      HorizontalAlignment="Stretch"
                      PreviewTextInput="OnlyLettersValidation"
-                     CharacterCasing="Upper"
                      MaxLength="20"
                      Margin="10 0">
                     <TextBox.Style>
@@ -305,7 +302,6 @@
                                                     x:Name="SearchBox"
                                                     MaxLength="20"
                                                     TextChanged="TextUpdateApPa"
-                                                    CharacterCasing="Upper"
                                                     PreviewTextInput="OnlyLettersValidation"/>
 
                                                     <TextBlock IsHitTestVisible="False"
@@ -364,7 +360,6 @@
                      HorizontalAlignment="Stretch"
                      Margin="10 0"
                      MaxLength="20"
-                     CharacterCasing="Upper"
                      PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -385,7 +380,6 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="20"
-                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateApMa"
                                                      PreviewTextInput="OnlyLettersValidation"/>
 
@@ -461,7 +455,6 @@
                      Margin="10 0"
                      MaxLength="90"
                      TextWrapping="WrapWithOverflow"
-                     CharacterCasing="Upper"
                      PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -483,7 +476,6 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="90"
                                                      TextWrapping="Wrap"
-                                                     CharacterCasing="Upper"
                                                      TextChanged="TextUpdateDir"
                                                      PreviewTextInput="OnlyLettersAndNumbersValidation"/>
 

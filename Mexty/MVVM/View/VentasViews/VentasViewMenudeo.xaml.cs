@@ -40,7 +40,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private Venta VentaActual { get; set; }
 
-
         string barCode = null;
 
         /// <summary>
@@ -163,13 +162,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            //ClearFields();
-            //if (DataProducts.SelectedItem == null) return;
-            //Log.Debug("Item seleccionado.");
-            //var item = (ItemInventario)DataProducts.SelectedItem;
-
-            //SelectedItem = item;
-            //txtDescripcion.Text = item.Comentario;
         }
 
         /// <summary>
@@ -231,6 +223,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta();
                 ClearFields();
+                NewVenta();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -494,6 +487,7 @@ namespace Mexty.MVVM.View.VentasViews {
             if (e.Key == Key.Return) {
                 Log.Debug("Enter en el recibido, se procede a procesar la venta.");
                 ProcesarVenta();
+                NewVenta();
             }
         }
 

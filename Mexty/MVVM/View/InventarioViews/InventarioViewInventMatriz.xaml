@@ -175,7 +175,6 @@
                 <!--txtComentario-->
                 <TextBox Background="Beige"
                      x:Name="txtComentario"
-                     CharacterCasing="Upper"
                      MaxLength="100"
                      TextWrapping="Wrap"
                      PreviewTextInput="OnlyLettersValidation"
@@ -199,7 +198,6 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
-                                                     CharacterCasing="Upper"
                                                      TextWrapping="Wrap"
                                                      PreviewTextInput="OnlyLettersValidation"
                                                      x:Name="SearchBox"
@@ -354,10 +352,9 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     
-                    <Button x:Name="AltInventario" Grid.Column="0" Content="Alta Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AltaInventario" ToolTip="Alta de Inventario" FontSize="20"/>
-                    <Button x:Name="AsignInventario" Grid.Column="1" Content="Asign. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AsingInventario" ToolTip="Asignación de Inventario" FontSize="20"/>
-                    <Button x:Name="MovInventario" Grid.Column="2" Content="Mov. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="MovimInventario" ToolTip="Movimientos Invenario" FontSize="20"/>
-
+                    <Button x:Name="AltInventario" Grid.Column="0" Content="Alta Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AltaInventario" ToolTip="Alta de Inventario" FontSize="20" Padding="5 0"/>
+                    <Button x:Name="AsignInventario" Grid.Column="1" Content="Asign. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="AsingInventario" ToolTip="Asignación de Inventario" FontSize="20" Padding="5 0" />
+                    <Button x:Name="MovInventario" Grid.Column="2" Content="Mov. Inventario" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="MovimInventario" ToolTip="Movimientos Inventario" FontSize="20" Padding="5 0" />
 
                 </Grid>
 

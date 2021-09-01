@@ -123,5 +123,22 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error($"Error: {exception.Message}");
             }
         }
+
+        // private bool ValidateLastImport(string lastImportName, string file) {
+        //     if (lastImportName == null) {
+        //         lastImportName = file;
+        //     }
+        //     else {
+        //         if (file == lastImportName) {
+        //             var res = MessageBox.Show(
+        //                 "Precaución, Se ha detectado que se ha seleccionado el mismo archivo de sincronización dos veces en la misma sesión ¿desea importarlo de todas formas? si se hace sin cuidado puede llevar a incongruencias en la base de datos.",
+        //                 "Script de importación duplicado",
+        //                 MessageBoxButton.YesNo);
+        //             if (res == MessageBoxResult.No) {
+        //                 return false;
+        //             }
+        //         }
+        //     }
+        // }
     }
 }

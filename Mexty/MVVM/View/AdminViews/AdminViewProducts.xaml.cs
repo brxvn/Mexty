@@ -225,6 +225,17 @@ namespace Mexty.MVVM.View.AdminViews {
 
                 newProduct.PrecioMayoreo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMayoreo.Text);
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
+
+                // Validación de precio mayoreo y precio menudeo.
+                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo) {
+                    MessageBox.Show("No se permite guardar productos con un precio mayoreo mayor a el precio menudeo",
+                        "Error: Precio mayoreo mayor que precio menudeo",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+
+
                 newProduct.DetallesProducto = txtDetalle.Text;
                 Log.Debug("Se ha creado el objeto tipo Producto con los campos de texto.");
 
@@ -481,14 +492,13 @@ namespace Mexty.MVVM.View.AdminViews {
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant: 1);
                     ComboMedida.SelectedIndex = 0;
-                    ComboMedida.IsEnabled = false;
+                    ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 case "Helado":
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida();
-
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
@@ -524,6 +534,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private void MostrarCantidades(object sender, SelectionChangedEventArgs e) {
 
             if (ComboMedida.SelectedIndex == 1 && ComboTipo.SelectedIndex == 3) {
+                ComboCantidad.Visibility = Visibility.Visible;
+                ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
+            }
+            else if (ComboMedida.SelectedIndex == 0 && ComboTipo.SelectedIndex == 4) {
                 ComboCantidad.Visibility = Visibility.Visible;
                 ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
             }

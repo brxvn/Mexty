@@ -280,6 +280,10 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             return MatrizAsigned;
         }
 
+        /// <summary>
+        /// Método para saber si la sucursal dada tiene acceso a los campos de matriz.
+        /// </summary>
+        /// <returns></returns>
         public static bool GetMatrizEnabledFromIni() {
             CheckMatriz(true);
             return MatrizAsignedIni;

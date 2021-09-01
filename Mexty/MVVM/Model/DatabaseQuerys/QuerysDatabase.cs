@@ -14,6 +14,15 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
+        /// Nombre del ultimo archivo de delta que se ingreso al programa.
+        /// </summary>
+        private static string LastImportName { get; set; }
+
+        public static string GetLastImportName() {
+            return LastImportName;
+        }
+
+        /// <summary>
         /// Struct que contiene la querry y la fecha en la que se hizo.
         /// </summary>
         private struct Deltas {
@@ -66,7 +75,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 }
 
                 var date = DateTime.Today;
-                var fileName = $"DBChangesFrom_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
+                var fileName = $"DBChangesStore:{DatabaseInit.GetIdTiendaIni().ToString()}_From_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
                 var path = $@"C:\Mexty\Backups\{date:yyyy-MMMM}\";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
@@ -267,6 +276,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
+            var path = @"C:\Mexty\Backups\ErrorLogDb\";
+            Directory.CreateDirectory(path);
             try {
                 if (file.Contains("FullBackupBD")) { // solo BackUps de toda la base de datos.
                     using (MySqlConnection conn = new MySqlConnection(IniFields.GetConnectionString())) {
@@ -274,7 +285,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                             using (MySqlBackup mb = new MySqlBackup(cmd)) {
                                 cmd.Connection = conn;
                                 conn.Open();
-                                mb.ImportInfo.ErrorLogFile = @"C:\Mexty\Backups\ErroLog\errors.log";
+                                mb.ImportInfo.ErrorLogFile = $"{path}errors.log";
                                 mb.ImportFromFile(file);
                                 Log.Debug("Se ha importado el archivo Exitosamente.");
                                 conn.Close();

@@ -21,7 +21,7 @@ namespace Mexty.MVVM.Model.Validations {
             name = name.Replace(",", "");
             name = name.Replace("(", "");
             name = name.Replace(")", "");
-            return name.All(Char.IsLetter);
+            return name.All(Char.IsLetterOrDigit);
         }
 
         /// <summary>

@@ -25,6 +25,10 @@ namespace Mexty.MVVM.View.VentasViews {
             if (DatabaseInit.GetIdRol().Equals(3)) {
                 VentasMayoreo.Visibility = Visibility.Collapsed;
             }
+
+            if (!DatabaseInit.GetMatrizEnabledFromIni()) {
+                VentasMayoreo.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

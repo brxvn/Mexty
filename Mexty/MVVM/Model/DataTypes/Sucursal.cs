@@ -16,7 +16,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// </summary>
         public string NombreTienda {
             get => _nombreTienda; 
-            set => _nombreTienda = value.ToLower().Trim();
+            set => _nombreTienda = value.Trim();
         }
 
         /// <summary>

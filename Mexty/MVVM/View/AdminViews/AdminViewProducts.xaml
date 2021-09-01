@@ -109,7 +109,7 @@
         <DataGrid CellStyle="{DynamicResource DataGridCellStyle}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle}" Style="{DynamicResource DataGridStyle}" x:Name="DataProductos" Grid.Row="1" Margin="50 20"  SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" CanUserReorderColumns="False">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="0.25*">
+                <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width="0.35*">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Margin" Value="5" />
@@ -212,8 +212,7 @@
                      Grid.Column="2"
                      Margin="10,0,10,0"
                      MaxLength="30"
-                     CharacterCasing="Upper"
-                     PreviewTextInput="OnlyLettersValidation">
+                     PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -233,8 +232,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="30"
-                                                     CharacterCasing="Upper"
-                                                     PreviewTextInput="OnlyLettersValidation"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"
@@ -468,7 +466,6 @@
                      Grid.Column="2"
                      Margin="10,0,10,0"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     CharacterCasing="Upper"
                      MaxLength="150">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -489,7 +486,6 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextWrapping="Wrap"
-                                                     CharacterCasing="Upper"
                                                      Height="80"
                                                      MaxLength="150"
                                                      PreviewTextInput="OnlyLettersAndNumbersValidation"

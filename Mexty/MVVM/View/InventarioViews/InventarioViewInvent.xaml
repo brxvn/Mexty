@@ -181,7 +181,6 @@
                 <!--txtComentario-->
                 <TextBox Background="Beige"
                      x:Name="txtComentario"
-                     CharacterCasing="Upper"
                      MaxLength="100"
                      TextWrapping="Wrap"
                      PreviewTextInput="OnlyLettersValidation"
@@ -205,7 +204,6 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
-                                                     CharacterCasing="Upper"
                                                      TextWrapping="Wrap"
                                                      PreviewTextInput="OnlyLettersValidation"
                                                      x:Name="SearchBox"
