@@ -85,7 +85,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string Domicilio {
             get => _domicilio; 
-            set => _domicilio = value.ToLower();
+            set => _domicilio = value.Trim();
         }
 
         /// <summary>

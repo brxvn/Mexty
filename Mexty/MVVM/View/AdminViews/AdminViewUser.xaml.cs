@@ -128,9 +128,9 @@ namespace Mexty.MVVM.View.AdminViews {
             Log.Debug("Se ha seleccionado un usuario de la data grid.");
             var usuario = (Usuario)DataUsuarios.SelectedItem;
             SelectedUser = usuario;
-            nombreUsuario.Text = usuario.Nombre.ToUpper();
-            apPaternoUsuario.Text = usuario.ApPaterno.ToUpper();
-            apMaternoUsuario.Text = usuario.ApMaterno.ToUpper();
+            nombreUsuario.Text = usuario.Nombre;
+            apPaternoUsuario.Text = usuario.ApPaterno;
+            apMaternoUsuario.Text = usuario.ApMaterno;
             ComboSucursal.SelectedIndex = usuario.IdTienda - 1;
             if (usuario.IdTienda == 0) {
                 ComboSucursal.SelectedIndex = 0;
@@ -146,7 +146,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 }
             }
             ComboRol.SelectedIndex = usuario.IdRol - 1;
-            TxtDireccion.Text = usuario.Domicilio.ToUpper();
+            TxtDireccion.Text = usuario.Domicilio;
             TxtTelefono.Text = usuario.Telefono;
             pswrdUsuario.Password = usuario.Contraseña;
             Limpiar.IsEnabled = true;
