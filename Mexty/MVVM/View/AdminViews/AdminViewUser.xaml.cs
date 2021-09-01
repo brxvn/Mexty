@@ -459,7 +459,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '#'.Equals(x) || '/'.Equals(x) || '('.Equals(x) || ')'.Equals(x) || '-'.Equals(x) || ','.Equals(x));
         }
 
         private void OnlyuLetterNumbersSB(object sender, TextCompositionEventArgs e) {
