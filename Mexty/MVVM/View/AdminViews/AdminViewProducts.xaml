@@ -213,7 +213,7 @@
                      Margin="10,0,10,0"
                      MaxLength="30"
                      CharacterCasing="Upper"
-                     PreviewTextInput="OnlyLettersValidation">
+                     PreviewTextInput="OnlyLettersAndNumbersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -234,7 +234,7 @@
                                                      x:Name="SearchBox"
                                                      MaxLength="30"
                                                      CharacterCasing="Upper"
-                                                     PreviewTextInput="OnlyLettersValidation"
+                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
                                                      TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"
