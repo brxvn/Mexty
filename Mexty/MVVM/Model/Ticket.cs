@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
-using log4net;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
@@ -83,10 +82,10 @@ namespace Mexty.MVVM.Model {
                 }
             }
             bitmap = generator.GenerarQR(instagram);
-            bitmap.SetResolution(100, 100);
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
             var newimage = ResizeImage(image, 115, 115);
             Image imageQr = (Image)bitmap;
+            var newImagQR = ResizeImage(imageQr, 70, 70);
             
 
             Point ulCorner = new Point(40,0);
@@ -96,16 +95,17 @@ namespace Mexty.MVVM.Model {
             /* g.DrawIcon(icon, new Rectangle(0,0,100,50))*/
             ;
             var settings = ppeArgs.PageSettings;
-            float yPos = 130;
+            float yPos = 125;
             int count = 0;
-            //Read margins from PrintPageEventArgs  
+            //Read margins from PrintPageEventArgs      
             float leftMargin = 0;
             int renglon = 18;
 
             g.DrawImage(newimage, ulCorner);
-            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
+            g.DrawString("    HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + 15);
             renglon += 15;
-            g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 10);
+            g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 5);
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 10);
             renglon += 15;
@@ -116,6 +116,10 @@ namespace Mexty.MVVM.Model {
             g.DrawString($"Fecha: {_dateNow} ", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 15;
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 15;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
 
             float topMargin = 145 + renglon;
 
@@ -123,14 +127,16 @@ namespace Mexty.MVVM.Model {
                 var total = (item.CantidadDependencias * item.PrecioMenudeo).ToString();
                 var type = "";
                 var name = "";
-                if (item.TipoProducto is "Paleta Agua" or "Paleta Leche" or "Paleta Fruta") {
-                    type = item.TipoProducto[..9];
+                if (item.TipoProducto == "Otros" || item.TipoProducto == "Extras") {
+                    type = "";
                 }
-                else type = item.TipoProducto;
+                else type = item.TipoProducto[..1] + ".";
 
-                name = item.NombreProducto.Length >= 7 ? item.NombreProducto[..7] : item.NombreProducto;
+                name = item.NombreProducto.Length >= 15 ? item.NombreProducto[..15] : item.NombreProducto;
+
                 yPos = topMargin + (count * consola.GetHeight(g));
-                g.DrawString(string.Format("{0,2} {1,-9} {2,-7} {3,6}", item.CantidadDependencias, type, name, total), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("{0,2} {1,-2}{2,-11}", item.CantidadDependencias, type, name), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("                     {0,6}", total), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
             var newYpos = yPos + 15;
@@ -146,12 +152,17 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            //g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(50, (int)newYpos);
+            g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15;
+            Point point = new Point(45, (int)newYpos);
             g.DrawImage(imageQr, point);
-            newYpos += 90;
-            g.DrawString("ENTRA PARA MÁS PROMOCIONES", consola, Brushes.Black, leftMargin, newYpos);
+            //Point point1 = new Point(85, (int)newYpos); 
+            //g.DrawImage(newImagQR, point1);
+            newYpos += 100;
+            g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta menudeo.");
 
@@ -197,7 +208,7 @@ namespace Mexty.MVVM.Model {
             /* g.DrawIcon(icon, new Rectangle(0,0,100,50))*/
             ;
             var settings = ppeArgs.PageSettings;
-            float yPos = 130;
+            float yPos = 125;
             int count = 0;
             //Read margins from PrintPageEventArgs  
             float leftMargin = 0;
@@ -205,9 +216,10 @@ namespace Mexty.MVVM.Model {
 
             g.DrawImage(newimage, ulCorner);
 
-            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos);
+            g.DrawString("    HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + 15);
             renglon += 15;
-            g.DrawString("  TICKET DE VENTA MAYOREO  ", consola, Brushes.Black, leftMargin, yPos + renglon - 10);
+            g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 5);
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 10);
             renglon += 15;
@@ -216,6 +228,10 @@ namespace Mexty.MVVM.Model {
             g.DrawString($"Usuario: {usuarioActivo} ", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 15;
             g.DrawString($"Fecha: {_dateNow} ", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 15;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 15;
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon);
 
@@ -228,11 +244,13 @@ namespace Mexty.MVVM.Model {
                 if (item.TipoProducto is "Paleta Agua" or "Paleta Leche" or "Paleta Fruta") {
                     type = item.TipoProducto[..9];
                 }
-                else type = item.TipoProducto;
+                else type = item.TipoProducto[..1] + ".";
 
-                name = item.NombreProducto.Length >= 7 ? item.NombreProducto[..7] : item.NombreProducto;
+                name = item.NombreProducto.Length >= 15 ? item.NombreProducto[..15] : item.NombreProducto;
+
                 yPos = topMargin + (count * consola.GetHeight(g));
-                g.DrawString(string.Format("{0,2} {1,-9} {2,-7} {3,6}", item.CantidadDependencias, type, name, total), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("{0,2} {1,-2}{2,-11}", item.CantidadDependencias, type, name), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("                     {0,6}", total), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
             var newYpos = yPos + 15;
@@ -250,12 +268,16 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos); newYpos += 15;
             g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15; g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15;
+            g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             Point point = new Point(45, (int)newYpos);
             g.DrawImage(imageQr, point);
+            //Point point1 = new Point(85, (int)newYpos); 
+            //g.DrawImage(newImagQR, point1);
             newYpos += 100;
-            g.DrawString("ENTRA PARA MÁS PROMOCIONES ", consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta mayoreo.");
 

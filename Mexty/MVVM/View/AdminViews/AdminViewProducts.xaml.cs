@@ -481,14 +481,13 @@ namespace Mexty.MVVM.View.AdminViews {
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida(salto: 1, cant: 1);
                     ComboMedida.SelectedIndex = 0;
-                    ComboMedida.IsEnabled = false;
+                    ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
                     txtPrecioMenudeo.IsReadOnly = false;
                     break;
                 case "Helado":
                     ComboMedida.ItemsSource = null;
                     ComboMedida.ItemsSource = Producto.GetTiposMedida();
-
                     ComboMedida.SelectedIndex = 0;
                     ComboMedida.IsEnabled = true;
                     txtPrecioMayoreo.IsReadOnly = false;
@@ -524,6 +523,10 @@ namespace Mexty.MVVM.View.AdminViews {
         private void MostrarCantidades(object sender, SelectionChangedEventArgs e) {
 
             if (ComboMedida.SelectedIndex == 1 && ComboTipo.SelectedIndex == 3) {
+                ComboCantidad.Visibility = Visibility.Visible;
+                ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
+            }
+            else if (ComboMedida.SelectedIndex == 0 && ComboTipo.SelectedIndex == 4) {
                 ComboCantidad.Visibility = Visibility.Visible;
                 ColCantidad.Width = new GridLength(.2, GridUnitType.Star);
             }

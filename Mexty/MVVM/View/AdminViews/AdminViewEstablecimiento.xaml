@@ -198,11 +198,9 @@
                 <TextBox Background="Beige"
                      x:Name="txtNombreEstablecimiento"
                      Grid.Column="0"
-                     HorizontalAlignment="Stretch"
                      MaxLength="20"
                      PreviewTextInput="OnlyLettersValidation"
-                     CharacterCasing="Upper"
-                     Margin="10 0">
+                     Margin="10,8,10,-8">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -220,7 +218,6 @@
                                                      Padding="5"
                                                      Foreground="Gray"
                                                      FontSize="15"
-                                                     CharacterCasing="Upper"
                                                      x:Name="SearchBox"
                                                      MaxLength="20"
                                                      PreviewTextInput="OnlyLettersValidation"
@@ -355,7 +352,7 @@
                         </Style>
                     </TextBox.Style>
                 </TextBox>
-                
+
                 <!--ComboTipo-->
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboTipo" ToolTip="Tipo de Establecimiento" Grid.Column="2" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True" BorderThickness="0"/>
@@ -449,7 +446,6 @@
                      Grid.Column="0"
                      PreviewTextInput="OnlyLetterAndNumbers"
                      HorizontalAlignment="Stretch"
-                     CharacterCasing="Upper"
                      MaxLength="100"
                      TextWrapping="Wrap"
                      Margin="10 0">
@@ -471,7 +467,6 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     CharacterCasing="Upper"
                                                      MaxLength="100"
                                                      PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextWrapping="Wrap"
@@ -525,8 +520,7 @@
                      Grid.Column="1"
                      PreviewTextInput="OnlyLetterAndNumbers"
                      HorizontalAlignment="Stretch"
-                     CharacterCasing="Upper"
-                     MaxLength="100"
+                     MaxLength="27"
                      TextWrapping="Wrap"
                      Margin="10 0">
                     <TextBox.Style>
@@ -547,8 +541,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     CharacterCasing="Upper"
-                                                     MaxLength="100"
+                                                     MaxLength="27"
                                                      PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextWrapping="Wrap"
                                                      TextChanged="txtUpdateMsg"/>
@@ -600,7 +593,6 @@
                      x:Name="txtFacebook"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
-                     CharacterCasing="Upper"
                      MaxLength="25"
                      PreviewTextInput="OnlyLetterAndNumbers"
                      Margin="10 0">
@@ -623,7 +615,6 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="25"
-                                                     CharacterCasing="Upper"
                                                      PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextChanged="txtUpdateFacebook"/>
 
@@ -674,7 +665,6 @@
                      x:Name="txtInstagram"
                      Grid.Column="3"
                      HorizontalAlignment="Stretch"
-                     
                      MaxLength="100"
                      Margin="10 0">
                     <TextBox.Style>

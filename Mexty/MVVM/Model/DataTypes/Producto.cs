@@ -30,7 +30,7 @@ namespace Mexty.MVVM.Model.DataTypes {
         /// Variable que obtiene los tipos de cantidades.
         /// </summary>
         // TODO: probablemente leerlos del ini.
-        private static readonly string[] TiposCantidades = { "0.5", "1", "3", "12" };
+        private static readonly string[] TiposCantidades = { "0.5", "1","5", "3", "12" };
 
 
         /// <summary>

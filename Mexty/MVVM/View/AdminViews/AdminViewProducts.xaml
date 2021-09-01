@@ -212,8 +212,7 @@
                      Grid.Column="2"
                      Margin="10,0,10,0"
                      MaxLength="30"
-                     CharacterCasing="Upper"
-                     PreviewTextInput="OnlyLettersAndNumbersValidation">
+                     PreviewTextInput="OnlyLettersValidation">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
                             <Style.Setters>
@@ -233,8 +232,7 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      MaxLength="30"
-                                                     CharacterCasing="Upper"
-                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
+                                                     PreviewTextInput="OnlyLettersValidation"
                                                      TextChanged="TextUpdateNombre"/>
 
                                                     <TextBlock IsHitTestVisible="False"
@@ -468,7 +466,6 @@
                      Grid.Column="2"
                      Margin="10,0,10,0"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     CharacterCasing="Upper"
                      MaxLength="150">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -489,7 +486,6 @@
                                                      FontSize="15"
                                                      x:Name="SearchBox"
                                                      TextWrapping="Wrap"
-                                                     CharacterCasing="Upper"
                                                      Height="80"
                                                      MaxLength="150"
                                                      PreviewTextInput="OnlyLettersAndNumbersValidation"
