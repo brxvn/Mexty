@@ -22,7 +22,7 @@
                 return nombre = v + nombre.Substring(1);
             }
             set {
-                nombre = value.ToLower().Trim();
+                nombre = value.Trim();
             }
         }
 
@@ -35,7 +35,7 @@
                 return _apPaterno = v + _apPaterno.Substring(1);
             }
             set {
-                _apPaterno = value.ToLower().Trim();
+                _apPaterno = value.Trim();
             }
         }
 
@@ -48,7 +48,7 @@
                 return _apMaterno = v + _apMaterno.Substring(1);
             }
             set {
-                _apMaterno = value.ToLower().Trim();
+                _apMaterno = value.Trim();
             }
         }
 
@@ -56,8 +56,8 @@
         /// Domicilio del cliente.
         /// </summary>
         public string Domicilio {
-            get => _domicilio; 
-            set => _domicilio = value.ToLower();
+            get => _domicilio;
+            set => _domicilio = value.Trim();
         }
 
         /// <summary>

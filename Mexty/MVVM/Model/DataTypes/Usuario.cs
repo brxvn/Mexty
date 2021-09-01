@@ -30,7 +30,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string Nombre {
             get => _nombre;
-            set => _nombre = value.ToLower().Trim();
+            set => _nombre = value.Trim();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApPaterno {
             get => _apPaterno; 
-            set => _apPaterno = value.ToLower().Trim();
+            set => _apPaterno = value.Trim();
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// </summary>
         public string ApMaterno {
             get => _apMaterno; 
-            set => _apMaterno = value.ToLower().Trim();
+            set => _apMaterno = value.Trim();
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace Mexty.MVVM.Model.DataTypes
         /// <returns></returns>
         public static string GenUsername(Usuario usr) {
             Random random = new();
-            string username = $"{usr.Nombre}{usr.ApPaterno[..1]}{usr.ApMaterno[..1]}{random.Next(1, 10)}";
+            string username = $"{usr.Nombre.ToLower()}{usr.ApPaterno[..1].ToLower()}{usr.ApMaterno[..1].ToLower()}{random.Next(1, 10)}";
 
             var normalizedString = username.Normalize(NormalizationForm.FormD);
             var stringBuilder = new StringBuilder();
@@ -226,6 +226,5 @@ namespace Mexty.MVVM.Model.DataTypes
             };
             return resultado;
         }
-        
     }
 }
