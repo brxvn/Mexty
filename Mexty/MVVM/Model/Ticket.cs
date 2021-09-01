@@ -18,7 +18,7 @@ namespace Mexty.MVVM.Model {
         //("Courier New"
 
         private readonly string _date = DateTime.Now.ToString("dd-MM-yy");
-        private readonly string _dateNow = DateTime.Now.ToString("G");
+        private readonly string _dateNow = DateTime.Now.ToString("dd-MMM-yy H:mm:ss");
 
         private string sucursal = "";
         private string direccion = "";
@@ -34,6 +34,7 @@ namespace Mexty.MVVM.Model {
         private QRGenerator generator = new();
         private Bitmap bitmap;
         private string instagram;
+        private string facebook;
 
         public Ticket(string totalVenta, string recibido, string cambio, List<ItemInventario> listaVenta, Venta ventaActual) {
             this.totalVenta = totalVenta;
@@ -79,16 +80,16 @@ namespace Mexty.MVVM.Model {
                     sucursal = tienda.NombreTienda;
                     direccion = tienda.Dirección;
                     instagram = tienda.Instagram == "" ? "https://www.instagram.com" : tienda.Instagram;
+                    facebook = tienda.Facebook == "" ? "https://www.facebook.com" : tienda.Facebook;
                 }
             }
-            bitmap = generator.GenerarQR(instagram);
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
             var newimage = ResizeImage(image, 115, 115);
-            Image imageQr = (Image)bitmap;
-            var newImagQR = ResizeImage(imageQr, 70, 70);
+            Image imageQrIG = (Image)generator.GenerarQR(instagram);
+            Image imageQrFB = (Image)generator.GenerarQR(facebook);
             
 
-            Point ulCorner = new Point(40,0);
+            Point ulCorner = new Point(35,0);
 
             Graphics g = ppeArgs.Graphics;
 
@@ -102,7 +103,7 @@ namespace Mexty.MVVM.Model {
             int renglon = 18;
 
             g.DrawImage(newimage, ulCorner);
-            g.DrawString("    HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
+            g.DrawString("   HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + 15);
             renglon += 15;
             g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 5);
@@ -157,11 +158,13 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(45, (int)newYpos);
-            g.DrawImage(imageQr, point);
-            //Point point1 = new Point(85, (int)newYpos); 
-            //g.DrawImage(newImagQR, point1);
-            newYpos += 100;
+            Point point = new Point(20, (int)newYpos);
+            g.DrawImage(imageQrIG, point);
+            Point point1 = new Point(110, (int)newYpos);
+            g.DrawImage(imageQrFB, point1);
+            newYpos +=50;
+            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15;
             g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta menudeo.");
@@ -190,18 +193,19 @@ namespace Mexty.MVVM.Model {
                 if (tienda.IdTienda == idTienda) {
                     sucursal = tienda.NombreTienda;
                     direccion = tienda.Dirección;
-                    bitmap = generator.GenerarQR(tienda.Instagram);
-
+                    instagram = tienda.Instagram == "" ? "https://www.instagram.com" : tienda.Instagram;
+                    facebook = tienda.Facebook == "" ? "https://www.facebook.com" : tienda.Facebook;
                 }
             }
 
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
             var newimage = ResizeImage(image, 115, 115);
 
-            Image imageQr = (Image)bitmap;
+            Image imageQrIG = (Image)generator.GenerarQR(instagram);
+            Image imageQrFB = (Image)generator.GenerarQR(facebook);
 
 
-            Point ulCorner = new Point(40, 0);
+            Point ulCorner = new Point(35, 0);
 
             Graphics g = ppeArgs.Graphics;
 
@@ -216,7 +220,7 @@ namespace Mexty.MVVM.Model {
 
             g.DrawImage(newimage, ulCorner);
 
-            g.DrawString("    HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
+            g.DrawString("   HELADERÍA Y PALETERÍA  ", consola, Brushes.Black, leftMargin, yPos);
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + 15);
             renglon += 15;
             g.DrawString("      TICKET DE VENTA      ", consola, Brushes.Black, leftMargin, yPos + renglon - 5);
@@ -266,17 +270,21 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos); newYpos += 15;
+            g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos); 
+            newYpos += 15;
             g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15;
             g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(45, (int)newYpos);
-            g.DrawImage(imageQr, point);
-            //Point point1 = new Point(85, (int)newYpos); 
-            //g.DrawImage(newImagQR, point1);
-            newYpos += 100;
+            Point point = new Point(20, (int)newYpos);
+            g.DrawImage(imageQrIG, point);
+            Point point1 = new Point(110, (int)newYpos);
+            g.DrawImage(imageQrFB, point1);
+            newYpos += 50;
+            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            newYpos += 15;
             g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta mayoreo.");
@@ -311,6 +319,11 @@ namespace Mexty.MVVM.Model {
 
             return destImage;
         }
+
+        public static Image resizeImage(Image imgToResize, Size size) {
+            return (Image)(new Bitmap(imgToResize, size));
+        }
+
 
     }
 }

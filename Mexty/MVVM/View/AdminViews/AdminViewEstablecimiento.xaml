@@ -593,8 +593,7 @@
                      x:Name="txtFacebook"
                      Grid.Column="2"
                      HorizontalAlignment="Stretch"
-                     MaxLength="25"
-                     PreviewTextInput="OnlyLetterAndNumbers"
+                     MaxLength="100"
                      Margin="10 0">
                     <TextBox.Style>
                         <Style TargetType="TextBox">
@@ -614,8 +613,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="25"
-                                                     PreviewTextInput="OnlyLetterAndNumbers"
+                                                     MaxLength="100"
                                                      TextChanged="txtUpdateFacebook"/>
 
                                                     <TextBlock IsHitTestVisible="False"
