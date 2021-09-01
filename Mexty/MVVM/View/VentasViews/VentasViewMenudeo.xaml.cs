@@ -40,7 +40,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// </summary>
         private Venta VentaActual { get; set; }
 
-
         string barCode = null;
 
         /// <summary>
@@ -195,7 +194,6 @@ namespace Mexty.MVVM.View.VentasViews {
         private void GuardarVenta(object sender, RoutedEventArgs e) {
             Log.Info("Se ha precionado pagar en venta menudeo.");
             ProcesarVenta();
-            NewVenta();
         }
 
         private void ProcesarVenta() {
@@ -232,6 +230,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta();
                 ClearFields();
+                NewVenta();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");

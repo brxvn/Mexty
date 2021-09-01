@@ -42,11 +42,6 @@ namespace Mexty.MVVM.View.VentasViews {
         private List<ItemInventario> ListaProductos = new();
 
         /// <summary>
-        /// El último producto seleccionado de la datagrid.
-        /// </summary>
-        private ItemInventario SelectedItem { get; set; }
-
-        /// <summary>
         /// Lista de clientes dada por la bd
         /// </summary>
         private List<Cliente> ListaClientes { get; set; }
@@ -186,6 +181,7 @@ namespace Mexty.MVVM.View.VentasViews {
             txtRecibido.Text = "";
             txtTotal.Text = "";
             txtDescripcion.Text = "";
+            txtComentario.Text = "";
             ListaVenta.Clear();
             DataVenta.ItemsSource = null;
             VentaActual = new Venta();
@@ -210,6 +206,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
                 VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                VentaActual.Comentarios = txtComentario.Text;
 
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
@@ -415,9 +412,8 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void OnlyLettersAndNumbersValidation(object sender, TextCompositionEventArgs e) {
-            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '.'.Equals(x));
+            e.Handled = !e.Text.Any(x => char.IsLetterOrDigit(x) || '.'.Equals(x) || '/'.Equals(x) || ','.Equals(x) || '('.Equals(x) || ')'.Equals(x));
         }
-
 
         /// <summary>
         /// Método que actualiza el campo de total venta.
