@@ -227,7 +227,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
 
                 // Validación de precio mayoreo y precio menudeo.
-                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo) {
+                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo && ComboVenta.SelectedItem.ToString()?.ToLower() == "general") {
                     MessageBox.Show("No se permite guardar productos con un precio mayoreo mayor a el precio menudeo",
                         "Error: Precio mayoreo mayor que precio menudeo",
                         MessageBoxButton.OK,
