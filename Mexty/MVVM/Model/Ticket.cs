@@ -158,13 +158,13 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(20, (int)newYpos);
-            g.DrawImage(imageQrIG, point);
-            Point point1 = new Point(110, (int)newYpos);
-            g.DrawImage(imageQrFB, point1);
+            Point point = new Point(40, (int)newYpos);
+            g.DrawImage(imageQrFB, point);
+            //Point point1 = new Point(110, (int)newYpos);
+            //g.DrawImage(imageQrFB, point1);
             newYpos +=50;
-            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
+            //g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            //newYpos += 15;
             g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta menudeo.");
@@ -278,13 +278,13 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(20, (int)newYpos);
-            g.DrawImage(imageQrIG, point);
-            Point point1 = new Point(110, (int)newYpos);
-            g.DrawImage(imageQrFB, point1);
+            Point point = new Point(40, (int)newYpos);
+            g.DrawImage(imageQrFB, point);
+            //Point point1 = new Point(110, (int)newYpos);
+            //g.DrawImage(imageQrFB, point1);
             newYpos += 50;
-            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
+            //g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
+            //newYpos += 15;
             g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta mayoreo.");
