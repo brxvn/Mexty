@@ -284,10 +284,9 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             Directory.CreateDirectory(path);
 
             try {
-
                 if (file.Contains("FullBackupBD")) {
                     // solo BackUps de toda la base de datos.
-
+                    Log.Debug("Detecatado archivo full backup.");
                     using (MySqlConnection conn = new MySqlConnection(IniFields.GetConnectionString())) {
                         using (MySqlCommand cmd = new MySqlCommand()) {
                             using (MySqlBackup mb = new MySqlBackup(cmd)) {
@@ -296,7 +295,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                                 mb.ImportInfo.ErrorLogFile = $"{path}errors.log";
                                 mb.ImportFromFile(file);
                                 Log.Debug("Se ha importado el archivo Exitosamente.");
-                                //conn.Close();
+                                conn.Close();
                             }
                         }
                     }
@@ -304,6 +303,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     return true;
                 }
                 else {
+                    Log.Debug("Detecatado archivo de sincronización.");
                     return ExecFromScript(file);
                 }
             }
