@@ -395,7 +395,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias -= 1;
-                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
+                producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
             }
 
             if (producto.CantidadDependencias == 0) ListaVenta.Remove(producto);
@@ -462,7 +462,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         if (ListaVenta.Contains(item)) {
                             item.CantidadDependencias += 1;
-                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                            item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
                         }
 
                         DataVenta.ItemsSource = null;
@@ -502,7 +502,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         else {
                             item.CantidadDependencias += 1;
                         }
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                        item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
                     }
 
 
