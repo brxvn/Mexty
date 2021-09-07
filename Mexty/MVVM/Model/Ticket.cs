@@ -251,7 +251,7 @@ namespace Mexty.MVVM.Model {
             float topMargin = 145 + renglon;
 
             foreach (var item in listaVenta) {
-                var total = (item.CantidadDependencias * item.PrecioMenudeo).ToString();
+                var total = (item.CantidadDependencias * item.PrecioMayoreo).ToString();
                 var type = "";
                 var name = "";
                 if (item.TipoProducto == "Otros" || item.TipoProducto == "Extras") {
@@ -281,8 +281,11 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
+            if (deudaCliente != 0.0) {
+                g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
+                newYpos += 15;
+            }
+            
             g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
