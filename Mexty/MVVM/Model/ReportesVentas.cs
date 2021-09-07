@@ -102,11 +102,11 @@ namespace Mexty.MVVM.Model {
                     break;
                 case "semana":
                     var ultimaSeana = DateTime.Now - 1.Weeks();
-                    texto1 = $"Total de venta del {ultimaSeana.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del {ultimaSeana.ToString("d'-'MM'-'yy")} a {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "mes":
                     var ultimoMes = DateTime.Now - 1.Months();
-                    texto1 = $"Total de venta del {ultimoMes.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del {ultimoMes.ToString("d'-'MM'-'yy")} a {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
             }
 
@@ -260,28 +260,29 @@ namespace Mexty.MVVM.Model {
             renglon += 18;
             g.DrawString($"Fecha: {_dateNow} ", consola1, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 18;
-            g.DrawString("Cant Tipo    Nombre   Total", consola1, Brushes.Black, leftMargin, yPos + renglon + 2);
-            renglon += 18;
-            g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos + renglon - 8);
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
+            renglon += 15;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
             float topMargin = 145 + renglon;
             foreach (var detalle in data) {
                 itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
                 foreach (var item in itemInventarios) {
                     foreach (var producto in productos) {
                         if (item.IdProducto == producto.IdProducto) {
-                            if (producto.TipoProducto == "Paleta Agua" || producto.TipoProducto == "Paleta Leche" || producto.TipoProducto == "Paleta Fruta") {
-                                type = producto.TipoProducto[..9];
+                            if (producto.TipoProducto == "Otros" || producto.TipoProducto == "Extras") {
+                                type = "";
                             }
-                            else type = producto.TipoProducto;
+                            else type = producto.TipoProducto[..1] + ".";
 
-                            name = producto.NombreProducto.Length >= 7 ? producto.NombreProducto[..7] : producto.NombreProducto;
+                            name = producto.NombreProducto.Length >= 15 ? producto.NombreProducto[..15] : producto.NombreProducto;
 
                             break;
                         }
                     }
                     var total = item.PrecioMenudeo * item.CantidadDependencias;
                     yPos = topMargin + (count * consola.GetHeight(g));
-                    g.DrawString(string.Format("{0,2} {1,-9} {2,-7} {3,6}", item.CantidadDependencias, type, name, total), consola1, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("{0,2} {1,-2}{2,-11}", item.CantidadDependencias, type, name), consola, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("                     {0,6}", total), consola, Brushes.Black, leftMargin, yPos);
                     count++;
                     totalProductos += item.CantidadDependencias;
                     totalDia += Convert.ToDecimal(total);
@@ -305,10 +306,10 @@ namespace Mexty.MVVM.Model {
                 case "semana":
 
                     var ultimaSeana = DateTime.Now - 1.Weeks();
-                    ultimaSeana.ToString("d'-'MM'-'y");
+                    
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimaSeana.ToString("d'-'MM'-'yy")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -319,7 +320,7 @@ namespace Mexty.MVVM.Model {
                     var ultimoMes = DateTime.Now - 1.Months();
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimoMes.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimoMes.ToString("d'-'MM'-'yy")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -414,7 +415,7 @@ namespace Mexty.MVVM.Model {
                     ultimaSeana.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimaSeana} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -426,7 +427,7 @@ namespace Mexty.MVVM.Model {
                     ultimoMes.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimoMes.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;

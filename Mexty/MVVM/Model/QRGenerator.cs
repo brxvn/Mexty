@@ -15,7 +15,7 @@ namespace Mexty.MVVM.Model {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(payload, QRCodeGenerator.ECCLevel.Q);
             QRCode qrCode = new QRCode(qrCodeData);
-            var qrCodeAsBitmap = qrCode.GetGraphic(1);
+            var qrCodeAsBitmap = qrCode.GetGraphic(2);
             return qrCodeAsBitmap;
         }
 

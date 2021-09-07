@@ -95,7 +95,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private void BtnHoy_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
@@ -107,7 +107,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private void UltimaSemana_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
@@ -118,7 +118,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private void Mes_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
@@ -131,7 +131,7 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }
@@ -145,7 +145,7 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }
@@ -159,7 +159,7 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }

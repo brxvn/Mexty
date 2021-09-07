@@ -48,7 +48,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Paleta Agua") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -62,7 +62,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Paleta Leche") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -76,7 +76,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Paleta Fruta") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -90,7 +90,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Helado") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -104,7 +104,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Agua") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -118,7 +118,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Extras") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
@@ -132,7 +132,7 @@ namespace Mexty.MVVM.Model {
             doc.Add(titulo);
             foreach (var item in data) {
                 if (item.TipoProducto == "Otros") {
-                    p = new Paragraph().Add($"{item.TipoProducto} {item.NombreProducto}");
+                    p = new Paragraph().Add($"{item.NombreProducto}");
                     i = item.IdProducto;
                     table.AddCell(CreateBarcode(string.Format("{0:d8}", i), pdfDoc, p)).SetHorizontalAlignment(HorizontalAlignment.CENTER);
                 }
