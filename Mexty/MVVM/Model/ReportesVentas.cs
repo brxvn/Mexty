@@ -410,12 +410,13 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     break;
                 case "semana":
-
                     var ultimaSeana = DateTime.Now - 1.Weeks();
                     ultimaSeana.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimaSeana} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimaSeana} a", consola, Brushes.Black, leftMargin, newYpos);
+                    newYpos += 15;
+                    g.DrawString($"{_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -427,7 +428,9 @@ namespace Mexty.MVVM.Model {
                     ultimoMes.ToString("d'-'MM'-'y");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimoMes}", consola, Brushes.Black, leftMargin, newYpos);
+                    newYpos += 15;
+                    g.DrawString($"{_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
