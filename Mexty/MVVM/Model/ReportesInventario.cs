@@ -26,6 +26,11 @@ namespace Mexty.MVVM.Model {
         public void ReporteInventario() {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
 
+            if (dataInventario.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar.");
+                return;
+            }
+
             foreach (Sucursal tienda in ListaSucursales) {
                 if (tienda.IdTienda == idTienda) {
                     sucursal = tienda.NombreTienda;
@@ -88,6 +93,10 @@ namespace Mexty.MVVM.Model {
             nombreImprimir = nombreTienda;
             dirImprimir = direccion;
             var dataInventarioSucursal = QuerysInventario.GetItemsFromInventarioById(idTienda);
+            if (dataInventarioSucursal.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar");
+                return;
+            }
 
             string path = $"{_SucursalesInventarioPath}";
             string nombreReporte = $"Reporte-{nombreTienda}-{_date}";
