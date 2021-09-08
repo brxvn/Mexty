@@ -144,14 +144,18 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
-
             text = text.ToLower();
             if (text.StartsWith("00000")) {
-                int result = Int32.Parse(text);
-                if (producto.NombreProducto.Contains(text) ||
-                    producto.IdProducto.ToString().Contains(result.ToString()) ||
-                    producto.TipoProducto.ToLower().Contains(text)) {
-                    return true;
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.NombreProducto.Contains(text) ||
+                        producto.IdProducto.ToString().Contains(result.ToString()) ||
+                        producto.TipoProducto.ToLower().Contains(text)) {
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
                 }
             }
             else if (producto.NombreProducto.Contains(text) ||
@@ -221,7 +225,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 var res = QuerysVentas.NewItem(VentaActual);
                 if (res == 0) throw new Exception();
-                MessageBox.Show("Se ha registrado la venta con exito.");
+                MessageBox.Show("Se ha registrado la venta con éxito.");
 
                 ActualizaInventario();
 

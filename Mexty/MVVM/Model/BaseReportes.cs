@@ -18,7 +18,7 @@ namespace Mexty.MVVM.Model {
         private static readonly ILog Log =
     LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-        protected readonly string _date = DateTime.Now.ToString("d'-'MM'-'y");
+        protected readonly string _date = DateTime.Now.ToString("dd'-'MM'-'y");
         protected readonly string _dateNow = DateTime.Now.ToString("G");
 
         protected readonly int _fontSize = 12;

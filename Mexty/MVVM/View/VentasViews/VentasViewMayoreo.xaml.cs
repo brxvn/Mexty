@@ -159,14 +159,18 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
-
             text = text.ToLower();
             if (text.StartsWith("00000")) {
-                int result = Int32.Parse(text);
-                if (producto.NombreProducto.Contains(text) ||
-                    producto.IdProducto.ToString().Contains(result.ToString()) ||
-                    producto.TipoProducto.ToLower().Contains(text)) {
-                    return true;
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.NombreProducto.Contains(text) ||
+                        producto.IdProducto.ToString().Contains(result.ToString()) ||
+                        producto.TipoProducto.ToLower().Contains(text)) {
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
                 }
             }
             else if (producto.NombreProducto.Contains(text) ||
@@ -234,7 +238,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 if (VentaActual.TotalVenta > VentaActual.Pago) {
                     var buttons = MessageBoxButton.YesNo;
-                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! Desea agregarlo a la deuda del cliente?", "Pago insuficiente", buttons);
+                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
                     var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
                     if (resYesNo == MessageBoxResult.Yes) {
                         ActualizaDeuda(selectedClientId);
@@ -252,7 +256,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 var res = QuerysVentas.NewItem(VentaActual, true);
 
                 if (res == 0) throw new Exception();
-                MessageBox.Show("Se ha registrado la venta con exito.");
+                MessageBox.Show("Se ha registrado la venta con éxito.");
 
                 ActualizaInventario();
 

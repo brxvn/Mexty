@@ -39,7 +39,7 @@ namespace Mexty.MVVM.Model {
         public void ReporteVentasSucursal(int idTienda, string comando) {
             var data = QuerysReportesVentas.GetVentasPorSucursal(idTienda, comando);
             if (data.Count == 0) {
-                MessageBox.Show("No hay nada que mostrar");
+                MessageBox.Show("No hay nada que mostrar.\nPrimero realiza ventas.");
                 return;
             }
             this.idTienda = idTienda;
@@ -60,7 +60,7 @@ namespace Mexty.MVVM.Model {
             string path = $"{_sucursalesVentas}{sucursal}\\{comando}\\";
             Directory.CreateDirectory($"{path}");
             string nombreReporte = $"ReporteVentas-{sucursal}-{comando}-{_date}";
-            string tituloReporte = $"Reporte de Ventas del {comando} de {sucursal}";
+            string tituloReporte = $"Reporte de Ventas de {comando} {sucursal}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
 
@@ -71,7 +71,6 @@ namespace Mexty.MVVM.Model {
             foreach (string columa in columnas) {
                 table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
             }
-
 
             var totalProductos = 0;
 
@@ -103,15 +102,15 @@ namespace Mexty.MVVM.Model {
             var texto1 = "";
             switch (comando) {
                 case "hoy":
-                    texto1 = $"Total de venta del dia {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del dia {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "semana":
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    texto1 = $"Total de venta del {ultimaSeana.ToString("d'-'MM'-'y")} a {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimaSeana} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
-                    texto1 = $"Total de venta del {ultimoMes.ToString("d'-'MM'-'y")} a {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimoMes} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
             }
 
@@ -143,7 +142,7 @@ namespace Mexty.MVVM.Model {
         public void ReporteVentasUsuario(string username, string comando) {
             var data = QuerysReportesVentas.GetVentasPorUsuario(username, comando);
             if (data.Count == 0) {
-                MessageBox.Show("No hay nada que mostrar");
+                MessageBox.Show("No hay nada que mostrar. \nPrimero realiza ventas.");
                 return;
             }
             this.username = username;
@@ -155,7 +154,7 @@ namespace Mexty.MVVM.Model {
             string path = $"{_ventasUsuarios}{username}\\{comando}\\";
             Directory.CreateDirectory($"{path}");
             string nombreReporte = $"ReporteVentas-{username}-{comando}-{_date}";
-            string tituloReporte = $"Reporte de Ventas del usuario {username}";
+            string tituloReporte = $"Reporte de Ventas de usuario: {username}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
 
@@ -198,15 +197,15 @@ namespace Mexty.MVVM.Model {
             var texto1 = "";
             switch (comando) {
                 case "hoy":
-                    texto1 = $"Total de venta del dia {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del dia {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "semana":
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    texto1 = $"Total de venta del {ultimaSeana.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimaSeana} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
-                    texto1 = $"Total de venta del {ultimoMes.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimoMes} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
             }
 

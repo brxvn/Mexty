@@ -193,15 +193,33 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var producto = (Producto)obj;
-            if (producto.NombreProducto.ToLower().Contains(text) ||
+
+            if (text.Contains("00000")) {
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.NombreProducto.ToLower().Contains(text) ||
+                        producto.IdProducto.ToString().Contains(result.ToString()) ||
+                        producto.TipoProducto.ToLower().Contains(text) ||
+                        producto.TipoVentaNombre.ToLower().Contains(text) ||
+                        producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
+                        producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)) {
+
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
+                }
+            }
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
                 producto.TipoVentaNombre.ToLower().Contains(text) ||
                 producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
-                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)
-                ) {
+                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)) {
                 return true;
             }
+
             return false;
         }
 
