@@ -117,7 +117,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 ComboCliente.Items.Add($"{client.IdCliente.ToString()} {client.Nombre} Deuda: {client.Debe.ToString()}");
             }
 
-            ComboCliente.SelectedIndex = 0;
+            //ComboCliente.SelectedIndex = 0;
             Log.Debug("Se ha llendado el combobox de clientes.");
         }
 
@@ -139,10 +139,12 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
+
                 var collectionView = new ListCollectionView(ListaProductos) {
                     Filter = (e => e is ItemInventario producto && producto.Cantidad > 0)
                 };
-                DataProducts.ItemsSource = collection;
+
+                DataProducts.ItemsSource = collectionView;
                 CollectionView = collection;
             }
 
@@ -211,7 +213,15 @@ namespace Mexty.MVVM.View.VentasViews {
             try {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
-                VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+
+                if (ComboCliente.SelectedItem == null) {
+                    MessageBox.Show("Necesita seleccionar un cliente primero");
+                    return;
+                }
+                else {
+                    VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString()?.Split(' ')[0] ?? throw new Exception());
+                }
+
                 VentaActual.Comentarios = txtComentario.Text;
 
                 if (txtRecibido.Text == "") {

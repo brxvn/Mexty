@@ -198,7 +198,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     ApMaterno = txtApMaternoCliente.Text,
                     Domicilio = txtDireccion.Text,
                     Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
-                    Debe = decimal.Parse(txtDeuda.Text),
+                    Debe = txtDeuda.Text == "" ? 0 : decimal.Parse(txtDeuda.Text),
                     Comentario = txtComentario.Text
                 };
                 Log.Debug("Se ha creado el objeto el objeto Cliente con los campos de texto.");

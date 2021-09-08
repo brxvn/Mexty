@@ -124,10 +124,12 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
+
                 var collectionView = new ListCollectionView(ListaProductos) {
                     Filter = (e => e is ItemInventario producto && producto.Cantidad > 0)
                 };
-                DataProducts.ItemsSource = collection;
+
+                DataProducts.ItemsSource = collectionView;
                 CollectionView = collection;
             }
 

@@ -17,7 +17,6 @@ namespace Mexty.MVVM.Model {
         private static readonly ILog Log =
           LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-
         int idTienda = DatabaseInit.GetIdTiendaIni();
 
         private List<Sucursal> ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
