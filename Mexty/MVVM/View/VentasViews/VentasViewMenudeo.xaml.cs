@@ -124,13 +124,9 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(producto =>
-                // {
-                //     if (producto == null) return false;
-                //     return ((Producto)producto).Activo == 1;
-                // });
-                //
-                // collection.Filter += noNull;
+                var collectionView = new ListCollectionView(ListaProductos) {
+                    Filter = (e => e is ItemInventario producto && producto.Cantidad > 0)
+                };
                 DataProducts.ItemsSource = collection;
                 CollectionView = collection;
             }
@@ -145,9 +141,18 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="text"></param>
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
-            text = text.ToLower();
             var producto = (ItemInventario)obj;
-            if (producto.NombreProducto.Contains(text) ||
+
+            text = text.ToLower();
+            if (text.StartsWith("00000")) {
+                int result = Int32.Parse(text);
+                if (producto.NombreProducto.Contains(text) ||
+                    producto.IdProducto.ToString().Contains(result.ToString()) ||
+                    producto.TipoProducto.ToLower().Contains(text)) {
+                    return true;
+                }
+            }
+            else if (producto.NombreProducto.Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
