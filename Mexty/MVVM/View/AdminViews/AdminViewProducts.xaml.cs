@@ -193,7 +193,7 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var producto = (Producto)obj;
-            if (producto.NombreProducto.Contains(text) ||
+            if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
                 producto.TipoVentaNombre.ToLower().Contains(text) ||
