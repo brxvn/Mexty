@@ -299,9 +299,9 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(50, (int)newYpos);
+            Point point = new Point(45, (int)newYpos);
             g.DrawImage(imageQrFB, point);
-            newYpos += 90;
+            newYpos += imageQrFB.Height + 10;
 
             if (mensaje.Length != 0) {
                 var resultMsg = ChunksUpto(mensaje, 27);
