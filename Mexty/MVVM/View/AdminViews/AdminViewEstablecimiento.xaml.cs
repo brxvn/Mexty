@@ -96,13 +96,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            ClearFields();
+            ClearFields(false);
             txtNombreEstablecimiento.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar registro";
             Guardar.IsEnabled = true;
-            SearchBox.Text = "";
 
             if (DataEstablecimientos.SelectedItem == null) return; // si no hay nada selecionado, bye
             Log.Debug("Se ha selecionado un establecimiento.");
@@ -123,10 +122,10 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <summary>
         /// Método que limpia los campos de texto.
         /// </summary>
-        private void ClearFields() {
+        private void ClearFields(bool botton=true) {
+            if (botton) SearchBox.Text = "";
             txtNombreEstablecimiento.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
-            SearchBox.Text = "";
             txtNombreEstablecimiento.Text = "";
             txtRFC.Text = "";
             txtDirección.Text = "";
@@ -168,7 +167,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 // collection.Filter += noNull;
                 DataEstablecimientos.ItemsSource = collection;
                 CollectionView = collection;
-                ClearFields();
             }
             SearchBox.Text = tbx.Text;
         }
@@ -182,10 +180,9 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var sucursal = (Sucursal)obj;
-            if (sucursal.NombreTienda.Contains(text) ||
-                sucursal.Dirección.Contains(text) ||
-                sucursal.Rfc.Contains(text)) {
-                    //return cliente.Activo == 1;
+            if (sucursal.NombreTienda.ToLower().Contains(text) ||
+                sucursal.Dirección.ToLower().Contains(text) ||
+                sucursal.Rfc.ToLower().Contains(text)) {
                 return true;
             }
             return false;
