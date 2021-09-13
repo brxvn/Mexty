@@ -36,6 +36,7 @@ namespace Mexty.MVVM.Model {
         private Bitmap bitmap;
         private string instagram;
         private string facebook;
+        private string nombreCliente;
 
         public Ticket(string totalVenta, string recibido, string cambio, List<ItemInventario> listaVenta, Venta ventaActual) {
             this.totalVenta = totalVenta;
@@ -43,6 +44,14 @@ namespace Mexty.MVVM.Model {
             this.cambio = cambio;
             this.listaVenta = listaVenta;
             idCliente = ventaActual.IdCliente;
+
+            var dataCliente = QuerysClientes.GetTablesFromClientes();
+            foreach (var item in dataCliente) {
+                if (idCliente == item.IdCliente) {
+                    nombreCliente = item.Nombre;
+                    break;
+                }
+            }
 
         }
 
@@ -162,9 +171,9 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(50, (int)newYpos);
+            Point point = new Point(45, (int)newYpos);
             g.DrawImage(imageQrFB, point);
-            newYpos += 70;
+            newYpos += imageQrFB.Height + 10;
 
             if (mensaje.Length != 0) {
                 var resultMsg = ChunksUpto(mensaje, 27);
@@ -277,12 +286,12 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString(string.Format("Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString($"Cliente: {nombreCliente.ToUpper()}", consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             if (deudaCliente != 0.0) {
-                g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
+                g.DrawString(string.Format("Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
                 newYpos += 15;
             }
             
@@ -292,7 +301,7 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             Point point = new Point(50, (int)newYpos);
             g.DrawImage(imageQrFB, point);
-            newYpos += 70;
+            newYpos += 90;
 
             if (mensaje.Length != 0) {
                 var resultMsg = ChunksUpto(mensaje, 27);

@@ -42,7 +42,7 @@ namespace Mexty.MVVM.Model {
             titulo = new Paragraph().Add("Códigos de Productos").SetTextAlignment(TextAlignment.CENTER);
             doc.Add(titulo);
 
-            var data = QuerysProductos.GetTablesFromProductos();
+            var data = QuerysProductos.GetTablesFromProductos(true);
 
             titulo = new Paragraph().Add("Paleta Agua").SetTextAlignment(TextAlignment.CENTER);
             doc.Add(titulo);

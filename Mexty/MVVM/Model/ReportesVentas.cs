@@ -269,7 +269,7 @@ namespace Mexty.MVVM.Model {
             renglon += 18;
             g.DrawString($"Fecha: {_dateNow} ", consola1, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 18;
-            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
             float topMargin = 145 + renglon;
@@ -308,7 +308,7 @@ namespace Mexty.MVVM.Model {
                     //"---------------------------"
                     g.DrawString("Total de venta del dia", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{_date} es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{_date} es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -321,7 +321,7 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     g.DrawString($"{ultimaSeana} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -332,7 +332,7 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -415,7 +415,7 @@ namespace Mexty.MVVM.Model {
                     //"---------------------------"
                     g.DrawString("Total de venta del dia", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{_date} es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{_date} es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -437,7 +437,7 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
