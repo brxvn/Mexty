@@ -28,7 +28,7 @@
             
             <!--ComboSucursal-->
             <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal"  Grid.Column="1" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" SelectionChanged="SucursalSeleccionada"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" SelectionChanged="SucursalSeleccionada" Visibility="Collapsed"/>
 
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke" Grid.Column="2" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">
