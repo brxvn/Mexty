@@ -475,7 +475,6 @@ namespace Mexty.MVVM.View.VentasViews {
             foreach (var item in ListaVenta) {
                 item.CantidadDependencias = 0;
             }
-            Filtrar();
             ClearFields();
             SetFocus(sender, e);
         }
@@ -547,22 +546,6 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        private void Filtrar() {
-            var id = 300;
-
-            var query =
-                from item in ListaProductos.AsParallel()
-                where item.IdProducto == id && item.Cantidad > 0
-                select item;
-
-            if (query.Any()) {
-                var itemInventarios = query.ToArray();
-                MessageBox.Show($"{itemInventarios.First().IdProducto.ToString()} {itemInventarios.First().NombreProducto}");
-            }
-            else {
-                MessageBox.Show("no se encontro el item");
-            }
-        }
 
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
