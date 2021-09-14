@@ -166,12 +166,13 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private void FillSucursales() {
             foreach (var sucu in dataSucursal) {
-                ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
-                if (sucu.IdTienda == idTienda) {
-                    ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
+                if (sucu.TipoTienda != "Matriz") {
+                    ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
+                    if (sucu.IdTienda == idTienda) {
+                        ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
+                    }
                 }
             }
-
             Log.Debug("Se ha llenado el combo de sucursal");
         }
 

@@ -475,6 +475,7 @@ namespace Mexty.MVVM.View.VentasViews {
             foreach (var item in ListaVenta) {
                 item.CantidadDependencias = 0;
             }
+            Filtrar();
             ClearFields();
             SetFocus(sender, e);
         }
@@ -546,6 +547,23 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
+        private void Filtrar() {
+            var id = 300;
+
+            var query =
+                from item in ListaProductos.AsParallel()
+                where item.IdProducto == id && item.Cantidad > 0
+                select item;
+
+            if (query.Any()) {
+                var itemInventarios = query.ToArray();
+                MessageBox.Show($"{itemInventarios.First().IdProducto.ToString()} {itemInventarios.First().NombreProducto}");
+            }
+            else {
+                MessageBox.Show("no se encontro el item");
+            }
+        }
+
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 Log.Debug("Enter en el recibido, se procede a procesar la venta.");
@@ -554,8 +572,15 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        /// <summary>
+        /// Método que se encarga de manejar el imput del scanner.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
             barCode += e.Text;
+
+            await Task.Delay(500); // esperamos medio segundo para darle tiempo al scanner
 
             if (barCode.Length == 9) {
                 if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
