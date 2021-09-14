@@ -6,7 +6,7 @@
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome" 
              xmlns:local="clr-namespace:Mexty.Commands"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920" PreviewTextInput="UserControl_PreviewTextInput" Loaded="SetFocus">
+             d:DesignHeight="1080" d:DesignWidth="1920" PreviewTextInput="UserControl_PreviewTextInput" Loaded="SetFocus" IsTabStop="False" PreviewKeyDown="UserControl_PreviewKeyDown">
     <UserControl.Resources>
         <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
     </UserControl.Resources>
@@ -33,7 +33,9 @@
                      Grid.Column="1"
                      x:Name="SearchBox"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     HorizontalAlignment="Right">
+                     HorizontalAlignment="Right"
+                     TabIndex="1">
+                
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Style.Setters>
@@ -53,7 +55,7 @@
                                                      FontSize="18"
                                                      x:Name="txtBusqueda"
                                                      PreviewTextInput="OnlyLettersAndNumbersValidation"
-                                                     TextChanged="FilterSearch"
+                                                     TextChanged="FilterSearch" TabIndex="9"
                                                      >
 
                                                 </TextBox>
@@ -65,6 +67,7 @@
                                                         HorizontalContentAlignment="Center"
                                                         Margin="10,0,15,0"
                                                         x:Name="Icon"
+                                                                    IsTabStop="False"
                                                         />
                                                 <TextBlock IsHitTestVisible="False"
                                                        Text="Buscar..."
@@ -73,7 +76,8 @@
                                                        Margin="10,0,0,0"
                                                        FontSize="15"
                                                        Foreground="DarkGray"
-                                                       Grid.Column="1">
+                                                       Grid.Column="1"
+                                                           >
 
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
@@ -125,7 +129,7 @@
                 </Grid.RowDefinitions>
 
                 <!--DataProcuts-->
-                <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column">
+                <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataProducts" Grid.Row="1" SelectionChanged="ItemSelected" IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="Column" IsTabStop="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding IdProducto}" Width=".3*" CellStyle="{DynamicResource DisableSelection}">
                             <DataGridTextColumn.ElementStyle>
@@ -181,26 +185,30 @@
                         </DataGridTextColumn>
                         <DataGridTemplateColumn Width=".3*">
                             <DataGridTemplateColumn.CellTemplate>
+                                
                                 <DataTemplate>
-                                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="AddProduct">
-                                        <fa:FontAwesomeIcon SolidIcon="Plus"/>
+                                    
+                                    <Button Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="AddProduct" TabIndex="-1">
+                                        <fa:FontAwesomeIcon SolidIcon="Plus" IsTabStop="False"/>
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Background" Value="Transparent" />
                                                 <Setter Property="Foreground" Value="Black"/>
                                                 <Setter Property="BorderThickness" Value="0"/>
                                                 <Setter Property="FontSize" Value="20"/>
+                                                <Setter Property="IsTabStop" Value="False"/>
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="{x:Type Button}">
                                                             <Border x:Name="Border" Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                                             </Border>
                                                             <ControlTemplate.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
                                                                     <Setter Property="Background" Value="Transparent" TargetName="Border" />
                                                                     <Setter Property="Foreground" Value="LightGreen"/>
                                                                     <Setter Property="FontSize" Value="25"/>
+                                                                    <Setter Property="IsTabStop" Value="False"/>
                                                                 </Trigger>
                                                             </ControlTemplate.Triggers>
                                                         </ControlTemplate>
@@ -228,15 +236,15 @@
 
                     <!--txtDescripcion-->
                     <Label Content="Descripción" Grid.Row="0" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtDescripcion"/>
+                    <TextBox Grid.Column="1" HorizontalAlignment="Left" Height="40" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="True" Foreground="Gray" x:Name="txtDescripcion" IsTabStop="False"/>
 
                     <!--txtComentario-->
                     <Label Content="Comentario de venta " Grid.Row="1" Grid.Column="0" FontSize="30" Foreground="AntiqueWhite" Width="auto" VerticalAlignment="Top"/>
-                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Height="80" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="False"  VerticalContentAlignment="Top" Foreground="Gray" x:Name="txtComentario" PreviewTextInput="OnlyLettersAndNumbersValidation" MaxLength="199"/>
+                    <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Height="80" Width="400" Margin="10" Background="Beige" FontSize="17" Padding="5" TextWrapping="Wrap" BorderThickness="0" IsReadOnly="False"  VerticalContentAlignment="Top" Foreground="Gray" x:Name="txtComentario" PreviewTextInput="OnlyLettersAndNumbersValidation" MaxLength="199" IsTabStop="False"/>
                     
                     <!--ComboCliente-->
                     <Label Content="Cliente " FontSize="30" Foreground="AntiqueWhite" Grid.Row="2"/>
-                    <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboCliente" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="300" Grid.Row="2"/>
+                    <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboCliente" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="300" Grid.Row="2" IsTabStop="False"/>
                 </Grid>
             </Grid>
 
@@ -348,13 +356,13 @@
                         <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
                         <!--txtRecibido-->
                         <Label Content="Recibido:" Grid.Row="3" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="6" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True" PreviewTextInput="OnlyNumbersValidation" PreviewKeyDown="txtRecibido_PreviewKeyDown"/>
+                        <TextBox x:Name="txtRecibido" Grid.Row="3" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="6" Focusable="True" HorizontalContentAlignment="Center" Background="Transparent" Text="{Binding Pago, StringFormat={}{0:C}}" TextChanged="RecibidoUpdate" IsReadOnly="True" PreviewTextInput="OnlyNumbersValidation" PreviewKeyDown="txtRecibido_PreviewKeyDown" TabIndex="2"/>
 
                         <Separator BorderThickness="2" Grid.Row="3" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 
                         <!--txtCambio-->
                         <Label Content="Cambio:" Grid.Row="4" FontSize="25" VerticalContentAlignment="Center" Foreground="Black" HorizontalAlignment="Left" Margin="75 0"/>
-                        <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" IsReadOnly="True" Background="Transparent" HorizontalContentAlignment="Center" Text="{Binding Cambio, StringFormat={}{0:C}}"/>
+                        <TextBox x:Name="txtCambio" Grid.Row="4" HorizontalAlignment="Right" Margin="70 0" Width="150" FontSize="25"  BorderThickness="0" VerticalAlignment="Center" MaxLength="8" IsReadOnly="True" IsTabStop="False" Background="Transparent" HorizontalContentAlignment="Center" Text="{Binding Cambio, StringFormat={}{0:C}}"/>
                     </Grid>
                 </Border>
 

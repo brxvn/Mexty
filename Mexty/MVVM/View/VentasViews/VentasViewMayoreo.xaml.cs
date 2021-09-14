@@ -157,15 +157,24 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        private static bool FilterLogic(object obj, string text) {
+        private bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
             text = text.ToLower();
-            if (text.StartsWith("00000")) {
+            if (text.StartsWith("000")) {
                 try {
                     int result = Int32.Parse(text);
-                    if (producto.NombreProducto.Contains(text) ||
-                        producto.IdProducto.ToString().Contains(result.ToString()) ||
-                        producto.TipoProducto.ToLower().Contains(text)) {
+                    if (producto.IdProducto.ToString() == result.ToString()) {
+                        if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
+
+                        if (ListaVenta.Contains(producto)) {
+                            producto.CantidadDependencias += 1;
+                            producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
+                        }
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
                         return true;
                     }
                 }
@@ -199,6 +208,7 @@ namespace Mexty.MVVM.View.VentasViews {
             VentaActual = new Venta();
             TotalVenta();
             CambioVenta();
+            SearchBox.Text = "";
             Keyboard.Focus(txtTotal);
         }
 
@@ -264,6 +274,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta(false);
                 ClearFields();
+                SearchBox.Focus();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -394,7 +405,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias += 1;
-                producto.PrecioVenta = (producto.PrecioMayoreo * producto.CantidadDependencias);
+                producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -547,13 +558,33 @@ namespace Mexty.MVVM.View.VentasViews {
             barCode += e.Text;
 
             if (barCode.Length == 9) {
-                AddFromScannerToGrid(barCode);
-                barCode = null;
+                if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
+                    SearchBox.Text = barCode;
+                }
+                else {
+                    AddFromScannerToGrid(barCode);
+                    barCode = null;
+                }
+
             }
         }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
-            txtTotal.Focus();
+            SearchBox.Focus();
+        }
+
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.F1) {
+                if (SearchBox.IsKeyboardFocusWithin || SearchBox.IsFocused) {
+                    txtTotal.Focus();
+                    SearchBox.Text = "";
+                }
+                else {
+                    SearchBox.Focus();
+                    Keyboard.Focus(SearchBox);
+                }
+
+            }
         }
     }
 }
