@@ -303,7 +303,7 @@ namespace Mexty.MVVM.View.VentasViews {
             try {
                 if (VentaActual.TotalVenta > VentaActual.Pago) {
                     const MessageBoxButton buttons = MessageBoxButton.YesNo;
-                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
+                    var resYesNo = MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
                     if (resYesNo == MessageBoxResult.Yes) {
                         var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
                         ActualizaDeuda(selectedClientId);
@@ -534,6 +534,8 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void AddFromScannerToGrid(string id) {
+            var finded = false;
+            var nombreProducto = "";
             try {
                 id.Trim('\r');
                 var idProdutco = id == "" ? 0 : int.Parse(id);
@@ -542,6 +544,9 @@ namespace Mexty.MVVM.View.VentasViews {
                     var item = ListaProductos[index];
 
                     if (item.IdProducto == idProdutco) {
+                        nombreProducto = item.NombreProducto;
+
+                        finded = true;
                         if (!ListaVenta.Contains(item)) {
                             ListaVenta.Add(item);
                         }
@@ -558,8 +563,11 @@ namespace Mexty.MVVM.View.VentasViews {
                         CambioVenta();
                         break;
                     }
-                    MessageBox.Show($"Error: El producto {item.NombreProducto} no esta en tu inventaio o no tiene existencias.");
                 }
+                if (!finded) {
+                    MessageBox.Show($"Error: El producto no esta en tu inventaio o no tiene existencias.");
+                }
+
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al agregar el producto con el scanner.");
@@ -617,29 +625,18 @@ namespace Mexty.MVVM.View.VentasViews {
         ///// </summary>
         ///// <param name="sender"></param>
         ///// <param name="e"></param>
-        //private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-        //    barCode += e.Text;
+        private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+            //await Task.Delay(250);
+            //txtTotal.Focus();
+            //barCode += e.Text;
 
-        //    await Task.Delay(500);
+            //if (barCode.Length == 9) {
+            //    await Task.Delay(250);
+            //    AddFromScannerToGrid(barCode);
+            //    barCode = "";
+            //}
 
-        //    if (barCode.Length == 9) {
-        //        if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
-        //            SearchBox.Text = barCode;
-        //        }
-        //        else {
-        //            AddFromScannerToGrid(barCode);
-        //            barCode = null;
-        //        }
-
-        //        //if (barCode.Length == 9) {
-        //        //    AddFromScannerToGrid(barCode);
-        //        //    barCode = "";
-        //        //}
-        //        //else {
-        //        //    barCode = "";
-        //        //}
-        //    }
-        //}
+        }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
             txtTotal.Focus();
@@ -652,23 +649,14 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
-            _blockHandlers = true;
+
             barCode += e.Text;
 
-            await Task.Delay(250);
-            SetFocus(sender, e);
-
             if (barCode.Length == 9) {
+                await Task.Delay(250);
                 AddFromScannerToGrid(barCode);
                 barCode = "";
-
             }
-            else {
-                barCode = "";
-
-            }
-            _blockHandlers = false;
-            SetFocus(sender, e);
         }
     }
 }

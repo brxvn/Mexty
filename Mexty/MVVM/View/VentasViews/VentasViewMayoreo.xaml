@@ -6,7 +6,7 @@
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome" 
              xmlns:local="clr-namespace:Mexty.Commands"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" IsTabStop="False" PreviewKeyDown="UserControl_PreviewKeyDown" TextInput="UserControl_TextInput">
+             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" IsTabStop="False" PreviewKeyDown="UserControl_PreviewKeyDown" TextInput="UserControl_TextInput" PreviewTextInput="UserControl_PreviewTextInput">
     <UserControl.Resources>
         <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
     </UserControl.Resources>

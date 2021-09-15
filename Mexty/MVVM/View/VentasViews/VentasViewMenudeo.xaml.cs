@@ -441,20 +441,26 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void AddFromScannerToGrid(string id) {
+            var finded = false;
+            var nombreProducto = "";
             try {
                 id.Trim('\r');
                 var idProdutco = id == "" ? 0 : int.Parse(id);
 
-                foreach (var item in ListaProductos) {
-                    if (item.IdProducto == idProdutco) {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var item = ListaProductos[index];
 
+                    if (item.IdProducto == idProdutco) {
+                        nombreProducto = item.NombreProducto;
+
+                        finded = true;
                         if (!ListaVenta.Contains(item)) {
                             ListaVenta.Add(item);
                         }
 
                         if (ListaVenta.Contains(item)) {
                             item.CantidadDependencias += 1;
-                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                            item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
                         }
 
                         DataVenta.ItemsSource = null;
@@ -462,8 +468,13 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         TotalVenta();
                         CambioVenta();
+                        break;
                     }
                 }
+                if (!finded) {
+                    MessageBox.Show($"Error: El producto no esta en tu inventaio o no tiene existencias.");
+                }
+
             }
             catch (Exception e) {
                 Log.Error(e.ToString());
@@ -539,19 +550,11 @@ namespace Mexty.MVVM.View.VentasViews {
         private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
             barCode += e.Text;
 
-            await Task.Delay(250);
-            SetFocus(sender, e);
-
             if (barCode.Length == 9) {
+                await Task.Delay(250);
                 AddFromScannerToGrid(barCode);
                 barCode = "";
-
             }
-            else {
-                barCode = "";
-
-            }
-            SetFocus(sender, e);
 
         }
     }
