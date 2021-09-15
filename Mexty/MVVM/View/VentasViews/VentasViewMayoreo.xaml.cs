@@ -109,7 +109,7 @@ namespace Mexty.MVVM.View.VentasViews {
             DataProducts.ItemsSource = collectionView;
             //Keyboard.Focus(txtID); // TODO: checar esto
 
-            Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
+            Log.Debug("Se ha llendado el datagrid de ventas mayoreo.");
 
             ComboCliente.Items.Clear();
             var dataClientes = QuerysClientes.GetTablesFromClientes();
@@ -220,7 +220,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GuardarVenta(object sender, RoutedEventArgs e) {
-            Log.Info("Se ha precionado pagar en venta menudeo.");
+            Log.Info("Se ha precionado pagar en venta mayoreo.");
             ProcesarVenta();
             NewVenta();
         }

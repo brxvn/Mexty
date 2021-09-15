@@ -460,7 +460,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         if (ListaVenta.Contains(item)) {
                             item.CantidadDependencias += 1;
-                            item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
+                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
                         }
 
                         DataVenta.ItemsSource = null;
