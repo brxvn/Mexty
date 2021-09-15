@@ -6,7 +6,7 @@
              xmlns:fa="clr-namespace:Meziantou.WpfFontAwesome;assembly=Meziantou.WpfFontAwesome" 
              xmlns:local="clr-namespace:Mexty.Commands"
              mc:Ignorable="d" 
-             d:DesignHeight="1080" d:DesignWidth="1920" PreviewTextInput="UserControl_PreviewTextInput" Loaded="SetFocus" IsTabStop="False" PreviewKeyDown="UserControl_PreviewKeyDown">
+             d:DesignHeight="1080" d:DesignWidth="1920" Loaded="SetFocus" IsTabStop="False" PreviewKeyDown="UserControl_PreviewKeyDown" TextInput="UserControl_TextInput">
     <UserControl.Resources>
         <local:ValueToBrushConverter x:Key="ValueToBrushConverter"/>
     </UserControl.Resources>
@@ -29,7 +29,7 @@
                Foreground="AntiqueWhite"
                Padding="0,20"/>
 
-            <TextBox Background="WhiteSmoke"
+            <!--<TextBox Background="WhiteSmoke"
                      Grid.Column="1"
                      x:Name="SearchBox"
                      PreviewTextInput="OnlyLettersAndNumbersValidation"
@@ -110,7 +110,7 @@
 
                     </Style>
                 </TextBox.Style>
-            </TextBox>
+            </TextBox>-->
 
 
         </Grid>
@@ -268,7 +268,7 @@
                         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="Gray"/>
 
                         <!--DataPedido-->
-                        <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataVenta" Grid.Row="1" Margin="10"  SelectionChanged="ItemSelected" IsReadOnly="False" SelectionMode="Single" SelectionUnit="Cell" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="None" PreviewKeyDown="DataVenta_PreviewKeyDown" IsTabStop="False">
+                        <DataGrid CellStyle="{DynamicResource DataGridCellStyle1}" ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}" RowStyle="{DynamicResource DataGridRowStyle1}" Style="{DynamicResource DataGridStyle}" x:Name="DataVenta" Grid.Row="1" Margin="0 5"  SelectionChanged="ItemSelected" IsReadOnly="False" SelectionMode="Single" SelectionUnit="Cell" CanUserResizeRows="False" CanUserResizeColumns="False" GridLinesVisibility="None" AutoGenerateColumns="False" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" BorderThickness="0" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" IsSynchronizedWithCurrentItem="False" HeadersVisibility="None" PreviewKeyDown="DataVenta_PreviewKeyDown" IsTabStop="False">
                             <DataGrid.Columns>
 
                                 <DataGridTextColumn Binding="{Binding TipoProducto}" Width="*"  CellStyle="{DynamicResource DisableSelection}">
@@ -277,7 +277,8 @@
                                             <Setter Property="Margin" Value="5" />
                                             <Setter Property="HorizontalAlignment" Value="Center" />
                                             <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -287,17 +288,29 @@
                                             <Setter Property="Margin" Value="5" />
                                             <Setter Property="HorizontalAlignment" Value="Center"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
-                                <DataGridTextColumn Binding="{Binding Path=CantidadDependencias, StringFormat=x{0}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="*" CellStyle="{DynamicResource DisableSelection1}" IsReadOnly="False" FontSize="20">
+                                <DataGridTextColumn Binding="{Binding Path=CantidadDependencias, StringFormat=x{0}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width=".5*" CellStyle="{DynamicResource DisableSelection1}" IsReadOnly="False" FontSize="15">
                                     <DataGridTextColumn.ElementStyle>
                                         <Style TargetType="{x:Type TextBlock}">
                                             <Setter Property="Margin" Value="5" />
                                             <Setter Property="HorizontalAlignment" Value="Center"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontSize" Value="10"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Binding="{Binding Cantidad}" Width=".5*" CellStyle="{DynamicResource DisableSelection}">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Margin" Value="5" />
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                            <Setter Property="Foreground" Value="{Binding Cantidad, Converter={StaticResource ValueToBrushConverter}}"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>
@@ -307,7 +320,7 @@
                                             <Setter Property="Margin" Value="5" />
                                             <Setter Property="HorizontalAlignment" Value="Center"/>
                                             <Setter Property="VerticalAlignment" Value="Center"/>
-                                            <Setter Property="FontSize" Value="20"/>
+                                            <Setter Property="FontSize" Value="15"/>
                                         </Style>
                                     </DataGridTextColumn.ElementStyle>
                                 </DataGridTextColumn>

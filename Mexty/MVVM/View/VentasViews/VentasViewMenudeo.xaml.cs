@@ -5,6 +5,7 @@ using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -132,8 +133,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 DataProducts.ItemsSource = collectionView;
                 CollectionView = collection;
             }
-
-            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -188,7 +187,6 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Método que limpia los campos de texto y lo relacionado a la venta.
         /// </summary>
         private void ClearFields() {
-            SearchBox.Text = "";
             txtRecibido.Text = "";
             txtDescripcion.Text = "";
             txtTotal.Text = "";
@@ -249,7 +247,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta();
                 ClearFields();
-                SearchBox.Focus();
                 NewVenta();
             }
             catch (Exception exception) {
@@ -440,7 +437,7 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
-            SearchBox.Focus();
+            txtTotal.Focus();
         }
 
         private void AddFromScannerToGrid(string id) {
@@ -518,32 +515,44 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-            barCode += e.Text;
+        //private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        //    barCode += e.Text;
 
-            if (barCode.Length == 9) {
-                if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
-                    SearchBox.Text = barCode;
-                }
-                else {
-                    AddFromScannerToGrid(barCode);
-                    barCode = null;
-                }
+        //    if (barCode.Length == 9) {
+        //        if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
+        //            SearchBox.Text = barCode;
+        //        }
+        //        else {
+        //            AddFromScannerToGrid(barCode);
+        //            barCode = null;
+        //        }
 
-            }
-        }
+        //    }
+        //}
 
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
-                if (SearchBox.IsKeyboardFocusWithin || SearchBox.IsFocused) {
-                    txtTotal.Focus();
-                    SearchBox.Text = "";
-                }
-                else {
-                    SearchBox.Focus();
-                    Keyboard.Focus(SearchBox);
-                }
+                txtTotal.Focus();
             }
+        }
+
+        private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
+            barCode += e.Text;
+
+            await Task.Delay(250);
+            SetFocus(sender, e);
+
+            if (barCode.Length == 9) {
+                AddFromScannerToGrid(barCode);
+                barCode = "";
+
+            }
+            else {
+                barCode = "";
+
+            }
+            SetFocus(sender, e);
+
         }
     }
 }
