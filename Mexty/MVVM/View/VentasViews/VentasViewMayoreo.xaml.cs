@@ -50,7 +50,8 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Venta actual en pantalla.
         /// </summary>
         private Venta VentaActual { get; set; }
-        string barCode = null;
+        string barCode;
+        private bool _blockHandlers;
 
         public VentasViewMayoreo() {
             try {
@@ -127,6 +128,9 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FilterSearch(object sender, TextChangedEventArgs e) {
+            if (_blockHandlers) {
+                return;
+            }
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
@@ -148,7 +152,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 CollectionView = collection;
             }
 
-            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -208,7 +211,6 @@ namespace Mexty.MVVM.View.VentasViews {
             VentaActual = new Venta();
             TotalVenta();
             CambioVenta();
-            SearchBox.Text = "";
             Keyboard.Focus(txtTotal);
         }
 
@@ -246,11 +248,17 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
                 VentaActual.Comentarios = txtComentario.Text;
 
-                if (!VentaCredito()) {
-                    Log.Debug("No se alcanzo a cubrir el total de la venta.");
-                    return;
+                if (VentaActual.TotalVenta > VentaActual.Pago) {
+                    var buttons = MessageBoxButton.YesNo;
+                    var resYesNo = MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
+                    var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                    if (resYesNo == MessageBoxResult.Yes) {
+                        ActualizaDeuda(selectedClientId);
+                    }
+                    else {
+                        return;
+                    }
                 }
-                Log.Debug("se alcanza a cumplir el total de la venta.");
 
                 if (!ValidaExistencias()) {
                     MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
@@ -270,7 +278,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta(false);
                 ClearFields();
-                SearchBox.Focus();
+                txtTotal.Focus();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -364,7 +372,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     for (var i = 0; i < dependenciasToList.Count; i++) {
                         var dependencia = dependenciasToList[i];
                         QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
-                                    // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                                                              // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
                             dependencia.CantidadDependencia * item.CantidadDependencias, true);
                     }
                 }
@@ -504,6 +512,23 @@ namespace Mexty.MVVM.View.VentasViews {
             SetFocus(sender, e);
         }
 
+        private void Filtrar() {
+            var id = 300;
+
+            var query =
+                from item in ListaProductos.AsParallel()
+                where item.IdProducto == id && item.Cantidad > 0
+                select item;
+
+            if (query.Any()) {
+                var itemInventarios = query.ToArray();
+                MessageBox.Show($"{itemInventarios.First().IdProducto.ToString()} {itemInventarios.First().NombreProducto}");
+            }
+            else {
+                MessageBox.Show("no se encontro el item");
+            }
+        }
+
         private void AddFromScannerToGrid(string id) {
             try {
                 id.Trim('\r');
@@ -526,6 +551,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         TotalVenta();
                         CambioVenta();
+                        break;
                     }
                 }
             }
@@ -580,44 +606,63 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        /// <summary>
-        /// Método que se encarga de manejar el imput del scanner.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-            barCode += e.Text;
+        ///// <summary>
+        ///// Método que se encarga de manejar el imput del scanner.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        //    barCode += e.Text;
 
-            await Task.Delay(500);
+        //    await Task.Delay(500);
 
-            if (barCode.Length == 9) {
-                if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
-                    SearchBox.Text = barCode;
-                }
-                else {
-                    AddFromScannerToGrid(barCode);
-                    barCode = null;
-                }
+        //    if (barCode.Length == 9) {
+        //        if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
+        //            SearchBox.Text = barCode;
+        //        }
+        //        else {
+        //            AddFromScannerToGrid(barCode);
+        //            barCode = null;
+        //        }
 
-            }
-        }
+        //        //if (barCode.Length == 9) {
+        //        //    AddFromScannerToGrid(barCode);
+        //        //    barCode = "";
+        //        //}
+        //        //else {
+        //        //    barCode = "";
+        //        //}
+        //    }
+        //}
 
         private void SetFocus(object sender, RoutedEventArgs e) {
-            SearchBox.Focus();
+            txtTotal.Focus();
         }
 
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
-                if (SearchBox.IsKeyboardFocusWithin || SearchBox.IsFocused) {
-                    txtTotal.Focus();
-                    SearchBox.Text = "";
-                }
-                else {
-                    SearchBox.Focus();
-                    Keyboard.Focus(SearchBox);
-                }
+                txtTotal.Focus();
+            }
+        }
+
+        private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
+            _blockHandlers = true;
+            barCode += e.Text;
+
+            await Task.Delay(250);
+            SetFocus(sender, e);
+
+            if (barCode.Length == 9) {
+                AddFromScannerToGrid(barCode);
+                barCode = "";
 
             }
+            else {
+                barCode = "";
+
+            }
+            _blockHandlers = false;
+            SetFocus(sender, e);
         }
     }
 }
