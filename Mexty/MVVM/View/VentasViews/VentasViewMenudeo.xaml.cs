@@ -215,6 +215,11 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
+                if (ListaVenta.Count == 0) {
+                    MessageBox.Show("Error: No hay elementos en la cuenta.");
+                    return;
+                }
+
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
                     return;

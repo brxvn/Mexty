@@ -229,6 +229,10 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
 
+                if (ListaVenta.Count == 0) {
+                    MessageBox.Show("Error: No hay elementos en la cuenta.");
+                    return;
+                }
 
                 if (ComboCliente.SelectedItem == null) {
                     MessageBox.Show("Necesita seleccionar un cliente primero.");
@@ -509,9 +513,10 @@ namespace Mexty.MVVM.View.VentasViews {
                 id.Trim('\r');
                 var idProdutco = id == "" ? 0 : int.Parse(id);
 
-                foreach (var item in ListaProductos) {
-                    if (item.IdProducto == idProdutco) {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var item = ListaProductos[index];
 
+                    if (item.IdProducto == idProdutco) {
                         if (!ListaVenta.Contains(item)) {
                             ListaVenta.Add(item);
                         }
@@ -526,13 +531,15 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         TotalVenta();
                         CambioVenta();
+                        break;
                     }
+                    MessageBox.Show($"Error: El producto {item.NombreProducto} no esta en tu inventaio o no tiene existencias.");
                 }
             }
             catch (Exception e) {
-                Log.Error(e.ToString());
+                Log.Error("Ha ocurrido un error al agregar el producto con el scanner.");
+                Log.Error($"Error: {e.Message}");
             }
-
         }
 
         private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {
