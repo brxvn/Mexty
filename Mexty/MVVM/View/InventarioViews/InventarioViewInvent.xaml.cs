@@ -260,7 +260,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                     Log.Warn(e.Message);
                 }
             }
-            else if (producto.NombreProducto.Contains(text) ||
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;

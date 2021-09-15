@@ -142,7 +142,7 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        private  bool FilterLogic(object obj, string text) {
+        private bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
             text = text.ToLower();
             if (text.StartsWith("000")) {
@@ -153,7 +153,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         if (ListaVenta.Contains(producto)) {
                             producto.CantidadDependencias += 1;
-                            producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
+                            producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
                         }
                         DataVenta.ItemsSource = null;
                         DataVenta.ItemsSource = ListaVenta;
@@ -167,7 +167,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     Log.Warn(e.Message);
                 }
             }
-            else if (producto.NombreProducto.Contains(text) ||
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
@@ -538,7 +538,6 @@ namespace Mexty.MVVM.View.VentasViews {
                     SearchBox.Focus();
                     Keyboard.Focus(SearchBox);
                 }
-
             }
         }
     }

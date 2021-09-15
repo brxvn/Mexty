@@ -199,7 +199,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             if (text.StartsWith("00000")) {
                 try {
                     int result = Int32.Parse(text);
-                    if (producto.NombreProducto.Contains(text) ||
+                    if (producto.NombreProducto.ToLower().Contains(text) ||
                         producto.IdProducto.ToString().Contains(result.ToString()) ||
                         producto.TipoProducto.ToLower().Contains(text)) {
                         return true;
@@ -209,7 +209,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                     Log.Warn(e.Message);
                 }
             }
-            else if (producto.NombreProducto.Contains(text) ||
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;

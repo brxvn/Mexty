@@ -182,7 +182,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     Log.Warn(e.Message);
                 }
             }
-            else if (producto.NombreProducto.Contains(text) ||
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
@@ -225,18 +225,17 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private void ProcesarVenta() {
             try {
+                TotalVenta();
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
 
+
                 if (ComboCliente.SelectedItem == null) {
-                    MessageBox.Show("Necesita seleccionar un cliente primero");
+                    MessageBox.Show("Necesita seleccionar un cliente primero.");
                     return;
                 }
-                else {
-                    VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString()?.Split(' ')[0] ?? throw new Exception());
-                }
+                VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString()?.Split(' ')[0] ?? throw new Exception());
 
-                VentaActual.Comentarios = txtComentario.Text;
 
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
@@ -245,23 +244,20 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
+                VentaActual.Comentarios = txtComentario.Text;
 
-                if (VentaActual.TotalVenta > VentaActual.Pago) {
-                    var buttons = MessageBoxButton.YesNo;
-                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
-                    var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
-                    if (resYesNo == MessageBoxResult.Yes) {
-                        ActualizaDeuda(selectedClientId);
-                    }
-                    else {
-                        return;
-                    }
+                if (!VentaCredito()) {
+                    Log.Debug("No se alcanzo a cubrir el total de la venta.");
+                    return;
                 }
+                Log.Debug("se alcanza a cumplir el total de la venta.");
 
                 if (!ValidaExistencias()) {
                     MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
                     return;
                 }
+                Log.Debug("Existencias validadas.");
+
 
                 var res = QuerysVentas.NewItem(VentaActual, true);
 
@@ -288,6 +284,34 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         /// <summary>
+        /// Método que maneja el popUp de venta a credito
+        /// </summary>
+        /// <returns>True si el cargo fue exitoso.</returns>
+        private bool VentaCredito() {
+            try {
+                if (VentaActual.TotalVenta > VentaActual.Pago) {
+                    const MessageBoxButton buttons = MessageBoxButton.YesNo;
+                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
+                    if (resYesNo == MessageBoxResult.Yes) {
+                        var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                        ActualizaDeuda(selectedClientId);
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer el cargo a la cuenta del cliente.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+
+        }
+
+        /// <summary>
         /// Método que se encarga de actualizar la deuda.
         /// </summary>
         private void ActualizaDeuda(int selectedClientId) {
@@ -308,6 +332,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         UsuarioRegistra = DatabaseInit.GetUsername(),
                         //FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
+
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)
                         throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
@@ -563,7 +588,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
             barCode += e.Text;
 
-            await Task.Delay(500); // esperamos medio segundo para darle tiempo al scanner
+            await Task.Delay(500);
 
             if (barCode.Length == 9) {
                 if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
