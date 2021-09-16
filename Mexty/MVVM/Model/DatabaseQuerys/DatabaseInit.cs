@@ -87,7 +87,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al hacer la consulta para iniciar sesión.");
                 Log.Error($"Error: {e.Message}");
-                // TODO: ver que pedo con este manejo de error.
                 throw;
             }
             finally {
