@@ -53,17 +53,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 var numeroDeRegistrosMayoreo = Convert.ToInt32(resQueryCheckMayoreo);
 
                 if (numeroDeRegistrosMayoreo >= numRegistrosMinParaDepurar) {
-                    Log.Info("Comparación mayoreo");
                     var numRegEliminados = delMayoreo.ExecuteNonQuery();
                     Log.Info(
                         $"Se han eliminado los {numRegEliminados.ToString()} registros más antiguos de la tabla de ventas mayoreo como parte de la limpieza regular del sistema.");
                 }
 
                 var numeroDeRegistrosMenudeo = Convert.ToInt32(resQueryCheckMenudeo);
-                Log.Info("Se han obtenido la cantidad de registros de ventas Mayoreo.");
 
                 if (numeroDeRegistrosMenudeo >= numRegistrosMinParaDepurar) {
-                    Log.Info("Comparación menudeo");
                     var numRegEliminados = delMenudeo.ExecuteNonQuery();
                     Log.Info(
                         $"Se han eliminado los {numRegEliminados.ToString()} registros más antiguos de la tabla de ventas menudeo como parte de la limpieza regular del sistema.");
