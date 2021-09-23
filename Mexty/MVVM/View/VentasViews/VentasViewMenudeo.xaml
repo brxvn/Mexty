@@ -366,11 +366,14 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <Button x:Name="Cancelar" Grid.Column="0" Content="Cancelar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="Cancelar_Click"  IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+                    <Button x:Name="Reporte" Grid.Column="0" Content="Reporte" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="Reporte_Click"  IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0" Padding="10 0"/>
 
-                    <Button x:Name="Pagar" Grid.Column="1" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Pagar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+                    <Button x:Name="Cancelar" Grid.Column="1" Content="Cancelar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="Cancelar_Click"  IsEnabled="True" ToolTip="Seleccionar Producto" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
+
+                    <Button x:Name="Pagar" Grid.Column="2" Content="Pagar" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Click="GuardarVenta" IsEnabled="True" ToolTip="Pagar" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="15 0"/>
                 </Grid>
             </Grid>
         </Grid>

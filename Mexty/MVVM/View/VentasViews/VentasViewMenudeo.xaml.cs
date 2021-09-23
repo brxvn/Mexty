@@ -559,6 +559,23 @@ namespace Mexty.MVVM.View.VentasViews {
             }
 
         }
+
+        private void Reporte_Click(object sender, RoutedEventArgs e) {
+            ReportesVentas report = new();
+
+            string username = DatabaseInit.GetUsername();
+
+            //var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
+            //string[] nombre = allText.Split(' ');
+            //foreach (var item in dataUsuarios) {
+            //    if (item.Nombre.ToLower() == nombre[0]) {
+            //        username = item.Username;
+            //        break;
+            //    }
+            //}
+
+            report.ReporteVentasUsuario(username, "hoy");
+        }
     }
 }
 
