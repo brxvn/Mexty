@@ -50,7 +50,8 @@ namespace Mexty {
             var rndGen = new Random();
             var rndNum = rndGen.Next(1, 100);
             if (rndNum % 3 == 0) {
-                QuerysMantenimiento.DepCamposVentasAsync();
+                QuerysMantenimiento.DepCamposVentas();
+                QuerysMantenimiento.DepCamposImport();
             }
         }
 
