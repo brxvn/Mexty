@@ -28,7 +28,7 @@
             
             <!--ComboSucursal-->
             <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal"  Grid.Column="1" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" SelectionChanged="SucursalSeleccionada"/>
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" SelectionChanged="SucursalSeleccionada" />
 
             <!--El nombre es searchBox-->
             <TextBox Background="WhiteSmoke" Grid.Column="2" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">
@@ -139,6 +139,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -379,6 +380,8 @@
             </Grid>
 
         </Grid>
+        <Label x:Name="lblSucursal" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+
         <Label Name="time" 
                Grid.Row="3"
                 Foreground="AntiqueWhite" 

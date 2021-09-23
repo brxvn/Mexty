@@ -22,6 +22,7 @@ namespace Mexty.MVVM.Model {
 
         private string sucursal = "";
         private string direccion = "";
+        private string mensaje = "";
         private readonly string usuarioActivo = DatabaseInit.GetUsername();
         private string totalVenta;
         private decimal recibido;
@@ -35,6 +36,7 @@ namespace Mexty.MVVM.Model {
         private Bitmap bitmap;
         private string instagram;
         private string facebook;
+        private string nombreCliente;
 
         public Ticket(string totalVenta, string recibido, string cambio, List<ItemInventario> listaVenta, Venta ventaActual) {
             this.totalVenta = totalVenta;
@@ -42,6 +44,14 @@ namespace Mexty.MVVM.Model {
             this.cambio = cambio;
             this.listaVenta = listaVenta;
             idCliente = ventaActual.IdCliente;
+
+            var dataCliente = QuerysClientes.GetTablesFromClientes();
+            foreach (var item in dataCliente) {
+                if (idCliente == item.IdCliente) {
+                    nombreCliente = item.Nombre;
+                    break;
+                }
+            }
 
         }
 
@@ -81,15 +91,19 @@ namespace Mexty.MVVM.Model {
                     direccion = tienda.Dirección;
                     instagram = tienda.Instagram == "" ? "https://www.instagram.com" : tienda.Instagram;
                     facebook = tienda.Facebook == "" ? "https://www.facebook.com" : tienda.Facebook;
+                    mensaje = tienda.Mensaje.ToString();
                 }
             }
+            //double longitud = mensaje.Length / 27.0;
+            //var renglonMensaje = mensaje.Length <= 27 ? 1 : (int)Math.Ceiling(longitud);
+
             Image image = Image.FromFile(@"C:\Mexty\Brand\LogoTicket.png");
             var newimage = ResizeImage(image, 115, 115);
             Image imageQrIG = (Image)generator.GenerarQR(instagram);
             Image imageQrFB = (Image)generator.GenerarQR(facebook);
-            
 
-            Point ulCorner = new Point(35,0);
+
+            Point ulCorner = new Point(35, 0);
 
             Graphics g = ppeArgs.Graphics;
 
@@ -153,19 +167,23 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString(string.Format("  Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            //g.DrawString(string.Format("  ¡Gracias por su compra!  ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(20, (int)newYpos);
-            g.DrawImage(imageQrIG, point);
-            Point point1 = new Point(110, (int)newYpos);
-            g.DrawImage(imageQrFB, point1);
-            newYpos +=50;
-            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
-            g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
+            Point point = new Point(45, (int)newYpos);
+            g.DrawImage(imageQrFB, point);
+            newYpos += imageQrFB.Height + 10;
+
+            if (mensaje.Length != 0) {
+                var resultMsg = ChunksUpto(mensaje, 27);
+
+                foreach (var line in resultMsg) {
+                    g.DrawString(line, consola, Brushes.Black, leftMargin, newYpos);
+                    newYpos += 15;
+                }
+            }
+            else g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta menudeo.");
 
@@ -242,11 +260,11 @@ namespace Mexty.MVVM.Model {
             float topMargin = 145 + renglon;
 
             foreach (var item in listaVenta) {
-                var total = (item.CantidadDependencias * item.PrecioMenudeo).ToString();
+                var total = (item.CantidadDependencias * item.PrecioMayoreo).ToString();
                 var type = "";
                 var name = "";
-                if (item.TipoProducto is "Paleta Agua" or "Paleta Leche" or "Paleta Fruta") {
-                    type = item.TipoProducto[..9];
+                if (item.TipoProducto == "Otros" || item.TipoProducto == "Extras") {
+                    type = "";
                 }
                 else type = item.TipoProducto[..1] + ".";
 
@@ -268,24 +286,32 @@ namespace Mexty.MVVM.Model {
             newYpos += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
+            g.DrawString(string.Format("Productos Vendidos  {0,3}", totalProductos), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  No. Cliente         {0,3}", idCliente), consola, Brushes.Black, leftMargin, newYpos); 
+            g.DrawString($"Cliente: {nombreCliente.ToUpper()}", consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            g.DrawString(string.Format("  Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
+            if (deudaCliente != 0.0) {
+                g.DrawString(string.Format("Debe:          {0,6:C}", deudaCliente), consola, Brushes.Black, leftMargin, newYpos);
+                newYpos += 15;
+            }
+            
             g.DrawString(string.Format(" Siguenos en nuetras redes ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
             g.DrawString(string.Format("   para más promociones.   ", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
             newYpos += 15;
-            Point point = new Point(20, (int)newYpos);
-            g.DrawImage(imageQrIG, point);
-            Point point1 = new Point(110, (int)newYpos);
-            g.DrawImage(imageQrFB, point1);
-            newYpos += 50;
-            g.DrawString(string.Format("  Instagram     Facebook", totalVenta), consola, Brushes.Black, leftMargin, newYpos);
-            newYpos += 15;
-            g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
+            Point point = new Point(45, (int)newYpos);
+            g.DrawImage(imageQrFB, point);
+            newYpos += imageQrFB.Height + 10;
+
+            if (mensaje.Length != 0) {
+                var resultMsg = ChunksUpto(mensaje, 27);
+
+                foreach (var line in resultMsg) {
+                    g.DrawString(line, consola, Brushes.Black, leftMargin, newYpos);
+                    newYpos += 15;
+                }
+            }
+            else g.DrawString("  ¡GRACIAS POR SU COMPRA!  ", consola, Brushes.Black, leftMargin, newYpos);
 
             Log.Debug("Finalizando impresión de ticket de venta mayoreo.");
 
@@ -320,8 +346,15 @@ namespace Mexty.MVVM.Model {
             return destImage;
         }
 
-        public static Image resizeImage(Image imgToResize, Size size) {
-            return (Image)(new Bitmap(imgToResize, size));
+        /// <summary>
+        /// Método que divide el string para uso en tickets
+        /// </summary>
+        /// <param name="str">El string a cortar</param>
+        /// <param name="maxChunkSize">Numero máx de caracteres para dividir el string</param>
+        /// <returns></returns>
+        static IEnumerable<string> ChunksUpto(string str, int maxChunkSize) {
+            for (int i = 0; i < str.Length; i += maxChunkSize)
+                yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
         }
 
 

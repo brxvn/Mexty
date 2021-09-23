@@ -64,6 +64,8 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
-            ClearFields();
+            ClearFields(false);
             nombreUsuario.IsReadOnly = true;
             apPaternoUsuario.IsReadOnly = true;
             apMaternoUsuario.IsReadOnly = true;
@@ -156,9 +158,11 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// Función que limpia los campos de datos.
+        /// Método que limpia los campos de texto
         /// </summary>
-        private void ClearFields() {
+        /// <param name="botton">Si se le da false, no borra el campo de busqueda para que no se pierdan las busquedas.</param>
+        private void ClearFields(bool botton=true) {
+            if (botton) SearchBox.Text = "";
             nombreUsuario.Text = "";
             apPaternoUsuario.Text = "";
             apMaternoUsuario.Text = "";
@@ -166,7 +170,6 @@ namespace Mexty.MVVM.View.AdminViews {
             TxtDireccion.Text = "";
             pswrdUsuario.Password = "";
             TxtTelefono.Text = "";
-            SearchBox.Text = "";
             ComboRol.SelectedIndex = 0;
             nombreUsuario.IsReadOnly = false;
             apPaternoUsuario.IsReadOnly = false;
@@ -198,7 +201,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter = null;
                 DataUsuarios.ItemsSource = collection;
                 CollectionView = collection;
-                ClearFields();
             }
 
             SearchBox.Text = tbx.Text;
@@ -212,11 +214,12 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="text">Texto del cuadro de búsqueda.</param>
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
+            text = text.ToLower();
             var usuario = (Usuario)obj;
-            if (usuario.Username.Contains(text) ||
-                usuario.ApPaterno.Contains(text) ||
-                usuario.SucursalNombre.Contains(text) ||
-                usuario.Nombre.Contains(text)) {
+            if (usuario.Username.ToLower().Contains(text) ||
+                usuario.ApPaterno.ToLower().Contains(text) ||
+                usuario.SucursalNombre.ToLower().Contains(text) ||
+                usuario.Nombre.ToLower().Contains(text)) {
                 return true;
             }
             return false;

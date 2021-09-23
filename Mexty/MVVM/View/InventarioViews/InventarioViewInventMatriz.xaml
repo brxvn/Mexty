@@ -133,6 +133,7 @@
                             <Setter Property="HorizontalAlignment" Value="Center"/>
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="FontSize" Value="25"/>
+                            <Setter Property="TextWrapping" Value="Wrap"/>
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
@@ -374,6 +375,9 @@
             </Grid>
 
         </Grid>
+        
+        <Label x:Name="lblSucursal" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+
         <Label Name="time" 
                Grid.Row="3"
                 Foreground="AntiqueWhite" 

@@ -14,10 +14,11 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
         
-        <Label Content="Reporte de Ventas General" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Margin="50 0"/>
+        <Label Content="Reporte de Ventas" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Margin="50 0"/>
         <Separator BorderThickness="2" Grid.Row="0" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="AntiqueWhite"/>
 
         <Grid Grid.Row="1" Margin="50 0">
@@ -27,11 +28,25 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Row="1" Content="Sucursal" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
             <!--ComboSucursal-->
-            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40"
-                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400"/>
+            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboSucursal" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400" SelectionChanged="ComboSucursal_SelectionChanged"/>
         </Grid>
 
-        <Grid Grid.Row="2" Margin="50 020">
+        <Grid Grid.Row="2" Margin="50 0" x:Name="gridTipoVenta" Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width=".5*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Tipo de venta" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
+
+            <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="comboVenta" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40"
+                          VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400" >
+                <ComboBoxItem Content="Mayoreo" IsSelected="True"/>
+                <ComboBoxItem Content="Menudeo"/>
+            </ComboBox>
+
+        </Grid>
+
+        <Grid Grid.Row="3" Margin="50 020">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -44,20 +59,20 @@
         </Grid>
 
 
-        <Label Grid.Row="3" Content="Reporte de Ventas por usuario" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Margin="50 0"/>
-        <Separator BorderThickness="2" Grid.Row="2" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="AntiqueWhite"/>
+        <Label Grid.Row="4" Content="Reporte de Ventas Usuario" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" Margin="50 0"/>
+        <Separator BorderThickness="2" Grid.Row="4" VerticalAlignment="Bottom" Margin="50 0" BorderBrush="AntiqueWhite"/>
 
-        <Grid Grid.Row="4" Margin="50 0">
+        <Grid Grid.Row="5" Margin="50 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width=".5*"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Row="4" Content="Usuario" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
+            <Label Grid.Row="5" Content="Usuario" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
             <!--ComboUsuario-->
             <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboEmpleado" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40" VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400"/>
         </Grid>
 
-        <Grid Grid.Row="5" Margin="50 020">
+        <Grid Grid.Row="6" Margin="50 020">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -69,7 +84,10 @@
             <Button Content="Último Mes" Grid.Column="2" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}" Margin="50 0" Name="btnMesUsuario" Click="btnMesUsuario_Click"/>
         </Grid>
 
-        <Label Name="time" Grid.Row="6" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
+        <Label x:Name="lblSucursal" Grid.Row="7" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+
+
+        <Label Name="time" Grid.Row="7" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
 
     </Grid>
 </UserControl>

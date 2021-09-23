@@ -36,6 +36,8 @@
                BorderBrush="AntiqueWhite"/>
         <Button x:Name="Importar" Height="40" Grid.Column="0" Content="Importar" FontSize="25" HorizontalAlignment="Left" Background="Beige" BorderThickness="0" Padding="30 0" Margin="100,25,50,25" VerticalContentAlignment="Center" Grid.Row="3" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="Import"/>
 
+        <Label x:Name="lblSucursal" Grid.Row="4" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+
         <Label Name="time" 
                 Grid.Row="4"
                 Foreground="AntiqueWhite" 

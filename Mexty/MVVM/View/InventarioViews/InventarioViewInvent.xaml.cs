@@ -78,6 +78,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         /// <summary>
@@ -166,12 +168,13 @@ namespace Mexty.MVVM.View.InventarioViews {
 
         private void FillSucursales() {
             foreach (var sucu in dataSucursal) {
-                ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
-                if (sucu.IdTienda == idTienda) {
-                    ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
+                if (sucu.TipoTienda != "Matriz") {
+                    ComboSucursal.Items.Add($"{sucu.IdTienda.ToString()} {sucu.NombreTienda}");
+                    if (sucu.IdTienda == idTienda) {
+                        ComboSucursal.SelectedItem = $"{sucu.IdTienda.ToString()} {sucu.NombreTienda}";
+                    }
                 }
             }
-
             Log.Debug("Se ha llenado el combo de sucursal");
         }
 
@@ -244,16 +247,27 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// </summary>
         /// <returns></returns>
         private static bool FilterLogic(object obj, string text) {
-            text = text.ToLower();
             var producto = (ItemInventario)obj;
-            if (producto.NombreProducto.Contains(text) ||
+            text = text.ToLower();
+            if (text.StartsWith("00000")) {
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.NombreProducto.Contains(text) ||
+                        producto.IdProducto.ToString().Contains(result.ToString()) ||
+                        producto.TipoProducto.ToLower().Contains(text)) {
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
+                }
+            }
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
-                producto.TipoProducto.ToLower().Contains(text) ||
-                producto.Medida.ToLower().Contains(text) //||
-                ) {
-                //return producto.Activo == 1;
+                producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
             }
+
             return false;
 
         }

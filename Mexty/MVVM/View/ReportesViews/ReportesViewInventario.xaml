@@ -41,6 +41,9 @@
         </Grid>-->
 
         <Button Grid.Row="3" Style="{StaticResource ButtonStyle}" Template="{DynamicResource ButtonTemplate1}"  Margin="0,0,76,70" VerticalAlignment="Bottom" HorizontalAlignment="Right" Content="Generar Reporte" Click="GenerarReporteXSucursal"/>
+
+        <Label x:Name="lblSucursal" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+
         <Label Name="time" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="50 15"/>
 
     </Grid>

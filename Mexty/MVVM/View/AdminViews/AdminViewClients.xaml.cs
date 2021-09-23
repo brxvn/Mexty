@@ -65,6 +65,9 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         /// <summary>
@@ -96,7 +99,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, SelectionChangedEventArgs e) {
-            ClearFields();
+            ClearFields(false);
 
             txtNombreCliente.IsReadOnly = true;
             txtApPaternoCliente.IsReadOnly = true;
@@ -114,16 +117,17 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = cliente.Domicilio;
             txtComentario.Text = cliente.Comentario;
             txtDeuda.Text = cliente.Debe.ToString(CultureInfo.InvariantCulture);
-            SearchBox.Text = "";
             Eliminar.IsEnabled = true;
             Eliminar.ToolTip = "Eliminar Cliente.";
             Guardar.IsEnabled = true;
         }
 
         /// <summary>
-        /// Método que limpia los campos de datos.
+        /// Método que limpia los campos de texto
         /// </summary>
-        private void ClearFields() {
+        /// <param name="botton">Si se le da false, no borra el campo de busqueda para que no se pierdan las busquedas.</param>
+        private void ClearFields(bool botton=true) {
+            if (botton) SearchBox.Text = "";
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccione un cliente para eliminar.";
@@ -134,7 +138,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtDireccion.Text = "";
             txtComentario.Text = "";
             txtDeuda.Text = "";
-            SearchBox.Text = "";
             txtNombreCliente.IsReadOnly = false;
             txtApPaternoCliente.IsReadOnly = false;
             txtApMaternoCliente.IsReadOnly = false;
@@ -163,7 +166,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 collection.Filter = null;
                 DataClientes.ItemsSource = collection;
                 CollectionView = collection;
-                ClearFields();
             }
 
             SearchBox.Text = tbx.Text;
@@ -178,9 +180,9 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var cliente = (Cliente)obj;
-            return cliente.Nombre.Contains(text) ||
-                   cliente.ApPaterno.Contains(text) ||
-                   cliente.ApMaterno.Contains(text);
+            return cliente.Nombre.ToLower().Contains(text) ||
+                   cliente.ApPaterno.ToLower().Contains(text) ||
+                   cliente.ApMaterno.ToLower().Contains(text);
         }
 
         /// <summary>
@@ -198,7 +200,7 @@ namespace Mexty.MVVM.View.AdminViews {
                     ApMaterno = txtApMaternoCliente.Text,
                     Domicilio = txtDireccion.Text,
                     Telefono = txtTelefono.Text == "" ? "0" : txtTelefono.Text,
-                    Debe = decimal.Parse(txtDeuda.Text),
+                    Debe = txtDeuda.Text == "" ? 0 : decimal.Parse(txtDeuda.Text),
                     Comentario = txtComentario.Text
                 };
                 Log.Debug("Se ha creado el objeto el objeto Cliente con los campos de texto.");

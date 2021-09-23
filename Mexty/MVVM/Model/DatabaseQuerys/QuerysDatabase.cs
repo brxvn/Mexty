@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Xps;
 using log4net;
@@ -75,7 +76,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 }
 
                 var date = DateTime.Today;
-                var fileName = $"DBChangesStore:{DatabaseInit.GetIdTiendaIni().ToString()}_From_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
+                var fileName = $"DBChangesTienda-{DatabaseInit.GetIdTiendaIni().ToString()}-From_{data[0].Date:yyyy-MM-dd_HH-mm-ss}_to_{DatabaseHelper.GetCurrentTimeNDate(false)}.sql";
                 var path = $@"C:\Mexty\Backups\{date:yyyy-MMMM}\";
                 Directory.CreateDirectory(path);
                 var file = $"{path}{fileName}";
@@ -223,8 +224,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         using (MySqlBackup mb = new MySqlBackup(cmd)) {
                             cmd.Connection = conn;
                             conn.Open();
+                            //var customQuery = new Dictionary<string, string>();
+                            //customQuery.Add("cliente_mayoreo", "select * where ID_CLIENTE = 0;");
                             //mb.ExportInfo.ExcludeTables = new List<string>() {"inventario", "export"};
                             //mb.ExportInfo.ExportRows = false; // Exporta solo la estructura.
+                            //mb.ExportInfo.TablesToBeExportedDic = customQuery;
                             mb.ExportToFile(file);
                             Log.Debug("Se ha exportado el archivo exitosamente.");
                             conn.Close();
@@ -276,10 +280,13 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// </summary>
         public static bool Import(string file) {
             Log.Info("Se ha empezado el proceso de Importar un archivo SQL.");
-            var path = @"C:\Mexty\Backups\ErrorLogDb\";
+            const string path = @"C:\Mexty\Backups\ErrorLogDb\";
             Directory.CreateDirectory(path);
+
             try {
-                if (file.Contains("FullBackupBD")) { // solo BackUps de toda la base de datos.
+                if (file.Contains("FullBackupBD")) {
+                    // solo BackUps de toda la base de datos.
+                    Log.Debug("Detecatado archivo full backup.");
                     using (MySqlConnection conn = new MySqlConnection(IniFields.GetConnectionString())) {
                         using (MySqlCommand cmd = new MySqlCommand()) {
                             using (MySqlBackup mb = new MySqlBackup(cmd)) {
@@ -292,9 +299,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                             }
                         }
                     }
+
                     return true;
                 }
                 else {
+                    Log.Debug("Detecatado archivo de sincronización.");
                     return ExecFromScript(file);
                 }
             }
@@ -317,6 +326,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <returns></returns>
         private static bool ExecFromScript(string file) {
             var numberLine = 0;
+
+            var name = file.Split('\\').Last(); // obtengo el nombre del archivo.
+            if (!Validate(name)) return false; // valido que el archivo sea valido.
+            NewImportFile(name); // si es valido lo guardo en la bd.
+
             try {
                 var connObj = new MySqlConnection(IniFields.GetConnectionString());
                 connObj.Open();
@@ -343,6 +357,110 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 Log.Error($"Ha cocurrido un error al ejecutar el script sql en la linea {numberLine}.");
                 Log.Error($"Error: {e.Message}");
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Método que valida que el archivo de configuración sea valido
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>False si el archivo de configuración no es valido.</returns>
+        private static bool Validate(string name) {
+            if (ValidateIdTienda(name)) {
+                MessageBox.Show(
+                    $"Esta intentando importar un archivo de sincronización generado por esta misma tienda, lo cual puede causar incoherencias en la Base de datos.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return false;
+            }
+            return !CheckFile(name);
+        }
+
+        /// <summary>
+        ///  Método que valida que no se metan los scripts de la misma tienda.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>True si el script fue generado por la tienda actual.</returns>
+        private static bool ValidateIdTienda(string file) {
+            var id = file.Split('-')[1];
+            return int.Parse(id) == DatabaseInit.GetIdTiendaIni();
+        }
+
+        /// <summary>
+        /// Método que verifica que el script no se haya ejecutado antes.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns>true si encuentra que el archivo ya fue importado.</returns>
+        private static bool CheckFile(string file) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"select FECHA from control_imports where NOMBRE=@file"
+            };
+            query.Parameters.AddWithValue("@file", file);
+
+            try {
+                var res = query.ExecuteReader();
+                if (res.HasRows) {
+                    // Encontro el archivo.
+                    res.Read();
+                    var date = res.GetString("fecha");
+
+                    MessageBox.Show(
+                        $"Error: Este archivo de sincronización ya fue importado el {date} importarlo otra vez causara incoherencias en la base de datos.",
+                        "Error",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+        }
+
+        /// <summary>
+        /// Método que da de alta un nuevo registro en la tabla de control_imports.
+        /// </summary>
+        /// <returns>El número de filas afectadas.</returns>
+        private static int NewImportFile(string file) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+
+            MySqlCommand query = new() {
+                Connection = connObj,
+                CommandText = @"insert into control_imports
+                                values (default, @file, @date)"
+            };
+
+            query.Parameters.AddWithValue("@file", file);
+            query.Parameters.AddWithValue("@date", DatabaseHelper.GetCurrentTimeNDate());
+
+            try {
+                var res = query.ExecuteNonQuery();
+                Log.Info("Se ha guardado la query exitosamente.");
+                return res;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al guardar el nombe de el archivo de sincronización.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 15: ha ocurrido un error al intentar guardar la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
             }
         }
     }

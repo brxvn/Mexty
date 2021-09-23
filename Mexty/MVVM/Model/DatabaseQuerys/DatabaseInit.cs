@@ -38,6 +38,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         private static int IdTiendaIni { get; set; }
 
         /// <summary>
+        /// El nombre de la tienda escrito en el ini.
+        /// </summary>
+        private static string NombreTiendaInit { get; set; }
+
+        /// <summary>
         /// <c>Bool</c> que guarda si el log-in fue exitoso.
         /// </summary>
         private static bool ConnectionSuccess { get; set; }
@@ -87,7 +92,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al hacer la consulta para iniciar sesión.");
                 Log.Error($"Error: {e.Message}");
-                // TODO: ver que pedo con este manejo de error.
                 throw;
             }
             finally {
@@ -149,6 +153,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                     throw new Exception("Valor de IdTienda en ini invalido.");
                 }
                 else {
+                    res.Read();
+                    NombreTiendaInit = res.GetString("nombre_tienda");
                     IdTiendaIni = idTienda;
                 }
             }
@@ -270,6 +276,14 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <returns></returns>
         public static int GetIdTiendaIni() {
             return IdTiendaIni;
+        }
+
+        /// <summary>
+        /// Método para obtener el nombre de la tienda del ini.
+        /// </summary>
+        /// <returns></returns>
+        public static string GetNombreTiendaIni() {
+            return NombreTiendaInit;
         }
 
         /// <summary>

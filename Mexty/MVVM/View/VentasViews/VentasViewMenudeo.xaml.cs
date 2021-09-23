@@ -5,6 +5,7 @@ using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -59,6 +60,8 @@ namespace Mexty.MVVM.View.VentasViews {
                 timer.Tick += UpdateTimerTick;
                 timer.Interval = new TimeSpan(0, 0, 1);
                 timer.Start();
+                lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
@@ -124,18 +127,14 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                // var noNull = new Predicate<object>(producto =>
-                // {
-                //     if (producto == null) return false;
-                //     return ((Producto)producto).Activo == 1;
-                // });
-                //
-                // collection.Filter += noNull;
-                DataProducts.ItemsSource = collection;
+
+                var collectionView = new ListCollectionView(ListaProductos) {
+                    Filter = (e => e is ItemInventario producto && producto.Cantidad > 0)
+                };
+
+                DataProducts.ItemsSource = collectionView;
                 CollectionView = collection;
             }
-
-            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -144,10 +143,32 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        private static bool FilterLogic(object obj, string text) {
-            text = text.ToLower();
+        private bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
-            if (producto.NombreProducto.Contains(text) ||
+            text = text.ToLower();
+            if (text.StartsWith("000")) {
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.IdProducto.ToString() == result.ToString()) {
+                        if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
+
+                        if (ListaVenta.Contains(producto)) {
+                            producto.CantidadDependencias += 1;
+                            producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
+                        }
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
+                }
+            }
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
@@ -194,6 +215,11 @@ namespace Mexty.MVVM.View.VentasViews {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
 
+                if (ListaVenta.Count == 0) {
+                    MessageBox.Show("Error: No hay elementos en la cuenta.");
+                    return;
+                }
+
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
                     return;
@@ -214,7 +240,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 var res = QuerysVentas.NewItem(VentaActual);
                 if (res == 0) throw new Exception();
-                MessageBox.Show("Se ha registrado la venta con exito.");
+                MessageBox.Show("Se ha registrado la venta con éxito.");
 
                 ActualizaInventario();
 
@@ -417,13 +443,19 @@ namespace Mexty.MVVM.View.VentasViews {
         }
 
         private void AddFromScannerToGrid(string id) {
+            var finded = false;
+            var nombreProducto = "";
             try {
                 id.Trim('\r');
                 var idProdutco = id == "" ? 0 : int.Parse(id);
 
-                foreach (var item in ListaProductos) {
-                    if (item.IdProducto == idProdutco) {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var item = ListaProductos[index];
 
+                    if (item.IdProducto == idProdutco) {
+                        nombreProducto = item.NombreProducto;
+
+                        finded = true;
                         if (!ListaVenta.Contains(item)) {
                             ListaVenta.Add(item);
                         }
@@ -438,8 +470,13 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         TotalVenta();
                         CambioVenta();
+                        break;
                     }
                 }
+                if (!finded) {
+                    MessageBox.Show($"Error: El producto no esta en tu inventaio o no tiene existencias.");
+                }
+
             }
             catch (Exception e) {
                 Log.Error(e.ToString());
@@ -491,13 +528,53 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        //private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+        //    barCode += e.Text;
+
+        //    if (barCode.Length == 9) {
+        //        if (SearchBox.IsFocused || SearchBox.IsKeyboardFocusWithin) {
+        //            SearchBox.Text = barCode;
+        //        }
+        //        else {
+        //            AddFromScannerToGrid(barCode);
+        //            barCode = null;
+        //        }
+
+        //    }
+        //}
+
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.F1) {
+                txtTotal.Focus();
+            }
+        }
+
+        private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
             barCode += e.Text;
 
             if (barCode.Length == 9) {
+                await Task.Delay(250);
                 AddFromScannerToGrid(barCode);
-                barCode = null;
+                barCode = "";
             }
+
+        }
+
+        private void Reporte_Click(object sender, RoutedEventArgs e) {
+            ReportesVentas report = new();
+
+            string username = DatabaseInit.GetUsername();
+
+            //var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
+            //string[] nombre = allText.Split(' ');
+            //foreach (var item in dataUsuarios) {
+            //    if (item.Nombre.ToLower() == nombre[0]) {
+            //        username = item.Username;
+            //        break;
+            //    }
+            //}
+
+            report.ReporteVentasUsuario(username, "hoy");
         }
     }
 }

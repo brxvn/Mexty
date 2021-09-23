@@ -50,7 +50,8 @@ namespace Mexty.MVVM.View.VentasViews {
         /// Venta actual en pantalla.
         /// </summary>
         private Venta VentaActual { get; set; }
-        string barCode = null;
+        string barCode;
+        private bool _blockHandlers;
 
         public VentasViewMayoreo() {
             try {
@@ -64,6 +65,8 @@ namespace Mexty.MVVM.View.VentasViews {
                 timer.Tick += UpdateTimerTick;
                 timer.Interval = new TimeSpan(0, 0, 1);
                 timer.Start();
+                lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas mayoreo.");
@@ -108,7 +111,7 @@ namespace Mexty.MVVM.View.VentasViews {
             DataProducts.ItemsSource = collectionView;
             //Keyboard.Focus(txtID); // TODO: checar esto
 
-            Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
+            Log.Debug("Se ha llendado el datagrid de ventas mayoreo.");
 
             ComboCliente.Items.Clear();
             var dataClientes = QuerysClientes.GetTablesFromClientes();
@@ -117,7 +120,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 ComboCliente.Items.Add($"{client.IdCliente.ToString()} {client.Nombre} Deuda: {client.Debe.ToString()}");
             }
 
-            ComboCliente.SelectedIndex = 0;
+            //ComboCliente.SelectedIndex = 0;
             Log.Debug("Se ha llendado el combobox de clientes.");
         }
 
@@ -127,6 +130,9 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void FilterSearch(object sender, TextChangedEventArgs e) {
+            if (_blockHandlers) {
+                return;
+            }
             TextBox tbx = sender as TextBox;
             var collection = CollectionView;
             if (tbx != null && tbx.Text != "") {
@@ -139,18 +145,15 @@ namespace Mexty.MVVM.View.VentasViews {
             }
             else {
                 collection.Filter = null;
-                var noNull = new Predicate<object>(producto =>
-                {
-                    if (producto == null) return false;
-                    return true;
-                });
 
-                collection.Filter += noNull;
-                DataProducts.ItemsSource = collection;
+                var collectionView = new ListCollectionView(ListaProductos) {
+                    Filter = (e => e is ItemInventario producto && producto.Cantidad > 0)
+                };
+
+                DataProducts.ItemsSource = collectionView;
                 CollectionView = collection;
             }
 
-            SearchBox.Text = tbx.Text;
         }
 
         /// <summary>
@@ -159,14 +162,37 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="obj"></param>
         /// <param name="text"></param>
         /// <returns></returns>
-        private static bool FilterLogic(object obj, string text) {
-            text = text.ToLower();
+        private bool FilterLogic(object obj, string text) {
             var producto = (ItemInventario)obj;
-            if (producto.NombreProducto.Contains(text) ||
+            text = text.ToLower();
+            if (text.StartsWith("000")) {
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.IdProducto.ToString() == result.ToString()) {
+                        if (!ListaVenta.Contains(producto)) ListaVenta.Add(producto);
+
+                        if (ListaVenta.Contains(producto)) {
+                            producto.CantidadDependencias += 1;
+                            producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
+                        }
+                        DataVenta.ItemsSource = null;
+                        DataVenta.ItemsSource = ListaVenta;
+
+                        TotalVenta();
+                        CambioVenta();
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
+                }
+            }
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text)) {
                 return true;
             }
+
             return false;
         }
 
@@ -196,17 +222,28 @@ namespace Mexty.MVVM.View.VentasViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void GuardarVenta(object sender, RoutedEventArgs e) {
-            Log.Info("Se ha precionado pagar en venta menudeo.");
+            Log.Info("Se ha precionado pagar en venta mayoreo.");
             ProcesarVenta();
             NewVenta();
         }
 
         private void ProcesarVenta() {
             try {
+                TotalVenta();
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta, true);
-                VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
-                VentaActual.Comentarios = txtComentario.Text;
+
+                if (ListaVenta.Count == 0) {
+                    MessageBox.Show("Error: No hay elementos en la cuenta.");
+                    return;
+                }
+
+                if (ComboCliente.SelectedItem == null) {
+                    MessageBox.Show("Necesita seleccionar un cliente primero.");
+                    return;
+                }
+                VentaActual.IdCliente = int.Parse(ComboCliente.SelectedItem.ToString()?.Split(' ')[0] ?? throw new Exception());
+
 
                 if (txtRecibido.Text == "") {
                     MessageBox.Show("Error: El pago está vacío.");
@@ -215,10 +252,11 @@ namespace Mexty.MVVM.View.VentasViews {
 
                 VentaActual.Pago = decimal.Parse(txtRecibido.Text);
                 VentaActual.Cambio = decimal.Parse(txtCambio.Text.TrimStart('$'));
+                VentaActual.Comentarios = txtComentario.Text;
 
                 if (VentaActual.TotalVenta > VentaActual.Pago) {
                     var buttons = MessageBoxButton.YesNo;
-                    var resYesNo=MessageBox.Show("El pago dado no alcanza para cubrir la venta! Desea agregarlo a la deuda del cliente?", "Pago insuficiente", buttons);
+                    var resYesNo = MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
                     var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
                     if (resYesNo == MessageBoxResult.Yes) {
                         ActualizaDeuda(selectedClientId);
@@ -232,11 +270,13 @@ namespace Mexty.MVVM.View.VentasViews {
                     MessageBox.Show("No tienes suficientes elementos en tu inventario para la venta!");
                     return;
                 }
+                Log.Debug("Existencias validadas.");
+
 
                 var res = QuerysVentas.NewItem(VentaActual, true);
 
                 if (res == 0) throw new Exception();
-                MessageBox.Show("Se ha registrado la venta con exito.");
+                MessageBox.Show("Se ha registrado la venta con éxito.");
 
                 ActualizaInventario();
 
@@ -244,6 +284,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 Ticket ticket = new(txtTotal.Text, txtRecibido.Text, txtCambio.Text, ListaVenta, VentaActual);
                 ticket.ImprimirTicketVenta(false);
                 ClearFields();
+                txtTotal.Focus();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al guardar la venta.");
@@ -254,6 +295,34 @@ namespace Mexty.MVVM.View.VentasViews {
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
+
+        /// <summary>
+        /// Método que maneja el popUp de venta a credito
+        /// </summary>
+        /// <returns>True si el cargo fue exitoso.</returns>
+        private bool VentaCredito() {
+            try {
+                if (VentaActual.TotalVenta > VentaActual.Pago) {
+                    const MessageBoxButton buttons = MessageBoxButton.YesNo;
+                    var resYesNo = MessageBox.Show("El pago dado no alcanza para cubrir la venta! ¿Desea agregarlo a la deuda del cliente?", "Pago Insuficiente", buttons);
+                    if (resYesNo == MessageBoxResult.Yes) {
+                        var selectedClientId = int.Parse(ComboCliente.SelectedItem.ToString().Split(' ')[0]);
+                        ActualizaDeuda(selectedClientId);
+                    }
+                    else {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al hacer el cargo a la cuenta del cliente.");
+                Log.Error($"Error: {e.Message}");
+                throw;
+            }
+
         }
 
         /// <summary>
@@ -277,6 +346,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         UsuarioRegistra = DatabaseInit.GetUsername(),
                         //FechaRegistro = DatabaseHelper.GetCurrentTimeNDate()
                     };
+
                     var resDeud = QuerysMovClientes.NewLogCliente(log);
                     if (resDeud == 0)
                         throw new Exception("No se ha alterado ninguna columna al guardar el movimiento de cliente");
@@ -308,7 +378,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     for (var i = 0; i < dependenciasToList.Count; i++) {
                         var dependencia = dependenciasToList[i];
                         QuerysVentas.UpdateInventario(dependencia.IdProducto, // ID de producto
-                                    // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
+                                                                              // la cantidad que se descuenta dada desde la definicion de producto x la cantidad de ese producto que se vendio.
                             dependencia.CantidadDependencia * item.CantidadDependencias, true);
                     }
                 }
@@ -374,7 +444,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias += 1;
-                producto.PrecioVenta = (producto.PrecioMenudeo * producto.CantidadDependencias);
+                producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
             }
             DataVenta.ItemsSource = null;
             DataVenta.ItemsSource = ListaVenta;
@@ -395,7 +465,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
             if (ListaVenta.Contains(producto)) {
                 producto.CantidadDependencias -= 1;
-                producto.PrecioVenta = producto.PrecioMenudeo * producto.CantidadDependencias;
+                producto.PrecioVenta = producto.PrecioMayoreo * producto.CantidadDependencias;
             }
 
             if (producto.CantidadDependencias == 0) ListaVenta.Remove(producto);
@@ -448,21 +518,44 @@ namespace Mexty.MVVM.View.VentasViews {
             SetFocus(sender, e);
         }
 
+        private void Filtrar() {
+            var id = 300;
+
+            var query =
+                from item in ListaProductos.AsParallel()
+                where item.IdProducto == id && item.Cantidad > 0
+                select item;
+
+            if (query.Any()) {
+                var itemInventarios = query.ToArray();
+                MessageBox.Show($"{itemInventarios.First().IdProducto.ToString()} {itemInventarios.First().NombreProducto}");
+            }
+            else {
+                MessageBox.Show("no se encontro el item");
+            }
+        }
+
         private void AddFromScannerToGrid(string id) {
+            var finded = false;
+            var nombreProducto = "";
             try {
                 id.Trim('\r');
                 var idProdutco = id == "" ? 0 : int.Parse(id);
 
-                foreach (var item in ListaProductos) {
-                    if (item.IdProducto == idProdutco) {
+                for (var index = 0; index < ListaProductos.Count; index++) {
+                    var item = ListaProductos[index];
 
+                    if (item.IdProducto == idProdutco) {
+                        nombreProducto = item.NombreProducto;
+
+                        finded = true;
                         if (!ListaVenta.Contains(item)) {
                             ListaVenta.Add(item);
                         }
 
                         if (ListaVenta.Contains(item)) {
                             item.CantidadDependencias += 1;
-                            item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                            item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
                         }
 
                         DataVenta.ItemsSource = null;
@@ -470,13 +563,18 @@ namespace Mexty.MVVM.View.VentasViews {
 
                         TotalVenta();
                         CambioVenta();
+                        break;
                     }
                 }
+                if (!finded) {
+                    MessageBox.Show($"Error: El producto no esta en tu inventaio o no tiene existencias.");
+                }
+
             }
             catch (Exception e) {
-                Log.Error(e.ToString());
+                Log.Error("Ha ocurrido un error al agregar el producto con el scanner.");
+                Log.Error($"Error: {e.Message}");
             }
-
         }
 
         private void DataVenta_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -502,7 +600,7 @@ namespace Mexty.MVVM.View.VentasViews {
                         else {
                             item.CantidadDependencias += 1;
                         }
-                        item.PrecioVenta = item.PrecioMenudeo * item.CantidadDependencias;
+                        item.PrecioVenta = item.PrecioMayoreo * item.CantidadDependencias;
                     }
 
 
@@ -515,6 +613,7 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
+
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 Log.Debug("Enter en el recibido, se procede a procesar la venta.");
@@ -523,17 +622,43 @@ namespace Mexty.MVVM.View.VentasViews {
             }
         }
 
-        private void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
-            barCode += e.Text;
+        ///// <summary>
+        ///// Método que se encarga de manejar el imput del scanner.
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        private async void UserControl_PreviewTextInput(object sender, TextCompositionEventArgs e) {
+            //await Task.Delay(250);
+            //txtTotal.Focus();
+            //barCode += e.Text;
 
-            if (barCode.Length == 9) {
-                AddFromScannerToGrid(barCode);
-                barCode = null;
-            }
+            //if (barCode.Length == 9) {
+            //    await Task.Delay(250);
+            //    AddFromScannerToGrid(barCode);
+            //    barCode = "";
+            //}
+
         }
 
         private void SetFocus(object sender, RoutedEventArgs e) {
             txtTotal.Focus();
+        }
+
+        private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.F1) {
+                txtTotal.Focus();
+            }
+        }
+
+        private async void UserControl_TextInput(object sender, TextCompositionEventArgs e) {
+
+            barCode += e.Text;
+
+            if (barCode.Length == 9) {
+                await Task.Delay(250);
+                AddFromScannerToGrid(barCode);
+                barCode = "";
+            }
         }
     }
 }

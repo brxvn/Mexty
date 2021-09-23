@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -6,6 +7,7 @@ using Mexty.MVVM.Model;
 using log4net;
 using log4net.Config;
 using System.Windows.Controls;
+using System.Windows.Markup.Localizer;
 using Mexty.MVVM.Model.DatabaseQuerys;
 
 namespace Mexty {
@@ -15,7 +17,7 @@ namespace Mexty {
     public partial class Login : Window {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
         public Login() {
-            log4net.Config.XmlConfigurator.Configure();
+            XmlConfigurator.Configure();
             Log.Info("Iniciado login");
 
             InitializeComponent();
@@ -29,8 +31,9 @@ namespace Mexty {
         /// <summary>
         /// Lógica de el botón de Log-in.
         /// </summary>
-        private void PasswordKeyDown(object sender, RoutedEventArgs e) {
+        private async void PasswordKeyDown(object sender, RoutedEventArgs e) {
             LogIn();
+            await Task.Run(DepuraAveces);
         }
 
         /// <summary>
@@ -38,6 +41,18 @@ namespace Mexty {
         /// </summary>
         private void UpdateTimerTick(object sender, EventArgs e) {
             time.Content = DateTime.Now.ToString("G");
+        }
+
+        /// <summary>
+        /// Método que decide si depurar la base de datos o no
+        /// </summary>
+        private void DepuraAveces() {
+            var rndGen = new Random();
+            var rndNum = rndGen.Next(1, 100);
+            if (rndNum % 3 == 0) {
+                QuerysMantenimiento.DepCamposVentas();
+                QuerysMantenimiento.DepCamposImport();
+            }
         }
 
         /// <summary>
@@ -75,9 +90,10 @@ namespace Mexty {
         /// Lógica para detectar el Enter en el password e inicie la sesion.
         /// </summary>
         //TODO: juntarlo con el login o hacer función de login
-        private void EnterKeyPassword(object sender, KeyEventArgs e) {
+        private async void EnterKeyPassword(object sender, KeyEventArgs e) {
             if (e.Key == Key.Return) {
                 LogIn();
+                await Task.Run(DepuraAveces);
             }
         }
 

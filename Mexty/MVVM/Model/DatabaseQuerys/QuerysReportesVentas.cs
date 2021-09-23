@@ -82,13 +82,31 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             switch (comando) {
                 case "hoy":
-                    cmd = @"select * from venta_menudeo where date(FECHA_REGISTRO) = curdate() and id_tienda=@id";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda=@id";
+                            //UNION
+                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            //FROM venta_mayoreo
+                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda = @id";
                     break;
                 case "semana":
-                    cmd = @"select * from venta_menudeo where date_sub(now(), interval 1 week) and now() and id_tienda=@id";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda=@id";
+                            //UNION
+                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            //FROM venta_mayoreo
+                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda = @id";
                     break;
                 case "mes":
-                    cmd = @"select * from venta_menudeo where FECHA_REGISTRO>now() - interval 1 month and id_tienda=@id";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda=@id";
+                            //UNION
+                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            //FROM venta_mayoreo
+                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda = @id";
                     break;
             }
 
@@ -104,10 +122,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 using var reader = conn.ExecuteReader();    
                 while (reader.Read()) {
                     var item = new Venta() {
-                        IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
+                        //IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
                         DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? DateTime.Now : reader.GetDateTime("fecha_registro"),
                     };
 
                     items.Add(item);
@@ -138,13 +157,31 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             switch (comando) {
                 case "hoy":
-                    cmd = @"select * from venta_menudeo where date(FECHA_REGISTRO) = curdate() and  usuario_registra=@username";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and usuario_registra = @username
+                            UNION
+                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_mayoreo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and usuario_registra = @username";
                     break;
                 case "semana":
-                    cmd = @"select * from venta_menudeo where date_sub(now(), interval 1 week) and now() and usuario_registra = @username";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and usuario_registra = @username
+                            UNION
+                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_mayoreo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and usuario_registra = @username";
                     break;
                 case "mes":
-                    cmd = @"select * from venta_menudeo where FECHA_REGISTRO>now() - interval 1 month and usuario_registra=@username";
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_menudeo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and usuario_registra = @username
+                            UNION
+                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            FROM venta_mayoreo
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and usuario_registra = @username";
                     break;
             }
 
@@ -160,7 +197,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 using var reader = conn.ExecuteReader();
                 while (reader.Read()) {
                     var item = new Venta() {
-                        IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
+                        //IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
                         DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
@@ -185,6 +222,76 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 connObj.Close();
             }
             return items;
+        }
+
+        public static List<Venta> GetVentasMayoreo(int idTienda, string comando) {
+            var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            connObj.Open();
+            var cmd = "";
+
+            switch (comando) {
+                case "hoy":
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
+                            FROM venta_mayoreo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
+                    break;
+                case "semana":
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
+                            FROM venta_mayoreo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
+                    break;
+                case "mes":
+                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
+                            FROM venta_mayoreo
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
+                    break;
+            }
+
+            var conn = new MySqlCommand() {
+                Connection = connObj,
+                CommandText = cmd
+            };
+
+            conn.Parameters.AddWithValue("id", idTienda.ToString());
+
+
+            var items = new List<Venta>();
+
+            try {
+                using var reader = conn.ExecuteReader();
+                while (reader.Read()) {
+                    var item = new Venta() {
+                        //IdVenta = reader.IsDBNull("id_venta_menudeo") ? 0 : reader.GetInt32("id_venta_menudeo"),
+                        UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
+                        TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
+                        DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? DateTime.Now : reader.GetDateTime("fecha_registro"),
+                        IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente")
+                    };
+
+                    items.Add(item);
+                }
+
+                Log.Debug("Se han obtenido con exito las tablas de inventario de venta mayoreo.");
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al obtener las tablas de inventario venta mayoreo.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 14: ha ocurrido un error al intentar obtener la información de la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+            finally {
+                connObj.Close();
+            }
+            return items;
+
         }
     }
 }

@@ -520,7 +520,7 @@
                      Grid.Column="1"
                      PreviewTextInput="OnlyLetterAndNumbers"
                      HorizontalAlignment="Stretch"
-                     MaxLength="27"
+                     MaxLength="150"
                      TextWrapping="Wrap"
                      Margin="10 0">
                     <TextBox.Style>
@@ -541,7 +541,7 @@
                                                      Foreground="Gray"
                                                      FontSize="15"
                                                      x:Name="SearchBox"
-                                                     MaxLength="27"
+                                                     MaxLength="150"
                                                      PreviewTextInput="OnlyLetterAndNumbers"
                                                      TextWrapping="Wrap"
                                                      TextChanged="txtUpdateMsg"/>
@@ -743,6 +743,8 @@
 
             </Grid>
         </Grid>
+        <Label x:Name="lblSucursal" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
+        
         <Label Name="time" 
                Grid.Row="3"
                 Foreground="AntiqueWhite" 

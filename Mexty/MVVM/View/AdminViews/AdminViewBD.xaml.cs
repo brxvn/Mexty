@@ -41,6 +41,9 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         /// <summary>
@@ -110,35 +113,18 @@ namespace Mexty.MVVM.View.AdminViews {
                 OpenFileDialog dialog = new OpenFileDialog();
                 dialog.Filter = "Text files (*.sql)|*.sql;";
                 if (dialog.ShowDialog() == true) {
+                    // Validamos que no se haya importado antes.
                     if (QuerysDatabase.Import(dialog.FileName)) {
                         Log.Info("Se ha importado a la base de datos de manera exitosa.");
                         MessageBox.Show("Se ha importado a la base de datos con éxito.");
+                        MessageBox.Show("Se recomienda salir y volver a entrar al programa");
                     }
                 }
-
-                MessageBox.Show("Se recomienda salir y volver a entrar al programa");
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al importar la base de datos.");
                 Log.Error($"Error: {exception.Message}");
             }
         }
-
-        // private bool ValidateLastImport(string lastImportName, string file) {
-        //     if (lastImportName == null) {
-        //         lastImportName = file;
-        //     }
-        //     else {
-        //         if (file == lastImportName) {
-        //             var res = MessageBox.Show(
-        //                 "Precaución, Se ha detectado que se ha seleccionado el mismo archivo de sincronización dos veces en la misma sesión ¿desea importarlo de todas formas? si se hace sin cuidado puede llevar a incongruencias en la base de datos.",
-        //                 "Script de importación duplicado",
-        //                 MessageBoxButton.YesNo);
-        //             if (res == MessageBoxResult.No) {
-        //                 return false;
-        //             }
-        //         }
-        //     }
-        // }
     }
 }

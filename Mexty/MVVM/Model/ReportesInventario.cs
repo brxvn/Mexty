@@ -17,7 +17,6 @@ namespace Mexty.MVVM.Model {
         private static readonly ILog Log =
           LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
-
         int idTienda = DatabaseInit.GetIdTiendaIni();
 
         private List<Sucursal> ListaSucursales = QuerysSucursales.GetTablesFromSucursales();
@@ -25,6 +24,11 @@ namespace Mexty.MVVM.Model {
 
         public void ReporteInventario() {
             var dataInventario = QuerysInventario.GetItemsFromInventario();
+
+            if (dataInventario.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar.\nPrimero da de alta inventario en la sucursal.");
+                return;
+            }
 
             foreach (Sucursal tienda in ListaSucursales) {
                 if (tienda.IdTienda == idTienda) {
@@ -88,6 +92,10 @@ namespace Mexty.MVVM.Model {
             nombreImprimir = nombreTienda;
             dirImprimir = direccion;
             var dataInventarioSucursal = QuerysInventario.GetItemsFromInventarioById(idTienda);
+            if (dataInventarioSucursal.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar.\nPrimero da de alta inventario en la sucursal.");
+                return;
+            }
 
             string path = $"{_SucursalesInventarioPath}";
             string nombreReporte = $"Reporte-{nombreTienda}-{_date}";
@@ -171,21 +179,22 @@ namespace Mexty.MVVM.Model {
             g.DrawString($"Fecha: {_dateNow} ", consola, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 18;
 
-            g.DrawString("ID Tipo      Nombre    Pzas", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
-            renglon += 18;
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon + 2);
+            renglon += 15;
             g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
             float topMargin = 145 + renglon;
             foreach (var item in dataInventario) {
                 type = null;
                 name = null;
-                if (item.TipoProducto == "Paleta Agua" || item.TipoProducto == "Paleta Leche" || item.TipoProducto == "Paleta Fruta") {
-                    type = item.TipoProducto[..9];
+                if (item.TipoProducto == "Otros" || item.TipoProducto == "Extras") {
+                    type = "";
                 }
-                else type = item.TipoProducto;
+                else type = item.TipoProducto[..1] + ".";
 
-                name = item.NombreProducto.Length >= 10 ? item.NombreProducto[..10] : item.NombreProducto;
+                name = item.NombreProducto.Length >= 15 ? item.NombreProducto[..15] : item.NombreProducto;
                 yPos = topMargin + (count * consola.GetHeight(g));
-                g.DrawString(string.Format("{0,2} {1,-9} {2,-10} {3,3}", item.IdProducto, type, name, item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("{0,2} {1,-2} {2,-11}", item.IdProducto, type, name), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("                        {0,4}", item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
             Log.Debug("Finalizando impresión del ticket de reporte de inventario.");
@@ -244,14 +253,15 @@ namespace Mexty.MVVM.Model {
             foreach (var item in dataInventarioSucursal) {
                 type = null;
                 name = null;
-                if (item.TipoProducto == "Paleta Agua" || item.TipoProducto == "Paleta Leche" || item.TipoProducto == "Paleta Fruta") {
-                    type = item.TipoProducto[..9];
+                if (item.TipoProducto == "Otros" || item.TipoProducto == "Extras") {
+                    type = "";
                 }
-                else type = item.TipoProducto;
+                else type = item.TipoProducto[..1] + ".";
 
-                name = item.NombreProducto.Length >= 10 ? item.NombreProducto[..10] : item.NombreProducto;
+                name = item.NombreProducto.Length >= 15 ? item.NombreProducto[..15] : item.NombreProducto;
                 yPos = topMargin + (count * consola.GetHeight(g));
-                g.DrawString(string.Format("{0,2} {1,-9} {2,-10} {3,3}", item.IdProducto, type, name, item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("{0,2} {1,-2} {2,-11}", item.IdProducto, type, name), consola, Brushes.Black, leftMargin, yPos);
+                g.DrawString(string.Format("                        {0,4}", item.Cantidad), consola, Brushes.Black, leftMargin, yPos);
                 count++;
             }
             Log.Debug("Finalizando impresión del ticket de reporte de inventario por sucursal.");

@@ -64,6 +64,9 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         /// <summary>
@@ -110,8 +113,7 @@ namespace Mexty.MVVM.View.AdminViews {
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ItemSelected(object sender, EventArgs e) {
-
-            ClearFields();
+            ClearFields(false);
             txtNombreProducto.IsReadOnly = true;
             ComboTipo.IsEnabled = false;
             if (DataProductos.SelectedItem == null) return;
@@ -137,9 +139,11 @@ namespace Mexty.MVVM.View.AdminViews {
         }
 
         /// <summary>
-        /// Método que limpia los campos de datos.
+        /// Método que limpia los campos de texto
         /// </summary>
-        private void ClearFields() {
+        /// <param name="botton">Si se le da false, no borra el campo de busqueda para que no se pierdan las busquedas.</param>
+        private void ClearFields(bool botton=true) {
+            if (botton) SearchBox.Text = "";
             Guardar.IsEnabled = false;
             Eliminar.IsEnabled = false;
             Eliminar.ToolTip = "Seleccione al menos un producto para eliminar.";
@@ -150,7 +154,6 @@ namespace Mexty.MVVM.View.AdminViews {
             txtPrecioMenudeo.Text = "";
 
             txtDetalle.Text = "";
-            SearchBox.Text = "";
             ComboMedida.SelectedIndex = 0;
             txtNombreProducto.IsReadOnly = false;
             ComboTipo.IsEnabled = true;
@@ -193,15 +196,33 @@ namespace Mexty.MVVM.View.AdminViews {
         private static bool FilterLogic(object obj, string text) {
             text = text.ToLower();
             var producto = (Producto)obj;
-            if (producto.NombreProducto.Contains(text) ||
+
+            if (text.Contains("00000")) {
+                try {
+                    int result = Int32.Parse(text);
+                    if (producto.NombreProducto.ToLower().Contains(text) ||
+                        producto.IdProducto.ToString().Contains(result.ToString()) ||
+                        producto.TipoProducto.ToLower().Contains(text) ||
+                        producto.TipoVentaNombre.ToLower().Contains(text) ||
+                        producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
+                        producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)) {
+
+                        return true;
+                    }
+                }
+                catch (Exception e) {
+                    Log.Warn(e.Message);
+                }
+            }
+            else if (producto.NombreProducto.ToLower().Contains(text) ||
                 producto.IdProducto.ToString().Contains(text) ||
                 producto.TipoProducto.ToLower().Contains(text) ||
                 producto.TipoVentaNombre.ToLower().Contains(text) ||
                 producto.PrecioMayoreo.ToString(CultureInfo.InvariantCulture).Contains(text) ||
-                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)
-                ) {
+                producto.PrecioMenudeo.ToString(CultureInfo.InvariantCulture).Contains(text)) {
                 return true;
             }
+
             return false;
         }
 
@@ -227,7 +248,7 @@ namespace Mexty.MVVM.View.AdminViews {
                 newProduct.PrecioMenudeo = txtPrecioMayoreo.Text == "" ? 0 : decimal.Parse(txtPrecioMenudeo.Text);
 
                 // Validación de precio mayoreo y precio menudeo.
-                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo) {
+                if (newProduct.PrecioMayoreo > newProduct.PrecioMenudeo && ComboVenta.SelectedItem.ToString()?.ToLower() == "general") {
                     MessageBox.Show("No se permite guardar productos con un precio mayoreo mayor a el precio menudeo",
                         "Error: Precio mayoreo mayor que precio menudeo",
                         MessageBoxButton.OK,

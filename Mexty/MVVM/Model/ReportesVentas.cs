@@ -37,11 +37,16 @@ namespace Mexty.MVVM.Model {
         List<Sucursal> sucursales = QuerysSucursales.GetTablesFromSucursales();
 
         public void ReporteVentasSucursal(int idTienda, string comando) {
+            var rawData = QuerysReportesVentas.GetVentasPorSucursal(idTienda, comando);
+            if (rawData.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar.\nPrimero realiza ventas.");
+                return;
+            }
             this.idTienda = idTienda;
             this.comandoSucursal = comando;
-            Table table = new Table(UnitValue.CreatePercentArray(tamaños));
+            //Table table = new Table(UnitValue.CreatePercentArray(tamaños));
 
-            table.SetWidth(UnitValue.CreatePercentValue(100));
+            //table.SetWidth(UnitValue.CreatePercentValue(100));
 
             foreach (Sucursal tienda in sucursales) {
                 if (tienda.IdTienda == idTienda) {
@@ -55,63 +60,92 @@ namespace Mexty.MVVM.Model {
             string path = $"{_sucursalesVentas}{sucursal}\\{comando}\\";
             Directory.CreateDirectory($"{path}");
             string nombreReporte = $"ReporteVentas-{sucursal}-{comando}-{_date}";
-            string tituloReporte = $"Reporte de Ventas del {comando} de {sucursal}";
+            string tituloReporte = $"Reporte de Ventas de {comando} {sucursal}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
 
             Paragraph p = new Paragraph().Add(texto);
 
             var document = CreateDocument(nombreReporte, p, tituloReporte, path);
+            decimal totalTotal = 0.0m;
 
-            foreach (string columa in columnas) {
-                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
-            }
 
-            var data = QuerysReportesVentas.GetVentasPorSucursal(idTienda, comando);
+            for (int i = 0; i <= rawData.Count - 1; i++) {
+                var aux = "";
 
-            var totalProductos = 0;
+                var fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
 
-            decimal totalDia = 0.0m;
-            foreach (var detalle in data) {
-                itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
-                foreach (var item in itemInventarios) {
-                    var nombre = "";
-                    var total = "";
-                    foreach (var producto in productos) {
-                        if (item.IdProducto == producto.IdProducto) {
-                            nombre = $"{producto.TipoProducto} {producto.NombreProducto}";
-                            break;
-                        }
+                if (i < rawData.Count - 1) aux = rawData[i + 1].FechaRegistro.ToString("dd-MM-yy");
+                else fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
+                var totalProductos = 0;
+                decimal totalDia = 0.0m;
+
+                if (fechaVenta != aux) {
+                    Paragraph f = new Paragraph().Add(fechaVenta);
+                    document.Add(f);
+
+                    Table table = new Table(UnitValue.CreatePercentArray(tamaños));
+
+                    table.SetWidth(UnitValue.CreatePercentValue(100));
+                    foreach (string columa in columnas) {
+                        table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
                     }
-                    table.AddCell(new Cell().Add(new Paragraph(nombre).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                    table.AddCell(new Cell().Add(new Paragraph(item.CantidadDependencias.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                    table.AddCell(new Cell().Add(new Paragraph(item.PrecioMenudeo.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                    table.AddCell(new Cell().Add(new Paragraph((item.PrecioMenudeo * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
 
-                    total = (item.PrecioMenudeo * item.CantidadDependencias).ToString();
-                    totalProductos += item.CantidadDependencias;
-                    totalDia += Convert.ToDecimal(total);
+                    foreach (var items in rawData) {
+
+                        if (fechaVenta == items.FechaRegistro.ToString("dd-MM-yy")) {
+                            var nombre = "";
+                            var total = "";
+
+                            itemInventarios = Venta.StringProductosToList(items.DetalleVenta);
+                            foreach (var item in itemInventarios) {
+
+                                var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
+                                foreach (var producto in productos) {
+                                    if (item.IdProducto == producto.IdProducto) {
+                                        nombre = $"{producto.TipoProducto} {producto.NombreProducto}";
+                                        break;
+                                    }
+                                }
+                                table.AddCell(new Cell().Add(new Paragraph(nombre).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                table.AddCell(new Cell().Add(new Paragraph(item.CantidadDependencias.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                table.AddCell(new Cell().Add(new Paragraph(precioTotal.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                table.AddCell(new Cell().Add(new Paragraph((precioTotal * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+
+                                total = (precioTotal * item.CantidadDependencias).ToString();
+                                totalProductos += item.CantidadDependencias;
+                                totalDia += Convert.ToDecimal(total);
+
+                            }
+
+                        }
+
+                    }
+                    totalTotal += totalDia;
+                    document.Add(table);
+                    Paragraph totalp = new Paragraph().Add($"Productos Vendidos: {totalProductos}. Total Dia: ${totalDia}");
+                    document.Add(totalp);
                 }
-            }
-            document.Add(table);
 
+            }
             var texto1 = "";
             switch (comando) {
                 case "hoy":
-                    texto1 = $"Total de venta del dia {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del dia {_date} es de: ${totalTotal}";
                     break;
                 case "semana":
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    texto1 = $"Total de venta del {ultimaSeana.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimaSeana} a {_date} es de: ${totalTotal}";
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
-                    texto1 = $"Total de venta del {ultimoMes.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimoMes} a {_date} es de: ${totalTotal}";
                     break;
             }
 
             Paragraph p1 = new Paragraph().Add(texto1);
             document.Add(p1);
+
 
             document.Close();
 
@@ -136,6 +170,11 @@ namespace Mexty.MVVM.Model {
 
 
         public void ReporteVentasUsuario(string username, string comando) {
+            var data = QuerysReportesVentas.GetVentasPorUsuario(username, comando);
+            if (data.Count == 0) {
+                MessageBox.Show("No hay nada que mostrar. \nPrimero realiza ventas.");
+                return;
+            }
             this.username = username;
             this.comandoUsuario = comando;
             Table table = new Table(UnitValue.CreatePercentArray(tamaños));
@@ -145,7 +184,7 @@ namespace Mexty.MVVM.Model {
             string path = $"{_ventasUsuarios}{username}\\{comando}\\";
             Directory.CreateDirectory($"{path}");
             string nombreReporte = $"ReporteVentas-{username}-{comando}-{_date}";
-            string tituloReporte = $"Reporte de Ventas del usuario {username}";
+            string tituloReporte = $"Reporte de Ventas de usuario: {username}";
 
             var texto = $"{sucursal} - {direccion} \n" + $"{_dateNow} \n" + $"{usuarioActivo}";
 
@@ -157,7 +196,6 @@ namespace Mexty.MVVM.Model {
                 table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
             }
 
-            var data = QuerysReportesVentas.GetVentasPorUsuario(username, comando);
 
             var totalProductos = 0;
 
@@ -167,6 +205,7 @@ namespace Mexty.MVVM.Model {
                 foreach (var item in itemInventarios) {
                     var nombre = "";
                     var total = "";
+                    var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
                     foreach (var producto in productos) {
                         if (item.IdProducto == producto.IdProducto) {
                             nombre = $"{producto.TipoProducto} {producto.NombreProducto}";
@@ -175,10 +214,10 @@ namespace Mexty.MVVM.Model {
                     }
                     table.AddCell(new Cell().Add(new Paragraph(nombre).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
                     table.AddCell(new Cell().Add(new Paragraph(item.CantidadDependencias.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                    table.AddCell(new Cell().Add(new Paragraph(item.PrecioMenudeo.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                    table.AddCell(new Cell().Add(new Paragraph((item.PrecioMenudeo * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                    table.AddCell(new Cell().Add(new Paragraph(precioTotal.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                    table.AddCell(new Cell().Add(new Paragraph((precioTotal * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
 
-                    total = (item.PrecioMenudeo * item.CantidadDependencias).ToString();
+                    total = (precioTotal * item.CantidadDependencias).ToString();
                     totalProductos += item.CantidadDependencias;
                     totalDia += Convert.ToDecimal(total);
                 }
@@ -188,15 +227,15 @@ namespace Mexty.MVVM.Model {
             var texto1 = "";
             switch (comando) {
                 case "hoy":
-                    texto1 = $"Total de venta del dia {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    texto1 = $"Total de venta del dia {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "semana":
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    texto1 = $"Total de venta del {ultimaSeana.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimaSeana} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
-                    texto1 = $"Total de venta del {ultimoMes.ToString("d")} a hoy {_date} es: ${totalDia} con {totalProductos} productos vendidos.";
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
+                    texto1 = $"Total de venta de {ultimoMes} a {_date} es de: ${totalDia} con {totalProductos} productos vendidos.";
                     break;
             }
 
@@ -260,28 +299,30 @@ namespace Mexty.MVVM.Model {
             renglon += 18;
             g.DrawString($"Fecha: {_dateNow} ", consola1, Brushes.Black, leftMargin, yPos + renglon);
             renglon += 18;
-            g.DrawString("Cant Tipo    Nombre   Total", consola1, Brushes.Black, leftMargin, yPos + renglon + 2);
-            renglon += 18;
-            g.DrawString("---------------------------", consola1, Brushes.Black, leftMargin, yPos + renglon - 8);
+            g.DrawString("Cant Producto         Total", consola, Brushes.Black, leftMargin, yPos + renglon);
+            renglon += 15;
+            g.DrawString("---------------------------", consola, Brushes.Black, leftMargin, yPos + renglon - 8);
             float topMargin = 145 + renglon;
             foreach (var detalle in data) {
                 itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
                 foreach (var item in itemInventarios) {
+                    var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
                     foreach (var producto in productos) {
                         if (item.IdProducto == producto.IdProducto) {
-                            if (producto.TipoProducto == "Paleta Agua" || producto.TipoProducto == "Paleta Leche" || producto.TipoProducto == "Paleta Fruta") {
-                                type = producto.TipoProducto[..9];
+                            if (producto.TipoProducto == "Otros" || producto.TipoProducto == "Extras") {
+                                type = "";
                             }
-                            else type = producto.TipoProducto;
+                            else type = producto.TipoProducto[..1] + ".";
 
-                            name = producto.NombreProducto.Length >= 7 ? producto.NombreProducto[..7] : producto.NombreProducto;
+                            name = producto.NombreProducto.Length >= 15 ? producto.NombreProducto[..15] : producto.NombreProducto;
 
                             break;
                         }
                     }
-                    var total = item.PrecioMenudeo * item.CantidadDependencias;
+                    var total = precioTotal * item.CantidadDependencias;
                     yPos = topMargin + (count * consola.GetHeight(g));
-                    g.DrawString(string.Format("{0,2} {1,-9} {2,-7} {3,6}", item.CantidadDependencias, type, name, total), consola1, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("{0,2} {1,-2}{2,-11}", item.CantidadDependencias, type, name), consola, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("                     {0,6}", total), consola, Brushes.Black, leftMargin, yPos);
                     count++;
                     totalProductos += item.CantidadDependencias;
                     totalDia += Convert.ToDecimal(total);
@@ -297,31 +338,31 @@ namespace Mexty.MVVM.Model {
                     //"---------------------------"
                     g.DrawString("Total de venta del dia", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{_date} es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{_date} es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     break;
                 case "semana":
 
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    ultimaSeana.ToString("d'-'MM'-'y");
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
+
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimaSeana} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimoMes.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -373,25 +414,26 @@ namespace Mexty.MVVM.Model {
             foreach (var detalle in data) {
                 itemInventarios = Venta.StringProductosToList(detalle.DetalleVenta);
                 foreach (var item in itemInventarios) {
+                    var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
                     foreach (var producto in productos) {
                         if (item.IdProducto == producto.IdProducto) {
-                            if (producto.TipoProducto == "Paleta Agua" || producto.TipoProducto == "Paleta Leche" || producto.TipoProducto == "Paleta Fruta") {
-                                type = producto.TipoProducto[..9];
+                            if (producto.TipoProducto == "Otros" || producto.TipoProducto == "Extras") {
+                                type = "";
                             }
-                            else type = producto.TipoProducto;
+                            else type = producto.TipoProducto[..1] + ".";
 
-                            name = producto.NombreProducto.Length >= 7 ? producto.NombreProducto[..7] : producto.NombreProducto;
+                            name = producto.NombreProducto.Length >= 15 ? producto.NombreProducto[..15] : producto.NombreProducto;
 
                             break;
                         }
                     }
-                    var total = item.PrecioMenudeo * item.CantidadDependencias;
+                    var total = precioTotal * item.CantidadDependencias;
                     yPos = topMargin + (count * consola.GetHeight(g));
-                    g.DrawString(string.Format("{0,2} {1,-9} {2,-7} {3,6}", item.CantidadDependencias, type, name, total), consola1, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("{0,2} {1,-2}{2,-11}", item.CantidadDependencias, type, name), consola, Brushes.Black, leftMargin, yPos);
+                    g.DrawString(string.Format("                     {0,6}", total), consola, Brushes.Black, leftMargin, yPos);
                     count++;
                     totalProductos += item.CantidadDependencias;
                     totalDia += Convert.ToDecimal(total);
-
                 }
             }
             var newYpos = yPos + 15;
@@ -403,18 +445,16 @@ namespace Mexty.MVVM.Model {
                     //"---------------------------"
                     g.DrawString("Total de venta del dia", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{_date} es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{_date} es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     break;
                 case "semana":
-
-                    var ultimaSeana = DateTime.Now - 1.Weeks();
-                    ultimaSeana.ToString("d'-'MM'-'y");
+                    var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimaSeana.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimaSeana} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
@@ -422,13 +462,12 @@ namespace Mexty.MVVM.Model {
                     newYpos += 15;
                     break;
                 case "mes":
-                    var ultimoMes = DateTime.Now - 1.Months();
-                    ultimoMes.ToString("d'-'MM'-'y");
+                    var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
                     g.DrawString($"Total de ventas de", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"{ultimoMes.ToString("d")} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"{ultimoMes} a {_date}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
-                    g.DrawString($"es ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
+                    g.DrawString($"es de ${totalDia}", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;
                     g.DrawString($"con {totalProductos} productos vendidos", consola, Brushes.Black, leftMargin, newYpos);
                     newYpos += 15;

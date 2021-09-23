@@ -18,14 +18,18 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Función que retorna una lista con los productos de la base de datos.
         /// </summary>
         /// <returns> Una lista de objetos tipo <c>Producto</c>.</returns>
-        public static List<Producto> GetTablesFromProductos() {
+        public static List<Producto> GetTablesFromProductos(bool ordenados=false) {
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
+            var comando = "";
             connObj.Open();
 
-
+            if (ordenados) {
+                comando = @"select * from cat_producto order by nombre_producto";
+            }
+            else comando = @"select * from cat_producto";
             var querry = new MySqlCommand() {
                 Connection = connObj,
-                CommandText = @"select * from cat_producto"
+                CommandText = comando            
             };
 
             var productos = new List<Producto>();

@@ -26,6 +26,7 @@ namespace Mexty.MVVM.View.ReportesViews {
         private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         ReportesVentas report = new();
+        ReporteVentasMayoreo VentasMayoreo = new();
         List<Sucursal> dataSucursal = QuerysSucursales.GetTablesFromSucursales();
         List<Usuario> dataUsuarios = QuerysUsuario.GetTablesFromUsuarios();
 
@@ -47,6 +48,8 @@ namespace Mexty.MVVM.View.ReportesViews {
             timer.Tick += new EventHandler(UpdateTimerTick);
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         private void FillDataUsuarios() {
@@ -95,35 +98,50 @@ namespace Mexty.MVVM.View.ReportesViews {
         private void BtnHoy_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
             }
-            report.ReporteVentasSucursal(idSucursal, "hoy");
+            if (comboVenta.SelectedIndex == 0) {
+                VentasMayoreo.ReportesVentasMayoreo(idSucursal, "hoy");
+            }
+            else {
+                report.ReporteVentasSucursal(idSucursal, "hoy");
+            }
         }
 
 
         private void UltimaSemana_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
             }
-            report.ReporteVentasSucursal(idSucursal, "semana");
+            if (comboVenta.SelectedIndex == 0) {
+                VentasMayoreo.ReportesVentasMayoreo(idSucursal, "semana");
+            }
+            else {
+                report.ReporteVentasSucursal(idSucursal, "semana");
+            }
         }
 
         private void Mes_Click(object sender, RoutedEventArgs e) {
             foreach (var sucu in dataSucursal) {
                 var seleccion = ComboSucursal.SelectedItem.ToString().ToLower().Trim();
-                if (sucu.NombreTienda == seleccion) {
+                if (sucu.NombreTienda.ToLower() == seleccion) {
                     idSucursal = sucu.IdTienda;
                     break;
                 }
             }
-            report.ReporteVentasSucursal(idSucursal, "mes");
+            if (comboVenta.SelectedIndex == 0) {
+                VentasMayoreo.ReportesVentasMayoreo(idSucursal, "mes");
+            }
+            else {
+                report.ReporteVentasSucursal(idSucursal, "mes");
+            }
         }
 
         private void btnHoyUsuario_Click(object sender, RoutedEventArgs e) {
@@ -131,7 +149,7 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }
@@ -145,7 +163,7 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }
@@ -159,13 +177,22 @@ namespace Mexty.MVVM.View.ReportesViews {
             var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
             string[] nombre = allText.Split(' ');
             foreach (var item in dataUsuarios) {
-                if (item.Nombre == nombre[0]) {
+                if (item.Nombre.ToLower() == nombre[0]) {
                     username = item.Username;
                     break;
                 }
             }
 
             report.ReporteVentasUsuario(username, "mes");
+        }
+
+        private void ComboSucursal_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (ComboSucursal.SelectedValue.ToString().ToLower().Trim() == "jiquipilco".ToLower()) {
+                gridTipoVenta.Visibility = Visibility.Visible;
+            }
+            else {
+                gridTipoVenta.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }
