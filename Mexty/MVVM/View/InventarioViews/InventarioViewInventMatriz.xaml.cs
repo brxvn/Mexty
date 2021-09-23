@@ -63,6 +63,8 @@ namespace Mexty.MVVM.View.InventarioViews {
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
 
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
             if (DatabaseInit.GetIdRol().Equals(3)) {
                 AltInventario.Visibility = Visibility.Collapsed;
                 AsignInventario.Visibility = Visibility.Collapsed;

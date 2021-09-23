@@ -61,6 +61,9 @@ namespace Mexty.MVVM.View.AdminViews {
             timer.Tick += UpdateTimerTick;
             timer.Interval = new TimeSpan(0, 0, 1);
             timer.Start();
+
+            lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
+
         }
 
         /// <summary>

@@ -602,78 +602,6 @@
                     </PasswordBox>
                 </Grid>
 
-
-                <!--<TextBox Background="Beige"
-                     x:Name="TxtContraseña"
-                     Grid.Column="2"
-                     HorizontalAlignment="Stretch"
-                     MaxLength="8"
-                     PreviewTextInput="OnlyLettersAndNumbersValidation"
-                     Margin="10 0">
-                    <TextBox.Style>
-                        <Style TargetType="TextBox">
-                            <Style.Setters>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type TextBox}">
-                                            <Border ToolTip="Contraseña" Background="Beige" CornerRadius="15" Width="auto" Focusable="True" Height="40" BorderThickness="3" BorderBrush="Beige" x:Name="border" SnapsToDevicePixels="True" Cursor="IBeam">
-                                                <Grid>
-                                                    <Rectangle StrokeThickness="1"/>
-                                                    <TextBox Margin="1"
-                                                     Text="{TemplateBinding Text}"
-                                                     BorderThickness="0"
-                                                     Background="Transparent"
-                                                     VerticalContentAlignment="Center"
-                                                     Padding="5"
-                                                     Foreground="Gray"
-                                                     FontSize="15"
-                                                     x:Name="SearchBox"
-                                                     PreviewTextInput="OnlyLettersAndNumbersValidation"
-                                                     MaxLength="8"
-                                                     TextChanged="TextUpdatePswd"/>
-
-                                                    <TextBlock IsHitTestVisible="False"
-                                                       Text="Contraseña"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalAlignment="Left"
-                                                       Margin="10,0,0,0"
-                                                       FontSize="15"
-                                                       Foreground="Gray"
-                                                       Grid.Column="1">
-
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="{x:Type TextBlock}">
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
-                                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                                <Setter Property="Visibility" Value="Hidden"/>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                </Grid>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsFocused" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                                <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                                                    <Setter Property="BorderBrush" TargetName="border" Value="#fac034"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style.Setters>
-
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>-->
-
                 <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="ComboRol" Grid.Column="3" Margin="10 0" HorizontalAlignment="Stretch" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" SelectedIndex="0" BorderThickness="0" ToolTip="Rol de Usuario"/>
 
@@ -693,6 +621,8 @@
             </Grid>
 
         </Grid>
+
+        <Label x:Name="lblSucursal" Grid.Row="3" Foreground="AntiqueWhite" FontSize="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="50 15"/>
 
         <Label Name="time" 
                Grid.Row="3"
