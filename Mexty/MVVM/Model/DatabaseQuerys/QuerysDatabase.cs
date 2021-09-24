@@ -211,7 +211,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Metodo a usar para exportar toda la base de datos.
         /// </summary>
         // info: https://github.com/MySqlBackupNET/MySqlBackup.Net/wiki
-        public static bool BackUp() {
+        public static bool BackUpBd() {
             Log.Info("Se ha empezado el backUp de la base de datos.");
             try {
                 var time = DateTime.Today;
@@ -224,11 +224,24 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         using (MySqlBackup mb = new MySqlBackup(cmd)) {
                             cmd.Connection = conn;
                             conn.Open();
-                            //var customQuery = new Dictionary<string, string>();
-                            //customQuery.Add("cliente_mayoreo", "select * where ID_CLIENTE = 0;");
-                            //mb.ExportInfo.ExcludeTables = new List<string>() {"inventario", "export"};
-                            //mb.ExportInfo.ExportRows = false; // Exporta solo la estructura.
-                            //mb.ExportInfo.TablesToBeExportedDic = customQuery;
+
+                            var customQuery = new Dictionary<string, string> {
+                                { "cat_producto", "select * from cat_producto;" },
+                                { "cat_rol_usuario", "select * from cat_rol_usuario;" },
+                                { "cat_tienda", "select * from cat_tienda;" },
+                                { "cliente_mayoreo", "select * from cliente_mayoreo;" },
+                                { "control_imports", "select * from control_imports;" },
+                                { "control_sincbd", "select * from control_sincbd where ID_REGISTRO = 0;" }, // Nada de deltas.
+                                { "inventario", "select * from inventario;" },
+                                { "inventario_matriz", "select * from inventario_matriz;" },
+                                { "movimientos_clientes", "select * from movimientos_clientes;" },
+                                { "movimientos_inventario", "select * from movimientos_inventario;" },
+                                { "usuario", "select * from usuario;" },
+                                { "venta_mayoreo", "select * from venta_mayoreo;" },
+                                { "venta_menudeo", "select * from venta_menudeo;" }
+                            };
+                            mb.ExportInfo.TablesToBeExportedDic = customQuery;
+
                             mb.ExportToFile(file);
                             Log.Debug("Se ha exportado el archivo exitosamente.");
                             conn.Close();
@@ -250,6 +263,64 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 throw;
             }
         }
+
+        /// <summary>
+        /// Método que se encarga de exportar la base de datos limpia para una nueva sucursal.
+        /// </summary>
+        /// <returns></returns>
+        public static bool ExportNewTienda() {
+            Log.Info("Se ha empezado el proceso de exportar una base de datos limpia para una nueva sucursal.");
+            try {
+                var time = DateTime.Today;
+                var fileName = $"FullBackupBDNuevaTienda{time:dd-MM-yy}.sql";
+                const string path = @"C:\Mexty\Backups\Scripts_Nueva_Tienda\";
+                Directory.CreateDirectory(path);
+                var file = $"{path}{fileName}";
+                using (MySqlConnection conn = new MySqlConnection(IniFields.GetConnectionString())) {
+                    using (MySqlCommand cmd = new MySqlCommand()) {
+                        using (MySqlBackup mb = new MySqlBackup(cmd)) {
+                            cmd.Connection = conn;
+                            conn.Open();
+
+                            var customQuery = new Dictionary<string, string> {
+                                { "cat_producto", "select * from cat_producto;" },
+                                { "cat_rol_usuario", "select * from cat_rol_usuario;" },
+                                { "cat_tienda", "select * from cat_tienda;" },
+                                { "cliente_mayoreo", "select * from cliente_mayoreo;" },
+                                { "control_imports", "select * from control_imports;" },
+                                { "control_sincbd", "select * from control_sincbd where ID_REGISTRO = 0;" }, // Nada de deltas.
+                                { "inventario", "select * from inventario where ID_REGISTRO = 0;" }, // Nada de inventario
+                                { "inventario_matriz", "select * from inventario_matriz where ID_REGISTRO = 0;" }, // Nada de inventario Matriz.
+                                { "movimientos_clientes", "select * from movimientos_clientes where ID_REGISTRO = 0;" }, // Nada de mov clientes.
+                                { "movimientos_inventario", "select * from movimientos_inventario where ID_REGISTRO = 0;" }, // Nada de mov inventario.
+                                { "usuario", "select * from usuario;" },
+                                { "venta_mayoreo", "select * from venta_mayoreo where ID_VENTA_MAYOREO = 0;" }, // Nada de ventas mayoreo.
+                                { "venta_menudeo", "select * from venta_menudeo where ID_VENTA_MENUDEO = 0;" } // Nada de ventas menudeo.
+                            };
+                            mb.ExportInfo.TablesToBeExportedDic = customQuery;
+
+                            mb.ExportToFile(file);
+                            Log.Debug("Se ha exportado el archivo exitosamente.");
+                            conn.Close();
+                        }
+                    }
+                }
+
+                MessageBox.Show($"Se ha creado el archivo {file}");
+                return true;
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al intentar exportar la base de datos.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    $"Error 17: ha ocurrido un error al intentar exportar toda la base de datos. {e.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+        }
+
 
         /// <summary>
         /// Método que verifica si hay deltas en la bd.
