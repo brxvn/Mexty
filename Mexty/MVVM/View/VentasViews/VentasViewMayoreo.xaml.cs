@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -109,6 +110,8 @@ namespace Mexty.MVVM.View.VentasViews {
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
+            SortDataGrid(DataProducts, 0);
+
             //Keyboard.Focus(txtID); // TODO: checar esto
 
             Log.Debug("Se ha llendado el datagrid de ventas mayoreo.");
@@ -122,6 +125,31 @@ namespace Mexty.MVVM.View.VentasViews {
 
             //ComboCliente.SelectedIndex = 0;
             Log.Debug("Se ha llendado el combobox de clientes.");
+        }
+
+        /// <summary>
+        /// Ordenar por piezas de manera ascendente 
+        /// </summary>
+        /// <param name="dataGrid"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="sortDirection"></param>
+        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending) {
+            var column = dataGrid.Columns[columnIndex];
+
+            // Clear current sort descriptions
+            dataGrid.Items.SortDescriptions.Clear();
+
+            // Add the new sort description
+            dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
+
+            // Apply sort
+            foreach (var col in dataGrid.Columns) {
+                col.SortDirection = null;
+            }
+            column.SortDirection = sortDirection;
+
+            // Refresh items to display sort
+            dataGrid.Items.Refresh();
         }
 
         /// <summary>
@@ -610,6 +638,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
                     TotalVenta();
                     CambioVenta();
+                    txtTotal.Focus();
                 }
             }
         }

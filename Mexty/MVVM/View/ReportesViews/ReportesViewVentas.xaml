@@ -8,10 +8,10 @@
              d:DesignHeight="1080" d:DesignWidth="1920">
     <Grid Background="#7f233a">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" x:Name="Row0"/>
+            <RowDefinition Height="auto" x:Name="Row1"/>
+            <RowDefinition Height="auto" x:Name="Row2"/>
+            <RowDefinition Height="auto" x:Name="Row3"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>

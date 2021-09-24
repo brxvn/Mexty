@@ -17,7 +17,7 @@
                     <reportesView:ReportesViewVentas/>
                 </TabItem.Content>
             </TabItem>
-            <TabItem Header="Reportes de Inventario" Background="#710a24" BorderBrush="Transparent"
+            <TabItem Header="Reportes de Inventario" Background="#710a24" BorderBrush="Transparent" x:Name="ReporteInventario"
                      Style="{StaticResource ButtonThemeActive}">
                 <TabItem.Content >
                     <reportesView:ReportesViewInventario/>

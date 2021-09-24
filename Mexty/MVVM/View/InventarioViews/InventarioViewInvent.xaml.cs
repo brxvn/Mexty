@@ -61,6 +61,8 @@ namespace Mexty.MVVM.View.InventarioViews {
 
                 if (DatabaseInit.GetIdRol().Equals(3)) {
                     ComboSucursal.Visibility = Visibility.Collapsed;
+                    AltInventario.Visibility = Visibility.Collapsed;
+                    txtCantidad.IsReadOnly = true;
                 }
 
                 if (!DatabaseInit.GetMatrizEnabledFromIni()) {
@@ -186,7 +188,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void ItemSelected(object sender, EventArgs e) {
 
             ClearFields();
-            txtCantidad.IsReadOnly = false;
+            txtCantidad.IsReadOnly = DatabaseInit.GetIdRol().Equals(3) ? true : false;
             txtComentario.IsReadOnly = false;
             if (DataProducts.SelectedItem == null) return;
             Log.Debug("Item seleccionado.");

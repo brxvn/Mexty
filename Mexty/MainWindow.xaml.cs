@@ -21,7 +21,6 @@ namespace Mexty {
             
             if (DatabaseInit.GetIdRol().Equals(3)) {
                 Admn.Visibility = Visibility.Collapsed;
-                Reportes.Visibility = Visibility.Collapsed;
             }
 
             activeUser.Text = DatabaseInit.GetUsername();
