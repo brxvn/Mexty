@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Threading.Tasks;
 using System.Windows;
 using log4net;
 using MySql.Data.MySqlClient;
@@ -102,7 +100,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             try {
                 var resQueryNumberCheckImport = numberCheckImport.ExecuteScalar();
 
-                // leemos los resultados de ventas mayoreo
                 var numeroDeRegistrosImport = Convert.ToInt32(resQueryNumberCheckImport);
 
                 if (numeroDeRegistrosImport >= numRegistrosMinParaDepurar) {

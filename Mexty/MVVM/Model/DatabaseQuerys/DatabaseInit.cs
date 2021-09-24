@@ -10,7 +10,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
     /// Clase principal de Base de datos, se encarga de hacer el proceso de login y obtener los datos iniciales.
     /// </summary>
     public static class DatabaseInit {
-        private static readonly ILog Log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
+        private static readonly ILog Log =
+            LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType);
 
         /// <summary>
         ///  El nombre de usuario de la persona loggeada.
@@ -46,11 +47,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// <c>Bool</c> que guarda si el log-in fue exitoso.
         /// </summary>
         private static bool ConnectionSuccess { get; set; }
-
-        /// <summary>
-        /// <c>bool</c> true si este usuario tiene asignada matriz.
-        /// </summary>
-        private static bool MatrizAsigned { get; set; }
 
         /// <summary>
         /// <c>bool</c> true si la sucursal es matriz
@@ -177,55 +173,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         /// Método que checa si el usuario loggeado esta asignado a matriz.
         /// </summary>
         /// <exception cref="Exception"></exception>
-        private static void CheckMatriz(bool ini=false) {
-            var connObj = new MySqlConnection(IniFields.GetConnectionString());
-            connObj.Open();
-
-            var query = new MySqlCommand() {
-                Connection = connObj,
-                CommandText = "select ID_TIENDA from cat_tienda where TIPO_TIENDA='Matriz' and ID_TIENDA=@id"
-            };
-            if (!ini) {
-                query.Parameters.AddWithValue("@id", IdTienda.ToString());
-            }
-            else {
-                query.Parameters.AddWithValue("@id", IdTiendaIni.ToString());
-            }
-
-            try {
-                var res = query.ExecuteReader();
-
-                if (!res.HasRows) {
-                    if (!ini) {
-                        MatrizAsigned = false;
-                    }
-                    else {
-                        MatrizAsignedIni = false;
-                    }
-                    Log.Info("Este usuario no esta asignado a matriz.");
-                }
-                else {
-                    if (!ini) {
-                        MatrizAsigned = true;
-                    }
-                    else {
-                        MatrizAsignedIni = true;
-                    }
-                }
-
-            }
-            catch (Exception e) {
-                Log.Error("Ha ocurrido un error al validar el id tienda asignado al usuario.");
-                Log.Error($"Error: {e.Message}");
-                MessageBox.Show(
-                    $"Error 12: Ha ocurrido un error al validar las credenciales del proceso de autenticación. {e.Message}",
-                    "Error",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-            finally {
-                connObj.Close();
-            }
+        private static void CheckMatriz() {
+            MatrizAsignedIni = IniFields.ChekMatrizEnabled();
         }
 
         /// <summary>
@@ -287,19 +236,10 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         }
 
         /// <summary>
-        /// Método para saber si el usuario logueado tiene acceso a los campos de matriz.
-        /// </summary>
-        /// <returns></returns>
-        public static bool GetMatrizEnabled() {
-            return MatrizAsigned;
-        }
-
-        /// <summary>
         /// Método para saber si la sucursal dada tiene acceso a los campos de matriz.
         /// </summary>
-        /// <returns></returns>
+        /// <returns><c>true</c> si el campo Matriz tiene valor 1 en el archivo de configuración.</returns>
         public static bool GetMatrizEnabledFromIni() {
-            CheckMatriz(true);
             return MatrizAsignedIni;
         }
     }

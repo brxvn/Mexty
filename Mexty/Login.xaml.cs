@@ -46,7 +46,7 @@ namespace Mexty {
         /// <summary>
         /// Método que decide si depurar la base de datos o no
         /// </summary>
-        private void DepuraAveces() {
+        private static void DepuraAveces() {
             var rndGen = new Random();
             var rndNum = rndGen.Next(1, 100);
             if (rndNum % 3 == 0) {

@@ -75,5 +75,41 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 throw;
             }
         }
+
+        /// <summary>
+        /// Métoddo que lee si matriz esta activada en esta sucursal.
+        /// </summary>
+        /// <returns></returns>
+        public static bool ChekMatrizEnabled() {
+            try {
+                var myIni = new IniFile(@"C:\Mexty\Settings.ini");
+                var enabled = myIni.Read("Matriz");
+                var matrizEnabled = int.Parse(enabled);
+
+                if (matrizEnabled <= 1) {
+                    // Es un valor entre 0 y 1 si no, retornamos.
+                    return matrizEnabled switch {
+                        1 => true,
+                        0 => false,
+                        _ => false
+                    };
+                }
+                else {
+                    throw new Exception(
+                        "Se ha dado un valor no valido a el campo de Matriz en el archivo de configuración");
+                }
+
+            }
+            catch (Exception e) {
+                Log.Error("Ha ocurrido un error al leer el campo de Matriz de el archivo de configuración.");
+                Log.Error($"Error: {e.Message}");
+                MessageBox.Show(
+                    "Error 10.5: Ha ocurrido un error al leer el campo de Matriz del arhivo de configuración, este solo acepta valores de 0 o 1. Ejemplo: Matriz=1 (Para señalizar que esta sucursal debe se ser tratada como matriz y habilitar las ventas Mayoreo).",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                throw;
+            }
+        }
     }
 }

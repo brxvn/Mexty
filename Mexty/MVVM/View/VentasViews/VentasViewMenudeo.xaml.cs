@@ -214,6 +214,7 @@ namespace Mexty.MVVM.View.VentasViews {
             try {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
+                VentaActual.IdTienda = DatabaseInit.GetIdTiendaIni();
 
                 if (ListaVenta.Count == 0) {
                     MessageBox.Show("Error: No hay elementos en la cuenta.");
