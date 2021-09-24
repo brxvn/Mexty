@@ -28,6 +28,7 @@
             <Label Margin="5,25,10,25" Content="" FontSize="25" Foreground="AntiqueWhite"/>
             <Button x:Name="ExportarBD" Height="40" Grid.Column="0" Content="Exportar BD" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="ExportBd"/>
             <Button x:Name="ExportarDatos" Height="40" Grid.Column="0" Content="Exportar Datos" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="ExportData"/>
+            <Button x:Name="ExportarNuevaSucursal" Height="40" Grid.Column="0" Content="Nueva Sucursal" FontSize="25" HorizontalAlignment="Stretch" Background="Beige" BorderThickness="0" Padding="30 0" Margin="20 0" VerticalContentAlignment="Center" Template="{DynamicResource ButtonTemplate1}" Style="{StaticResource ButtonStyle}" Click="ExportarNuevaSucursal_Click"/>
 
         </StackPanel>
 

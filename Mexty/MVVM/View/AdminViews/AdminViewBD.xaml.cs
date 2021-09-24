@@ -126,5 +126,9 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error($"Error: {exception.Message}");
             }
         }
+
+        private void ExportarNuevaSucursal_Click(object sender, RoutedEventArgs e) {
+
+        }
     }
 }
