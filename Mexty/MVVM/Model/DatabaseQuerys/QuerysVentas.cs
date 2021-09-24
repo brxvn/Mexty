@@ -97,7 +97,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 set ID_CLIENTE=@idClienteX, 
                     DETALLE_VENTA=@detalle, TOTAL_VENTA=@totalX, 
                     PAGO=@pagoX, CAMBIO=@cambioX, 
-                    COMENTARIOS=@comentarios, ID_TIENDA=@idTiendaX, 
+                    COMENTARIOS=@comentarios, 
                     USUARIO_REGISTRA=@usrRegistra, FECHA_REGISTRO=@fechaRegistro 
                 where ID_VENTA_MAYOREO = @idX"
                 : @"
@@ -163,11 +163,11 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 insert into venta_mayoreo 
                     (ID_VENTA_MAYOREO, ID_CLIENTE, DETALLE_VENTA, 
                      TOTAL_VENTA, PAGO, CAMBIO, 
-                     COMENTARIOS, ID_TIENDA, 
+                     COMENTARIOS, 
                      USUARIO_REGISTRA, FECHA_REGISTRO) 
                 values (default, @idCX, @detalle, 
                         @totalX, @pagoX, @cambioX, 
-                        @comentarios, @idTX, 
+                        @comentarios, 
                         @usrRegistra, @fechaRegistro)"
                 : @"
                 insert into venta_menudeo 

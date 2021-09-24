@@ -89,7 +89,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al exportar los deltas");
                 Log.Error($"Error: {exception.Message}");
             }
-
         }
 
         /// <summary>
