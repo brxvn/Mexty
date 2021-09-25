@@ -21,7 +21,7 @@ namespace Mexty.MVVM.View.InventarioViews {
     public partial class InventarioView : UserControl {
         public InventarioView() {
             InitializeComponent();
-            if (DatabaseInit.GetIdRol().Equals(3)) {
+            if (DatabaseInit.GetIdRol().Equals(3) || !DatabaseInit.GetMatrizEnabledFromIni()) {
                 inventarioMatriz.Visibility = Visibility.Collapsed;
             }
         }
