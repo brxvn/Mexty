@@ -517,6 +517,9 @@ namespace Mexty.MVVM.View.VentasViews {
             if (e.Key == Key.Return) {
                 ChangeCantidad();
             }
+            else if (e.Key == Key.F1) {
+                SetFocus(sender, e);
+            }
         }
 
         private void ChangeCantidad() {
@@ -545,8 +548,10 @@ namespace Mexty.MVVM.View.VentasViews {
 
                     TotalVenta();
                     CambioVenta();
+                    txtTotal.Focus();
                 }
             }
+            txtTotal.Focus();
         }
 
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {

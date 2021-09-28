@@ -610,6 +610,9 @@ namespace Mexty.MVVM.View.VentasViews {
             if (e.Key == Key.Return) {
                 ChangeCantidad();
             }
+            else if (e.Key == Key.F1) {
+                SetFocus(sender, e);
+            }
         }
 
         private void ChangeCantidad() {
@@ -641,6 +644,7 @@ namespace Mexty.MVVM.View.VentasViews {
                     txtTotal.Focus();
                 }
             }
+            txtTotal.Focus();
         }
 
 
@@ -676,6 +680,7 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
+                MessageBox.Show("Focus para" + PredictFocus(FocusNavigationDirection.Next).ToString());
                 txtTotal.Focus();
             }
         }
