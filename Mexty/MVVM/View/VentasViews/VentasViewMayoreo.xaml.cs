@@ -645,6 +645,9 @@ namespace Mexty.MVVM.View.VentasViews {
                 }
             }
             txtTotal.Focus();
+            if (txtTotal.IsFocused) {
+                MessageBox.Show("Focus ventana recibido");
+            }
         }
 
 
@@ -680,8 +683,10 @@ namespace Mexty.MVVM.View.VentasViews {
 
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
-                MessageBox.Show("Focus para" + PredictFocus(FocusNavigationDirection.Next).ToString());
                 txtTotal.Focus();
+                if (txttotal.isfocused) {
+                    messagebox.show("f1 presionado.\nfocus ventana recibido");
+                }
             }
         }
 
