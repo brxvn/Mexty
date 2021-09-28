@@ -552,9 +552,9 @@ namespace Mexty.MVVM.View.VentasViews {
                 }
             }
             txtTotal.Focus();
-            if (txtTotal.IsFocused) {
-                MessageBox.Show("Focus ventana recibido");
-            }
+            //if (txtTotal.IsFocused) {
+            //    MessageBox.Show("Focus ventana recibido");
+            //}
         }
 
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -583,9 +583,9 @@ namespace Mexty.MVVM.View.VentasViews {
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
                 txtTotal.Focus();
-                if (txtTotal.IsFocused) {
-                    MessageBox.Show("F1 presionado.\nFocus ventana recibido");
-                }
+                //if (txtTotal.IsFocused) {
+                //    MessageBox.Show("F1 presionado.\nFocus ventana recibido");
+                //}
             }
         }
 
