@@ -684,8 +684,8 @@ namespace Mexty.MVVM.View.VentasViews {
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
                 txtTotal.Focus();
-                if (txttotal.isfocused) {
-                    messagebox.show("f1 presionado.\nfocus ventana recibido");
+                if (txtTotal.IsFocused) {
+                    MessageBox.Show("f1 presionado.\nfocus ventana recibido");
                 }
             }
         }
