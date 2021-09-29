@@ -36,13 +36,13 @@
                 <ColumnDefinition Width=".5*"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Tipo de venta" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
+            <!--<Label Grid.Column="0" Content="Tipo de venta" FontSize="30" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20" />
 
             <ComboBox ItemContainerStyle="{DynamicResource ComboBoxItemContainerStyle}" Style="{StaticResource ComboBoxStyle}" x:Name="comboVenta" Grid.Column="1" Margin="10 0" HorizontalAlignment="Left" FontSize="15" Foreground="Gray" Height="40"
                           VerticalContentAlignment="Center" IsReadOnly="True" ToolTip="Sucursal" Width="400" >
                 <ComboBoxItem Content="Mayoreo" IsSelected="True"/>
                 <ComboBoxItem Content="Menudeo"/>
-            </ComboBox>
+            </ComboBox>-->
 
         </Grid>
 

@@ -233,19 +233,19 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 case "hoy":
                     cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
                             FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda=@id
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
                 case "semana":
                     cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
                             FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda=@id
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
                 case "mes":
                     cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
                             FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda=@id
+                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
             }
@@ -255,7 +255,7 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                 CommandText = cmd
             };
 
-            conn.Parameters.AddWithValue("id", idTienda.ToString());
+            //conn.Parameters.AddWithValue("id", idTienda.ToString());
 
 
             var items = new List<Venta>();

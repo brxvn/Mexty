@@ -128,7 +128,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "hoy");
             }
             else {
@@ -145,7 +145,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "semana");
             }
             else {
@@ -161,7 +161,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "mes");
             }
             else {

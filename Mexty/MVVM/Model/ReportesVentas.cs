@@ -171,6 +171,9 @@ namespace Mexty.MVVM.Model {
 
         public void ReporteVentasUsuario(string username, string comando) {
             var data = QuerysReportesVentas.GetVentasPorUsuario(username, comando);
+            var idTienda = DatabaseInit.GetIdTiendaIni();
+            var sucursales = QuerysSucursales.GetTablesFromSucursales();
+
             if (data.Count == 0) {
                 MessageBox.Show("No hay nada que mostrar. \nPrimero realiza ventas.");
                 return;
@@ -180,6 +183,14 @@ namespace Mexty.MVVM.Model {
             Table table = new Table(UnitValue.CreatePercentArray(tamaños));
 
             table.SetWidth(UnitValue.CreatePercentValue(100));
+
+            foreach (var tienda in sucursales) {
+                if (idTienda == tienda.IdTienda) {
+                    sucursal = tienda.NombreTienda;
+                    direccion = tienda.Dirección;
+                    break;
+                }
+            }
 
             string path = $"{_ventasUsuarios}{username}\\{comando}\\";
             Directory.CreateDirectory($"{path}");

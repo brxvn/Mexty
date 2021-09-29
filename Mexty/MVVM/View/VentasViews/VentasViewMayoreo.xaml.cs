@@ -481,6 +481,7 @@ namespace Mexty.MVVM.View.VentasViews {
             Keyboard.Focus(txtRecibido);
             TotalVenta();
             CambioVenta();
+            txtTotal.Focus();
             Log.Debug("Se ha agregado un producto a venta.");
         }
 
@@ -503,6 +504,7 @@ namespace Mexty.MVVM.View.VentasViews {
             DataVenta.ItemsSource = ListaVenta;
             TotalVenta();
             CambioVenta();
+            txtTotal.Focus();
             Log.Debug("Se ha eliminado un producto de la venta.");
         }
 
@@ -645,9 +647,6 @@ namespace Mexty.MVVM.View.VentasViews {
                 }
             }
             txtTotal.Focus();
-            //if (txtTotal.IsFocused) {
-            //    MessageBox.Show("Focus ventana recibido");
-            //}
         }
 
 
