@@ -77,6 +77,18 @@ namespace Mexty.MVVM.Model.DataTypes {
         public DateTime FechaRegistro { get; set; }
 
         /// <summary>
+        /// Fecha en la que se registro la venta.
+        /// </summary>
+        public DateTime WeekStart { get; set; }
+
+        /// <summary>
+        /// Fecha en la que se registro la venta.
+        /// </summary>
+        public DateTime WeekEnd { get; set; }
+
+        public int WeekNo { get; set; }
+
+        /// <summary>
         /// Método que convierte una lista de productos a un string codificado.
         /// Contiene: IdProducto:CantidadProducto:TipoVenta:PrecioMayoreo:PrecioMenudeo,
         /// </summary>

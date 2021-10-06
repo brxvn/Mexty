@@ -4,6 +4,7 @@ using Mexty.MVVM.Model.DatabaseQuerys;
 using Mexty.MVVM.Model.DataTypes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -49,7 +50,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private ItemInventario SelectedItem { get; set; }
 
         public VentasViewMenudeo() {
-            try {
+            try {   
                 InitializeComponent();
                 FillData();
                 NewVenta();
@@ -62,7 +63,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 timer.Start();
                 lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
 
-            }
+            }   
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
                 Log.Error($"Error: {e.Message}");
@@ -105,8 +106,35 @@ namespace Mexty.MVVM.View.VentasViews {
             };
             CollectionView = collectionView;
             DataProducts.ItemsSource = collectionView;
+            SortDataGrid(DataProducts, 0);
+
 
             Log.Debug("Se ha llendado el datagrid de ventas menudeo.");
+        }
+
+        /// <summary>
+        /// Ordenar por piezas de manera ascendente 
+        /// </summary>
+        /// <param name="dataGrid"></param>
+        /// <param name="columnIndex"></param>
+        /// <param name="sortDirection"></param>
+        void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending) {
+            var column = dataGrid.Columns[columnIndex];
+
+            // Clear current sort descriptions
+            dataGrid.Items.SortDescriptions.Clear();
+
+            // Add the new sort description
+            dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
+
+            // Apply sort
+            foreach (var col in dataGrid.Columns) {
+                col.SortDirection = null;
+            }
+            column.SortDirection = sortDirection;
+
+            // Refresh items to display sort
+            dataGrid.Items.Refresh();
         }
 
         /// <summary>
@@ -214,6 +242,7 @@ namespace Mexty.MVVM.View.VentasViews {
             try {
                 VentaActual.DetalleVentaList = ListaVenta;
                 VentaActual.DetalleVenta = Venta.ListProductosToString(ListaVenta);
+                VentaActual.IdTienda = DatabaseInit.GetIdTiendaIni();
 
                 if (ListaVenta.Count == 0) {
                     MessageBox.Show("Error: No hay elementos en la cuenta.");
@@ -359,6 +388,7 @@ namespace Mexty.MVVM.View.VentasViews {
             Keyboard.Focus(txtRecibido);
             TotalVenta();
             CambioVenta();
+            txtTotal.Focus();
             Log.Debug("Se ha agregado un producto a venta.");
         }
 
@@ -382,6 +412,7 @@ namespace Mexty.MVVM.View.VentasViews {
             DataVenta.ItemsSource = ListaVenta;
             TotalVenta();
             CambioVenta();
+            txtTotal.Focus();
             Log.Debug("Se ha eliminado un producto de la venta.");
         }
 
@@ -488,6 +519,9 @@ namespace Mexty.MVVM.View.VentasViews {
             if (e.Key == Key.Return) {
                 ChangeCantidad();
             }
+            else if (e.Key == Key.F1) {
+                SetFocus(sender, e);
+            }
         }
 
         private void ChangeCantidad() {
@@ -516,8 +550,13 @@ namespace Mexty.MVVM.View.VentasViews {
 
                     TotalVenta();
                     CambioVenta();
+                    txtTotal.Focus();
                 }
             }
+            txtTotal.Focus();
+            //if (txtTotal.IsFocused) {
+            //    MessageBox.Show("Focus ventana recibido");
+            //}
         }
 
         private void txtRecibido_PreviewKeyDown(object sender, KeyEventArgs e) {
@@ -546,6 +585,9 @@ namespace Mexty.MVVM.View.VentasViews {
         private void UserControl_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.F1) {
                 txtTotal.Focus();
+                //if (txtTotal.IsFocused) {
+                //    MessageBox.Show("F1 presionado.\nFocus ventana recibido");
+                //}
             }
         }
 
@@ -560,22 +602,6 @@ namespace Mexty.MVVM.View.VentasViews {
 
         }
 
-        private void Reporte_Click(object sender, RoutedEventArgs e) {
-            ReportesVentas report = new();
-
-            string username = DatabaseInit.GetUsername();
-
-            //var allText = ComboEmpleado.SelectedItem.ToString().ToLower();
-            //string[] nombre = allText.Split(' ');
-            //foreach (var item in dataUsuarios) {
-            //    if (item.Nombre.ToLower() == nombre[0]) {
-            //        username = item.Username;
-            //        break;
-            //    }
-            //}
-
-            report.ReporteVentasUsuario(username, "hoy");
-        }
     }
 }
 

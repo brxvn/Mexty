@@ -50,6 +50,13 @@ namespace Mexty.MVVM.View.ReportesViews {
             timer.Start();
             lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
 
+            if (DatabaseInit.GetIdRol().Equals(3)) {
+                Row0.Height = new GridLength(0, GridUnitType.Star);
+                Row1.Height = new GridLength(0, GridUnitType.Star);
+                Row2.Height = new GridLength(0, GridUnitType.Star);
+                Row3.Height = new GridLength(0, GridUnitType.Star);
+            }
+
         }
 
         private void FillDataUsuarios() {
@@ -70,14 +77,32 @@ namespace Mexty.MVVM.View.ReportesViews {
 
         private void FillDataSucursales() {
             try {
-                foreach (var user in dataUsuarios) {
-                    var nombre = user.Nombre;
-                    var apPat = user.ApPaterno;
-                    ComboEmpleado.Items.Add($"{char.ToUpper(nombre[0]) + nombre.Substring(1)} {char.ToUpper(apPat[0]) + apPat.Substring(1)}");
-                }
 
-                ComboEmpleado.SelectedIndex = 0;
-                Log.Debug("Se ha llenado el combo de empleados");
+                if (DatabaseInit.GetIdRol().Equals(3)) {
+                    var username = DatabaseInit.GetUsername();
+                    foreach (var user in dataUsuarios) {
+                        var nombre = user.Nombre;
+                        var apPat = user.ApPaterno;
+                        if (username == user.Username) {
+                            ComboEmpleado.Items.Add($"{char.ToUpper(nombre[0]) + nombre.Substring(1)} {char.ToUpper(apPat[0]) + apPat.Substring(1)}");
+                            ComboEmpleado.SelectedIndex = 0;
+                            ComboEmpleado.IsEnabled = false;
+                            ComboEmpleado.IsReadOnly = true;
+                            break;
+                        }
+                    }
+                }
+                else {
+                    foreach (var user in dataUsuarios) {
+                        var nombre = user.Nombre;
+                        var apPat = user.ApPaterno;
+                        ComboEmpleado.Items.Add($"{char.ToUpper(nombre[0]) + nombre.Substring(1)} {char.ToUpper(apPat[0]) + apPat.Substring(1)}");
+                    }
+
+                    ComboEmpleado.SelectedIndex = 0;
+                    Log.Debug("Se ha llenado el combo de empleados");
+
+                }
             }
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al llenar los campos de reportes inventario");
@@ -103,7 +128,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "hoy");
             }
             else {
@@ -120,7 +145,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "semana");
             }
             else {
@@ -136,7 +161,7 @@ namespace Mexty.MVVM.View.ReportesViews {
                     break;
                 }
             }
-            if (comboVenta.SelectedIndex == 0) {
+            if (idSucursal == 1) {
                 VentasMayoreo.ReportesVentasMayoreo(idSucursal, "mes");
             }
             else {

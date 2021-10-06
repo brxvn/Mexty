@@ -63,21 +63,11 @@ namespace Mexty.MVVM.View.AdminViews {
         private void ExportBd(object sender, RoutedEventArgs e) {
             Log.Debug("Se ha presionado el boton de Exportar");
             try {
-                if (!QuerysDatabase.CheckDeltas()) { // Si no hay deltas
-                    if (QuerysDatabase.BackUp()) { // exportamos bd.
-                        Log.Info("Se ha exportado la base de datos de manera exitosa.");
-                        MessageBox.Show("Se ha exportado la base de datos con éxito.");
-                    }
+                if (QuerysDatabase.BackUpBd()) { // exportamos bd.
+                    Log.Info("Se ha exportado la base de datos de manera exitosa.");
+                    MessageBox.Show("Se ha exportado la base de datos con éxito.");
                 }
-                else { // si si hay deltas.
-                    MessageBox.Show("Advertencia: Se han encontrado cambios sin exportar, Estos cambios se exportaran para que sean sincronizados en otras sucursales.");
-                    QuerysDatabase.DumpDeltas(); // exportamos deltas.
-                    Log.Info("Se ha intentado el export de la base de datos con cambios en la tabla de sincronización, se han vaciado los deltas.");
-                    if (QuerysDatabase.BackUp()) { // exportamos bd.
-                        Log.Info("Se ha exportado la base de datos de manera exitosa.");
-                        MessageBox.Show("Se ha exportado la base de datos con éxito.");
-                    }
-                }
+
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al exportar la base de datos.");
@@ -99,7 +89,6 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al exportar los deltas");
                 Log.Error($"Error: {exception.Message}");
             }
-
         }
 
         /// <summary>
@@ -125,6 +114,22 @@ namespace Mexty.MVVM.View.AdminViews {
                 Log.Error("Ha ocurrido un error al importar la base de datos.");
                 Log.Error($"Error: {exception.Message}");
             }
+        }
+
+        private void ExportNewSucursal(object sender, RoutedEventArgs e) {
+            Log.Debug("Se ha precionado el boton de exporar nueva sucursal.");
+            try {
+                if (QuerysDatabase.ExportNewTienda()) {
+                    Log.Info("Se ha exportado la base de datos de manera exitosa.");
+                    MessageBox.Show("Se ha exportado la base de datos con éxito.");
+                }
+
+            }
+            catch (Exception exception) {
+                Log.Error("Ha ocurrido un error al exportar la base de datos.");
+                Log.Error($"Error: {exception.Message}");
+            }
+
         }
     }
 }

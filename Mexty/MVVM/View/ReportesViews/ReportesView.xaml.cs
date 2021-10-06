@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using Mexty.MVVM.Model.DatabaseQuerys;
+
 using System.Windows.Shapes;
 
 namespace Mexty.MVVM.View.ReportesViews {
@@ -20,6 +22,10 @@ namespace Mexty.MVVM.View.ReportesViews {
     public partial class ReportesView : UserControl {
         public ReportesView() {
             InitializeComponent();
+
+            if (DatabaseInit.GetIdRol().Equals(3)) {
+                ReporteInventario.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

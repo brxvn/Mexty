@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Data;
-using System.Threading.Tasks;
 using System.Windows;
 using log4net;
 using MySql.Data.MySqlClient;
@@ -18,8 +16,8 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
         public static void DepCamposVentas() {
             Log.Info("Se ha empezado la limpieza regular de las tablas de Ventas.");
 
-            const int numRegistrosMinParaDepurar = 400; // La cantidad de registros que debe de tener las tablas para que se active la depuración.
-            const int numRegistrosADepurar = 100; // La cantidad de registros que se borrarán en el caso de que se active la depuración.
+            const int numRegistrosMinParaDepurar = 7000; // La cantidad de registros que debe de tener las tablas para que se active la depuración.
+            const int numRegistrosADepurar = 300; // La cantidad de registros que se borrarán en el caso de que se active la depuración.
 
             var connObj = new MySqlConnection(IniFields.GetConnectionString());
             connObj.Open();
@@ -102,7 +100,6 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
             try {
                 var resQueryNumberCheckImport = numberCheckImport.ExecuteScalar();
 
-                // leemos los resultados de ventas mayoreo
                 var numeroDeRegistrosImport = Convert.ToInt32(resQueryNumberCheckImport);
 
                 if (numeroDeRegistrosImport >= numRegistrosMinParaDepurar) {
