@@ -82,31 +82,25 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             switch (comando) {
                 case "hoy":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            FROM venta_menudeo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda=@id";
-                            //UNION
-                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            //FROM venta_mayoreo
-                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda = @id";
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_menudeo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 day)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC";
                     break;
                 case "semana":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            FROM venta_menudeo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda=@id";
-                            //UNION
-                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            //FROM venta_mayoreo
-                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda = @id";
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_menudeo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 week)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC";
                     break;
                 case "mes":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            FROM venta_menudeo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda=@id";
-                            //UNION
-                            //SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
-                            //FROM venta_mayoreo
-                            //WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda = @id";
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_menudeo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 month)) and id_tienda=@id
+                            order by month(fecha_registro) ASC, day(fecha_registro) ASC";
                     break;
             }
 
@@ -127,6 +121,9 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
                         DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? DateTime.Now : reader.GetDateTime("fecha_registro"),
+                        WeekStart = reader.IsDBNull("WeekStart") ? DateTime.Now : reader.GetDateTime("WeekStart"),
+                        WeekEnd = reader.IsDBNull("WeekEnd") ? DateTime.Now : reader.GetDateTime("WeekEnd"),
+                        WeekNo = reader.IsDBNull("semana") ? 0 : reader.GetInt32("semana")
                     };
 
                     items.Add(item);
@@ -157,31 +154,34 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             switch (comando) {
                 case "hoy":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                    cmd = @"SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro,        INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_menudeo
                             WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and usuario_registra = @username
                             UNION
-                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_mayoreo
-                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and usuario_registra = @username";
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 day)) and usuario_registra = @username
+                            ORDER BY semana, fecha_registro";
                     break;
                 case "semana":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                    cmd = @"SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro,        INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_menudeo
                             WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and usuario_registra = @username
                             UNION
-                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_mayoreo
-                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and usuario_registra = @username";
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 week)) and usuario_registra = @username
+                            ORDER BY semana, fecha_registro";
                     break;
                 case "mes":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                    cmd = @"SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro,        INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_menudeo
                             WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and usuario_registra = @username
                             UNION
-                            SELECT usuario_registra, fecha_registro, detalle_venta, total_venta
+                            SELECT usuario_registra, fecha_registro, total_venta, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart, adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
                             FROM venta_mayoreo
-                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and usuario_registra = @username";
+                            WHERE(date(fecha_registro) >= date_sub(now(), interval 1 month)) and usuario_registra = @username
+                            ORDER BY semana, fecha_registro";
                     break;
             }
 
@@ -201,6 +201,10 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         UsuarioRegistra = reader.IsDBNull("usuario_registra") ? "" : reader.GetString("usuario_registra"),
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
                         DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
+                        FechaRegistro = reader.IsDBNull("fecha_registro") ? DateTime.Now : reader.GetDateTime("fecha_registro"),
+                        WeekStart = reader.IsDBNull("WeekStart") ? DateTime.Now : reader.GetDateTime("WeekStart"),
+                        WeekEnd = reader.IsDBNull("WeekEnd") ? DateTime.Now : reader.GetDateTime("WeekEnd"),
+                        WeekNo = reader.IsDBNull("semana") ? 0 : reader.GetInt32("semana")
                     };
 
                     items.Add(item);
@@ -231,21 +235,24 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
 
             switch (comando) {
                 case "hoy":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
-                            FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 day))
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, id_cliente, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_mayoreo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 month))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
                 case "semana":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
-                            FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 week))
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, id_cliente, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_mayoreo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 week))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
                 case "mes":
-                    cmd = @"SELECT usuario_registra, fecha_registro, detalle_venta, total_venta, id_cliente
-                            FROM venta_mayoreo
-                            WHERE (date(fecha_registro) >= date_sub(now(), interval 1 month))
+                    cmd = @"select usuario_registra, fecha_registro, total_venta, id_cliente, detalle_venta, adddate(fecha_registro, INTERVAL 1-DAYOFWEEK(fecha_registro) DAY) WeekStart,
+                            adddate(fecha_registro, INTERVAL 7-DAYOFWEEK(fecha_registro) DAY) WeekEnd, week(fecha_registro) semana
+                            from venta_mayoreo
+                            where (date(fecha_registro) >= date_sub(now(), interval 1 month))
                             order by month(fecha_registro) ASC, day(fecha_registro) ASC, id_cliente ASC";
                     break;
             }
@@ -269,7 +276,10 @@ namespace Mexty.MVVM.Model.DatabaseQuerys {
                         TotalVenta = reader.IsDBNull("total_venta") ? 0 : reader.GetDecimal("total_venta"),
                         DetalleVenta = reader.IsDBNull("detalle_venta") ? "" : reader.GetString("detalle_venta"),
                         FechaRegistro = reader.IsDBNull("fecha_registro") ? DateTime.Now : reader.GetDateTime("fecha_registro"),
-                        IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente")
+                        IdCliente = reader.IsDBNull("id_cliente") ? 0 : reader.GetInt32("id_cliente"),
+                        WeekStart = reader.IsDBNull("WeekStart") ? DateTime.Now : reader.GetDateTime("WeekStart"),
+                        WeekEnd = reader.IsDBNull("WeekEnd") ? DateTime.Now : reader.GetDateTime("WeekEnd"),
+                        WeekNo = reader.IsDBNull("semana") ? 0 : reader.GetInt32("semana")
                     };
 
                     items.Add(item);

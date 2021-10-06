@@ -50,7 +50,7 @@ namespace Mexty.MVVM.View.VentasViews {
         private ItemInventario SelectedItem { get; set; }
 
         public VentasViewMenudeo() {
-            try {
+            try {   
                 InitializeComponent();
                 FillData();
                 NewVenta();
@@ -63,7 +63,7 @@ namespace Mexty.MVVM.View.VentasViews {
                 timer.Start();
                 lblSucursal.Content = DatabaseInit.GetNombreTiendaIni();
 
-            }
+            }   
             catch (Exception e) {
                 Log.Error("Ha ocurrido un error al inicializar los campos de ventas menudeo.");
                 Log.Error($"Error: {e.Message}");
