@@ -1,4 +1,5 @@
 ﻿using FluentDate;
+using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout.Element;
 using iText.Layout.Properties;
 using log4net;
@@ -65,74 +66,112 @@ namespace Mexty.MVVM.Model {
             var document = CreateDocument(nombreReporte, p, tituloReporte, path);
             decimal totalTotal = 0.0m;
 
+            for (int j = 0; j <= rawData.Count - 1; j++) {
+                var weekAux = 0;
+                var weekNo = rawData[j].WeekNo;
 
-            for (int i = 0; i <= rawData.Count - 1; i++) {
-                var aux = "";
+                if (j < rawData.Count - 1) {
+                    weekAux = rawData[j + 1].WeekNo;
+                }
+                else {
+                    weekNo = rawData[j].WeekNo;
 
-                var fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
+                }
 
-                if (i < rawData.Count - 1) aux = rawData[i + 1].FechaRegistro.ToString("dd-MM-yy");
-                else fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
-
-
-                if (fechaVenta != aux) {
-                    Paragraph f = new Paragraph().Add(fechaVenta);
-                    document.Add(f);
-
-                    Table table = new Table(UnitValue.CreatePercentArray(tamaños));
-
-                    table.SetWidth(UnitValue.CreatePercentValue(100));
-                    foreach (string columa in columnas) {
-                        table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
-                    }
-
-                    var totalProductos = 0;
-                    decimal totalDia = 0.0m;
+                if (weekNo != weekAux) {
+                    var weekStart = rawData[j].WeekStart;
+                    var weekEnd = rawData[j].WeekEnd;
+                    var semana = $"Semana del {weekStart.ToString("dd-MM-yy")} al {weekEnd.ToString("dd-MM-yy")}";
+                    var totalSemana = 0.0m;
 
 
-                    foreach (var items in rawData) {
-                        foreach (var cliente in clientes) {
+                    Paragraph w = new Paragraph().Add(semana);
+                    document.Add(w);
 
-                            if (fechaVenta == items.FechaRegistro.ToString("dd-MM-yy") && items.IdCliente == cliente.IdCliente) {
-                                var nombreCliente = $"{cliente.Nombre} {cliente.ApPaterno}";
-                                var nombre = "";
-                                var total = "";
+                    for (int i = 0; i <= rawData.Count - 1; i++) {
+                        var aux = "";
 
-                                itemInventarios = Venta.StringProductosToList(items.DetalleVenta);
-                                foreach (var item in itemInventarios) {
-                                    
-                                    var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
-                                    foreach (var producto in productos) {
-                                        if (item.IdProducto == producto.IdProducto) {
-                                            nombre = $"{producto.TipoProducto} {producto.NombreProducto}";
-                                            break;
-                                        }
-                                    }
-                                    table.AddCell(new Cell().Add(new Paragraph(nombreCliente).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                                    table.AddCell(new Cell().Add(new Paragraph(nombre).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                                    table.AddCell(new Cell().Add(new Paragraph(item.CantidadDependencias.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                                    table.AddCell(new Cell().Add(new Paragraph(precioTotal.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
-                                    table.AddCell(new Cell().Add(new Paragraph((precioTotal * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                        var fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
 
-                                    total = (precioTotal * item.CantidadDependencias).ToString();
-                                    totalProductos += item.CantidadDependencias;
-                                    totalDia += Convert.ToDecimal(total);
+                        if (i < rawData.Count - 1) aux = rawData[i + 1].FechaRegistro.ToString("dd-MM-yy");
+                        else fechaVenta = rawData[i].FechaRegistro.ToString("dd-MM-yy");
 
-                                }
-                                
+                        int gWeekStart = DateTime.Compare(rawData[i].FechaRegistro, weekStart);
+                        int lWeekEnd = DateTime.Compare(rawData[i].FechaRegistro, weekEnd);
+
+
+                        if (fechaVenta != aux && (gWeekStart == 1 || gWeekStart == 0) && (lWeekEnd == -1 || lWeekEnd == 0)) {
+                            Paragraph f = new Paragraph().Add($"Día: {fechaVenta}");
+                            document.Add(f);
+
+                            Table table = new Table(UnitValue.CreatePercentArray(tamaños));
+
+                            table.SetWidth(UnitValue.CreatePercentValue(100));
+                            foreach (string columa in columnas) {
+                                table.AddHeaderCell(new Cell().Add(new Paragraph(columa).SetTextAlignment(TextAlignment.CENTER).SetFontSize(_fontSize)));
                             }
+
+                            var totalProductos = 0;
+                            decimal totalDia = 0.0m;
+
+
+                            foreach (var items in rawData) {
+                                
+                                foreach (var cliente in clientes) {
+
+                                    if (fechaVenta == items.FechaRegistro.ToString("dd-MM-yy") && (gWeekStart == 1 || gWeekStart == 0) && (lWeekEnd == -1 || lWeekEnd == 0) && items.IdCliente == cliente.IdCliente) {
+                                        var nombreCliente = $"{cliente.Nombre} {cliente.ApPaterno}";
+                                        var nombre = "";
+                                        var total = "";
+
+                                        itemInventarios = Venta.StringProductosToList(items.DetalleVenta);
+                                        foreach (var item in itemInventarios) {
+
+                                            var precioTotal = item.PrecioMenudeo != 0 ? item.PrecioMenudeo : item.PrecioMayoreo;
+                                            foreach (var producto in productos) {
+                                                if (item.IdProducto == producto.IdProducto) {
+                                                    nombre = $"{producto.TipoProducto} {producto.NombreProducto}";
+                                                    break;
+                                                }
+                                            }
+                                            table.AddCell(new Cell().Add(new Paragraph(nombreCliente).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                            table.AddCell(new Cell().Add(new Paragraph(nombre).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                            table.AddCell(new Cell().Add(new Paragraph(item.CantidadDependencias.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                            table.AddCell(new Cell().Add(new Paragraph(precioTotal.ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+                                            table.AddCell(new Cell().Add(new Paragraph((precioTotal * item.CantidadDependencias).ToString()).SetFontSize(_fontSize).SetTextAlignment(TextAlignment.CENTER)));
+
+                                            total = (precioTotal * item.CantidadDependencias).ToString();
+                                            totalProductos += item.CantidadDependencias;
+                                            totalDia += Convert.ToDecimal(total);
+
+                                        }
+
+                                    }
+                                    else continue;
+                                }
+                            }
+                            totalTotal += totalDia;
+                            totalSemana += totalDia;
+                            document.Add(table);
+                            Paragraph totalp = new Paragraph().Add($"Productos Vendidos: {totalProductos}. Total Día: ${totalDia}");
+                            document.Add(totalp);
                         }
                     }
-                    totalTotal += totalDia;
-                    document.Add(table);
-                    Paragraph totalp = new Paragraph().Add($"Productos Vendidos: {totalProductos}. Total Dia: ${totalDia}");
-                    document.Add(totalp);
+                    Paragraph totalWeek = new Paragraph().Add($"Total de venta semana: ${totalSemana}");
+                    document.Add(totalWeek);
+                    SolidLine line = new SolidLine(1f);
+                    LineSeparator ls = new LineSeparator(line);
+                    ls.SetWidth(UnitValue.CreatePercentValue(100));
+                    document.Add(ls);
+                    document.Add(ls);
+
                 }
             }
+
             var texto1 = "";
             switch (comando) {
                 case "hoy":
-                    texto1 = $"Total de venta del dia {_date} es de: ${totalTotal}";
+                    texto1 = $"Total de venta del día {_date} es de: ${totalTotal}";
                     break;
                 case "semana":
                     var ultimaSeana = (DateTime.Now - 1.Weeks()).ToString("dd-MM-yy");
@@ -140,7 +179,7 @@ namespace Mexty.MVVM.Model {
                     break;
                 case "mes":
                     var ultimoMes = (DateTime.Now - 1.Months()).ToString("dd-MM-yy");
-                    texto1 = $"Total de venta de {ultimoMes} a {_date} es de: ${totalTotal}";
+                    texto1 = $"Total de venta de {ultimoMes} al {_date} es de: ${totalTotal}";
                     break;
             }
 
