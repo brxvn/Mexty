@@ -155,8 +155,7 @@ namespace Mexty.MVVM.View.InventarioViews {
             Log.Debug("El objeto tipo ItemInventario ha pasado las validaciones.");
 
 
-            for (var index = 0; index < ListaFromInventario.Count; index++) {
-                var item = ListaFromInventario[index];
+            foreach (var item in ListaFromInventario) {
                 if (item.IdProducto != newProduct.IdProducto) continue;
                 MessageBox.Show(
                     "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes ir a la pantalla de Inventario.",

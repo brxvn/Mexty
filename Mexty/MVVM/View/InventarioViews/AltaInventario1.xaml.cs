@@ -19,7 +19,7 @@ using Mexty.MVVM.Model.Validations;
 
 namespace Mexty.MVVM.View.InventarioViews {
     /// <summary>
-    /// Interaction logic for AltaInventario.xaml
+    /// Interaction logic for AltaInventario.xaml alta de inventario Gral
     /// </summary>
     public partial class AltaInventario1 : Window {
         private static readonly ILog Log =
@@ -163,14 +163,15 @@ namespace Mexty.MVVM.View.InventarioViews {
             Log.Debug("El objeto tipo ItemInventario ha pasado las validaciones.");
 
 
-            for (var index = 0; index < ListaFromInventario.Count; index++) {
-                var item = ListaFromInventario[index];
+            foreach (var item in ListaFromInventario) {
                 if (item.IdProducto != newProduct.IdProducto) continue;
+
                 MessageBox.Show(
                     "Error: Estas dando de alta un producto que ya tienes en inventario, si quieres editarlo debes hacerlo en la pantalla de Inventario.",
                     "Producto duplicado");
                 return;
             }
+
 
             try {
                 var row = QuerysInventario.NewItem(newProduct);

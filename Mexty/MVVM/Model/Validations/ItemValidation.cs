@@ -6,11 +6,12 @@ namespace Mexty.MVVM.Model.Validations {
         public ItemValidation() {
             CascadeMode = CascadeMode.Stop;
 
-            RuleFor(item => item.Cantidad.ToString())
+            RuleFor(item => item.Cantidad)
                 .Cascade(CascadeMode.Stop)
                 .NotEmpty().WithMessage("La cantidad no puede estar vacia, en todo caso poner 0.")
-                .Length(0, 10).WithMessage("La cantidad es demasiado grande para ser valida.")
-                .Must(Validations.BeAValidNumber).WithMessage("No es una cantidad valida");
+                .GreaterThan(0).WithMessage("La cantidad no puede ser menor a 0.")
+                .LessThan(99999999).WithMessage("La cantidad es demasiado grande para ser valida");
+                //.Must(Validations.BeAValidNumber).WithMessage("No es una cantidad valida");
 
             RuleFor(item => item.Comentario)
                 .Cascade(CascadeMode.Stop)

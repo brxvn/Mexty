@@ -152,6 +152,7 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que limpia los campos de texto.
         /// </summary>
         private void ClearFields() {
+            SearchBox.Text = "";
             Guardar.IsEnabled = false;
             txtComentario.IsReadOnly = true;
             txtCantidad.IsReadOnly = true;
@@ -234,16 +235,18 @@ namespace Mexty.MVVM.View.InventarioViews {
                 Cantidad = int.Parse(txtCantidad.Text),
             };
 
+            newItem.NombreProducto = SelectedItem.NombreProducto;
+            newItem.TipoProducto = SelectedItem.TipoProducto;
+            newItem.IdProducto = SelectedItem.IdProducto;
+            newItem.IdRegistro = SelectedItem.IdRegistro;
+
             if (!Validar(newItem)) {
                 Log.Warn("El objeto tipo ItemInventario no ha pasado las vaidaciones.");
                 return;
             }
             Log.Debug("El objeto tipo ItemInventario ha pasado las validaciones.");
 
-            newItem.NombreProducto = SelectedItem.NombreProducto;
-            newItem.TipoProducto = SelectedItem.TipoProducto;
-            newItem.IdProducto = SelectedItem.IdProducto;
-            newItem.IdRegistro = SelectedItem.IdRegistro;
+
             var res = QuerysInventario.UpdateData(newItem, true);
             if (res > 0) {
                 Log.Debug("Se ha editado un producto.");
