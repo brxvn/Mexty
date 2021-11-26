@@ -22,11 +22,13 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <Label Content="Inventario Matriz" FontSize="40" VerticalContentAlignment="Center" Foreground="AntiqueWhite" Padding="0,20"/>
 
+            <!--<Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Width="15" Height="20" VerticalContentAlignment="Center" Style="{StaticResource ButtonStyle}" Padding="0" FontSize="15" Click="Button_Click"/>-->
             <!--El nombre es searchBox-->
-            <TextBox Background="WhiteSmoke" Grid.Column="1" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">
+            <TextBox Background="WhiteSmoke" Grid.Column="2" x:Name="SearchBox" PreviewTextInput="OnlyLettersAndNumbersValidation" HorizontalAlignment="Right">
                 <TextBox.Style>
                     <Style TargetType="TextBox">
                         <Style.Setters>
@@ -49,6 +51,7 @@
                                                      TextChanged="FilterSearch">
 
                                                 </TextBox>
+                                                <Button Content="X" HorizontalAlignment="Right" VerticalAlignment="Center" Width="15" Height="20" VerticalContentAlignment="Center" Style="{StaticResource ButtonStyle}" Padding="0" FontSize="15" Click="Button_Click" Margin="0 0 35 0" Foreground="DarkGray"/>
                                                 <fa:FontAwesomeIcon SolidIcon="Search"
                                                         FontSize="15"
                                                         Foreground="DarkGray"

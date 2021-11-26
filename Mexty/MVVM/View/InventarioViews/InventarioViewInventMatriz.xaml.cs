@@ -152,7 +152,6 @@ namespace Mexty.MVVM.View.InventarioViews {
         /// Método que limpia los campos de texto.
         /// </summary>
         private void ClearFields() {
-            SearchBox.Text = "";
             Guardar.IsEnabled = false;
             txtComentario.IsReadOnly = true;
             txtCantidad.IsReadOnly = true;
@@ -185,7 +184,7 @@ namespace Mexty.MVVM.View.InventarioViews {
                 collection.Filter += noNull;
                 DataProducts.ItemsSource = collection;
                 CollectionView = collection;
-                ClearFields();
+                //ClearFields();
             }
 
             SearchBox.Text = tbx.Text;
@@ -345,6 +344,10 @@ namespace Mexty.MVVM.View.InventarioViews {
         private void MovimInventario(object sender, RoutedEventArgs e) {
             MovimientosInventario movimientosInventario = new MovimientosInventario();
             movimientosInventario.ShowDialog();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            SearchBox.Text = "";
         }
     }
 }
