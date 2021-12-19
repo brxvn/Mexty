@@ -172,20 +172,19 @@ namespace Mexty.MVVM.View.InventarioViews {
                 return;
             }
 
-
             try {
                 var row = QuerysInventario.NewItem(newProduct);
                 if (row > 0) {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");
                 }
-
+                ClearFields();
+                Close();
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al dar de alta el producto en el inventario.");
                 Log.Error($"Error: {exception.Message}");
             }
-            ClearFields();
         }
 
         /// <summary>

@@ -169,13 +169,13 @@ namespace Mexty.MVVM.View.InventarioViews {
                     MessageBox.Show($"Se ha dado de alta en el inventario el producto {ComboNombre.SelectedItem}");
                     Log.Debug("Se ha dado de alta un producto en el inventario.");
                 }
-
+                ClearFields();
+                Close(); // Cerramos la ventana
             }
             catch (Exception exception) {
                 Log.Error("Ha ocurrido un error al dar de alta el producto en el inventario.");
                 Log.Error($"Error: {exception.Message}");
             }
-            ClearFields();
         }
 
         /// <summary>
